@@ -1,0 +1,16 @@
+{
+  "id": "ABCXXXXX00",
+  "$template": {
+    "name": "CUSTOM_TEMPLATE",
+    "type": "EMBEDDED_RENDERER",
+    "url": "http://localhost:3000/rederer"
+  },
+  "description": "A Document",
+  "issuedOn": "2018-08-30T00:00:00+08:00",
+  "documentType": "Certificate of Origin",
+  "recipient": {
+    "name": "Reciepient Name",
+    "address": "Sydney Australia",
+    "country": "Australia"
+  }
+}

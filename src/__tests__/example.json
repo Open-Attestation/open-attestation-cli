@@ -1,0 +1,22 @@
+{
+  "id": "SERIAL_NUMBER_123",
+  "$template": {
+    "name": "NULL",
+    "type": "EMBEDDED_RENDERER",
+    "url": "https://demo-co.openattestation.com"
+  },
+  "issuers": [
+    {
+      "name": "DEMO STORE",
+      "tokenRegistry": "0x48399Fb88bcD031C556F53e93F690EEC07963Af3",
+      "identityProof": {
+        "type": "DNS-TXT",
+        "location": "tradetrust.io"
+      }
+    }
+  ],
+  "somekey": "somevalue",
+  "recipient": {
+    "name": "Recipient Name"
+  }
+}

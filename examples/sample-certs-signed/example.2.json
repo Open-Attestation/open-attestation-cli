@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "data": {
+    "id": "7e29074c-840e-4f41-9079-10a195a122c9:string:ABCXXXXX00",
+    "$template": {
+      "name": "44fac6e0-ea59-4a86-b328-f99f6b96119d:string:CUSTOM_TEMPLATE",
+      "type": "0247a145-3221-4cdc-a4c4-65ccb5544018:string:EMBEDDED_RENDERER",
+      "url": "92af8efb-e5db-460d-a97b-f1ed16e036c4:string:http://localhost:3000/rederer"
+    },
+    "description": "9571e468-a8db-4d8b-bd06-4066cd27b657:string:A Document",
+    "issuedOn": "afd327d1-c0b6-4d3a-80a9-1f0356db27da:string:2018-08-30T00:00:00+08:00",
+    "documentType": "a26b5eae-df16-42df-9ff2-ffa7916392f7:string:Certificate of Origin",
+    "issuers": [
+      {
+        "name": "727170af-86d9-4b45-af99-5ba54d614b30:string:DEMO STORE",
+        "address": "6fb52835-4378-433b-a354-c54974862f7e:string:Changi Singapore -123456",
+        "country": "f3558500-deb4-44c8-84aa-641289eba45a:string:Singapore",
+        "documentStore": "04b41353-18b1-4b64-bd85-6b9310472c65:string:0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d",
+        "identityProof": {
+          "type": "5f95f42e-223a-4e02-a110-a3802ba8f9d6:string:DNS-TXT",
+          "location": "042fdc73-dec0-411d-8023-e6a26902305d:string:some.io"
+        }
+      }
+    ],
+    "recipient": {
+      "name": "98019dbb-3ea0-4574-92a7-eb0f863d0175:string:Reciepient Name",
+      "address": "3ddc2c64-2920-4ec0-9ad5-14dc450628ac:string:Sydney Australia",
+      "country": "931cc33f-4cf6-45b7-9b51-8aa7df414505:string:Australia"
+    }
+  },
+  "privacy": {
+    "obfuscatedData": []
+  },
+  "signature": {
+    "type": "SHA3MerkleProof",
+    "targetHash": "a4b8b95f0669604a575f912d17aa9aba56e3874dfe43c49c3e188310e916e14b",
+    "proof": [
+      "21d5b932d62c400397fd598e6c68bf65848bc1621174083a0cb52448f767bf74"
+    ],
+    "merkleRoot": "7ab935252edd3091ce7aa72e52669633da2936123f7355bb536ec439a323d090"
+  }
+}
