@@ -6,7 +6,8 @@
   "main": "index.ts",
   "types": "dist/types/src/index.d.ts",
   "bin": {
-    "open-attestation": "dist/cjs/src/index.js"
+    "open-attestation": "dist/cjs/src/index.js",
+    "oa": "dist/cjs/src/index.js"
   },
   "scripts": {
     "build": "npm run clean && npm run build:cjs && npm run build:type",
