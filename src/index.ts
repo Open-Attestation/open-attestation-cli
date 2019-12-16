@@ -18,7 +18,7 @@ const parseArguments = (argv: string[]) =>
     .command("filter <source> <destination> [fields..]", "Obfuscate fields in the document", (sub: Argv) =>
       sub
         .positional("source", {
-          description: "Source signed document filename",
+          description: "Source wrapped document filename",
           normalize: true
         })
         .positional("destination", {
@@ -32,7 +32,7 @@ const parseArguments = (argv: string[]) =>
       (sub: Argv) =>
         sub
           .positional("raw-dir", {
-            description: "Directory containing the raw unissued and unsigned documents",
+            description: "Directory containing the raw unissued and unwrapped documents",
             normalize: true
           })
           .positional("batched-dir", {

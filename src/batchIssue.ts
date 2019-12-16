@@ -1,14 +1,14 @@
 import { documentsInDirectory, readCert, writeCertToDisk } from "./diskUtils";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
-import { Document, isSchemaValidationError, issueDocument, utils } from "@govtechsg/open-attestation";
+import { isSchemaValidationError, issueDocument, utils } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
 import secureSchema from "ajv/lib/refs/json-schema-secure.json";
 
 class SchemaValidationError extends Error {
-  constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: Document) {
+  constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
     super(message);
   }
 }
