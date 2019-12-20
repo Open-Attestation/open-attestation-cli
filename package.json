@@ -2,7 +2,6 @@
   "name": "@govtechsg/open-attestation-cli",
   "version": "0.0.0-development",
   "description": "",
-  "private": true,
   "main": "index.ts",
   "types": "dist/types/src/index.d.ts",
   "bin": {
@@ -58,7 +57,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@govtechsg/open-attestation": "1.1.42",
+    "@govtechsg/open-attestation": "3.0.3",
     "ajv": "^6.10.2",
     "debug": "^4.1.1",
     "ethereumjs-util": "^6.0.0",

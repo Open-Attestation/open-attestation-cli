@@ -6,13 +6,11 @@
     "type": "EMBEDDED_RENDERER",
     "url": "http://localhost:3000/rederer"
   },
-  "description": "A Document",
   "validFrom": "2018-08-30T00:00:00+08:00",
-  "documentType": "Certificate of Origin",
   "proof": {
     "type": "OpenAttestationSignature2018",
-    "method": "DOCUMENT_STORE",
-    "value": "0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d"
+    "method": "TOKEN_REGISTRY",
+    "value": "0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
   },
   "issuer": {
     "id": "https://example.com",
@@ -21,10 +19,5 @@
       "type": "DNS-TXT",
       "location": "some.io"
     }
-  },
-  "recipient": {
-    "name": "Reciepint Name",
-    "address": "Sydney Australia",
-    "country": "Australia"
   }
 }

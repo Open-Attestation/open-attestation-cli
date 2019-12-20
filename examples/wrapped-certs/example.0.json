@@ -1,33 +1,26 @@
 {
   "version": "open-attestation/3.0",
   "data": {
-    "reference": "b5229264-0890-495c-bdda-790e5bad24b9:string:ABCXXXXX00",
-    "name": "0cda4149-c90a-4e3f-ac7d-7f3c8379a419:string:Certificate of whatever",
+    "reference": "bb580cf5-87f2-42c8-b0cf-e9d445db336d:string:ABCXXXXX00",
+    "name": "84f3857b-40f7-41e7-8f71-cb8008fab163:string:Certificate of whatever",
     "template": {
-      "name": "3a812989-a7c9-404f-8a92-5ab4b473c217:string:CUSTOM_TEMPLATE",
-      "type": "99e6e332-c27d-4b22-a09d-39e49bccb703:string:EMBEDDED_RENDERER",
-      "url": "ccbf3c9a-ff0f-4514-a9cb-8ca7befb1cae:string:http://localhost:3000/rederer"
+      "name": "25d8bf44-0470-41cf-8ada-39d72c7364df:string:CUSTOM_TEMPLATE",
+      "type": "b82ae6ef-1f01-4714-b653-72debeea1839:string:EMBEDDED_RENDERER",
+      "url": "bfea6de8-db78-46f7-884b-ebbd1339e550:string:http://localhost:3000/rederer"
     },
-    "description": "0c12953e-3858-4957-99cc-9ccd2f59e64c:string:A Document",
-    "validFrom": "fe6e72ec-bf12-4d6e-86c8-37b4d31f2dc5:string:2018-08-30T00:00:00+08:00",
-    "documentType": "d263ad80-6484-4f01-b6dd-8681e30648b2:string:Certificate of Origin",
+    "validFrom": "b99a84c7-3871-4d33-996a-ff03a221371b:string:2018-08-30T00:00:00+08:00",
     "proof": {
-      "type": "50e84dec-962f-44af-b7b0-5b4408cf399d:string:OpenAttestationSignature2018",
-      "method": "a7f86149-3b14-4361-8e9f-3f36a3138972:string:DOCUMENT_STORE",
-      "value": "43287f21-ce6b-4633-8ee7-4c8769233ee7:string:0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d"
+      "type": "710ee6cf-5cea-41b9-a71b-106ad73460a9:string:OpenAttestationSignature2018",
+      "method": "07d987ad-97b8-4f9e-b06e-a3691a31ae03:string:TOKEN_REGISTRY",
+      "value": "509cc6a9-3c7d-4214-be79-d2b5fe4a5731:string:0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
     },
     "issuer": {
-      "id": "8f22d894-bb4c-48ad-be0c-5d3573ec567c:string:https://example.com",
-      "name": "23eb0172-478b-4a1e-814c-9a9815cd8392:string:Issuer name",
+      "id": "84cf6e77-ed24-416d-bf1a-bd2a88058211:string:https://example.com",
+      "name": "90ded788-2f16-4b11-bfd4-21c58445730e:string:Issuer name",
       "identityProof": {
-        "type": "c2ba1a82-066d-4897-a32e-9ae3f6c64a0c:string:DNS-TXT",
-        "location": "70f44a03-b46b-4af4-84b5-1a8305fe7649:string:some.io"
+        "type": "283b3e84-b0e5-4dcb-a925-0036fa1f78ea:string:DNS-TXT",
+        "location": "75a891d6-9ba9-4d5e-9877-efe966dcd901:string:some.io"
       }
-    },
-    "recipient": {
-      "name": "3a2c20c7-8c1a-4124-9cc8-cdc29c6d9e86:string:Reciepint Name",
-      "address": "85b0a332-ff2f-4116-9182-f49d30cc7517:string:Sydney Australia",
-      "country": "f92efac3-d0d8-46a9-b9ac-d85559e8320a:string:Australia"
     }
   },
   "privacy": {
@@ -35,10 +28,8 @@
   },
   "signature": {
     "type": "SHA3MerkleProof",
-    "targetHash": "b13c683fa061a6ba75895ff6ddbb8e4d3da7fd3d8550b53897ac56def3e0832d",
-    "proof": [
-      "86b7a497196a63441d3e3de2a3f7a3a606918a1d3d03584175217db88635dbc5"
-    ],
-    "merkleRoot": "90e15df4294679dbf44879c1331c1e2bd7c487e55e0861dcd196b07620f765da"
+    "targetHash": "25d71e606ca2b56c1a5345101264626c9c7b89f124f21182b27e46ec208690ae",
+    "proof": [],
+    "merkleRoot": "25d71e606ca2b56c1a5345101264626c9c7b89f124f21182b27e46ec208690ae"
   }
 }
