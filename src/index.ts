@@ -5,8 +5,10 @@ import { obfuscateDocument, verifySignature } from "@govtechsg/open-attestation"
 import { batchIssue } from "./batchIssue";
 import { getLogger } from "./logger";
 import { version } from "../package.json";
-const logger = getLogger("main");
 import signale from "signale";
+import { transformValidationErrors } from "./errors";
+
+const logger = getLogger("main");
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const parseArguments = (argv: string[]) =>
@@ -77,11 +79,11 @@ const main = async (argv: string[]): Promise<any> => {
   switch (args._[0]) {
     case "batch":
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
+      // @ts-ignore yargs is shit
       return batch(args.rawDir, args.batchedDir, args.schema);
     case "filter":
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
+      // @ts-ignore yargs is shit
       return obfuscate(args.source, args.destination, args.fields);
     default:
       throw new Error(`Unknown command ${args._[0]}. Possible bug.`);
@@ -103,6 +105,10 @@ if (typeof require !== "undefined" && require.main === module) {
       }
       logger.debug(JSON.stringify(err));
       signale.error(err.message);
+      if (err.validationErrors) {
+        const transformedErrors = transformValidationErrors(err.validationErrors);
+        transformedErrors.map(error => signale.error(error));
+      }
       signale.info("You can enable logging by adding DEBUG=open-attestation-cli:* to your command");
       signale.info("More info on debug: https://www.npmjs.com/package/debug");
       process.exit(1);
