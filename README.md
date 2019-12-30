@@ -32,7 +32,11 @@ You can also provide an optional JSON schema document to perform extra check on 
 Example:
 
 ```bash
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ ./examples/schema.json
+open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --schema ./examples/schema.json
+
+✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
+
+open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ -s ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -42,9 +46,20 @@ The JSON schema parameter also allow for http endpoint returning valid JSON sche
 Example:
 
 ```bash
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
+open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
+
+open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
+
+✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
+```
+
+By default the CLI will use open-attestation schema v2 but you can opt in for open-attestation schema v3 using `open-attestation-v3` option:
+
+```bash
+open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --open-attestation-v3
+open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --oav3
 ```
 
 ## Document privacy filter
@@ -67,6 +82,15 @@ open-attestation filter wrapped/example.0.json wrapped/example.0.out.json transc
 
 ```
 open-attestation --version
+```
+
+
+## Help
+
+Run the command without additional args to get help
+```
+open-attestation batch
+open-attestation filter
 ```
 
 ## Test
