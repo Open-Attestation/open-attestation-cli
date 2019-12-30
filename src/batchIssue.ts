@@ -1,7 +1,7 @@
 import { documentsInDirectory, readCert, writeCertToDisk } from "./diskUtils";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
-import { isSchemaValidationError, issueDocument, utils } from "@govtechsg/open-attestation";
+import { isSchemaValidationError, wrapDocument, utils } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
@@ -20,6 +20,7 @@ interface Schema {
 export const digestDocument = async (
   undigestedCertDir: string,
   digestedCertDir: string,
+  version: "open-attestation/2.0" | "open-attestation/3.0",
   schema?: Schema
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
@@ -43,7 +44,7 @@ export const digestDocument = async (
       }
     }
     try {
-      const digest = issueDocument(document, { externalSchemaId: schema?.$id });
+      const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
       hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
       // Write digested document to new directory
       writeCertToDisk(digestedCertDir, file, digest);
@@ -153,7 +154,11 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   return Promise.resolve(undefined);
 };
 
-export const batchIssue = async (inputDir: string, outputDir: string, schemaPath?: string): Promise<string> => {
+export const batchIssue = async (
+  inputDir: string,
+  outputDir: string,
+  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0" }
+): Promise<string> => {
   // Create output dir
   mkdirp.sync(outputDir);
 
@@ -163,8 +168,8 @@ export const batchIssue = async (inputDir: string, outputDir: string, schemaPath
   });
 
   // Phase 1: For each document, read content, digest and write to file
-  const schema = await loadSchema(schemaPath);
-  const individualDocumentHashes = await digestDocument(inputDir, intermediateDir, schema);
+  const schema = await loadSchema(options.schemaPath);
+  const individualDocumentHashes = await digestDocument(inputDir, intermediateDir, options.version, schema);
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputDir}`);

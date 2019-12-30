@@ -41,15 +41,29 @@ const parseArguments = (argv: string[]) =>
             description: "Directory to output the batched documents to.",
             normalize: true
           })
-          .positional("schema", {
+          .option("schema", {
+            alias: "s",
+            type: "string",
             description: "Path or URL to custom schema"
+          })
+          .option("open-attestation-v2", {
+            alias: "oav2",
+            conflicts: "open-attestation-v3"
+          })
+          .option("open-attestation-v3", {
+            alias: "oav3",
+            conflicts: "open-attestation-v2"
           })
     )
     .parse(argv);
 
-const batch = async (raw: string, batched: string, schemaPath?: string): Promise<string | void> => {
+const batch = async (
+  raw: string,
+  batched: string,
+  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0" }
+): Promise<string | void> => {
   mkdirp.sync(batched);
-  return batchIssue(raw, batched, schemaPath).then(merkleRoot => {
+  return batchIssue(raw, batched, options).then(merkleRoot => {
     signale.success(`Batch Document Root: 0x${merkleRoot}`);
     return `${merkleRoot}`;
   });
@@ -79,11 +93,14 @@ const main = async (argv: string[]): Promise<any> => {
   switch (args._[0]) {
     case "batch":
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore yargs is shit
-      return batch(args.rawDir, args.batchedDir, args.schema);
+      // @ts-ignore yargs typing is shit
+      return batch(args.rawDir, args.batchedDir, {
+        schemaPath: args.schema,
+        version: args.oav3 ? "open-attestation/3.0" : "open-attestation/2.0"
+      });
     case "filter":
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore yargs is shit
+      // @ts-ignore yargs typing is shit
       return obfuscate(args.source, args.destination, args.fields);
     default:
       throw new Error(`Unknown command ${args._[0]}. Possible bug.`);

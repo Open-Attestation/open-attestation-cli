@@ -29,7 +29,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory);
+        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, { version: "open-attestation/3.0" });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document.json`, { encoding: "utf8" })
@@ -51,7 +51,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document-3.json`)
         );
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory);
+        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, { version: "open-attestation/3.0" });
         const file1 = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document-1.json`, { encoding: "utf8" })
         );
@@ -78,7 +78,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-open-attestation-document.json`)
         );
 
-        await expect(batchIssue(inputDirectory, outputDirectory)).rejects.toThrow(
+        await expect(batchIssue(inputDirectory, outputDirectory, { version: "open-attestation/3.0" })).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "src/__tests__/fixture/_tmp_in/invalid-open-attestation-document.json is not valid against open-attestation schema"
@@ -101,7 +101,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-open-attestation-document-3.json`)
         );
 
-        await expect(batchIssue(inputDirectory, outputDirectory)).rejects.toThrow(
+        await expect(batchIssue(inputDirectory, outputDirectory, { version: "open-attestation/3.0" })).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "src/__tests__/fixture/_tmp_in/invalid-open-attestation-document-1.json is not valid against open-attestation schema"
@@ -117,11 +117,10 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await batchIssue(
-          inputDirectory,
-          outputDirectory,
-          path.resolve(__dirname, fixtureFolderName, "schema.json")
-        );
+        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          version: "open-attestation/3.0"
+        });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-custom-schema-document.json`, { encoding: "utf8" })
@@ -136,7 +135,10 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
         );
         await expect(
-          batchIssue(inputDirectory, outputDirectory, path.resolve(__dirname, fixtureFolderName, "schema.json"))
+          batchIssue(inputDirectory, outputDirectory, {
+            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+            version: "open-attestation/3.0"
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -151,11 +153,11 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await batchIssue(
-          inputDirectory,
-          outputDirectory,
-          "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json"
-        );
+        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+          schemaPath:
+            "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
+          version: "open-attestation/3.0"
+        });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-custom-schema-document.json`, { encoding: "utf8" })
@@ -170,11 +172,11 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
         );
         await expect(
-          batchIssue(
-            inputDirectory,
-            outputDirectory,
-            "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json"
-          )
+          batchIssue(inputDirectory, outputDirectory, {
+            schemaPath:
+              "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
+            version: "open-attestation/3.0"
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -186,7 +188,10 @@ describe("batchIssue", () => {
       });
       it("should not issue documents when schema is not valid", async () => {
         await expect(
-          batchIssue(inputDirectory, outputDirectory, path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"))
+          batchIssue(inputDirectory, outputDirectory, {
+            schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
+            version: "open-attestation/3.0"
+          })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
       });
