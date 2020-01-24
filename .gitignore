@@ -9,3 +9,5 @@ yarn.lock
 /dist
 /.idea
 *.iml
+.DS_store
+/examples/wrapped-certs/example.0.json

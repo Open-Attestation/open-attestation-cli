@@ -46,6 +46,10 @@ const parseArguments = (argv: string[]) =>
             type: "string",
             description: "Path or URL to custom schema"
           })
+          .option("non-interactive", {
+            type: "boolean",
+            description: "Show only output hash"
+          })
           .option("open-attestation-v2", {
             alias: "oav2",
             conflicts: "open-attestation-v3"
@@ -60,9 +64,16 @@ const parseArguments = (argv: string[]) =>
 const batch = async (
   raw: string,
   batched: string,
-  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0" }
+  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; nonInteractive: boolean }
 ): Promise<string | void> => {
   mkdirp.sync(batched);
+  if (options.nonInteractive) {
+    return batchIssue(raw, batched, options).then(merkleRoot => {
+      console.log(`0x${merkleRoot}`);
+      return `${merkleRoot}`;
+    });
+  }
+
   return batchIssue(raw, batched, options).then(merkleRoot => {
     signale.success(`Batch Document Root: 0x${merkleRoot}`);
     return `${merkleRoot}`;
@@ -96,7 +107,8 @@ const main = async (argv: string[]): Promise<any> => {
       // @ts-ignore yargs typing is shit
       return batch(args.rawDir, args.batchedDir, {
         schemaPath: args.schema,
-        version: args.oav3 ? "open-attestation/3.0" : "open-attestation/2.0"
+        version: args.oav3 ? "open-attestation/3.0" : "open-attestation/2.0",
+        nonInteractive: args.nonInteractive // this should be an error (same as above with @ts-ignore)
       });
     case "filter":
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
