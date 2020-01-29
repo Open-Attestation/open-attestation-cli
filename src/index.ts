@@ -8,6 +8,27 @@ import { version } from "../package.json";
 import signale from "signale";
 import { transformValidationErrors } from "./errors";
 
+interface BatchCommand {
+  rawDir: string;
+  batchedDir: string;
+  schema: any;
+  openAttestationv3: boolean;
+}
+
+const isBatchCommand = (args: any): args is BatchCommand => {
+  return args._[0] === "batch";
+};
+
+interface FilterCommand {
+  source: string;
+  destination: string;
+  fields: string[];
+}
+
+const isFilterCommand = (args: any): args is FilterCommand => {
+  return args._[0] === "filter";
+};
+
 const logger = getLogger("main");
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -90,20 +111,16 @@ const main = async (argv: string[]): Promise<any> => {
     yargs.showHelp("log");
     return false;
   }
-  switch (args._[0]) {
-    case "batch":
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore yargs typing is shit
-      return batch(args.rawDir, args.batchedDir, {
-        schemaPath: args.schema,
-        version: args.oav3 ? "open-attestation/3.0" : "open-attestation/2.0"
-      });
-    case "filter":
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore yargs typing is shit
-      return obfuscate(args.source, args.destination, args.fields);
-    default:
-      throw new Error(`Unknown command ${args._[0]}. Possible bug.`);
+
+  if (isBatchCommand(args)) {
+    return batch(args.rawDir, args.batchedDir, {
+      schemaPath: args.schema,
+      version: args.oav3 ? "open-attestation/3.0" : "open-attestation/2.0"
+    });
+  } else if (isFilterCommand(args)) {
+    return obfuscate(args.source, args.destination, args.fields);
+  } else {
+    throw new Error(`Unknown command ${args._[0]}. Possible bug.`);
   }
 };
 
