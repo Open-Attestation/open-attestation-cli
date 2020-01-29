@@ -8,6 +8,7 @@ const inputDirectoryName = `${fixtureFolderName}/_tmp_in`;
 const outputDirectoryName = `${fixtureFolderName}/_tmp_out`;
 const validFileName = `${fixtureFolderName}/valid-open-attestation-document.json`;
 const invalidFileName = `${fixtureFolderName}/invalid-open-attestation-document.json`;
+const wrappedFileName = `${fixtureFolderName}/wrapped-open-attestation-document.json`;
 const inputDirectory = path.resolve(__dirname, inputDirectoryName);
 const outputDirectory = path.resolve(__dirname, outputDirectoryName);
 
@@ -119,6 +120,46 @@ describe("batchIssue", () => {
           })
         );
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+      });
+      it("should not issue document when given wrapped document without --unwrap", async () => {
+        fs.copyFileSync(
+          path.resolve(__dirname, wrappedFileName),
+          path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
+        );
+
+        await expect(
+          batchIssue(inputDirectory, outputDirectory, {
+            version: "open-attestation/3.0",
+            unwrap: false
+          })
+        ).rejects.toThrow(
+          expect.objectContaining({
+            message: expect.stringContaining(
+              "src/__tests__/fixture/_tmp_in/wrapped-open-attestation-document.json is not valid against open-attestation schema"
+            )
+          })
+        );
+        expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+      });
+
+      it("should issue document when given wrapped document with --unwrap", async () => {
+        fs.copyFileSync(
+          path.resolve(__dirname, wrappedFileName),
+          path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
+        );
+
+        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+          version: "open-attestation/3.0",
+          unwrap: true
+        });
+
+        const file = JSON.parse(
+          fs.readFileSync(`${outputDirectory}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
+        );
+
+        expect(merkleRoot).toHaveLength(64);
+        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
+        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
       });
     });
     describe("with schema", () => {
