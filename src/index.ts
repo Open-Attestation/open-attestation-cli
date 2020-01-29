@@ -13,6 +13,7 @@ interface BatchCommand {
   batchedDir: string;
   schema: any;
   openAttestationV3: boolean;
+  unwrap: boolean;
 }
 
 const isBatchCommand = (args: any): args is BatchCommand => {
@@ -75,13 +76,17 @@ const parseArguments = (argv: string[]) =>
             alias: "oav3",
             conflicts: "open-attestation-v2"
           })
+          .option("unwrap", {
+            alias: "u",
+            description: "Use if raw directory contains wrapped files"
+          })
     )
     .parse(argv);
 
 const batch = async (
   raw: string,
   batched: string,
-  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0" }
+  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; unwrap: boolean }
 ): Promise<string | void> => {
   mkdirp.sync(batched);
   return batchIssue(raw, batched, options).then(merkleRoot => {
@@ -115,7 +120,8 @@ const main = async (argv: string[]): Promise<any> => {
   if (isBatchCommand(args)) {
     return batch(args.rawDir, args.batchedDir, {
       schemaPath: args.schema,
-      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0"
+      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
+      unwrap: args.unwrap
     });
   } else if (isFilterCommand(args)) {
     return obfuscate(args.source, args.destination, args.fields);
