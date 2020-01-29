@@ -142,7 +142,7 @@ describe("batchIssue", () => {
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
       });
 
-      it("should issue document when given wrapped document with --unwrap", async () => {
+      it("should issue document when the given document is wrapped and --unwrap is specified", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, wrappedFileName),
           path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
@@ -163,7 +163,7 @@ describe("batchIssue", () => {
       });
     });
     describe("with schema", () => {
-      it("should issue documents when folder contain one valid open attestation that is also valid against the local schema provided", async () => {
+      it("should not issue document when the given document is wrapped and --unwrap is not specified", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
