@@ -12,7 +12,7 @@ interface BatchCommand {
   rawDir: string;
   batchedDir: string;
   schema: any;
-  openAttestationv3: boolean;
+  openAttestationV3: boolean;
 }
 
 const isBatchCommand = (args: any): args is BatchCommand => {
@@ -115,7 +115,7 @@ const main = async (argv: string[]): Promise<any> => {
   if (isBatchCommand(args)) {
     return batch(args.rawDir, args.batchedDir, {
       schemaPath: args.schema,
-      version: args.oav3 ? "open-attestation/3.0" : "open-attestation/2.0"
+      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0"
     });
   } else if (isFilterCommand(args)) {
     return obfuscate(args.source, args.destination, args.fields);
