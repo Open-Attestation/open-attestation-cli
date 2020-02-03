@@ -10,6 +10,12 @@ npm install -g @govtechsg/open-attestation
 
 The above command will install the open-attestation CLI to your machine. You will need to have node.js installed to be able to run the command.
 
+You can also opt to use npx:
+
+```bash
+npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
+```
+
 ## Batching Documents
 
 This command process all documents in the input directory and issue all of them in a single
@@ -83,6 +89,7 @@ open-attestation filter wrapped/example.0.json wrapped/example.0.out.json transc
 ```
 open-attestation --version
 ```
+
 
 
 ## Help
