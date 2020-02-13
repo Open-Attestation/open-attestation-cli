@@ -5,7 +5,7 @@ This CLI tool turns .json documents into any open-attestation verifiable documen
 ## Setup
 
 ```bash
-npm install -g @govtechsg/open-attestation
+npm install -g @govtechsg/open-attestation-cli
 ```
 
 The above command will install the open-attestation CLI to your machine. You will need to have node.js installed to be able to run the command.
