@@ -58,7 +58,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@govtechsg/open-attestation": "3.0.5",
+    "@govtechsg/open-attestation": "3.1.2",
     "ajv": "^6.10.2",
     "debug": "^4.1.1",
     "ethereumjs-util": "^6.0.0",
