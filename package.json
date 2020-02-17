@@ -51,6 +51,7 @@
     "eslint-plugin-prettier": "3.1.1",
     "git-cz": "^3.3.0",
     "jest": "24.9.0",
+    "pkg": "^4.4.3",
     "prettier": "^1.19.1",
     "proxyquire": "^2.1.0",
     "rimraf": "^3.0.0",

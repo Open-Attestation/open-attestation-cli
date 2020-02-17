@@ -1,0 +1,32 @@
+{
+  "prepare": [
+    "@semantic-release/npm",
+    {
+      "path": "@semantic-release/exec",
+      "cmd": "pkg ./dist/cjs/src/index.js --out-path dist"
+    }
+  ],
+  "publish": [
+    "@semantic-release/npm",
+    {
+      "path": "@semantic-release/github",
+      "assets": [
+        {
+          "path": "./dist/index-linux",
+          "name": "open-attestation-linux",
+          "label": "open-attestation-linux"
+        },
+        {
+          "path": "./dist/index-macos",
+          "name": "open-attestation-macos",
+          "label": "open-attestation-macos"
+        },
+        {
+          "path": "./dist/index-win.exe",
+          "name": "open-attestation-win.exe",
+          "label": "open-attestation-win.exe"
+        }
+      ]
+    }
+  ]
+}
