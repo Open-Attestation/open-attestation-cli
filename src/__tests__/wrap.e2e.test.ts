@@ -1,4 +1,4 @@
-import { batchIssue } from "../batchIssue";
+import { wrap } from "../wrap";
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
@@ -12,8 +12,8 @@ const wrappedFileName = `${fixtureFolderName}/wrapped-open-attestation-document.
 const inputDirectory = path.resolve(__dirname, inputDirectoryName);
 const outputDirectory = path.resolve(__dirname, outputDirectoryName);
 
-describe("batchIssue", () => {
-  describe("batchIssue", () => {
+describe("wrap", () => {
+  describe("wrap", () => {
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
       fs.mkdirSync(inputDirectory);
@@ -30,7 +30,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
           unwrap: false
         });
@@ -55,7 +55,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document-3.json`)
         );
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
           unwrap: false
         });
@@ -86,7 +86,7 @@ describe("batchIssue", () => {
         );
 
         await expect(
-          batchIssue(inputDirectory, outputDirectory, { version: "open-attestation/3.0", unwrap: false })
+          wrap(inputDirectory, outputDirectory, { version: "open-attestation/3.0", unwrap: false })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -111,7 +111,7 @@ describe("batchIssue", () => {
         );
 
         await expect(
-          batchIssue(inputDirectory, outputDirectory, { version: "open-attestation/3.0", unwrap: false })
+          wrap(inputDirectory, outputDirectory, { version: "open-attestation/3.0", unwrap: false })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -128,7 +128,7 @@ describe("batchIssue", () => {
         );
 
         await expect(
-          batchIssue(inputDirectory, outputDirectory, {
+          wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
             unwrap: false
           })
@@ -148,7 +148,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
         );
 
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
           unwrap: true
         });
@@ -168,7 +168,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: "open-attestation/3.0",
           unwrap: false
@@ -187,7 +187,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
         );
         await expect(
-          batchIssue(inputDirectory, outputDirectory, {
+          wrap(inputDirectory, outputDirectory, {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
             unwrap: false
@@ -206,7 +206,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await batchIssue(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           schemaPath:
             "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
           version: "open-attestation/3.0",
@@ -226,7 +226,7 @@ describe("batchIssue", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
         );
         await expect(
-          batchIssue(inputDirectory, outputDirectory, {
+          wrap(inputDirectory, outputDirectory, {
             schemaPath:
               "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
             version: "open-attestation/3.0",
@@ -243,7 +243,7 @@ describe("batchIssue", () => {
       });
       it("should not issue documents when schema is not valid", async () => {
         await expect(
-          batchIssue(inputDirectory, outputDirectory, {
+          wrap(inputDirectory, outputDirectory, {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
             version: "open-attestation/3.0",
             unwrap: false

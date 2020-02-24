@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
-import { appendProofToCerts, merkleHashmap } from "../batchIssue";
+import { appendProofToCerts, merkleHashmap } from "../wrap";
 import fs from "fs";
 import { utils } from "@govtechsg/open-attestation";
 
