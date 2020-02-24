@@ -1,25 +1,24 @@
 #!/usr/bin/env node
 
 import fs from "fs";
-import mkdirp from "mkdirp";
 import yargs, { Argv } from "yargs";
 import { obfuscateDocument, verifySignature } from "@govtechsg/open-attestation";
-import { batchIssue } from "./batchIssue";
+import { wrap } from "./wrap";
 import { getLogger } from "./logger";
 import { version } from "../package.json";
 import signale from "signale";
 import { transformValidationErrors } from "./errors";
 
-interface BatchCommand {
-  rawDir: string;
-  batchedDir: string;
+interface WrapCommand {
+  unwrappedDir: string;
+  wrappedDir: string;
   schema: any;
   openAttestationV3: boolean;
   unwrap: boolean;
 }
 
-const isBatchCommand = (args: any): args is BatchCommand => {
-  return args._[0] === "batch";
+const isWrapCommand = (args: any): args is WrapCommand => {
+  return args._[0] === "batch" || args._[0] === "wrap";
 };
 
 interface FilterCommand {
@@ -35,12 +34,41 @@ const isFilterCommand = (args: any): args is FilterCommand => {
 const logger = getLogger("main");
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const parseArguments = (argv: string[]) =>
-  yargs
+const parseArguments = (argv: string[]) => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const wrapSubCommand = (sub: Argv) =>
+    sub
+      .positional("unwrapped-dir", {
+        description: "Directory containing the raw unissued and unwrapped documents",
+        normalize: true
+      })
+      .positional("wrapped-dir", {
+        description: "Directory to output the wrapped documents to.",
+        normalize: true
+      })
+      .option("schema", {
+        alias: "s",
+        type: "string",
+        description: "Path or URL to custom schema"
+      })
+      .option("open-attestation-v2", {
+        alias: "oav2",
+        conflicts: "open-attestation-v3"
+      })
+      .option("open-attestation-v3", {
+        alias: "oav3",
+        conflicts: "open-attestation-v2"
+      })
+      .option("unwrap", {
+        alias: "u",
+        description: "Use if raw directory contains wrapped files"
+      });
+
+  return yargs
     .version(version)
     .usage("Open Attestation document issuing, verification and revocation tool.")
     .strict()
-    .epilogue("The common subcommands you might be interested in are:\n" + "- batch\n" + "- filter")
+    .epilogue("The common subcommands you might be interested in are:\n" + "- wrap\n" + "- filter")
     .command("filter <source> <destination> [fields..]", "Obfuscate fields in the document", (sub: Argv) =>
       sub
         .positional("source", {
@@ -53,48 +81,16 @@ const parseArguments = (argv: string[]) =>
         })
     )
     .command(
-      "batch <raw-dir> <batched-dir> [schema]",
-      "Combine a directory of documents into a document batch",
-      (sub: Argv) =>
-        sub
-          .positional("raw-dir", {
-            description: "Directory containing the raw unissued and unwrapped documents",
-            normalize: true
-          })
-          .positional("batched-dir", {
-            description: "Directory to output the batched documents to.",
-            normalize: true
-          })
-          .option("schema", {
-            alias: "s",
-            type: "string",
-            description: "Path or URL to custom schema"
-          })
-          .option("open-attestation-v2", {
-            alias: "oav2",
-            conflicts: "open-attestation-v3"
-          })
-          .option("open-attestation-v3", {
-            alias: "oav3",
-            conflicts: "open-attestation-v2"
-          })
-          .option("unwrap", {
-            alias: "u",
-            description: "Use if raw directory contains wrapped files"
-          })
+      "wrap <unwrapped-dir> <wrapped-dir> [schema]",
+      "Wrap a directory of documents into a document batch",
+      wrapSubCommand
+    )
+    .command(
+      "batch <unwrapped-dir> <wrapped-dir> [schema]",
+      "Wrap a directory of documents into a document batch",
+      wrapSubCommand
     )
     .parse(argv);
-
-const batch = async (
-  raw: string,
-  batched: string,
-  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; unwrap: boolean }
-): Promise<string | void> => {
-  mkdirp.sync(batched);
-  return batchIssue(raw, batched, options).then(merkleRoot => {
-    signale.success(`Batch Document Root: 0x${merkleRoot}`);
-    return `${merkleRoot}`;
-  });
 };
 
 const obfuscate = (input: string, output: string, fields: string[]): void => {
@@ -119,11 +115,18 @@ const main = async (argv: string[]): Promise<any> => {
     return false;
   }
 
-  if (isBatchCommand(args)) {
-    return batch(args.rawDir, args.batchedDir, {
+  if (args._[0] === "batch") {
+    signale.warn("[deprecated] batch command has been deprecated in favor of wrap");
+  }
+
+  if (isWrapCommand(args)) {
+    return wrap(args.unwrappedDir, args.wrappedDir, {
       schemaPath: args.schema,
       version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
       unwrap: args.unwrap
+    }).then(merkleRoot => {
+      signale.success(`Batch Document Root: 0x${merkleRoot}`);
+      return `${merkleRoot}`;
     });
   } else if (isFilterCommand(args)) {
     return obfuscate(args.source, args.destination, args.fields);

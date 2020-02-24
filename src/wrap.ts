@@ -162,7 +162,7 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   return Promise.resolve(undefined);
 };
 
-export const batchIssue = async (
+export const wrap = async (
   inputDir: string,
   outputDir: string,
   options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; unwrap: boolean }

@@ -16,19 +16,19 @@ You can also opt to use npx:
 npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 ```
 
-## Batching Documents
+## Wrapping Documents
 
 This command process all documents in the input directory and issue all of them in a single
-batch. It will then add the signature to the individual documents.
+batch. It will then add the issuance proofs to the individual documents.
 
 ```bash
-open-attestation batch <PathToDocuments> <PathToWrappedDocuments>
+open-attestation wrap <PathToDocuments> <PathToWrappedDocuments>
 ```
 
 Example:
 
 ```bash
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -38,11 +38,11 @@ You can also provide an optional JSON schema document to perform extra check on 
 Example:
 
 ```bash
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --schema ./examples/schema.json
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/ --schema ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ -s ./examples/schema.json
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/ -s ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -52,11 +52,11 @@ The JSON schema parameter also allow for http endpoint returning valid JSON sche
 Example:
 
 ```bash
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -64,8 +64,8 @@ open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ -s htt
 By default the CLI will use open-attestation schema v2 but you can opt in for open-attestation schema v3 using `open-attestation-v3` option:
 
 ```bash
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --open-attestation-v3
-open-attestation batch ./examples/sample-certs/ ./examples/wrapped-certs/ --oav3
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/ --open-attestation-v3
+open-attestation wrap ./examples/sample-certs/ ./examples/wrapped-certs/ --oav3
 ```
 
 ## Document privacy filter
@@ -96,7 +96,7 @@ open-attestation --version
 
 Run the command without additional args to get help
 ```
-open-attestation batch
+open-attestation wrap
 open-attestation filter
 ```
 
