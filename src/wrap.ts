@@ -5,7 +5,6 @@ import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechs
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
-import secureSchema from "ajv/lib/refs/json-schema-secure.json";
 
 class SchemaValidationError extends Error {
   constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
@@ -143,10 +142,6 @@ export const merkleHashmap = (leafHashes: Buffer[]): Record<string, { sibling: s
 
 const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   const checkSchema = (schema: any): Schema => {
-    const isSchemaSecure = new Ajv().compile(secureSchema);
-    if (!isSchemaSecure(schema)) {
-      throw new Error("Untrustable schema, please check https://github.com/epoberezkin/ajv#untrusted-schemas");
-    }
     if (!schema.$id) {
       throw new Error("Invalid schema, you must provide an $id property to your schema");
     }
