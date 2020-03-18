@@ -84,20 +84,37 @@ open-attestation filter wrapped/example.0.json wrapped/example.0.out.json transc
 ✔  success  Obfuscated document saved to: wrapped/example.0.out.json
 ```
 
+## Encrypting document
+
+This allows you to encrypt document in order to share and store them safely.
+
+```bash
+open-attestation encrypt <inputDocumentPath> <outputEncryptedPath>
+```
+
+Example:
+
+```bash
+open-attestation encrypt ./examples/wrapped-certs/example.0.json ./examples/encrypted/example.json
+
+✔  success   Encrypted document saved to: examples/encrypted/example.json
+⚠  warning   Here is the key to decrypt the document: don't lose it: 6e98510b3a9fb2df4eaa278fe57f4f4c2bb0885cdb903f11d541cce39ff679c2
+```
+
 ## Version
 
 ```
 open-attestation --version
 ```
 
-
-
 ## Help
 
 Run the command without additional args to get help
+
 ```
 open-attestation wrap
 open-attestation filter
+open-attestation encrypt
 ```
 
 ## Test
