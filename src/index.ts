@@ -8,6 +8,7 @@ import { getLogger } from "./logger";
 import { version } from "../package.json";
 import signale from "signale";
 import { transformValidationErrors } from "./errors";
+import { encrypt } from "./encrypt";
 
 interface WrapCommand {
   unwrappedDir: string;
@@ -27,8 +28,17 @@ interface FilterCommand {
   fields: string[];
 }
 
+interface EncryptCommand {
+  wrappedFile: string;
+  encryptedFile: string;
+}
+
 const isFilterCommand = (args: any): args is FilterCommand => {
   return args._[0] === "filter";
+};
+
+const isEncryptCommand = (args: any): args is EncryptCommand => {
+  return args._[0] === "encrypt";
 };
 
 const logger = getLogger("main");
@@ -68,7 +78,7 @@ const parseArguments = (argv: string[]) => {
     .version(version)
     .usage("Open Attestation document issuing, verification and revocation tool.")
     .strict()
-    .epilogue("The common subcommands you might be interested in are:\n" + "- wrap\n" + "- filter")
+    .epilogue("The common subcommands you might be interested in are:\n" + "- wrap\n" + "- filter\n" + "- encrypt")
     .command("filter <source> <destination> [fields..]", "Obfuscate fields in the document", (sub: Argv) =>
       sub
         .positional("source", {
@@ -87,8 +97,22 @@ const parseArguments = (argv: string[]) => {
     )
     .command(
       "batch <unwrapped-dir> <wrapped-dir> [schema]",
-      "Wrap a directory of documents into a document batch",
+      "[DEPRECATED] Wrap a directory of documents into a document batch",
       wrapSubCommand
+    )
+    .command(
+      "encrypt <wrapped-file> <encrypted-file>",
+      "Encrypt a document in order to share and store it safely",
+      (sub: Argv) =>
+        sub
+          .positional("wrapped-file", {
+            description: "Source wrapped document filename",
+            normalize: true
+          })
+          .positional("encrypted-file", {
+            description: "Destination to write encrypted document file to",
+            normalize: true
+          })
     )
     .parse(argv);
 };
@@ -130,6 +154,8 @@ const main = async (argv: string[]): Promise<any> => {
     });
   } else if (isFilterCommand(args)) {
     return obfuscate(args.source, args.destination, args.fields);
+  } else if (isEncryptCommand(args)) {
+    return encrypt(args.wrappedFile, args.encryptedFile);
   } else {
     throw new Error(`Unknown command ${args._[0]}. Possible bug.`);
   }
