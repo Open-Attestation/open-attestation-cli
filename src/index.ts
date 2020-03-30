@@ -1,45 +1,13 @@
 #!/usr/bin/env node
 
-import fs from "fs";
 import yargs, { Argv } from "yargs";
-import { obfuscateDocument, verifySignature } from "@govtechsg/open-attestation";
-import { wrap } from "./wrap";
+import { wrap, isWrapCommand } from "./wrap";
 import { getLogger } from "./logger";
 import { version } from "../package.json";
 import signale from "signale";
 import { transformValidationErrors } from "./errors";
-import { encrypt } from "./encrypt";
-
-interface WrapCommand {
-  unwrappedDir: string;
-  wrappedDir: string;
-  schema: any;
-  openAttestationV3: boolean;
-  unwrap: boolean;
-}
-
-const isWrapCommand = (args: any): args is WrapCommand => {
-  return args._[0] === "batch" || args._[0] === "wrap";
-};
-
-interface FilterCommand {
-  source: string;
-  destination: string;
-  fields: string[];
-}
-
-interface EncryptCommand {
-  wrappedFile: string;
-  encryptedFile: string;
-}
-
-const isFilterCommand = (args: any): args is FilterCommand => {
-  return args._[0] === "filter";
-};
-
-const isEncryptCommand = (args: any): args is EncryptCommand => {
-  return args._[0] === "encrypt";
-};
+import { encrypt, isEncryptCommand } from "./encrypt";
+import { filter, isFilterCommand } from "./filter";
 
 const logger = getLogger("main");
 
@@ -117,21 +85,8 @@ const parseArguments = (argv: string[]) => {
     .parse(argv);
 };
 
-const obfuscate = (input: string, output: string, fields: string[]): void => {
-  const documentJson = JSON.parse(fs.readFileSync(input, "utf8"));
-  const obfuscatedDocument = obfuscateDocument(documentJson, fields);
-  const isValid = verifySignature(obfuscatedDocument);
-
-  if (!isValid) {
-    throw new Error("Privacy filtering caused document to fail schema or signature validation");
-  } else {
-    fs.writeFileSync(output, JSON.stringify(obfuscatedDocument, null, 2));
-    signale.success(`Obfuscated document saved to: ${output}`);
-  }
-};
-
 const main = async (argv: string[]): Promise<any> => {
-  const args = parseArguments(argv);
+  const args: { [key: string]: any } = parseArguments(argv);
   logger.debug(`Parsed args: ${JSON.stringify(args)}`);
 
   if (args._.length !== 1) {
@@ -143,21 +98,21 @@ const main = async (argv: string[]): Promise<any> => {
     signale.warn("[deprecated] batch command has been deprecated in favor of wrap");
   }
 
-  if (isWrapCommand(args)) {
-    return wrap(args.unwrappedDir, args.wrappedDir, {
-      schemaPath: args.schema,
-      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
-      unwrap: args.unwrap
-    }).then(merkleRoot => {
+  switch (true) {
+    case isWrapCommand(args):
+      const merkleRoot = await wrap(args.unwrappedDir, args.wrappedDir, {
+        schemaPath: args.schema,
+        version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
+        unwrap: args.unwrap
+      });
       signale.success(`Batch Document Root: 0x${merkleRoot}`);
-      return `${merkleRoot}`;
-    });
-  } else if (isFilterCommand(args)) {
-    return obfuscate(args.source, args.destination, args.fields);
-  } else if (isEncryptCommand(args)) {
-    return encrypt(args.wrappedFile, args.encryptedFile);
-  } else {
-    throw new Error(`Unknown command ${args._[0]}. Possible bug.`);
+      return merkleRoot;
+    case isFilterCommand(args):
+      return filter(args.source, args.destination, args.fields);
+    case isEncryptCommand(args):
+      return encrypt(args.wrappedFile, args.encryptedFile);
+    default:
+      throw new Error(`Unknown command ${args._[0]}. Possible bug.`);
   }
 };
 

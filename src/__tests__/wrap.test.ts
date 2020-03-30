@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
-import { appendProofToCerts, merkleHashmap } from "../wrap";
+import { appendProofToDocuments, merkleHashmap } from "../wrap";
 import fs from "fs";
 import { utils } from "@govtechsg/open-attestation";
 
 jest.mock("fs");
 
 describe("batchIssue", () => {
-  describe("appendProofToCerts", () => {
-    it("determines the proof for each cert using the hashmap and writes the new cert back", async () => {
+  describe("appendProofToDocuments", () => {
+    it("determines the proof for each document using the hashmap and writes the new document back", async () => {
       expect.assertions(4); // make sure there are 4 assertions because some assertions are made in fs.spyOn
       const hashMap = {
         a: { sibling: "b", parent: "d" },
@@ -101,7 +101,7 @@ describe("batchIssue", () => {
         throw new Error(`unhandled ${path} in spy`);
       });
 
-      const root = await appendProofToCerts("DIR", "DIR", hashMap);
+      const root = await appendProofToDocuments("DIR", "DIR", hashMap);
 
       expect(root).toStrictEqual("e");
     });

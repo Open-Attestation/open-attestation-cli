@@ -3,6 +3,15 @@ import fs from "fs";
 import signale from "signale";
 import chalk from "chalk";
 
+interface EncryptCommand {
+  wrappedFile: string;
+  encryptedFile: string;
+}
+
+export const isEncryptCommand = (args: any): args is EncryptCommand => {
+  return args._[0] === "encrypt";
+};
+
 export const encrypt = (input: string, output: string): void => {
   const { key, ...encryptedDocument } = encryptString(fs.readFileSync(input, "utf8"));
   fs.writeFileSync(output, JSON.stringify(encryptedDocument, null, 2));

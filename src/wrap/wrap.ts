@@ -1,10 +1,22 @@
-import { documentsInDirectory, readCert, writeCertToDisk } from "./diskUtils";
+import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "./diskUtils";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
+
+interface WrapCommand {
+  unwrappedDir: string;
+  wrappedDir: string;
+  schema: any;
+  openAttestationV3: boolean;
+  unwrap: boolean;
+}
+
+export const isWrapCommand = (args: any): args is WrapCommand => {
+  return args._[0] === "batch" || args._[0] === "wrap";
+};
 
 class SchemaValidationError extends Error {
   constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
@@ -17,26 +29,26 @@ interface Schema {
 }
 
 export const digestDocument = async (
-  undigestedCertDir: string,
-  digestedCertDir: string,
+  undigestedDocumentDir: string,
+  digestedDocumentDir: string,
   version: "open-attestation/2.0" | "open-attestation/3.0",
   unwrap: boolean,
   schema?: Schema
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
-  const certFileNames = await documentsInDirectory(undigestedCertDir);
+  const documentFileNames = await documentsInDirectory(undigestedDocumentDir);
   let compile: Ajv.ValidateFunction;
   if (schema) {
     compile = new Ajv().compile(schema);
   }
 
-  certFileNames.forEach(file => {
+  documentFileNames.forEach(file => {
     let document;
     if (unwrap) {
-      document = getData(readCert(undigestedCertDir, file));
+      document = getData(readDocumentFile(undigestedDocumentDir, file));
     } else {
       // Read individual document
-      document = readCert(undigestedCertDir, file);
+      document = readDocumentFile(undigestedDocumentDir, file);
     }
 
     // Digest individual document
@@ -44,7 +56,7 @@ export const digestDocument = async (
       const valid = compile(document);
       if (!valid) {
         throw new SchemaValidationError(
-          `Document ${path.resolve(undigestedCertDir, file)} is not valid against the provided schema`,
+          `Document ${path.resolve(undigestedDocumentDir, file)} is not valid against the provided schema`,
           compile.errors ?? [],
           document
         );
@@ -54,11 +66,11 @@ export const digestDocument = async (
       const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
       hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
       // Write digested document to new directory
-      writeCertToDisk(digestedCertDir, file, digest);
+      writeDocumentToDisk(digestedDocumentDir, file, digest);
     } catch (e) {
       if (isSchemaValidationError(e)) {
         throw new SchemaValidationError(
-          `Document ${path.resolve(undigestedCertDir, file)} is not valid against open-attestation schema`,
+          `Document ${path.resolve(undigestedDocumentDir, file)} is not valid against open-attestation schema`,
           e.validationErrors ?? [],
           document
         );
@@ -69,15 +81,15 @@ export const digestDocument = async (
   return hashArray;
 };
 
-export const appendProofToCerts = async (
+export const appendProofToDocuments = async (
   intermediateDir: string,
-  digestedCertDir: string,
+  digestedDocumentDir: string,
   hashMap: Record<string, { sibling: string; parent: string }>
 ): Promise<string> => {
-  const certFileNames = await documentsInDirectory(intermediateDir);
+  const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
-  certFileNames.forEach(file => {
-    const document = readCert(intermediateDir, file);
+  documentFileNames.forEach(file => {
+    const document = readDocumentFile(intermediateDir, file);
 
     const documentHash = document.signature.targetHash;
     const proof = [];
@@ -94,7 +106,7 @@ export const appendProofToCerts = async (
     document.signature.merkleRoot = candidateRoot;
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    writeCertToDisk(digestedCertDir, file, document);
+    writeDocumentToDisk(digestedDocumentDir, file, document);
   });
 
   return merkleRoot;
@@ -187,7 +199,7 @@ export const wrap = async (
   const hashMap = merkleHashmap(individualDocumentHashes);
 
   // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToCerts(intermediateDir, outputDir, hashMap);
+  const merkleRoot = await appendProofToDocuments(intermediateDir, outputDir, hashMap);
 
   // Remove intermediate dir
   removeCallback();
