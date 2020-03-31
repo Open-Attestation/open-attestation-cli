@@ -5,8 +5,6 @@ import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechs
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
-import signale from "signale";
-import { transformValidationErrors } from "./ajvErrorTransformer";
 
 class SchemaValidationError extends Error {
   constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
@@ -195,18 +193,4 @@ export const wrap = async (
   removeCallback();
 
   return merkleRoot;
-};
-
-export const wrapWithDetailedError = async (
-  inputDir: string,
-  outputDir: string,
-  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; unwrap: boolean }
-): Promise<string> => {
-  return wrap(inputDir, outputDir, options).catch(e => {
-    if (e.validationErrors) {
-      const transformedErrors = transformValidationErrors(e.validationErrors);
-      transformedErrors.map(error => signale.error(error));
-    }
-    throw e;
-  });
 };

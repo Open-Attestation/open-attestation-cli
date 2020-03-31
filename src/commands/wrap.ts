@@ -1,5 +1,7 @@
 import { Argv } from "yargs";
-import { wrapWithDetailedError } from "../implementations/wrap";
+import { wrap } from "../implementations/wrap";
+import { transformValidationErrors } from "./ajvErrorTransformer";
+
 import signale from "signale";
 
 interface WrapCommand {
@@ -43,13 +45,22 @@ export const builder = (yargs: Argv): Argv =>
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
-  const merkleRoot = await wrapWithDetailedError(args.unwrappedDir, args.wrappedDir, {
-    schemaPath: args.schema,
-    version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
-    unwrap: args.unwrap
-  });
-  signale.success(`Batch Document Root: 0x${merkleRoot}`);
-  return merkleRoot;
+  try {
+    const merkleRoot = await wrap(args.unwrappedDir, args.wrappedDir, {
+      schemaPath: args.schema,
+      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
+      unwrap: args.unwrap
+    });
+    signale.success(`Batch Document Root: 0x${merkleRoot}`);
+    return merkleRoot;
+  } catch (err) {
+    signale.error(err.message);
+    if (err.validationErrors) {
+      const transformedErrors = transformValidationErrors(err.validationErrors);
+      transformedErrors.map(signale.error);
+    }
+    throw err;
+  }
 };
 
 export default {
