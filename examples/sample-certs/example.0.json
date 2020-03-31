@@ -1,0 +1,24 @@
+{
+  "reference": "ABCXXXXX00",
+  "name": "Certificate of whatever",
+  "template": {
+    "name": "CUSTOM_TEMPLATE",
+    "type": "EMBEDDED_RENDERER",
+    "url": "http://localhost:3000/rederer"
+  },
+  "validFrom": "2018-08-30T00:00:00+08:00",
+  "proof": {
+    "type": "OpenAttestationSignature2018",
+    "method": "TOKEN_REGISTRY",
+    "value": "0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
+  },
+  "issuer": {
+    "id": "https://example.com",
+    "name": "Issuer name",
+    "identityProof": {
+      "type": "DNS-TXT",
+      "location": "some.io"
+    }
+  },
+  "key1": 1337
+}

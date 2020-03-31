@@ -1,5 +1,5 @@
 import { Argv } from "yargs";
-import { wrap } from "../implementations/wrap";
+import { wrapWithDetailedError } from "../implementations/wrap";
 import signale from "signale";
 
 interface WrapCommand {
@@ -43,7 +43,7 @@ export const builder = (yargs: Argv): Argv =>
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
-  const merkleRoot = await wrap(args.unwrappedDir, args.wrappedDir, {
+  const merkleRoot = await wrapWithDetailedError(args.unwrappedDir, args.wrappedDir, {
     schemaPath: args.schema,
     version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
     unwrap: args.unwrap
