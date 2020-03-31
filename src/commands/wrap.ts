@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 import { wrap } from "../implementations/wrap";
-import { transformValidationErrors } from "./ajvErrorTransformer";
+import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 
 import signale from "signale";
 
