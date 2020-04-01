@@ -101,6 +101,38 @@ open-attestation encrypt ./examples/wrapped-certs/example.0.json ./tmp/encrypted
 ⚠  warning   Here is the key to decrypt the document: don't lose it: 9bac5be27bac31d852fc1e48eb9d5249ec6ad7978da23377b5879f7a24994cb2
 ```
 
+## Deploying Token Registry
+
+Deploys a token registry contract on the blockchain
+
+```sh
+open-attestation deploy token-registry <registry-name> <registry-symbol> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended)
+
+```sh
+open-attestation deploy token-registry "My Sample Token" MST --network ropsten
+
+✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
+```
+
+Example - with private key file
+
+```sh
+open-attestation deploy token-registry "My Sample Token" MST --network ropsten --key-file ./examples/sample-key
+
+✔  success   Token registry deployed at 0xEb9a6a669c1BA0885827f932F7b49Ce5aA5E0Bd5
+```
+
+Example - with in-lined private key
+
+```sh
+open-attestation deploy token-registry "My Sample Token" MST --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
+
+✔  success   Token registry deployed at 0x4004eAb92033409CBAeC4364ACa2e3A3B6C6448e
+```
+
 ## Help
 
 Run the command without additional args to get help
