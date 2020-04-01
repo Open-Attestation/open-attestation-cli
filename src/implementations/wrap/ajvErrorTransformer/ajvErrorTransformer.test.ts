@@ -1,4 +1,8 @@
-import { transformAdditionalPropertyErrors, transformAllowedValuesErrors, transformRequiredErrors } from "../errors";
+import {
+  transformAdditionalPropertyErrors,
+  transformAllowedValuesErrors,
+  transformRequiredErrors
+} from "./ajvErrorTransformer";
 import chalk from "chalk";
 
 describe("errors", () => {

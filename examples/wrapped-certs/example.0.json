@@ -1,35 +1,37 @@
 {
   "version": "open-attestation/3.0",
   "data": {
-    "reference": "bb580cf5-87f2-42c8-b0cf-e9d445db336d:string:ABCXXXXX00",
-    "name": "84f3857b-40f7-41e7-8f71-cb8008fab163:string:Certificate of whatever",
+    "reference": "6ccda1c4-122f-40ea-aa59-3c2656035ab8:string:ABCXXXXX00",
+    "name": "70adb61b-4636-4ef1-9120-af2fdd9ef6a3:string:Certificate of whatever",
     "template": {
-      "name": "25d8bf44-0470-41cf-8ada-39d72c7364df:string:CUSTOM_TEMPLATE",
-      "type": "b82ae6ef-1f01-4714-b653-72debeea1839:string:EMBEDDED_RENDERER",
-      "url": "bfea6de8-db78-46f7-884b-ebbd1339e550:string:http://localhost:3000/rederer"
+      "name": "90af302c-fa85-4bd0-98a4-a82d6cb04c80:string:CUSTOM_TEMPLATE",
+      "type": "58b26446-6e90-4492-b568-8de4bcd61795:string:EMBEDDED_RENDERER",
+      "url": "a0715c87-8bc6-4bb4-9f98-a653ae7b818e:string:http://localhost:3000/rederer"
     },
-    "validFrom": "b99a84c7-3871-4d33-996a-ff03a221371b:string:2018-08-30T00:00:00+08:00",
+    "validFrom": "5d5a2a6f-d94a-4613-ac40-fffa2c8ea44c:string:2018-08-30T00:00:00+08:00",
     "proof": {
-      "type": "710ee6cf-5cea-41b9-a71b-106ad73460a9:string:OpenAttestationSignature2018",
-      "method": "07d987ad-97b8-4f9e-b06e-a3691a31ae03:string:TOKEN_REGISTRY",
-      "value": "509cc6a9-3c7d-4214-be79-d2b5fe4a5731:string:0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
+      "type": "91ef4d25-ea2c-4456-97a1-4092f976cd7a:string:OpenAttestationSignature2018",
+      "method": "8a013d28-d6bb-4425-9c96-785dba98e146:string:TOKEN_REGISTRY",
+      "value": "35b71d82-6849-499b-a6ca-3d9366e35d7b:string:0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
     },
     "issuer": {
-      "id": "84cf6e77-ed24-416d-bf1a-bd2a88058211:string:https://example.com",
-      "name": "90ded788-2f16-4b11-bfd4-21c58445730e:string:Issuer name",
+      "id": "81a793ba-7cc1-4f46-b349-e023c3ffa592:string:https://example.com",
+      "name": "9851298f-43e9-4d25-b27c-f93a7e074ebe:string:Issuer name",
       "identityProof": {
-        "type": "283b3e84-b0e5-4dcb-a925-0036fa1f78ea:string:DNS-TXT",
-        "location": "75a891d6-9ba9-4d5e-9877-efe966dcd901:string:some.io"
+        "type": "83d73965-9c60-48d9-842a-990f088da374:string:DNS-TXT",
+        "location": "93dd61f7-6ab3-477e-8e47-301186746b26:string:some.io"
       }
-    }
+    },
+    "key1": "3c298d5f-92ac-4e03-95ed-35cf1c32f7a9:number:1337"
   },
+  "schema": "http://example.com/schemaV1.json",
   "privacy": {
     "obfuscatedData": []
   },
   "signature": {
     "type": "SHA3MerkleProof",
-    "targetHash": "25d71e606ca2b56c1a5345101264626c9c7b89f124f21182b27e46ec208690ae",
+    "targetHash": "785d202a17d9ea41854b00fd49a5bc11c527501f05eeebe279c17c9a6dbf8639",
     "proof": [],
-    "merkleRoot": "25d71e606ca2b56c1a5345101264626c9c7b89f124f21182b27e46ec208690ae"
+    "merkleRoot": "785d202a17d9ea41854b00fd49a5bc11c527501f05eeebe279c17c9a6dbf8639"
   }
 }

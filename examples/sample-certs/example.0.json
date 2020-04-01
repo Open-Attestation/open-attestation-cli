@@ -19,5 +19,6 @@
       "type": "DNS-TXT",
       "location": "some.io"
     }
-  }
+  },
+  "key1": 1337
 }

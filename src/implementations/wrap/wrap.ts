@@ -6,18 +6,6 @@ import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
 
-interface WrapCommand {
-  unwrappedDir: string;
-  wrappedDir: string;
-  schema: any;
-  openAttestationV3: boolean;
-  unwrap: boolean;
-}
-
-export const isWrapCommand = (args: any): args is WrapCommand => {
-  return args._[0] === "batch" || args._[0] === "wrap";
-};
-
 class SchemaValidationError extends Error {
   constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
     super(message);

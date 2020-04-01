@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
-import { encrypt } from "../encrypt";
+import { encrypt } from "../implementations/encrypt";
 import signale from "signale";
 
 const fixtureFolderName = "fixture";

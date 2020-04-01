@@ -9,3 +9,4 @@ yarn.lock
 /dist
 /.idea
 *.iml
+/tmp

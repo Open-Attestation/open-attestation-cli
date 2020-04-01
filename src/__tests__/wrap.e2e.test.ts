@@ -1,4 +1,4 @@
-import { wrap } from "../wrap";
+import { wrap } from "../implementations/wrap";
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
