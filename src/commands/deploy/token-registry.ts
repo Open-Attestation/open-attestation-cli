@@ -1,4 +1,9 @@
 import { Argv } from "yargs";
+import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
+import { success, error } from "signale";
+import { getLogger } from "../../logger";
+
+const { trace } = getLogger("deploy:token-registry");
 
 export const command = "token-registry <registry-name> <registry-symbol> [options]";
 
@@ -31,8 +36,18 @@ export const builder = (yargs: Argv): Argv =>
       description: "Path to file containing private key of owner account"
     });
 
-export const handler = (args: any): void => {
-  return console.log(args);
+export const handler = async (args: any): Promise<string> => {
+  trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  try {
+    const tokenRegistry = await deployTokenRegistry(args);
+    trace(`Tx hash: ${tokenRegistry.deployTransaction.hash}`);
+    trace(`Block Number: ${tokenRegistry.deployTransaction.blockNumber}`);
+    success(`Token registry deployed at ${tokenRegistry.address}`);
+    return tokenRegistry.address;
+  } catch (e) {
+    error(e.message);
+    throw e;
+  }
 };
 
 export default {
@@ -41,7 +56,3 @@ export default {
   builder,
   handler
 };
-
-// Network
-// Private key (key or keyfile or env or wallet file)
-// Contract params
