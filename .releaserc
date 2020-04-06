@@ -3,7 +3,7 @@
     "@semantic-release/npm",
     {
       "path": "@semantic-release/exec",
-      "cmd": "pkg ./dist/cjs/src/index.js --out-path dist"
+      "cmd": "pkg ./dist/cjs/index.js --out-path dist"
     }
   ],
   "publish": [
