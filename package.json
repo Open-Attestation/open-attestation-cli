@@ -3,10 +3,10 @@
   "version": "0.0.0-development",
   "description": "",
   "main": "index.ts",
-  "types": "dist/types/src/index.d.ts",
+  "types": "dist/types/index.d.ts",
   "bin": {
-    "open-attestation": "dist/cjs/src/index.js",
-    "oa": "dist/cjs/src/index.js"
+    "open-attestation": "dist/cjs/index.js",
+    "oa": "dist/cjs/index.js"
   },
   "scripts": {
     "build": "npm run clean && npm run build:cjs && npm run build:type",
@@ -62,9 +62,11 @@
   "dependencies": {
     "@govtechsg/oa-encryption": "^1.3.1",
     "@govtechsg/open-attestation": "3.1.2",
+    "@govtechsg/token-registry": "^1.1.1",
     "ajv": "^6.10.2",
     "debug": "^4.1.1",
     "ethereumjs-util": "^6.0.0",
+    "ethers": "^4.0.46",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.6.0",
     "signale": "^1.4.0",
@@ -126,6 +128,7 @@
       ],
       "@typescript-eslint/no-explicit-any": "off",
       "jest/prefer-expect-assertions": "off",
+      "jest/prefer-strict-equal": "off",
       "array-callback-return": "error"
     }
   },
