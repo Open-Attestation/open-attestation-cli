@@ -119,8 +119,6 @@ open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 
 Example - with private key file
 
-**Note that for this method, the private key may be stored in the machine's bash history*
-
 ```sh
 open-attestation deploy token-registry "My Sample Token" MST --network ropsten --key-file ./examples/sample-key
 
@@ -128,6 +126,8 @@ open-attestation deploy token-registry "My Sample Token" MST --network ropsten -
 ```
 
 Example - with in-lined private key
+
+**Note that for this method, the private key may be stored in the machine's bash history*
 
 ```sh
 open-attestation deploy token-registry "My Sample Token" MST --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
@@ -143,6 +143,7 @@ Run the command without additional args to get help
 open-attestation wrap
 open-attestation filter
 open-attestation encrypt
+open-attestation deploy
 ```
 
 ## Test

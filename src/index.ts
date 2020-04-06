@@ -5,5 +5,4 @@ yargs
   .commandDir("commands", { extensions: ["ts"] })
   .demandCommand()
   .strict()
-  .version(false)
   .help().argv;
