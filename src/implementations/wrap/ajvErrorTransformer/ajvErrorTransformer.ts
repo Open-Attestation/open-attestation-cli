@@ -10,6 +10,9 @@ const isAdditionalPropertiesError = (params: any): params is AdditionalPropertie
 const isAllowedValuesError = (params: any): params is EnumParams => {
   return params.allowedValues;
 };
+const isFormatUriError = (params: any): params is RequiredParams => {
+  return params.format === "uri";
+};
 
 const orange = chalk.hsl(39, 100, 50);
 const highlight = orange.bold;
@@ -57,16 +60,35 @@ export const transformRequiredErrors = (errors: Ajv.ErrorObject[]): string[] => 
     });
 };
 
+export const transformFormatErrors = (errors: Ajv.ErrorObject[]): string[] => {
+  return errors
+    .filter(error => error.keyword === "format")
+    .map(error => {
+      if (isFormatUriError(error.params)) {
+        return `The property ${highlight(`"${error.dataPath.substr(1)}"`)} is not a valid URI`;
+      }
+      throw new Error("Unexpected error while computing required errors");
+    });
+};
+
 export const transformValidationErrors = (errors: Ajv.ErrorObject[]): string[] => {
   const requiredErrors = transformRequiredErrors(errors);
   const additionalPropertyErrors = transformAdditionalPropertyErrors(errors);
   const allowedValuesErrors = transformAllowedValuesErrors(errors);
-  const processedErrors = requiredErrors.length + additionalPropertyErrors.length + allowedValuesErrors.length;
+  const formatErrors = transformFormatErrors(errors);
+  const processedErrors =
+    requiredErrors.length + additionalPropertyErrors.length + allowedValuesErrors.length + formatErrors.length;
   const additionalError =
     errors.length !== processedErrors
       ? `There ${errors.length - processedErrors > 1 ? "are" : "is"} ${orange.bold(
           String(errors.length - processedErrors)
         )} unprocessed error${errors.length - processedErrors > 1 ? "s" : ""}`
       : "";
-  return [...requiredErrors, ...additionalPropertyErrors, ...allowedValuesErrors, additionalError].filter(Boolean);
+  return [
+    ...requiredErrors,
+    ...additionalPropertyErrors,
+    ...allowedValuesErrors,
+    ...formatErrors,
+    additionalError
+  ].filter(Boolean);
 };

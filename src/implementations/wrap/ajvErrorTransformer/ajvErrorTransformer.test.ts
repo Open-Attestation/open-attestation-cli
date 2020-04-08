@@ -1,6 +1,7 @@
 import {
   transformAdditionalPropertyErrors,
   transformAllowedValuesErrors,
+  transformFormatErrors,
   transformRequiredErrors
 } from "./ajvErrorTransformer";
 import chalk from "chalk";
@@ -148,6 +149,23 @@ describe("errors", () => {
       ).toStrictEqual([
         `The provided value at path "template.type" is not one of the allowed values defined by the schema: EMBEDDED_RENDERER`
       ]);
+    });
+  });
+  describe("transformFormatErrors", () => {
+    it("should return error when property URI format is invalid", () => {
+      expect(
+        transformFormatErrors([
+          {
+            keyword: "format",
+            dataPath: ".id",
+            schemaPath: "#/properties/id/format",
+            params: {
+              format: "uri"
+            },
+            message: 'should match format "uri"'
+          }
+        ])
+      ).toStrictEqual([`The property "id" is not a valid URI`]);
     });
   });
 });
