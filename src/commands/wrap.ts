@@ -5,26 +5,28 @@ import { transformValidationErrors } from "../implementations/wrap/ajvErrorTrans
 import signale from "signale";
 
 interface WrapCommand {
-  unwrappedDir: string;
-  wrappedDir: string;
+  rawDocumentsDir: string;
+  wrappedDocumentsDir: string;
   schema: any;
   openAttestationV3: boolean;
   unwrap: boolean;
 }
 
-export const command = "wrap <unwrapped-dir> <wrapped-dir> [schema]";
+export const command = "wrap <raw-documents-dir> <wrapped-documents-dir> [schema]";
 
 export const describe = "Wrap a directory of documents into a document batch";
 
 export const builder = (yargs: Argv): Argv =>
   yargs
-    .positional("unwrapped-dir", {
-      description: "Directory containing the raw unissued and unwrapped documents",
-      normalize: true
+    .positional("raw-documents-dir", {
+      description: "Directory containing the unissued raw documents",
+      normalize: true,
+      type: "string"
     })
-    .positional("wrapped-dir", {
+    .positional("wrapped-documents-dir", {
       description: "Directory to output the wrapped documents to.",
-      normalize: true
+      normalize: true,
+      type: "string"
     })
     .option("schema", {
       alias: "s",
@@ -41,12 +43,14 @@ export const builder = (yargs: Argv): Argv =>
     })
     .option("unwrap", {
       alias: "u",
-      description: "Use if raw directory contains wrapped files"
+      description: "Use if raw directory contains wrapped files",
+      type: "boolean",
+      default: false
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
   try {
-    const merkleRoot = await wrap(args.unwrappedDir, args.wrappedDir, {
+    const merkleRoot = await wrap(args.rawDocumentsDir, args.wrappedDocumentsDir, {
       schemaPath: args.schema,
       version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
       unwrap: args.unwrap
@@ -56,10 +60,11 @@ export const handler = async (args: WrapCommand): Promise<string> => {
   } catch (err) {
     signale.error(err.message);
     if (err.validationErrors) {
-      const transformedErrors = transformValidationErrors(err.validationErrors);
-      transformedErrors.map(signale.error);
+      for (const error of transformValidationErrors(err.validationErrors)) {
+        signale.error(error);
+      }
     }
-    throw err;
+    process.exit(1);
   }
 };
 
