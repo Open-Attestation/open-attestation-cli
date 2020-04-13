@@ -4,15 +4,29 @@ import util from "util";
 
 const readdir = util.promisify(fs.readdir);
 
+export const isDir = (path: fs.PathLike): boolean => {
+  try {
+    const stat = fs.lstatSync(path);
+    return stat.isDirectory();
+  } catch (e) {
+    return false;
+  }
+};
+
 const validExtensions = [/(.*)(\.)(opencert)$/, /(.*)(\.)(json)$/];
 
-export const readDocumentFile = (directory: string, filename: string): any =>
-  JSON.parse(fs.readFileSync(path.join(directory, filename), "utf8"));
+export const readDocumentFile = (filename: string): any => {
+  return JSON.parse(fs.readFileSync(filename, "utf8"));
+};
 
 const isValidExtension = (filename: string): boolean => validExtensions.some(mask => mask.test(filename.toLowerCase()));
 
-export const documentsInDirectory = async (dir: fs.PathLike): Promise<string[]> => {
-  const items = await readdir(dir);
+// this function return the list of path to the documents to process
+// only documents with valid extension are returned (opencerts, json)
+export const documentsInDirectory = async (documentPath: string): Promise<string[]> => {
+  const items = isDir(documentPath)
+    ? (await readdir(documentPath)).map(filename => path.join(documentPath, filename))
+    : [documentPath];
   return items.filter(isValidExtension);
 };
 
