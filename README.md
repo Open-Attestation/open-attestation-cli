@@ -115,34 +115,75 @@ open-attestation encrypt ./examples/wrapped-documents/example.0.json ./tmp/encry
 
 Deploys a token registry contract on the blockchain
 
-```sh
+```bash
 open-attestation deploy token-registry <registry-name> <registry-symbol> [options]
 ```
 
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended)
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
 
-```sh
+```bash
 open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
-Example - with private key file
+## Deploying Document Store
 
-```sh
-open-attestation deploy token-registry "My Sample Token" MST --network ropsten --key-file ./examples/sample-key
+Deploys a document store contract on the blockchain
 
-✔  success   Token registry deployed at 0xEb9a6a669c1BA0885827f932F7b49Ce5aA5E0Bd5
+```bash
+open-attestation deploy document-store <store-name> [options]
 ```
 
-Example - with in-lined private key
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
 
-**Note that for this method, the private key may be stored in the machine's bash history*
+```bash
+open-attestation deploy document-store "My Name" --network ropsten
 
-```sh
-open-attestation deploy token-registry "My Sample Token" MST --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
+✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
+```
 
-✔  success   Token registry deployed at 0x4004eAb92033409CBAeC4364ACa2e3A3B6C6448e
+## Document Store
+
+### Issue
+
+Issue a hash to a document store deployed on the blockchain
+
+```bash
+open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+
+```bash
+open-attestation document-store issue --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+
+✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
+```
+
+## Providing the private key
+
+When interacting with blockchain you will likely need to provide your private key. All functions - when the private key is required - will provide 3 ways for you to pass it in:
+
+1. Using `OA_PRIVATE_KEY` environment variable holding the private key(recommended).
+1. Using `--key-file` option where you provide a path to a file containing the private key.
+1. Using `--key` option where you provide the private key directly to the command (**Note that for this method, the private key may be stored in the machine's bash history**).
+
+Example:
+
+```bash
+# Using environment variable
+export OA_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
+open-attestation deploy document-store "My Name" --network ropsten
+unset OA_PRIVATE_KEY
+
+# Using private key stored in file
+echo -n 0000000000000000000000000000000000000000000000000000000000000002 >> ./examples/sample-key
+open-attestation deploy document-store "My Name" --network ropsten --key-file ./examples/sample-key
+rm ./examples/sample-key
+
+# Providing the key to the command
+open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
 ## Deploying Document Store
@@ -182,13 +223,14 @@ open-attestation deploy document-store "My Name" --network ropsten --key 0000000
 
 ## Help
 
-Run the command without additional args to get help
+Run the command with `--help` to get additional information
 
 ```
-open-attestation wrap
-open-attestation filter
-open-attestation encrypt
 open-attestation deploy
+open-attestation document-store
+open-attestation encrypt
+open-attestation filter
+open-attestation wrap
 ```
 
 ## Test
