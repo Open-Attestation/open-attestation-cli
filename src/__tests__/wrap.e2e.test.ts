@@ -41,7 +41,8 @@ describe("wrap", () => {
         );
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: "directory"
         });
 
         const file = JSON.parse(
@@ -66,7 +67,8 @@ describe("wrap", () => {
         );
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: "directory"
         });
         const file1 = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document-1.json`, { encoding: "utf8" })
@@ -97,7 +99,8 @@ describe("wrap", () => {
         await expect(
           wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -125,7 +128,8 @@ describe("wrap", () => {
         await expect(
           wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -145,7 +149,8 @@ describe("wrap", () => {
         await expect(
           wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -165,7 +170,8 @@ describe("wrap", () => {
 
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
-          unwrap: true
+          unwrap: true,
+          outputPathType: "directory"
         });
 
         const file = JSON.parse(
@@ -186,7 +192,8 @@ describe("wrap", () => {
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: "directory"
         });
 
         const file = JSON.parse(
@@ -205,7 +212,8 @@ describe("wrap", () => {
           wrap(inputDirectory, outputDirectory, {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -225,7 +233,8 @@ describe("wrap", () => {
           schemaPath:
             "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: "directory"
         });
 
         const file = JSON.parse(
@@ -245,7 +254,8 @@ describe("wrap", () => {
             schemaPath:
               "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -261,12 +271,16 @@ describe("wrap", () => {
           wrap(inputDirectory, outputDirectory, {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
       });
     });
+
+    rimraf.sync(inputDirectory);
+    rimraf.sync(outputDirectory);
   });
 
   describe("wrap with file input", () => {
@@ -293,7 +307,8 @@ describe("wrap", () => {
           outputDirectoryTwo,
           {
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           }
         );
 
@@ -316,7 +331,8 @@ describe("wrap", () => {
             outputDirectoryTwo,
             {
               version: "open-attestation/3.0",
-              unwrap: false
+              unwrap: false,
+              outputPathType: "directory"
             }
           )
         ).rejects.toThrow(
@@ -340,7 +356,8 @@ describe("wrap", () => {
             outputDirectoryTwo,
             {
               version: "open-attestation/3.0",
-              unwrap: false
+              unwrap: false,
+              outputPathType: "directory"
             }
           )
         ).rejects.toThrow(
@@ -364,7 +381,8 @@ describe("wrap", () => {
           outputDirectoryTwo,
           {
             version: "open-attestation/3.0",
-            unwrap: true
+            unwrap: true,
+            outputPathType: "directory"
           }
         );
 
@@ -389,7 +407,8 @@ describe("wrap", () => {
           {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           }
         );
 
@@ -412,7 +431,8 @@ describe("wrap", () => {
             {
               schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
               version: "open-attestation/3.0",
-              unwrap: false
+              unwrap: false,
+              outputPathType: "directory"
             }
           )
         ).rejects.toThrow(
@@ -436,7 +456,8 @@ describe("wrap", () => {
             schemaPath:
               "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: "directory"
           }
         );
 
@@ -460,7 +481,8 @@ describe("wrap", () => {
               schemaPath:
                 "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
               version: "open-attestation/3.0",
-              unwrap: false
+              unwrap: false,
+              outputPathType: "directory"
             }
           )
         ).rejects.toThrow(
@@ -484,12 +506,16 @@ describe("wrap", () => {
             {
               schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
               version: "open-attestation/3.0",
-              unwrap: false
+              unwrap: false,
+              outputPathType: "directory"
             }
           )
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
     });
+
+    rimraf.sync(inputDirectoryTwo);
+    rimraf.sync(outputDirectoryTwo);
   });
 });
