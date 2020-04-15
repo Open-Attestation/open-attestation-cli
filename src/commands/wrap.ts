@@ -18,7 +18,7 @@ export const describe = "Wrap a directory of documents into a document batch";
 
 export const builder = (yargs: Argv): Argv =>
   yargs
-    .positional("ents-path", {
+    .positional("raw-documents-path", {
       description: "Directory containing the unissued raw documents or a single raw document file",
       normalize: true,
       type: "string"
