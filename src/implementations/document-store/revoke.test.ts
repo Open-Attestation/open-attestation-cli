@@ -1,0 +1,93 @@
+import { revokeToDocumentStore } from "./revoke";
+import { join } from "path";
+import { Wallet } from "ethers";
+import { DocumentStoreFactory } from "@govtechsg/document-store";
+import { DocumentStoreRevokeCommand } from "../../commands/document-store/document-store-command.type";
+
+jest.mock("@govtechsg/document-store");
+
+const deployParams: DocumentStoreRevokeCommand = {
+  hash: "0xabcd",
+  address: "0x1234",
+  network: "ropsten",
+  key: "0000000000000000000000000000000000000000000000000000000000000001"
+};
+
+// TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
+// ideally must setup ganache, and run the function over it
+describe("document-store", () => {
+  describe("revokeDocumentStore", () => {
+    const mockedDocumentStoreFactory: jest.Mock<DocumentStoreFactory> = DocumentStoreFactory as any;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore mock static method
+    const mockedConnect: jest.Mock = mockedDocumentStoreFactory.connect;
+    const mockedRevoke = jest.fn();
+
+    // eslint-disable-next-line jest/no-hooks
+    beforeEach(() => {
+      delete process.env.OA_PRIVATE_KEY;
+      mockedDocumentStoreFactory.mockReset();
+      mockedConnect.mockReset();
+      mockedConnect.mockReturnValue({
+        revoke: mockedRevoke
+      });
+      mockedRevoke.mockReturnValue({
+        hash: "hash",
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" })
+      });
+    });
+
+    it("should take in the key from environment variable", async () => {
+      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
+
+      await revokeToDocumentStore({
+        hash: "0xabcd",
+        address: "0x1234",
+        network: "ropsten"
+      });
+
+      const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
+      expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
+    });
+
+    it("should take in the key from key file", async () => {
+      await revokeToDocumentStore({
+        hash: "0xabcd",
+        address: "0x1234",
+        network: "ropsten",
+        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key")
+      });
+
+      const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
+      expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
+    });
+
+    it("should pass in the correct params and return the deployed instance", async () => {
+      const instance = await revokeToDocumentStore(deployParams);
+
+      const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
+
+      expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
+      expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockedRevoke.mock.calls[0][0]).toEqual(deployParams.hash);
+      expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
+    });
+
+    it("should allow errors to bubble up", async () => {
+      mockedConnect.mockImplementation(() => {
+        throw new Error("An Error");
+      });
+      await expect(revokeToDocumentStore(deployParams)).rejects.toThrow("An Error");
+    });
+
+    it("should throw when keys are not found anywhere", async () => {
+      await expect(
+        revokeToDocumentStore({
+          hash: "0xabcd",
+          address: "0x1234",
+          network: "ropsten"
+        })
+      ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
+    });
+  });
+});

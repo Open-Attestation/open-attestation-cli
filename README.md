@@ -161,6 +161,22 @@ open-attestation document-store issue --network ropsten --address 0x19f89607b522
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
 
+### Revoke
+
+Revoke a hash to a document store deployed on the blockchain
+
+```bash
+open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+
+```bash
+open-attestation document-store revoke --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+
+✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
+```
+
 ## Providing the private key
 
 When interacting with blockchain you will likely need to provide your private key. All functions - when the private key is required - will provide 3 ways for you to pass it in:
