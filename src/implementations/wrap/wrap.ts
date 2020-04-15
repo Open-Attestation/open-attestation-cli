@@ -17,14 +17,14 @@ interface Schema {
 }
 
 export const digestDocument = async (
-  undigestedDocumentDir: string,
+  undigestedDocumentPath: string,
   digestedDocumentDir: string,
   version: "open-attestation/2.0" | "open-attestation/3.0",
   unwrap: boolean,
   schema?: Schema
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
-  const documentFileNames = await documentsInDirectory(undigestedDocumentDir);
+  const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
   let compile: Ajv.ValidateFunction;
   if (schema) {
     compile = new Ajv().compile(schema);
@@ -33,10 +33,9 @@ export const digestDocument = async (
   documentFileNames.forEach(file => {
     let document;
     if (unwrap) {
-      document = getData(readDocumentFile(undigestedDocumentDir, file));
+      document = getData(readDocumentFile(file));
     } else {
-      // Read individual document
-      document = readDocumentFile(undigestedDocumentDir, file);
+      document = readDocumentFile(file);
     }
 
     // Digest individual document
@@ -44,7 +43,7 @@ export const digestDocument = async (
       const valid = compile(document);
       if (!valid) {
         throw new SchemaValidationError(
-          `Document ${path.resolve(undigestedDocumentDir, file)} is not valid against the provided schema`,
+          `Document ${path.resolve(file)} is not valid against the provided schema`,
           compile.errors ?? [],
           document
         );
@@ -53,12 +52,13 @@ export const digestDocument = async (
     try {
       const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
       hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
+      const filename = path.parse(file).base;
       // Write digested document to new directory
-      writeDocumentToDisk(digestedDocumentDir, file, digest);
+      writeDocumentToDisk(digestedDocumentDir, filename, digest);
     } catch (e) {
       if (isSchemaValidationError(e)) {
         throw new SchemaValidationError(
-          `Document ${path.resolve(undigestedDocumentDir, file)} is not valid against open-attestation schema`,
+          `Document ${path.resolve(file)} is not valid against open-attestation schema`,
           e.validationErrors ?? [],
           document
         );
@@ -77,7 +77,7 @@ export const appendProofToDocuments = async (
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
   documentFileNames.forEach(file => {
-    const document = readDocumentFile(intermediateDir, file);
+    const document = readDocumentFile(file);
 
     const documentHash = document.signature.targetHash;
     const proof = [];
@@ -94,7 +94,8 @@ export const appendProofToDocuments = async (
     document.signature.merkleRoot = candidateRoot;
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    writeDocumentToDisk(digestedDocumentDir, file, document);
+    const filename = path.parse(file).base;
+    writeDocumentToDisk(digestedDocumentDir, filename, document);
   });
 
   return merkleRoot;
@@ -158,7 +159,7 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
 };
 
 export const wrap = async (
-  inputDir: string,
+  inputPath: string,
   outputDir: string,
   options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; unwrap: boolean }
 ): Promise<string> => {
@@ -173,7 +174,7 @@ export const wrap = async (
   // Phase 1: For each document, read content, digest and write to file
   const schema = await loadSchema(options.schemaPath);
   const individualDocumentHashes = await digestDocument(
-    inputDir,
+    inputPath,
     intermediateDir,
     options.version,
     options.unwrap,
@@ -181,7 +182,7 @@ export const wrap = async (
   );
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
-    throw new Error(`No documents found in ${inputDir}`);
+    throw new Error(`No documents found in ${inputPath}`);
 
   // Phase 2: Efficient merkling to build hashmap
   const hashMap = merkleHashmap(individualDocumentHashes);

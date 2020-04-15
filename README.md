@@ -22,7 +22,7 @@ This command process all documents in the input directory and issue all of them 
 batch. It will then add the issuance proofs to the individual documents.
 
 ```bash
-open-attestation wrap <PathToDocuments> <PathToWrappedDocuments>
+open-attestation wrap <PathToDocumentsOrFile> <PathToWrappedDocuments>
 ```
 
 Example:
@@ -31,6 +31,16 @@ Example:
 open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ --oav3
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
+```
+
+You can also set a single document as input
+
+Example:
+
+```bash
+open-attestation wrap ./examples/raw-documents/example.0.json ./tmp/wrapped-documents/ --schema ./examples/schema.json --oav3
+
+✔  success   Batch Document Root: 0x5d318c8083aac18f8075ca2a2eac74b06f2cc37d6ccad680c7c80c9bb36f7be1
 ```
 
 You can also provide an optional JSON schema document to perform extra check on the documents

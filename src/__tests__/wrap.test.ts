@@ -15,6 +15,8 @@ describe("batchIssue", () => {
         c: { sibling: "d", parent: "e" },
         d: { sibling: "c", parent: "e" }
       };
+      // @ts-ignore
+      jest.spyOn(fs, "lstatSync").mockReturnValue({ isDirectory: () => true });
       jest.spyOn(fs, "readdir").mockImplementation((options, callback) => {
         // @ts-ignore
         return callback(null, ["file_1.json", "file_2.json", "file_3.json"]);
