@@ -177,6 +177,17 @@ open-attestation document-store revoke --network ropsten --address 0x19f89607b52
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
 
+### Verify
+
+Verify if a document is valid.
+
+```bash
+open-attestation document-store verify --document ./examples/wrapped-documents/example.0.json --network ropsten
+
+…  awaiting  Verifying examples/wrapped-documents/example.0.json
+✔  success   The document is valid
+```
+
 ## Providing the private key
 
 When interacting with blockchain you will likely need to provide your private key. All functions - when the private key is required - will provide 3 ways for you to pass it in:
@@ -228,14 +239,13 @@ open-attestation deploy document-store "My Name" --network ropsten --key-file ./
 
 Example - with in-lined private key
 
-**Note that for this method, the private key may be stored in the machine's bash history*
+\*_Note that for this method, the private key may be stored in the machine's bash history_
 
 ```sh
 open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 
 ✔  success   Document store deployed at 0x4004eAb92033409CBAeC4364ACa2e3A3B6C6448e
 ```
-
 
 ## Help
 
@@ -246,6 +256,7 @@ open-attestation deploy
 open-attestation document-store
 open-attestation encrypt
 open-attestation filter
+open-attestation verify
 open-attestation wrap
 ```
 
