@@ -13,6 +13,7 @@ const outputDirectoryName = `${fixtureFolderName}/_tmp_out`;
 const inputDirectory = path.resolve(__dirname, inputDirectoryName);
 const outputDirectory = path.resolve(__dirname, outputDirectoryName);
 
+// separate set of temp folders use for second test to prevent race condition between rimraf
 const inputDirectoryNameTwo = `${fixtureFolderName}/_tmp_in_two`;
 const outputDirectoryNameTwo = `${fixtureFolderName}/_tmp_out_two`;
 const inputDirectoryTwo = path.resolve(__dirname, inputDirectoryNameTwo);
@@ -266,9 +267,6 @@ describe("wrap", () => {
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
       });
     });
-
-    rimraf.sync(inputDirectory);
-    rimraf.sync(outputDirectory);
   });
 
   describe("wrap with file input", () => {
@@ -493,8 +491,5 @@ describe("wrap", () => {
         expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
     });
-
-    rimraf.sync(inputDirectoryTwo);
-    rimraf.sync(outputDirectoryTwo);
   });
 });
