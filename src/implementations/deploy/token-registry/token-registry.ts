@@ -1,7 +1,7 @@
-import { readFileSync } from "fs";
 import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { TradeTrustERC721 } from "@govtechsg/token-registry/types/TradeTrustERC721";
 import { getDefaultProvider, Wallet } from "ethers";
+import { getPrivateKey } from "../../private-key";
 
 interface DeployTokenRegistryCmd {
   registryName: string;
@@ -11,10 +11,6 @@ interface DeployTokenRegistryCmd {
   keyFile?: string;
 }
 
-export const getKeyFromFile = (file?: string): undefined | string => {
-  return file ? readFileSync(file).toString() : undefined;
-};
-
 export const deployTokenRegistry = async ({
   registryName,
   registrySymbol,
@@ -22,9 +18,7 @@ export const deployTokenRegistry = async ({
   key,
   keyFile
 }: DeployTokenRegistryCmd): Promise<TradeTrustERC721> => {
-  const privateKey = key || getKeyFromFile(keyFile) || process.env["OA_PRIVATE_KEY"];
-  if (!privateKey)
-    throw new Error("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
+  const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   const signer = new Wallet(privateKey, provider);
   const factory = new TradeTrustERC721Factory(signer);
