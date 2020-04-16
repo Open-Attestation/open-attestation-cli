@@ -68,12 +68,12 @@ export const appendProofToDocuments = async (
   intermediateDir: string,
   digestedDocumentPath: string,
   hashMap: Record<string, { sibling: string; parent: string }>,
-  outputPathType: "file" | "directory" | null
+  outputPathType: "file" | "directory" | "stdOut"
 ): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
 
-  if (outputPathType == null) {
+  if (outputPathType == "stdOut") {
     documentFileNames.forEach(file => {
       const document = readDocumentFile(file);
 
@@ -91,7 +91,7 @@ export const appendProofToDocuments = async (
       document.signature.proof = proof;
       document.signature.merkleRoot = candidateRoot;
       if (!merkleRoot) merkleRoot = candidateRoot;
-      console.log(document); //std out
+      console.log(document); // print to console, no file created
     });
   } else if (outputPathType == "file") {
     const digestedDocumentDir = path.parse(digestedDocumentPath).dir;
@@ -204,7 +204,7 @@ export const wrap = async (
     schemaPath?: string;
     version: "open-attestation/2.0" | "open-attestation/3.0";
     unwrap: boolean;
-    outputPathType: "file" | "directory" | null;
+    outputPathType: "file" | "directory" | "stdOut";
   }
 ): Promise<string> => {
   // Create output dir
