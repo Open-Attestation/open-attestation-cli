@@ -4,3 +4,11 @@ export interface DeployDocumentStoreCommand {
   key?: string;
   keyFile?: string;
 }
+
+export interface DeployTokenRegistryCommand {
+  registryName: string;
+  registrySymbol: string;
+  network: string;
+  key?: string;
+  keyFile?: string;
+}

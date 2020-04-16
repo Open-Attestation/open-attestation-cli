@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
-import { success, error } from "signale";
+import { success, error, info } from "signale";
 import { getLogger } from "../../logger";
 
 const { trace } = getLogger("deploy:token-registry");
@@ -36,17 +36,20 @@ export const builder = (yargs: Argv): Argv =>
       description: "Path to file containing private key of owner account"
     });
 
-export const handler = async (args: any): Promise<string> => {
+export const handler = async (args: any): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
+    info(`Deploying token registry ${args.registryName}`);
     const tokenRegistry = await deployTokenRegistry(args);
-    trace(`Tx hash: ${tokenRegistry.deployTransaction.hash}`);
-    trace(`Block Number: ${tokenRegistry.deployTransaction.blockNumber}`);
-    success(`Token registry deployed at ${tokenRegistry.address}`);
-    return tokenRegistry.address;
+    success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
+    info(
+      `Find more details at https://${args.network === "ropsten" ? "ropsten." : ""}etherscan.io/address/${
+        tokenRegistry.contractAddress
+      }`
+    );
+    return tokenRegistry.contractAddress;
   } catch (e) {
     error(e.message);
-    throw e;
   }
 };
 

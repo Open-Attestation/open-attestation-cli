@@ -2,10 +2,11 @@ import { deployTokenRegistry } from "./token-registry";
 import { join } from "path";
 import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
+import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 
 jest.mock("@govtechsg/token-registry");
 
-const deployParams = {
+const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
   registrySymbol: "Tst",
   network: "ropsten",
@@ -22,7 +23,9 @@ describe("token-registry", () => {
     beforeEach(() => {
       mockedTokenFactory.mockReset();
       mockedDeploy.mockReset();
-      mockedDeploy.mockResolvedValue("DEPLOYED_INSTANCE");
+      mockedDeploy.mockResolvedValue({
+        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) }
+      });
     });
 
     it("should take in the key from environment variable", async () => {
@@ -57,7 +60,7 @@ describe("token-registry", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedDeploy.mock.calls[0]).toEqual([deployParams.registryName, deployParams.registrySymbol]);
-      expect(instance).toBe("DEPLOYED_INSTANCE");
+      expect(instance.contractAddress).toBe("contractAddress");
     });
 
     it("should allow errors to bubble up", async () => {
