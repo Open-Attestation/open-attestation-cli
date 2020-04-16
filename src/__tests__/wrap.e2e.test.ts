@@ -4,18 +4,27 @@ import path from "path";
 import rimraf from "rimraf";
 
 const fixtureFolderName = "fixture";
-const inputDirectoryName = `${fixtureFolderName}/_tmp_in`;
-const outputDirectoryName = `${fixtureFolderName}/_tmp_out`;
 const validFileName = `${fixtureFolderName}/valid-open-attestation-document.json`;
 const invalidFileName = `${fixtureFolderName}/invalid-open-attestation-document.json`;
 const wrappedFileName = `${fixtureFolderName}/wrapped-open-attestation-document.json`;
+
+const inputDirectoryName = `${fixtureFolderName}/_tmp_in`;
+const outputDirectoryName = `${fixtureFolderName}/_tmp_out`;
 const inputDirectory = path.resolve(__dirname, inputDirectoryName);
 const outputDirectory = path.resolve(__dirname, outputDirectoryName);
+
+// separate set of temp folders use for second test to prevent race condition between rimraf
+const inputDirectoryNameTwo = `${fixtureFolderName}/_tmp_in_two`;
+const outputDirectoryNameTwo = `${fixtureFolderName}/_tmp_out_two`;
+const inputDirectoryTwo = path.resolve(__dirname, inputDirectoryNameTwo);
+const outputDirectoryTwo = path.resolve(__dirname, outputDirectoryNameTwo);
 
 describe("wrap", () => {
   describe("wrap with directory input", () => {
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
+      rimraf.sync(inputDirectory);
+      rimraf.sync(outputDirectory);
       fs.mkdirSync(inputDirectory);
       fs.mkdirSync(outputDirectory);
     });
@@ -86,7 +95,10 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(inputDirectory, outputDirectory, { version: "open-attestation/3.0", unwrap: false })
+          wrap(inputDirectory, outputDirectory, {
+            version: "open-attestation/3.0",
+            unwrap: false
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -111,7 +123,10 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(inputDirectory, outputDirectory, { version: "open-attestation/3.0", unwrap: false })
+          wrap(inputDirectory, outputDirectory, {
+            version: "open-attestation/3.0",
+            unwrap: false
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -257,23 +272,25 @@ describe("wrap", () => {
   describe("wrap with file input", () => {
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
-      fs.mkdirSync(inputDirectory);
-      fs.mkdirSync(outputDirectory);
+      rimraf.sync(inputDirectoryTwo);
+      rimraf.sync(outputDirectoryTwo);
+      fs.mkdirSync(inputDirectoryTwo);
+      fs.mkdirSync(outputDirectoryTwo);
     });
     // eslint-disable-next-line jest/no-hooks
     afterEach(() => {
-      rimraf.sync(inputDirectory);
-      rimraf.sync(outputDirectory);
+      rimraf.sync(inputDirectoryTwo);
+      rimraf.sync(outputDirectoryTwo);
     });
     describe("without schema", () => {
       it("should issue document when given valid open attestation document", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, validFileName),
-          path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
         const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`),
-          outputDirectory,
+          path.resolve(__dirname, `${inputDirectoryTwo}/valid-open-attestation-document.json`),
+          outputDirectoryTwo,
           {
             version: "open-attestation/3.0",
             unwrap: false
@@ -281,7 +298,7 @@ describe("wrap", () => {
         );
 
         const file = JSON.parse(
-          fs.readFileSync(`${outputDirectory}/valid-open-attestation-document.json`, { encoding: "utf8" })
+          fs.readFileSync(`${outputDirectoryTwo}/valid-open-attestation-document.json`, { encoding: "utf8" })
         );
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
@@ -290,13 +307,13 @@ describe("wrap", () => {
       it("should not issue document when given invalid open attestation document", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, invalidFileName),
-          path.resolve(__dirname, `${inputDirectoryName}/invalid-open-attestation-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/invalid-open-attestation-document.json`)
         );
 
         await expect(
           wrap(
-            path.resolve(__dirname, `${inputDirectoryName}/invalid-open-attestation-document.json`),
-            outputDirectory,
+            path.resolve(__dirname, `${inputDirectoryTwo}/invalid-open-attestation-document.json`),
+            outputDirectoryTwo,
             {
               version: "open-attestation/3.0",
               unwrap: false
@@ -305,22 +322,22 @@ describe("wrap", () => {
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
-              "src/__tests__/fixture/_tmp_in/invalid-open-attestation-document.json is not valid against open-attestation schema"
+              "src/__tests__/fixture/_tmp_in_two/invalid-open-attestation-document.json is not valid against open-attestation schema"
             )
           })
         );
-        expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+        expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
       it("should not issue document when given wrapped document without --unwrap", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, wrappedFileName),
-          path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
         );
 
         await expect(
           wrap(
-            path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`),
-            outputDirectory,
+            path.resolve(__dirname, `${inputDirectoryTwo}/wrapped-open-attestation-document.json`),
+            outputDirectoryTwo,
             {
               version: "open-attestation/3.0",
               unwrap: false
@@ -329,22 +346,22 @@ describe("wrap", () => {
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
-              "src/__tests__/fixture/_tmp_in/wrapped-open-attestation-document.json is not valid against open-attestation schema"
+              "src/__tests__/fixture/_tmp_in_two/wrapped-open-attestation-document.json is not valid against open-attestation schema"
             )
           })
         );
-        expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+        expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
 
       it("should issue document when the given wrapped document and --unwrap is specified", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, wrappedFileName),
-          path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
         );
 
         const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`),
-          outputDirectory,
+          path.resolve(__dirname, `${inputDirectoryTwo}/wrapped-open-attestation-document.json`),
+          outputDirectoryTwo,
           {
             version: "open-attestation/3.0",
             unwrap: true
@@ -352,7 +369,7 @@ describe("wrap", () => {
         );
 
         const file = JSON.parse(
-          fs.readFileSync(`${outputDirectory}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
+          fs.readFileSync(`${outputDirectoryTwo}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
         );
 
         expect(merkleRoot).toHaveLength(64);
@@ -364,11 +381,11 @@ describe("wrap", () => {
       it("should not issue document when the given wrapped document and --unwrap is not specified", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
-          path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
         const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`),
-          outputDirectory,
+          path.resolve(__dirname, `${inputDirectoryTwo}/valid-custom-schema-document.json`),
+          outputDirectoryTwo,
           {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
@@ -377,7 +394,7 @@ describe("wrap", () => {
         );
 
         const file = JSON.parse(
-          fs.readFileSync(`${outputDirectory}/valid-custom-schema-document.json`, { encoding: "utf8" })
+          fs.readFileSync(`${outputDirectoryTwo}/valid-custom-schema-document.json`, { encoding: "utf8" })
         );
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
@@ -386,31 +403,35 @@ describe("wrap", () => {
       it("should not issue document when given valid open attestation document that is not valid against the local schema provided", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/invalid-custom-schema-document.json`),
-          path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/invalid-custom-schema-document.json`)
         );
         await expect(
-          wrap(path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`), outputDirectory, {
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: "open-attestation/3.0",
-            unwrap: false
-          })
+          wrap(
+            path.resolve(__dirname, `${inputDirectoryTwo}/invalid-custom-schema-document.json`),
+            outputDirectoryTwo,
+            {
+              schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+              version: "open-attestation/3.0",
+              unwrap: false
+            }
+          )
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
-              "src/__tests__/fixture/_tmp_in/invalid-custom-schema-document.json is not valid against the provided schema"
+              "src/__tests__/fixture/_tmp_in_two/invalid-custom-schema-document.json is not valid against the provided schema"
             )
           })
         );
-        expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+        expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
       it("should issue document when given valid open attestation document that is also valid against the remote schema provided", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
-          path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
         const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`),
-          outputDirectory,
+          path.resolve(__dirname, `${inputDirectoryTwo}/valid-custom-schema-document.json`),
+          outputDirectoryTwo,
           {
             schemaPath:
               "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
@@ -420,7 +441,7 @@ describe("wrap", () => {
         );
 
         const file = JSON.parse(
-          fs.readFileSync(`${outputDirectory}/valid-custom-schema-document.json`, { encoding: "utf8" })
+          fs.readFileSync(`${outputDirectoryTwo}/valid-custom-schema-document.json`, { encoding: "utf8" })
         );
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
@@ -429,37 +450,45 @@ describe("wrap", () => {
       it("should not issue document when given open attestation document that is not valid against the remote schema provided", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/invalid-custom-schema-document.json`),
-          path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/invalid-custom-schema-document.json`)
         );
         await expect(
-          wrap(path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`), outputDirectory, {
-            schemaPath:
-              "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
-            version: "open-attestation/3.0",
-            unwrap: false
-          })
+          wrap(
+            path.resolve(__dirname, `${inputDirectoryTwo}/invalid-custom-schema-document.json`),
+            outputDirectoryTwo,
+            {
+              schemaPath:
+                "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
+              version: "open-attestation/3.0",
+              unwrap: false
+            }
+          )
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
-              "src/__tests__/fixture/_tmp_in/invalid-custom-schema-document.json is not valid against the provided schema"
+              "src/__tests__/fixture/_tmp_in_two/invalid-custom-schema-document.json is not valid against the provided schema"
             )
           })
         );
-        expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+        expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
       it("should not issue documents when schema is not valid", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/valid-open-attestation-document.json`),
-          path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`)
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
         await expect(
-          wrap(path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`), outputDirectory, {
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
-            version: "open-attestation/3.0",
-            unwrap: false
-          })
+          wrap(
+            path.resolve(__dirname, `${inputDirectoryTwo}/valid-open-attestation-document.json`),
+            outputDirectoryTwo,
+            {
+              schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
+              version: "open-attestation/3.0",
+              unwrap: false
+            }
+          )
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
-        expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
+        expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
     });
   });
