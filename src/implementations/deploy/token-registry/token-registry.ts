@@ -1,15 +1,12 @@
 import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
-import { TradeTrustERC721 } from "@govtechsg/token-registry/types/TradeTrustERC721";
 import { getDefaultProvider, Wallet } from "ethers";
 import { getPrivateKey } from "../../private-key";
+import signale from "signale";
+import { getLogger } from "../../../logger";
+import { TransactionReceipt } from "ethers/providers";
+import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 
-interface DeployTokenRegistryCmd {
-  registryName: string;
-  registrySymbol: string;
-  network: string;
-  key?: string;
-  keyFile?: string;
-}
+const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
   registryName,
@@ -17,10 +14,14 @@ export const deployTokenRegistry = async ({
   network,
   key,
   keyFile
-}: DeployTokenRegistryCmd): Promise<TradeTrustERC721> => {
+}: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
   const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
-  const signer = new Wallet(privateKey, provider);
-  const factory = new TradeTrustERC721Factory(signer);
-  return factory.deploy(registryName, registrySymbol);
+  const factory = new TradeTrustERC721Factory(new Wallet(privateKey, provider));
+  signale.await(`Sending transaction to pool`);
+  const transaction = await factory.deploy(registryName, registrySymbol);
+  trace(`Tx hash: ${transaction.deployTransaction.hash}`);
+  trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
+  signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);
+  return transaction.deployTransaction.wait();
 };
