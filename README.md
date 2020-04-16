@@ -177,7 +177,7 @@ open-attestation document-store revoke --network ropsten --address 0x19f89607b52
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
 
-### Verify
+## Verify
 
 Verify if a document is valid.
 
