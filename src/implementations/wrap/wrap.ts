@@ -2,6 +2,7 @@ import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "./d
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechsg/open-attestation";
+import { Output } from "../../commands/wrap";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
@@ -68,12 +69,13 @@ export const appendProofToDocuments = async (
   intermediateDir: string,
   digestedDocumentPath: string,
   hashMap: Record<string, { sibling: string; parent: string }>,
-  outputPathType: "file" | "directory" | "stdOut"
+  outputPathType: Output
 ): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
+
   let merkleRoot = "";
 
-  if (outputPathType == "stdOut") {
+  if (outputPathType == Output.Stdout) {
     documentFileNames.forEach(file => {
       const document = readDocumentFile(file);
 
@@ -93,7 +95,7 @@ export const appendProofToDocuments = async (
       if (!merkleRoot) merkleRoot = candidateRoot;
       console.log(document); // print to console, no file created
     });
-  } else if (outputPathType == "file") {
+  } else if (outputPathType == Output.File) {
     const digestedDocumentDir = path.parse(digestedDocumentPath).dir;
     const outputFilename = path.parse(digestedDocumentPath).base;
 
@@ -204,14 +206,14 @@ export const wrap = async (
     schemaPath?: string;
     version: "open-attestation/2.0" | "open-attestation/3.0";
     unwrap: boolean;
-    outputPathType: "file" | "directory" | "stdOut";
+    outputPathType: Output;
   }
 ): Promise<string> => {
   // Create output dir
   mkdirp.sync(
-    options.outputPathType === "file"
+    options.outputPathType === Output.File
       ? path.parse(outputPath).dir
-      : options.outputPathType === "directory"
+      : options.outputPathType === Output.Directory
       ? outputPath
       : outputPath
   );

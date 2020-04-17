@@ -5,6 +5,12 @@ import { utils } from "@govtechsg/open-attestation";
 
 jest.mock("fs");
 
+enum Output {
+  File = "file",
+  Directory = "directory",
+  Stdout = "stdOut"
+}
+
 describe("batchIssue", () => {
   describe("appendProofToDocuments", () => {
     it("determines the proof for each document using the hashmap and writes the new document back", async () => {
@@ -103,7 +109,7 @@ describe("batchIssue", () => {
         throw new Error(`unhandled ${path} in spy`);
       });
 
-      const root = await appendProofToDocuments("DIR", "DIR", hashMap, "directory");
+      const root = await appendProofToDocuments("DIR", "DIR", hashMap, Output.Directory);
 
       expect(root).toStrictEqual("e");
     });

@@ -1,4 +1,5 @@
 import { wrap } from "../implementations/wrap";
+import { Output } from "../commands/wrap";
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
@@ -10,12 +11,14 @@ const wrappedFileName = `${fixtureFolderName}/wrapped-open-attestation-document.
 
 const inputDirectoryName = `${fixtureFolderName}/_tmp_in`;
 const outputDirectoryName = `${fixtureFolderName}/_tmp_out`;
+const outputFileName = `${fixtureFolderName}/_tmp_out/_tmp_output_file.json`;
 const inputDirectory = path.resolve(__dirname, inputDirectoryName);
 const outputDirectory = path.resolve(__dirname, outputDirectoryName);
 
 // separate set of temp folders use for second test to prevent race condition between rimraf
 const inputDirectoryNameTwo = `${fixtureFolderName}/_tmp_in_two`;
 const outputDirectoryNameTwo = `${fixtureFolderName}/_tmp_out_two`;
+const outputFileNameTwo = `${fixtureFolderName}/_tmp_out_two/_tmp_output_file.json`;
 const inputDirectoryTwo = path.resolve(__dirname, inputDirectoryNameTwo);
 const outputDirectoryTwo = path.resolve(__dirname, outputDirectoryNameTwo);
 
@@ -42,7 +45,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
           unwrap: false,
-          outputPathType: "directory"
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -68,7 +71,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
           unwrap: false,
-          outputPathType: "directory"
+          outputPathType: Output.Directory
         });
         const file1 = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document-1.json`, { encoding: "utf8" })
@@ -100,7 +103,7 @@ describe("wrap", () => {
           wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -129,7 +132,7 @@ describe("wrap", () => {
           wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -150,7 +153,7 @@ describe("wrap", () => {
           wrap(inputDirectory, outputDirectory, {
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -171,7 +174,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap(inputDirectory, outputDirectory, {
           version: "open-attestation/3.0",
           unwrap: true,
-          outputPathType: "directory"
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -193,7 +196,7 @@ describe("wrap", () => {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: "open-attestation/3.0",
           unwrap: false,
-          outputPathType: "directory"
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -213,7 +216,7 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -234,7 +237,7 @@ describe("wrap", () => {
             "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
           version: "open-attestation/3.0",
           unwrap: false,
-          outputPathType: "directory"
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -255,7 +258,7 @@ describe("wrap", () => {
               "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -272,15 +275,12 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
       });
     });
-
-    rimraf.sync(inputDirectory);
-    rimraf.sync(outputDirectory);
   });
 
   describe("wrap with file input", () => {
@@ -308,7 +308,7 @@ describe("wrap", () => {
           {
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           }
         );
 
@@ -332,7 +332,7 @@ describe("wrap", () => {
             {
               version: "open-attestation/3.0",
               unwrap: false,
-              outputPathType: "directory"
+              outputPathType: Output.Directory
             }
           )
         ).rejects.toThrow(
@@ -357,7 +357,7 @@ describe("wrap", () => {
             {
               version: "open-attestation/3.0",
               unwrap: false,
-              outputPathType: "directory"
+              outputPathType: Output.Directory
             }
           )
         ).rejects.toThrow(
@@ -382,7 +382,7 @@ describe("wrap", () => {
           {
             version: "open-attestation/3.0",
             unwrap: true,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           }
         );
 
@@ -408,7 +408,7 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           }
         );
 
@@ -432,7 +432,7 @@ describe("wrap", () => {
               schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
               version: "open-attestation/3.0",
               unwrap: false,
-              outputPathType: "directory"
+              outputPathType: Output.Directory
             }
           )
         ).rejects.toThrow(
@@ -457,7 +457,7 @@ describe("wrap", () => {
               "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
             version: "open-attestation/3.0",
             unwrap: false,
-            outputPathType: "directory"
+            outputPathType: Output.Directory
           }
         );
 
@@ -482,7 +482,7 @@ describe("wrap", () => {
                 "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
               version: "open-attestation/3.0",
               unwrap: false,
-              outputPathType: "directory"
+              outputPathType: Output.Directory
             }
           )
         ).rejects.toThrow(
@@ -507,15 +507,12 @@ describe("wrap", () => {
               schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
               version: "open-attestation/3.0",
               unwrap: false,
-              outputPathType: "directory"
+              outputPathType: Output.Directory
             }
           )
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
     });
-
-    rimraf.sync(inputDirectoryTwo);
-    rimraf.sync(outputDirectoryTwo);
   });
 });

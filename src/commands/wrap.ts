@@ -7,11 +7,17 @@ import signale from "signale";
 
 interface WrapCommand {
   rawDocumentsPath: string;
-  schema: any;
+  schema: string;
   openAttestationV3: boolean;
   unwrap: boolean;
-  outputFile: any;
-  outputDir: any;
+  outputFile: string;
+  outputDir: string;
+}
+
+export enum Output {
+  File = "file",
+  Directory = "directory",
+  Stdout = "stdOut"
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -47,24 +53,28 @@ export const builder = (yargs: Argv): Argv =>
     .option("output-file", {
       alias: "of",
       type: "string",
-      description: "Use if output path is a file",
+      description: "Write output to a file. Only use when <wrapped-documents-dir> is a document",
       conflicts: "output-dir"
     })
     .option("output-dir", {
       alias: "od",
       type: "string",
-      description: "Use if output path is a directory",
+      description: "Write output to a directory",
       conflicts: "output-file"
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
   try {
-    const outputPathType = args.outputDir ? "directory" : args.outputFile ? "file" : "stdOut";
+    const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.Stdout;
     const outputPath =
-      outputPathType === "directory" ? args.outputDir : outputPathType === "file" ? args.outputFile : "stdOut";
+      outputPathType === Output.Directory
+        ? args.outputDir
+        : outputPathType === Output.File
+        ? args.outputFile
+        : Output.Stdout;
 
     // when input type is directory, output type must only be directory
-    if (isDir(args.rawDocumentsPath) && outputPathType !== "directory") {
+    if (isDir(args.rawDocumentsPath) && outputPathType !== Output.Directory) {
       signale.error(
         "Output path type can only be directory when using directory as raw documents path, use --output-dir"
       );
@@ -78,7 +88,8 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       outputPathType
     });
 
-    if (outputPathType !== "stdOut") {
+    // Todo change to global mechanism to disable the logging based on a condition
+    if (outputPathType !== Output.Stdout) {
       signale.success(`Batch Document Root: 0x${merkleRoot}`);
     }
 
