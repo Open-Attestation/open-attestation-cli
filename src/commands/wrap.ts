@@ -46,6 +46,11 @@ export const builder = (yargs: Argv): Argv =>
       description: "Use if raw directory contains wrapped files",
       type: "boolean",
       default: false
+    })
+    .option("dns-txt", {
+      alias: "dt",
+      type: "string",
+      description: "Add dns-txt proof to input document"
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
