@@ -1,5 +1,5 @@
 import { Argv } from "yargs";
-import { wrap } from "../implementations/wrap";
+import { wrap, Output } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir } from "../implementations/wrap/diskUtils";
 
@@ -12,12 +12,6 @@ interface WrapCommand {
   unwrap: boolean;
   outputFile: string;
   outputDir: string;
-}
-
-export enum Output {
-  File = "file",
-  Directory = "directory",
-  Stdout = "stdOut"
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -66,12 +60,7 @@ export const builder = (yargs: Argv): Argv =>
 export const handler = async (args: WrapCommand): Promise<string> => {
   try {
     const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.Stdout;
-    const outputPath =
-      outputPathType === Output.Directory
-        ? args.outputDir
-        : outputPathType === Output.File
-        ? args.outputFile
-        : Output.Stdout;
+    const outputPath = args.outputDir || args.outputFile; // undefined when we use std out
 
     // when input type is directory, output type must only be directory
     if (isDir(args.rawDocumentsPath) && outputPathType !== Output.Directory) {
@@ -81,12 +70,16 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
-    const merkleRoot = await wrap(args.rawDocumentsPath, outputPath, {
-      schemaPath: args.schema,
-      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
-      unwrap: args.unwrap,
-      outputPathType
-    });
+    const merkleRoot = await wrap(
+      args.rawDocumentsPath,
+      {
+        schemaPath: args.schema,
+        version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
+        unwrap: args.unwrap,
+        outputPathType
+      },
+      outputPath
+    );
 
     // Todo change to global mechanism to disable the logging based on a condition
     if (outputPathType !== Output.Stdout) {

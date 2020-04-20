@@ -1,15 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
-import { appendProofToDocuments, merkleHashmap } from "../implementations/wrap";
+import { appendProofToDocuments, merkleHashmap, Output } from "../implementations/wrap";
 import fs from "fs";
 import { utils } from "@govtechsg/open-attestation";
 
 jest.mock("fs");
-
-enum Output {
-  File = "file",
-  Directory = "directory",
-  Stdout = "stdOut"
-}
 
 describe("batchIssue", () => {
   describe("appendProofToDocuments", () => {

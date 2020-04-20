@@ -1,8 +1,7 @@
-import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "./diskUtils";
+import { documentsInDirectory, readDocumentFile, writeDocumentToDisk, isDir } from "./diskUtils";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechsg/open-attestation";
-import { Output } from "../../commands/wrap";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
@@ -15,6 +14,12 @@ class SchemaValidationError extends Error {
 
 interface Schema {
   $id: string;
+}
+
+export enum Output {
+  File = "File",
+  Directory = "Directory",
+  Stdout = "StdOut"
 }
 
 export const digestDocument = async (
@@ -72,35 +77,10 @@ export const appendProofToDocuments = async (
   outputPathType: Output
 ): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
-
   let merkleRoot = "";
 
-  if (outputPathType == Output.Stdout) {
-    documentFileNames.forEach(file => {
-      const document = readDocumentFile(file);
-
-      const documentHash = document.signature.targetHash;
-      const proof = [];
-      let candidateRoot = documentHash;
-      let nextStep = hashMap[documentHash];
-      while (nextStep) {
-        // nextStep will be empty when there is no parent
-        proof.push(nextStep.sibling);
-        candidateRoot = nextStep.parent;
-        nextStep = hashMap[candidateRoot];
-      }
-
-      document.signature.proof = proof;
-      document.signature.merkleRoot = candidateRoot;
-      if (!merkleRoot) merkleRoot = candidateRoot;
-      console.log(document); // print to console, no file created
-    });
-  } else if (outputPathType == Output.File) {
-    const digestedDocumentDir = path.parse(digestedDocumentPath).dir;
-    const outputFilename = path.parse(digestedDocumentPath).base;
-
-    const inputFile = documentFileNames[0];
-    const document = readDocumentFile(inputFile);
+  documentFileNames.forEach(file => {
+    const document = readDocumentFile(file);
     const documentHash = document.signature.targetHash;
     const proof = [];
     let candidateRoot = documentHash;
@@ -115,30 +95,15 @@ export const appendProofToDocuments = async (
     document.signature.merkleRoot = candidateRoot;
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    writeDocumentToDisk(digestedDocumentDir, outputFilename, document);
-  } else {
-    documentFileNames.forEach(file => {
-      const document = readDocumentFile(file);
+    if (outputPathType === Output.File) {
+      writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
+    } else if (outputPathType === Output.Directory) {
+      writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
+    } else {
+      console.log(document); // print to console, no file created
+    }
+  });
 
-      const documentHash = document.signature.targetHash;
-      const proof = [];
-      let candidateRoot = documentHash;
-      let nextStep = hashMap[documentHash];
-      while (nextStep) {
-        // nextStep will be empty when there is no parent
-        proof.push(nextStep.sibling);
-        candidateRoot = nextStep.parent;
-        nextStep = hashMap[candidateRoot];
-      }
-
-      document.signature.proof = proof;
-      document.signature.merkleRoot = candidateRoot;
-      if (!merkleRoot) merkleRoot = candidateRoot;
-
-      const filename = path.parse(file).base;
-      writeDocumentToDisk(digestedDocumentPath, filename, document);
-    });
-  }
   return merkleRoot;
 };
 
@@ -201,14 +166,20 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
 
 export const wrap = async (
   inputPath: string,
-  outputPath: string,
   options: {
     schemaPath?: string;
     version: "open-attestation/2.0" | "open-attestation/3.0";
     unwrap: boolean;
     outputPathType: Output;
-  }
+  },
+  outputPath?: string
 ): Promise<string> => {
+  if (isDir(inputPath) && options.outputPathType !== Output.Directory) {
+    throw new Error(
+      `Output path type should only be directory when using directory as raw documents path, but is of type ${options.outputPathType}`
+    );
+  }
+
   // Create output dir
   mkdirp.sync(
     options.outputPathType === Output.File
