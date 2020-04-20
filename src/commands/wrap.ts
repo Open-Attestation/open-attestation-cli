@@ -4,6 +4,7 @@ import { transformValidationErrors } from "../implementations/wrap/ajvErrorTrans
 import { isDir } from "../implementations/wrap/diskUtils";
 
 import signale from "signale";
+import { customSignale } from "../customSignale";
 
 interface WrapCommand {
   rawDocumentsPath: string;
@@ -62,6 +63,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
     const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.Stdout;
     const outputPath = args.outputDir || args.outputFile; // undefined when we use std out
 
+    if (outputPathType === Output.Stdout) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      signale.disable();
+    }
+
     // when input type is directory, output type must only be directory
     if (isDir(args.rawDocumentsPath) && outputPathType !== Output.Directory) {
       signale.error(
@@ -81,17 +88,15 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       outputPath
     );
 
-    // Todo change to global mechanism to disable the logging based on a condition
-    if (outputPathType !== Output.Stdout) {
-      signale.success(`Batch Document Root: 0x${merkleRoot}`);
-    }
+    signale.success(`Batch Document Root: 0x${merkleRoot}`);
 
     return merkleRoot;
   } catch (err) {
     signale.error(err.message);
     if (err.validationErrors) {
       for (const error of transformValidationErrors(err.validationErrors)) {
-        signale.error(error);
+        // signale.error(error);
+        customSignale.error(error); // or use console.error, TODO replace all signale.error with customSignale
       }
     }
     process.exit(1);
