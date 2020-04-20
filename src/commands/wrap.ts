@@ -3,8 +3,7 @@ import { wrap, Output } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir } from "../implementations/wrap/diskUtils";
 
-import signale from "signale";
-import { customSignale } from "../customSignale";
+import signale, { Signale } from "signale";
 
 interface WrapCommand {
   rawDocumentsPath: string;
@@ -66,7 +65,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
     if (outputPathType === Output.Stdout) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
-      signale.disable();
+      signale = new Signale({ logLevel: "error" });
     }
 
     // when input type is directory, output type must only be directory
@@ -95,8 +94,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
     signale.error(err.message);
     if (err.validationErrors) {
       for (const error of transformValidationErrors(err.validationErrors)) {
-        // signale.error(error);
-        customSignale.error(error); // or use console.error, TODO replace all signale.error with customSignale
+        signale.error(error);
       }
     }
     process.exit(1);
