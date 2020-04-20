@@ -72,9 +72,9 @@ export const digestDocument = async (
 
 export const appendProofToDocuments = async (
   intermediateDir: string,
-  digestedDocumentPath: string,
   hashMap: Record<string, { sibling: string; parent: string }>,
-  outputPathType: Output
+  outputPathType: Output,
+  digestedDocumentPath?: string
 ): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
@@ -95,9 +95,9 @@ export const appendProofToDocuments = async (
     document.signature.merkleRoot = candidateRoot;
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    if (outputPathType === Output.File) {
+    if (outputPathType === Output.File && digestedDocumentPath) {
       writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
-    } else if (outputPathType === Output.Directory) {
+    } else if (outputPathType === Output.Directory && digestedDocumentPath) {
       writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
     } else {
       console.log(document); // print to console, no file created
@@ -181,13 +181,9 @@ export const wrap = async (
   }
 
   // Create output dir
-  mkdirp.sync(
-    options.outputPathType === Output.File
-      ? path.parse(outputPath).dir
-      : options.outputPathType === Output.Directory
-      ? outputPath
-      : outputPath
-  );
+  if (outputPath) {
+    mkdirp.sync(options.outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
+  }
 
   // Create intermediate dir
   const { name: intermediateDir, removeCallback } = dirSync({
@@ -211,7 +207,7 @@ export const wrap = async (
   const hashMap = merkleHashmap(individualDocumentHashes);
 
   // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToDocuments(intermediateDir, outputPath, hashMap, options.outputPathType);
+  const merkleRoot = await appendProofToDocuments(intermediateDir, hashMap, options.outputPathType, outputPath);
 
   // Remove intermediate dir
   removeCallback();
