@@ -18,9 +18,9 @@ const outputDirectory = path.resolve(__dirname, outputDirectoryName);
 // separate set of temp folders use for second test to prevent race condition between rimraf
 const inputDirectoryNameTwo = `${fixtureFolderName}/_tmp_in_two`;
 const outputDirectoryNameTwo = `${fixtureFolderName}/_tmp_out_two`;
-const outputFilePathTwo = path.resolve(__dirname, `${fixtureFolderName}/_tmp_out_two/_tmp_output_file.json`);
 const inputDirectoryTwo = path.resolve(__dirname, inputDirectoryNameTwo);
 const outputDirectoryTwo = path.resolve(__dirname, outputDirectoryNameTwo);
+const fullOutputFilePathTwo = path.resolve(outputDirectoryTwo, "_tmp_output_file.json");
 
 describe("wrap", () => {
   describe("wrap handler arguments check", () => {
@@ -30,17 +30,24 @@ describe("wrap", () => {
     const signaleErrorSpy = jest.spyOn(signale, "error");
 
     it("should not allow output as file when input path is a directory", async () => {
-      await expect(
-        handler({
-          rawDocumentsPath: "examples/raw-documents",
-          schema: "",
-          openAttestationV3: true,
-          unwrap: false,
-          outputFile: "outputDir/outputFileName.json",
-          outputDir: ""
-        })
+      await handler({
+        rawDocumentsPath: "examples/raw-documents",
+        openAttestationV3: true,
+        unwrap: false,
+        outputFile: "outputDir/outputFileName.json"
+      });
+      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(signaleErrorSpy).toHaveBeenCalledWith(
+        "Output path type can only be directory when using directory as raw documents path, use --output-dir"
       );
-      expect(mockExit).toHaveBeenCalledTimes(1);
+    });
+    it("should not allow output as StdOut when input path is a directory", async () => {
+      await handler({
+        rawDocumentsPath: "examples/raw-documents",
+        openAttestationV3: true,
+        unwrap: false
+      });
+      expect(mockExit).toHaveBeenCalledWith(1);
       expect(signaleErrorSpy).toHaveBeenCalledWith(
         "Output path type can only be directory when using directory as raw documents path, use --output-dir"
       );
@@ -430,23 +437,43 @@ describe("wrap", () => {
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
       });
-      it("should output as file when input path is a file", async () => {
+      it("should allow output as file when input path is a file", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
         const merkleRoot = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
-          outputPath: outputFilePathTwo,
+          outputPath: fullOutputFilePathTwo,
           version: "open-attestation/3.0",
           unwrap: false,
           outputPathType: Output.File
         });
 
-        const file = JSON.parse(fs.readFileSync(outputFilePathTwo, { encoding: "utf8" }));
+        const file = JSON.parse(fs.readFileSync(fullOutputFilePathTwo, { encoding: "utf8" }));
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
+      });
+      it("should allow output as StdOut when input path is a file", async () => {
+        let stdOut: any;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const stdOutSpy = jest.spyOn(console, "log").mockImplementation(input => {
+          stdOut = JSON.parse(JSON.stringify(input));
+        });
+        fs.copyFileSync(
+          path.resolve(__dirname, validFileName),
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
+        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.StdOut
+        });
+        expect(merkleRoot).toHaveLength(64);
+        expect(merkleRoot).toStrictEqual(stdOut.signature.merkleRoot);
+        expect(merkleRoot).toStrictEqual(stdOut.signature.targetHash);
       });
     });
     describe("with schema", () => {
@@ -555,21 +582,21 @@ describe("wrap", () => {
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
       });
-      it("should output as file if input path is a input file with custom schema", async () => {
+      it("should allow output as file if input path is a input file with custom schema", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
         const merkleRoot = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
-          outputPath: outputFilePathTwo,
+          outputPath: fullOutputFilePathTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: "open-attestation/3.0",
           unwrap: false,
           outputPathType: Output.File
         });
 
-        const file = JSON.parse(fs.readFileSync(outputFilePathTwo, { encoding: "utf8" }));
+        const file = JSON.parse(fs.readFileSync(fullOutputFilePathTwo, { encoding: "utf8" }));
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);

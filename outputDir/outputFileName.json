@@ -1,36 +1,36 @@
 {
   "version": "open-attestation/3.0",
   "data": {
-    "reference": "3b30c079-c028-4739-b265-f701c80dd4a4:string:ABCXXXXX00",
-    "name": "bb0c6949-05a0-437b-94ec-539775b002c3:string:Certificate of whatever",
+    "reference": "0789a475-0baa-4082-8f7a-6ac91bf14d33:string:ABCXXXXX00",
+    "name": "a511dd55-f9ad-433a-a795-6d514f41ab72:string:Certificate of whatever",
     "template": {
-      "name": "de94f517-c042-46e3-a42a-364c57996f83:string:CUSTOM_TEMPLATE",
-      "type": "7b706f27-f824-4ae4-b2c7-1f05485ad290:string:EMBEDDED_RENDERER",
-      "url": "ff2f618a-c6cc-47ff-90b2-4e784162babc:string:http://localhost:3000/rederer"
+      "name": "d1ec093b-09ba-4b0b-8ecd-5f2c5f46fb29:string:CUSTOM_TEMPLATE",
+      "type": "df8dd658-9d87-48cf-9295-e928b67b6408:string:EMBEDDED_RENDERER",
+      "url": "fa54c797-46ea-4cf9-aa8b-3140f4bb7c9e:string:http://localhost:3000/rederer"
     },
-    "validFrom": "9e37b6d2-5b7c-4321-92e1-d426ed52ccf8:string:2018-08-30T00:00:00+08:00",
+    "validFrom": "1719b712-7d5b-469c-8907-ce5736afbe39:string:2018-08-30T00:00:00+08:00",
     "proof": {
-      "type": "79ed5e8c-5f6e-4fee-b37c-9cb7fa09db00:string:OpenAttestationSignature2018",
-      "method": "09e03c75-91a5-4d9d-986d-d2e6dc44f1b6:string:TOKEN_REGISTRY",
-      "value": "129ec362-8cc2-4d47-9ebc-1f642bdb4e68:string:0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
+      "type": "f07ca976-2019-44f6-936c-c415b2a3fc24:string:OpenAttestationSignature2018",
+      "method": "bcf0fceb-88ae-4b23-8a17-1272f38cf68b:string:TOKEN_REGISTRY",
+      "value": "a62f0494-2e78-4201-9fa7-961fb3359eba:string:0xb53499ee758352fAdDfCed863d9ac35C809E2F20"
     },
     "issuer": {
-      "id": "092db0b2-7743-436a-b007-737e419df2e9:string:https://example.com",
-      "name": "0615477b-58bf-43a8-a748-da9893d9b9b1:string:Issuer name",
+      "id": "e43704e7-e308-4d30-bfbd-706ed77aa678:string:https://example.com",
+      "name": "ce576921-eac3-4204-84ca-1f1024e92538:string:Issuer name",
       "identityProof": {
-        "type": "9450749b-2211-4a4d-9547-d782d0167279:string:DNS-TXT",
-        "location": "d521a444-a54a-4dae-a07b-c4b74b12e602:string:some.io"
+        "type": "95b00a4d-7f73-47d6-9b0a-1f754eb65fc1:string:DNS-TXT",
+        "location": "3e2be777-7f80-4109-b0cc-a136c0aacf6e:string:some.io"
       }
     },
-    "key1": "f5b4e59b-2baf-4558-8d6f-497781e70af5:number:1337"
+    "key1": "4c24e6ce-9ec9-4b8a-8204-2ee303ed5ff1:number:1337"
   },
   "privacy": {
     "obfuscatedData": []
   },
   "signature": {
     "type": "SHA3MerkleProof",
-    "targetHash": "f898ec144fc030503fcfe0b31231378c1b39260584a3aef69530759ed90b602d",
+    "targetHash": "391a929071b6b8cc7c27da734c99f80a730ad988217f1a27546e9665a2073d74",
     "proof": [],
-    "merkleRoot": "f898ec144fc030503fcfe0b31231378c1b39260584a3aef69530759ed90b602d"
+    "merkleRoot": "391a929071b6b8cc7c27da734c99f80a730ad988217f1a27546e9665a2073d74"
   }
 }

@@ -7,11 +7,11 @@ import signale, { Signale } from "signale";
 
 interface WrapCommand {
   rawDocumentsPath: string;
-  schema: string;
+  outputDir?: string;
+  outputFile?: string;
+  schema?: string;
   openAttestationV3: boolean;
   unwrap: boolean;
-  outputFile: string;
-  outputDir: string;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -59,14 +59,8 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: WrapCommand): Promise<string> => {
   try {
-    const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.Stdout;
+    const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.StdOut;
     const outputPath = args.outputDir || args.outputFile; // undefined when we use std out
-
-    if (outputPathType === Output.Stdout) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      signale = new Signale({ logLevel: "error" });
-    }
 
     // when input type is directory, output type must only be directory
     if (isDir(args.rawDocumentsPath) && outputPathType !== Output.Directory) {
@@ -74,6 +68,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
         "Output path type can only be directory when using directory as raw documents path, use --output-dir"
       );
       process.exit(1);
+    }
+
+    if (outputPathType === Output.StdOut) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      signale = new Signale({ logLevel: "error" });
     }
 
     const merkleRoot = await wrap({

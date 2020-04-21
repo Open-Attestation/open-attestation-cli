@@ -1,11 +1,10 @@
-import { documentsInDirectory, readDocumentFile, writeDocumentToDisk, isDir } from "./diskUtils";
+import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "./diskUtils";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
-import signale from "signale";
 
 class SchemaValidationError extends Error {
   constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
@@ -20,7 +19,7 @@ interface Schema {
 export enum Output {
   File,
   Directory,
-  Stdout
+  StdOut
 }
 
 export const digestDocument = async (
