@@ -466,8 +466,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
         const merkleRoot = await wrap(
-          path.join(inputDirectoryTwo, "valid-open-attestation-document.json"),
-
+          path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
           {
             version: "open-attestation/3.0",
             unwrap: false,
@@ -604,7 +603,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
         const merkleRoot = await wrap(
-          path.join(inputDirectoryTwo, "valid-custom-schema-document.json"),
+          path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
