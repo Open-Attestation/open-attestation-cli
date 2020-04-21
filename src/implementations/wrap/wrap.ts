@@ -5,6 +5,7 @@ import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechs
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
+import signale from "signale";
 
 class SchemaValidationError extends Error {
   constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
@@ -17,9 +18,9 @@ interface Schema {
 }
 
 export enum Output {
-  File = "File",
-  Directory = "Directory",
-  Stdout = "StdOut"
+  File,
+  Directory,
+  Stdout
 }
 
 export const digestDocument = async (
@@ -164,25 +165,26 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   return Promise.resolve(undefined);
 };
 
-export const wrap = async (
-  inputPath: string,
-  options: {
-    schemaPath?: string;
-    version: "open-attestation/2.0" | "open-attestation/3.0";
-    unwrap: boolean;
-    outputPathType: Output;
-  },
-  outputPath?: string
-): Promise<string> => {
-  if (isDir(inputPath) && options.outputPathType !== Output.Directory) {
-    throw new Error(
-      `Output path type should only be directory when using directory as raw documents path, but is of type ${options.outputPathType}`
-    );
-  }
+interface WrapArguments {
+  inputPath: string;
+  outputPath?: string;
+  schemaPath?: string;
+  version: "open-attestation/2.0" | "open-attestation/3.0";
+  unwrap: boolean;
+  outputPathType: Output;
+}
 
+export const wrap = async ({
+  inputPath,
+  outputPath,
+  schemaPath,
+  version,
+  unwrap,
+  outputPathType
+}: WrapArguments): Promise<string> => {
   // Create output dir
   if (outputPath) {
-    mkdirp.sync(options.outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
+    mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
   }
 
   // Create intermediate dir
@@ -191,14 +193,8 @@ export const wrap = async (
   });
 
   // Phase 1: For each document, read content, digest and write to file
-  const schema = await loadSchema(options.schemaPath);
-  const individualDocumentHashes = await digestDocument(
-    inputPath,
-    intermediateDir,
-    options.version,
-    options.unwrap,
-    schema
-  );
+  const schema = await loadSchema(schemaPath);
+  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema);
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
@@ -207,7 +203,7 @@ export const wrap = async (
   const hashMap = merkleHashmap(individualDocumentHashes);
 
   // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToDocuments(intermediateDir, hashMap, options.outputPathType, outputPath);
+  const merkleRoot = await appendProofToDocuments(intermediateDir, hashMap, outputPathType, outputPath);
 
   // Remove intermediate dir
   removeCallback();

@@ -76,16 +76,14 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
-    const merkleRoot = await wrap(
-      args.rawDocumentsPath,
-      {
-        schemaPath: args.schema,
-        version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
-        unwrap: args.unwrap,
-        outputPathType
-      },
-      outputPath
-    );
+    const merkleRoot = await wrap({
+      inputPath: args.rawDocumentsPath,
+      outputPath,
+      schemaPath: args.schema,
+      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
+      unwrap: args.unwrap,
+      outputPathType
+    });
 
     signale.success(`Batch Document Root: 0x${merkleRoot}`);
 
