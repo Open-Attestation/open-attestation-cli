@@ -437,7 +437,7 @@ describe("wrap", () => {
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
       });
-      it("should allow output as file when input path is a file", async () => {
+      it("should output as file when input path is a file", async () => {
         fs.copyFileSync(
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
