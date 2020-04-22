@@ -12,6 +12,7 @@ interface WrapCommand {
   openAttestationV3: boolean;
   unwrap: boolean;
   silent?: boolean;
+  dnsTxt?: string;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -60,6 +61,11 @@ export const builder = (yargs: Argv): Argv =>
       alias: "silent",
       description: "Disable console outputs when outputting to stdout",
       type: "boolean"
+    })
+    .option("dns-txt", {
+      alias: "dt",
+      description: "Add DNS-TXT proof to the document(s) to be wrapped",
+      type: "string"
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
@@ -72,6 +78,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       signale.error(
         "Output path type can only be directory when using directory as raw documents path, use --output-dir"
       );
+      process.exit(1);
+    }
+
+    // throw error when dns-txt is given, but input type is not type file
+    if (args.dnsTxt && !args.openAttestationV3) {
+      signale.error("DNS-TXT proof can only be be added on v3 documents");
       process.exit(1);
     }
 
@@ -88,7 +100,8 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       schemaPath: args.schema,
       version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
       unwrap: args.unwrap,
-      outputPathType
+      outputPathType,
+      dnsTxt: args.dnsTxt
     });
 
     signale.success(`Batch Document Root: 0x${merkleRoot}`);

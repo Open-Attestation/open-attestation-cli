@@ -13,7 +13,7 @@ export const isDir = (path: fs.PathLike): boolean => {
   }
 };
 
-const validExtensions = [/(.*)(\.)(opencert)$/, /(.*)(\.)(json)$/];
+const validExtensions = [/(.*)(\.)(opencerts)$/, /(.*)(\.)(json)$/];
 
 export const readDocumentFile = (filename: string): any => {
   return JSON.parse(fs.readFileSync(filename, "utf8"));
