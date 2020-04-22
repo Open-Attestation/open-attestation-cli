@@ -58,7 +58,7 @@ export const builder = (yargs: Argv): Argv =>
     })
     .option("silent", {
       alias: "silent",
-      description: "disable console outputs",
+      description: "Disable console outputs when outputting to stdout",
       type: "boolean"
     });
 
@@ -75,6 +75,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
+    // when outputting to std out, disable signale so that the logs do not interfere
     if (args.silent) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
