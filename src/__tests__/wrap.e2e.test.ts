@@ -1,7 +1,9 @@
-import { wrap } from "../implementations/wrap";
+import { wrap, Output } from "../implementations/wrap";
+import { handler } from "../commands/wrap";
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
+import signale from "signale";
 
 const fixtureFolderName = "fixture";
 const validFileName = `${fixtureFolderName}/valid-open-attestation-document.json`;
@@ -18,8 +20,40 @@ const inputDirectoryNameTwo = `${fixtureFolderName}/_tmp_in_two`;
 const outputDirectoryNameTwo = `${fixtureFolderName}/_tmp_out_two`;
 const inputDirectoryTwo = path.resolve(__dirname, inputDirectoryNameTwo);
 const outputDirectoryTwo = path.resolve(__dirname, outputDirectoryNameTwo);
+const fullOutputFilePathTwo = path.resolve(outputDirectoryTwo, "_tmp_output_file.json");
 
 describe("wrap", () => {
+  describe("wrap handler arguments check", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
+    const signaleErrorSpy = jest.spyOn(signale, "error");
+
+    it("should not allow output as file when input path is a directory", async () => {
+      await handler({
+        rawDocumentsPath: "examples/raw-documents",
+        openAttestationV3: true,
+        unwrap: false,
+        outputFile: "examples/wrapped-documents"
+      });
+      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(signaleErrorSpy).toHaveBeenCalledWith(
+        "Output path type can only be directory when using directory as raw documents path, use --output-dir"
+      );
+    });
+    it("should not allow output as StdOut when input path is a directory", async () => {
+      await handler({
+        rawDocumentsPath: "examples/raw-documents",
+        openAttestationV3: true,
+        unwrap: false
+      });
+      expect(mockExit).toHaveBeenCalledWith(1);
+      expect(signaleErrorSpy).toHaveBeenCalledWith(
+        "Output path type can only be directory when using directory as raw documents path, use --output-dir"
+      );
+    });
+  });
+
   describe("wrap with directory input", () => {
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
@@ -39,9 +73,12 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap({
+          inputPath: inputDirectory,
+          outputPath: outputDirectory,
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -64,9 +101,12 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document-3.json`)
         );
-        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap({
+          inputPath: inputDirectory,
+          outputPath: outputDirectory,
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: Output.Directory
         });
         const file1 = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document-1.json`, { encoding: "utf8" })
@@ -95,9 +135,12 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(inputDirectory, outputDirectory, {
+          wrap({
+            inputPath: inputDirectory,
+            outputPath: outputDirectory,
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -123,9 +166,12 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(inputDirectory, outputDirectory, {
+          wrap({
+            inputPath: inputDirectory,
+            outputPath: outputDirectory,
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -143,9 +189,12 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(inputDirectory, outputDirectory, {
+          wrap({
+            inputPath: inputDirectory,
+            outputPath: outputDirectory,
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -163,9 +212,12 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
         );
 
-        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap({
+          inputPath: inputDirectory,
+          outputPath: outputDirectory,
           version: "open-attestation/3.0",
-          unwrap: true
+          unwrap: true,
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -183,10 +235,13 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
+        const merkleRoot = await wrap({
+          inputPath: inputDirectory,
+          outputPath: outputDirectory,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -202,10 +257,13 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
         );
         await expect(
-          wrap(inputDirectory, outputDirectory, {
+          wrap({
+            inputPath: inputDirectory,
+            outputPath: outputDirectory,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -221,11 +279,13 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap(inputDirectory, outputDirectory, {
-          schemaPath:
-            "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
+        const merkleRoot = await wrap({
+          inputPath: inputDirectory,
+          outputPath: outputDirectory,
+          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: "open-attestation/3.0",
-          unwrap: false
+          unwrap: false,
+          outputPathType: Output.Directory
         });
 
         const file = JSON.parse(
@@ -241,11 +301,13 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryName}/invalid-custom-schema-document.json`)
         );
         await expect(
-          wrap(inputDirectory, outputDirectory, {
-            schemaPath:
-              "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
+          wrap({
+            inputPath: inputDirectory,
+            outputPath: outputDirectory,
+            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow(
           expect.objectContaining({
@@ -258,10 +320,13 @@ describe("wrap", () => {
       });
       it("should not issue documents when schema is not valid", async () => {
         await expect(
-          wrap(inputDirectory, outputDirectory, {
+          wrap({
+            inputPath: inputDirectory,
+            outputPath: outputDirectory,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
             version: "open-attestation/3.0",
-            unwrap: false
+            unwrap: false,
+            outputPathType: Output.Directory
           })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory)).toHaveLength(0);
@@ -288,14 +353,13 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryTwo}/valid-open-attestation-document.json`),
-          outputDirectoryTwo,
-          {
-            version: "open-attestation/3.0",
-            unwrap: false
-          }
-        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
+          outputPath: outputDirectoryTwo,
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.Directory
+        });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/valid-open-attestation-document.json`, { encoding: "utf8" })
@@ -311,14 +375,13 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(
-            path.resolve(__dirname, `${inputDirectoryTwo}/invalid-open-attestation-document.json`),
-            outputDirectoryTwo,
-            {
-              version: "open-attestation/3.0",
-              unwrap: false
-            }
-          )
+          wrap({
+            inputPath: path.resolve(inputDirectoryTwo, "invalid-open-attestation-document.json"),
+            outputPath: outputDirectoryTwo,
+            version: "open-attestation/3.0",
+            unwrap: false,
+            outputPathType: Output.Directory
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -335,14 +398,13 @@ describe("wrap", () => {
         );
 
         await expect(
-          wrap(
-            path.resolve(__dirname, `${inputDirectoryTwo}/wrapped-open-attestation-document.json`),
-            outputDirectoryTwo,
-            {
-              version: "open-attestation/3.0",
-              unwrap: false
-            }
-          )
+          wrap({
+            inputPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
+            outputPath: outputDirectoryTwo,
+            version: "open-attestation/3.0",
+            unwrap: false,
+            outputPathType: Output.Directory
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -359,14 +421,13 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
         );
 
-        const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryTwo}/wrapped-open-attestation-document.json`),
-          outputDirectoryTwo,
-          {
-            version: "open-attestation/3.0",
-            unwrap: true
-          }
-        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
+          outputPath: outputDirectoryTwo,
+          version: "open-attestation/3.0",
+          unwrap: true,
+          outputPathType: Output.Directory
+        });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
@@ -376,6 +437,44 @@ describe("wrap", () => {
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
       });
+      it("should output as file when input path is a file", async () => {
+        fs.copyFileSync(
+          path.resolve(__dirname, validFileName),
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
+        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
+          outputPath: fullOutputFilePathTwo,
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.File
+        });
+
+        const file = JSON.parse(fs.readFileSync(fullOutputFilePathTwo, { encoding: "utf8" }));
+        expect(merkleRoot).toHaveLength(64);
+        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
+        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
+      });
+      it("should allow output as StdOut when input path is a file", async () => {
+        let stdOut: any;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const stdOutSpy = jest.spyOn(console, "log").mockImplementation(input => {
+          stdOut = JSON.parse(JSON.stringify(input));
+        });
+        fs.copyFileSync(
+          path.resolve(__dirname, validFileName),
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
+        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.StdOut
+        });
+        expect(merkleRoot).toHaveLength(64);
+        expect(merkleRoot).toStrictEqual(stdOut.signature.merkleRoot);
+        expect(merkleRoot).toStrictEqual(stdOut.signature.targetHash);
+      });
     });
     describe("with schema", () => {
       it("should not issue document when the given wrapped document and --unwrap is not specified", async () => {
@@ -383,15 +482,14 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryTwo}/valid-custom-schema-document.json`),
-          outputDirectoryTwo,
-          {
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: "open-attestation/3.0",
-            unwrap: false
-          }
-        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
+          outputPath: outputDirectoryTwo,
+          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.Directory
+        });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/valid-custom-schema-document.json`, { encoding: "utf8" })
@@ -406,15 +504,14 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/invalid-custom-schema-document.json`)
         );
         await expect(
-          wrap(
-            path.resolve(__dirname, `${inputDirectoryTwo}/invalid-custom-schema-document.json`),
-            outputDirectoryTwo,
-            {
-              schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-              version: "open-attestation/3.0",
-              unwrap: false
-            }
-          )
+          wrap({
+            inputPath: path.resolve(inputDirectoryTwo, "invalid-custom-schema-document.json"),
+            outputPath: outputDirectoryTwo,
+            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+            version: "open-attestation/3.0",
+            unwrap: false,
+            outputPathType: Output.Directory
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -429,16 +526,14 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap(
-          path.resolve(__dirname, `${inputDirectoryTwo}/valid-custom-schema-document.json`),
-          outputDirectoryTwo,
-          {
-            schemaPath:
-              "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
-            version: "open-attestation/3.0",
-            unwrap: false
-          }
-        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
+          outputPath: outputDirectoryTwo,
+          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.Directory
+        });
 
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/valid-custom-schema-document.json`, { encoding: "utf8" })
@@ -453,16 +548,14 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/invalid-custom-schema-document.json`)
         );
         await expect(
-          wrap(
-            path.resolve(__dirname, `${inputDirectoryTwo}/invalid-custom-schema-document.json`),
-            outputDirectoryTwo,
-            {
-              schemaPath:
-                "https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json",
-              version: "open-attestation/3.0",
-              unwrap: false
-            }
-          )
+          wrap({
+            inputPath: path.resolve(inputDirectoryTwo, "invalid-custom-schema-document.json"),
+            outputPath: outputDirectoryTwo,
+            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+            version: "open-attestation/3.0",
+            unwrap: false,
+            outputPathType: Output.Directory
+          })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
@@ -478,17 +571,35 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
         await expect(
-          wrap(
-            path.resolve(__dirname, `${inputDirectoryTwo}/valid-open-attestation-document.json`),
-            outputDirectoryTwo,
-            {
-              schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
-              version: "open-attestation/3.0",
-              unwrap: false
-            }
-          )
+          wrap({
+            inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
+            outputPath: outputDirectoryTwo,
+            schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
+            version: "open-attestation/3.0",
+            unwrap: false,
+            outputPathType: Output.Directory
+          })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectoryTwo)).toHaveLength(0);
+      });
+      it("should allow output as file if input path is a input file with custom schema", async () => {
+        fs.copyFileSync(
+          path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
+          path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
+        );
+        const merkleRoot = await wrap({
+          inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
+          outputPath: fullOutputFilePathTwo,
+          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          version: "open-attestation/3.0",
+          unwrap: false,
+          outputPathType: Output.File
+        });
+
+        const file = JSON.parse(fs.readFileSync(fullOutputFilePathTwo, { encoding: "utf8" }));
+        expect(merkleRoot).toHaveLength(64);
+        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
+        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
       });
     });
   });

@@ -16,6 +16,12 @@ interface Schema {
   $id: string;
 }
 
+export enum Output {
+  File,
+  Directory,
+  StdOut
+}
+
 export const digestDocument = async (
   undigestedDocumentPath: string,
   digestedDocumentDir: string,
@@ -31,12 +37,7 @@ export const digestDocument = async (
   }
 
   documentFileNames.forEach(file => {
-    let document;
-    if (unwrap) {
-      document = getData(readDocumentFile(file));
-    } else {
-      document = readDocumentFile(file);
-    }
+    const document = unwrap ? getData(readDocumentFile(file)) : readDocumentFile(file);
 
     // Digest individual document
     if (compile) {
@@ -71,14 +72,15 @@ export const digestDocument = async (
 
 export const appendProofToDocuments = async (
   intermediateDir: string,
-  digestedDocumentDir: string,
-  hashMap: Record<string, { sibling: string; parent: string }>
+  hashMap: Record<string, { sibling: string; parent: string }>,
+  outputPathType: Output,
+  digestedDocumentPath?: string
 ): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
+
   documentFileNames.forEach(file => {
     const document = readDocumentFile(file);
-
     const documentHash = document.signature.targetHash;
     const proof = [];
     let candidateRoot = documentHash;
@@ -89,13 +91,17 @@ export const appendProofToDocuments = async (
       candidateRoot = nextStep.parent;
       nextStep = hashMap[candidateRoot];
     }
-
     document.signature.proof = proof;
     document.signature.merkleRoot = candidateRoot;
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    const filename = path.parse(file).base;
-    writeDocumentToDisk(digestedDocumentDir, filename, document);
+    if (outputPathType === Output.File && digestedDocumentPath) {
+      writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
+    } else if (outputPathType === Output.Directory && digestedDocumentPath) {
+      writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
+    } else {
+      console.log(document); // print to console, no file created
+    }
   });
 
   return merkleRoot;
@@ -158,13 +164,27 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   return Promise.resolve(undefined);
 };
 
-export const wrap = async (
-  inputPath: string,
-  outputDir: string,
-  options: { schemaPath?: string; version: "open-attestation/2.0" | "open-attestation/3.0"; unwrap: boolean }
-): Promise<string> => {
+interface WrapArguments {
+  inputPath: string;
+  outputPath?: string;
+  schemaPath?: string;
+  version: "open-attestation/2.0" | "open-attestation/3.0";
+  unwrap: boolean;
+  outputPathType: Output;
+}
+
+export const wrap = async ({
+  inputPath,
+  outputPath,
+  schemaPath,
+  version,
+  unwrap,
+  outputPathType
+}: WrapArguments): Promise<string> => {
   // Create output dir
-  mkdirp.sync(outputDir);
+  if (outputPath) {
+    mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
+  }
 
   // Create intermediate dir
   const { name: intermediateDir, removeCallback } = dirSync({
@@ -172,14 +192,8 @@ export const wrap = async (
   });
 
   // Phase 1: For each document, read content, digest and write to file
-  const schema = await loadSchema(options.schemaPath);
-  const individualDocumentHashes = await digestDocument(
-    inputPath,
-    intermediateDir,
-    options.version,
-    options.unwrap,
-    schema
-  );
+  const schema = await loadSchema(schemaPath);
+  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema);
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
@@ -188,7 +202,7 @@ export const wrap = async (
   const hashMap = merkleHashmap(individualDocumentHashes);
 
   // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToDocuments(intermediateDir, outputDir, hashMap);
+  const merkleRoot = await appendProofToDocuments(intermediateDir, hashMap, outputPathType, outputPath);
 
   // Remove intermediate dir
   removeCallback();
