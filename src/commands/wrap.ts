@@ -11,7 +11,7 @@ interface WrapCommand {
   schema?: string;
   openAttestationV3: boolean;
   unwrap: boolean;
-  silent: boolean;
+  silent?: boolean;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -59,8 +59,7 @@ export const builder = (yargs: Argv): Argv =>
     .option("silent", {
       alias: "silent",
       description: "disable console outputs",
-      type: "boolean",
-      default: false
+      type: "boolean"
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {

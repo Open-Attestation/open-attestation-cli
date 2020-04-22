@@ -34,7 +34,7 @@ describe("wrap", () => {
         rawDocumentsPath: "examples/raw-documents",
         openAttestationV3: true,
         unwrap: false,
-        outputFile: "outputDir/outputFileName.json"
+        outputFile: "examples/wrapped-documents"
       });
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(signaleErrorSpy).toHaveBeenCalledWith(
