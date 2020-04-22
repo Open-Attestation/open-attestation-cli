@@ -75,7 +75,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
-    // when outputting to std out, disable signale so that the logs do not interfere
+    // when outputting to stdout, disable signale so that the logs do not interfere
     if (args.silent) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
