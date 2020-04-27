@@ -3,7 +3,7 @@
     "@semantic-release/npm",
     {
       "path": "@semantic-release/exec",
-      "cmd": "pkg ./dist/cjs/index.js --out-path dist --config package.json"
+      "cmd": "pkg ./package.json --out-path dist/@govtechsg"
     }
   ],
   "publish": [
