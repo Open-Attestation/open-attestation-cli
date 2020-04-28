@@ -65,7 +65,8 @@ export const builder = (yargs: Argv): Argv =>
     })
     .option("dns-txt", {
       alias: "dt",
-      description: "Add DNS-TXT proof to the document(s) to be wrapped"
+      description: "Add DNS-TXT proof to the document(s) to be wrapped",
+      type: "string"
     })
     .option("document-store", {
       alias: "ds",
@@ -92,6 +93,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
+    // throw error when document store is given, but document type is not oav3
     if (args.documentStore && !args.openAttestationV3) {
       signale.error("Document store can only be added for v3 documents");
       process.exit(1);
