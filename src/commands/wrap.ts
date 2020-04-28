@@ -14,6 +14,7 @@ interface WrapCommand {
   silent?: boolean;
   dnsTxt?: string;
   documentStore?: string;
+  templateUrl?: string;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -72,6 +73,11 @@ export const builder = (yargs: Argv): Argv =>
       alias: "ds",
       description: "Add document store to proof of the document(s) to be wrapped",
       type: "string"
+    })
+    .option("template-url", {
+      alias: "tu",
+      description: "Add template url to document(s) to be wrapped",
+      type: "string"
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
@@ -99,6 +105,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
+    // throw error when template-url is given, but document type is not oav3 file
+    if (args.templateUrl && !args.openAttestationV3) {
+      signale.error("Template url can only be added for v3 documents");
+      process.exit(1);
+    }
+
     // when outputting to stdout, disable signale so that the logs do not interfere
     if (args.silent) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -114,7 +126,8 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       unwrap: args.unwrap,
       outputPathType,
       dnsTxt: args.dnsTxt,
-      documentStore: args.documentStore
+      documentStore: args.documentStore,
+      templateUrl: args.templateUrl
     });
 
     signale.success(`Batch Document Root: 0x${merkleRoot}`);

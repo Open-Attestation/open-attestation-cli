@@ -29,7 +29,8 @@ export const digestDocument = async (
   unwrap: boolean,
   schema?: Schema,
   dnsTxt?: string,
-  documentStore?: string
+  documentStore?: string,
+  templateUrl?: string
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
   const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
@@ -51,6 +52,17 @@ export const digestDocument = async (
       Object.assign(document.proof, {
         method: "DOCUMENT_STORE",
         value: documentStore
+      });
+    }
+
+    // Append template url if given
+    if (templateUrl) {
+      Object.assign(document, {
+        template: {
+          name: "CUSTOM_TEMPLATE",
+          type: "EMBEDDED_RENDERER",
+          url: templateUrl
+        }
       });
     }
 
@@ -188,6 +200,7 @@ interface WrapArguments {
   outputPathType: Output;
   dnsTxt?: string;
   documentStore?: string;
+  templateUrl?: string;
 }
 
 export const wrap = async ({
@@ -198,7 +211,8 @@ export const wrap = async ({
   unwrap,
   outputPathType,
   dnsTxt,
-  documentStore
+  documentStore,
+  templateUrl
 }: WrapArguments): Promise<string> => {
   // Create output dir
   if (outputPath) {
@@ -219,7 +233,8 @@ export const wrap = async ({
     unwrap,
     schema,
     dnsTxt,
-    documentStore
+    documentStore,
+    templateUrl
   );
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
