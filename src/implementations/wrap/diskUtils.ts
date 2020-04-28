@@ -13,13 +13,13 @@ export const isDir = (path: fs.PathLike): boolean => {
   }
 };
 
-const validExtensions = [/(.*)(\.)(opencerts)$/, /(.*)(\.)(json)$/];
+const validExtensions = /(.*)(\.)(opencerts?|json)$/;
 
 export const readDocumentFile = (filename: string): any => {
   return JSON.parse(fs.readFileSync(filename, "utf8"));
 };
 
-const isValidExtension = (filename: string): boolean => validExtensions.some(mask => mask.test(filename.toLowerCase()));
+const isValidExtension = (filename: string): boolean => validExtensions.test(filename.toLowerCase());
 
 // this function return the list of path to the documents to process
 // only documents with valid extension are returned (opencerts, json)

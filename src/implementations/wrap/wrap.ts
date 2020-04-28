@@ -42,7 +42,7 @@ export const digestDocument = async (
 
     // Append DNS proof if given
     if (dnsTxt) {
-      Object.assign(document["proof"], { identity: { location: dnsTxt, type: "DNS-TXT" } });
+      Object.assign(document.proof, { identity: { location: dnsTxt, type: "DNS-TXT" } });
     }
 
     // Digest individual document

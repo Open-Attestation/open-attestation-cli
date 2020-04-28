@@ -81,7 +81,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
-    // throw error when dns-txt is given, but input type is not type file
+    // throw error when dns-txt is given, but document type is not oav3
     if (args.dnsTxt && !args.openAttestationV3) {
       signale.error("DNS-TXT proof can only be be added on v3 documents");
       process.exit(1);
