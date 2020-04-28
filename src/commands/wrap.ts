@@ -13,6 +13,7 @@ interface WrapCommand {
   unwrap: boolean;
   silent?: boolean;
   dnsTxt?: string;
+  documentStore?: string;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -66,6 +67,11 @@ export const builder = (yargs: Argv): Argv =>
       alias: "dt",
       description: "Add DNS-TXT proof to the document(s) to be wrapped",
       type: "string"
+    })
+    .option("document-store", {
+      alias: "ds",
+      description: "Add document store to proof of the document(s) to be wrapped",
+      type: "string"
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
@@ -87,6 +93,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       process.exit(1);
     }
 
+    // throw error when document store is given, but document type is not oav3
+    if (args.documentStore && !args.openAttestationV3) {
+      signale.error("Document store can only be added for v3 documents");
+      process.exit(1);
+    }
+
     // when outputting to stdout, disable signale so that the logs do not interfere
     if (args.silent) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
@@ -101,7 +113,8 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
       unwrap: args.unwrap,
       outputPathType,
-      dnsTxt: args.dnsTxt
+      dnsTxt: args.dnsTxt,
+      documentStore: args.documentStore
     });
 
     signale.success(`Batch Document Root: 0x${merkleRoot}`);

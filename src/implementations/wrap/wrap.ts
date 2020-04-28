@@ -28,7 +28,8 @@ export const digestDocument = async (
   version: "open-attestation/2.0" | "open-attestation/3.0",
   unwrap: boolean,
   schema?: Schema,
-  dnsTxt?: string
+  dnsTxt?: string,
+  documentStore?: string
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
   const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
@@ -43,6 +44,14 @@ export const digestDocument = async (
     // Append DNS proof if given
     if (dnsTxt) {
       Object.assign(document.proof, { identity: { location: dnsTxt, type: "DNS-TXT" } });
+    }
+
+    // Append document store if given
+    if (documentStore) {
+      Object.assign(document.proof, {
+        method: "DOCUMENT_STORE",
+        value: documentStore
+      });
     }
 
     // Digest individual document
@@ -178,6 +187,7 @@ interface WrapArguments {
   unwrap: boolean;
   outputPathType: Output;
   dnsTxt?: string;
+  documentStore?: string;
 }
 
 export const wrap = async ({
@@ -187,7 +197,8 @@ export const wrap = async ({
   version,
   unwrap,
   outputPathType,
-  dnsTxt
+  dnsTxt,
+  documentStore
 }: WrapArguments): Promise<string> => {
   // Create output dir
   if (outputPath) {
@@ -201,7 +212,15 @@ export const wrap = async ({
 
   // Phase 1: For each document, read content, digest and write to file
   const schema = await loadSchema(schemaPath);
-  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema, dnsTxt);
+  const individualDocumentHashes = await digestDocument(
+    inputPath,
+    intermediateDir,
+    version,
+    unwrap,
+    schema,
+    dnsTxt,
+    documentStore
+  );
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
