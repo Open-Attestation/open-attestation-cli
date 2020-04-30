@@ -1,4 +1,4 @@
-import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "./diskUtils";
+import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import { isSchemaValidationError, wrapDocument, utils, getData, SchemaId } from "@govtechsg/open-attestation";

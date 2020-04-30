@@ -1,3 +1,4 @@
+import { SchemaId } from "@govtechsg/open-attestation";
 import { Output, wrap } from "../implementations/wrap";
 import { handler } from "../commands/wrap";
 import fs from "fs";
@@ -458,8 +459,7 @@ describe("wrap", () => {
       });
       it("should allow output as StdOut when input path is a file", async () => {
         let stdOut: any;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const stdOutSpy = jest.spyOn(console, "log").mockImplementation(input => {
+        jest.spyOn(console, "log").mockImplementation(input => {
           stdOut = JSON.parse(JSON.stringify(input));
         });
         fs.copyFileSync(
