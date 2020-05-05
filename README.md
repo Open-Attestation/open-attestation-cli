@@ -213,40 +213,6 @@ rm ./examples/sample-key
 open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
-## Deploying Document Store
-
-Deploys a document store contract on the blockchain
-
-```sh
-open-attestation deploy document-store <store-name> [options]
-```
-
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended)
-
-```sh
-open-attestation deploy document-store "My Name" --network ropsten
-
-✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
-```
-
-Example - with private key file
-
-```sh
-open-attestation deploy document-store "My Name" --network ropsten --key-file ./examples/sample-key
-
-✔  success   Document store deployed at 0xEb9a6a669c1BA0885827f932F7b49Ce5aA5E0Bd5
-```
-
-Example - with in-lined private key
-
-\*_Note that for this method, the private key may be stored in the machine's bash history_
-
-```sh
-open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
-
-✔  success   Document store deployed at 0x4004eAb92033409CBAeC4364ACa2e3A3B6C6448e
-```
-
 ## Help
 
 Run the command with `--help` to get additional information
