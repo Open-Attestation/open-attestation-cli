@@ -1,8 +1,9 @@
 import { Argv } from "yargs";
 import signale from "signale";
-import { wrap, Output } from "../implementations/wrap";
+import { Output, wrap } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir } from "../implementations/wrap/diskUtils";
+import { SchemaId } from "@govtechsg/open-attestation";
 
 interface WrapCommand {
   rawDocumentsPath: string;
@@ -86,7 +87,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       inputPath: args.rawDocumentsPath,
       outputPath,
       schemaPath: args.schema,
-      version: args.openAttestationV3 ? "open-attestation/3.0" : "open-attestation/2.0",
+      version: args.openAttestationV3 ? SchemaId.v3 : SchemaId.v2,
       unwrap: args.unwrap,
       outputPathType
     });
