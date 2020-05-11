@@ -1,7 +1,7 @@
 import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "./diskUtils";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
-import { isSchemaValidationError, wrapDocument, utils, getData } from "@govtechsg/open-attestation";
+import { isSchemaValidationError, wrapDocument, utils, getData, SchemaId } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
@@ -25,7 +25,7 @@ export enum Output {
 export const digestDocument = async (
   undigestedDocumentPath: string,
   digestedDocumentDir: string,
-  version: "open-attestation/2.0" | "open-attestation/3.0",
+  version: SchemaId,
   unwrap: boolean,
   schema?: Schema
 ): Promise<Buffer[]> => {
@@ -168,7 +168,7 @@ interface WrapArguments {
   inputPath: string;
   outputPath?: string;
   schemaPath?: string;
-  version: "open-attestation/2.0" | "open-attestation/3.0";
+  version: SchemaId;
   unwrap: boolean;
   outputPathType: Output;
 }

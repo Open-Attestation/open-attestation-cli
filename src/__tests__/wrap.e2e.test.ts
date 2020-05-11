@@ -1,9 +1,10 @@
-import { wrap, Output } from "../implementations/wrap";
+import { Output, wrap } from "../implementations/wrap";
 import { handler } from "../commands/wrap";
 import fs from "fs";
 import path from "path";
 import rimraf from "rimraf";
 import signale from "signale";
+import { SchemaId } from "@govtechsg/open-attestation";
 
 const fixtureFolderName = "fixture";
 const validFileName = `${fixtureFolderName}/valid-open-attestation-document.json`;
@@ -76,7 +77,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -104,7 +105,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -138,7 +139,7 @@ describe("wrap", () => {
           wrap({
             inputPath: inputDirectory,
             outputPath: outputDirectory,
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -169,7 +170,7 @@ describe("wrap", () => {
           wrap({
             inputPath: inputDirectory,
             outputPath: outputDirectory,
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -192,7 +193,7 @@ describe("wrap", () => {
           wrap({
             inputPath: inputDirectory,
             outputPath: outputDirectory,
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -215,7 +216,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: true,
           outputPathType: Output.Directory
         });
@@ -239,7 +240,7 @@ describe("wrap", () => {
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -261,7 +262,7 @@ describe("wrap", () => {
             inputPath: inputDirectory,
             outputPath: outputDirectory,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -283,7 +284,7 @@ describe("wrap", () => {
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -305,7 +306,7 @@ describe("wrap", () => {
             inputPath: inputDirectory,
             outputPath: outputDirectory,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -324,7 +325,7 @@ describe("wrap", () => {
             inputPath: inputDirectory,
             outputPath: outputDirectory,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -356,7 +357,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
           outputPath: outputDirectoryTwo,
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -378,7 +379,7 @@ describe("wrap", () => {
           wrap({
             inputPath: path.resolve(inputDirectoryTwo, "invalid-open-attestation-document.json"),
             outputPath: outputDirectoryTwo,
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -401,7 +402,7 @@ describe("wrap", () => {
           wrap({
             inputPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
             outputPath: outputDirectoryTwo,
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -424,7 +425,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
           outputPath: outputDirectoryTwo,
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: true,
           outputPathType: Output.Directory
         });
@@ -445,7 +446,7 @@ describe("wrap", () => {
         const merkleRoot = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
           outputPath: fullOutputFilePathTwo,
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.File
         });
@@ -467,7 +468,7 @@ describe("wrap", () => {
         );
         const merkleRoot = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.StdOut
         });
@@ -486,7 +487,7 @@ describe("wrap", () => {
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           outputPath: outputDirectoryTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -508,7 +509,7 @@ describe("wrap", () => {
             inputPath: path.resolve(inputDirectoryTwo, "invalid-custom-schema-document.json"),
             outputPath: outputDirectoryTwo,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -530,7 +531,7 @@ describe("wrap", () => {
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           outputPath: outputDirectoryTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.Directory
         });
@@ -552,7 +553,7 @@ describe("wrap", () => {
             inputPath: path.resolve(inputDirectoryTwo, "invalid-custom-schema-document.json"),
             outputPath: outputDirectoryTwo,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -575,7 +576,7 @@ describe("wrap", () => {
             inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
             outputPath: outputDirectoryTwo,
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
-            version: "open-attestation/3.0",
+            version: SchemaId.v3,
             unwrap: false,
             outputPathType: Output.Directory
           })
@@ -591,7 +592,7 @@ describe("wrap", () => {
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           outputPath: fullOutputFilePathTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: "open-attestation/3.0",
+          version: SchemaId.v3,
           unwrap: false,
           outputPathType: Output.File
         });
