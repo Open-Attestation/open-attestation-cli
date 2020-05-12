@@ -459,7 +459,7 @@ describe("wrap", () => {
       it("should allow output as StdOut when input path is a file", async () => {
         let stdOut: any;
         jest.spyOn(console, "log").mockImplementation(input => {
-          stdOut = JSON.parse(JSON.stringify(input));
+          stdOut = input;
         });
         fs.copyFileSync(
           path.resolve(__dirname, validFileName),
@@ -471,6 +471,8 @@ describe("wrap", () => {
           unwrap: false,
           outputPathType: Output.StdOut
         });
+
+        stdOut = JSON.parse(stdOut);
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(stdOut.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(stdOut.signature.targetHash);

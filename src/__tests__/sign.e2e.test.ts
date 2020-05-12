@@ -155,7 +155,7 @@ describe("sign", () => {
     it("should allow output as StdOut when input path is a file", async () => {
       let stdOut: any;
       jest.spyOn(console, "log").mockImplementation(input => {
-        stdOut = JSON.parse(JSON.stringify(input));
+        stdOut = input;
       });
       fs.copyFileSync(
         path.resolve(__dirname, wrappedFileName),
@@ -168,7 +168,7 @@ describe("sign", () => {
         publicKey: "0x14791697260E4c9A71f18484C9f997B308e59325"
       });
 
-      expect(stdOut).toMatchObject({
+      expect(JSON.parse(stdOut)).toMatchObject({
         proof: {
           proofPurpose: "assertionMethod",
           signature:
