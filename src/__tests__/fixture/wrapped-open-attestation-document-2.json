@@ -10,7 +10,6 @@
     "issuers": [
       {
         "name": "3ceff5d8-dc83-4834-b4cf-845612276291:string:DEMO STORE",
-        "documentStore": "9eb86fbf-d9e8-4416-bd70-1d61ceaa5bb6:string:0x2f60375e8144e16Adf1979936301D8341D58C36C",
         "identityProof": {
           "type": "83f95ed2-956b-42e0-b3d0-192e1135208c:string:DNS-TXT",
           "location": "fb20856a-7af4-4b4a-aa1c-134094e48a7e:string:example.openattestation.com"

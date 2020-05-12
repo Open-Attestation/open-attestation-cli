@@ -1,4 +1,3 @@
-import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import path from "path";
 import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "../utils/disk";
@@ -30,23 +29,9 @@ export const sign = async ({
     mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
   }
 
-  // Create intermediate dir
-  const { name: intermediateDir, removeCallback } = dirSync({
-    unsafeCleanup: true
-  });
-
-  // Copy to intermediate dir
-  const documentFileNames = await documentsInDirectory(rawDocumentsPath);
-  documentFileNames.forEach(file => {
-    const document = readDocumentFile(file);
-    const filename = path.parse(file).base;
-    // Write digested document to new directory
-    writeDocumentToDisk(intermediateDir, filename, document);
-  });
-
-  const tempFolderFileNames = await documentsInDirectory(intermediateDir);
+  const fileNames = await documentsInDirectory(rawDocumentsPath);
   const returnDocuments = Promise.all(
-    tempFolderFileNames.map(async file => {
+    fileNames.map(async file => {
       const document = readDocumentFile(file);
       const signedDocument = await oaSign(document, {
         privateKey: privateKey,
@@ -66,8 +51,5 @@ export const sign = async ({
     })
   );
 
-  removeCallback();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
   return returnDocuments;
 };

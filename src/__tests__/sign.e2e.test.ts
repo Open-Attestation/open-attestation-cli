@@ -132,7 +132,7 @@ describe("sign", () => {
       );
 
       await sign({
-        rawDocumentsPath: inputDirectoryTwo,
+        rawDocumentsPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
         outputPath: fullOutputFilePath,
         outputPathType: Output.File,
         privateKey: "0x0123456789012345678901234567890123456789012345678901234567890123",
@@ -162,7 +162,7 @@ describe("sign", () => {
         path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
       );
       await sign({
-        rawDocumentsPath: inputDirectoryTwo,
+        rawDocumentsPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
         outputPathType: Output.StdOut,
         privateKey: "0x0123456789012345678901234567890123456789012345678901234567890123",
         publicKey: "0x14791697260E4c9A71f18484C9f997B308e59325"
