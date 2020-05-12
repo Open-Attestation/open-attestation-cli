@@ -2,7 +2,7 @@ import { Argv } from "yargs";
 import signale from "signale";
 import { Output, wrap } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
-import { isDir } from "../implementations/wrap/diskUtils";
+import { isDir } from "../implementations/utils/disk";
 import { SchemaId } from "@govtechsg/open-attestation";
 
 interface WrapCommand {

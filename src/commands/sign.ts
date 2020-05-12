@@ -56,19 +56,14 @@ export const handler = async (args: SignCommand): Promise<void> => {
       process.exit(1);
     }
 
-    if (!outputPath) {
-      signale.error("An output path type must be chosen, use either --output-dir or --output-file");
-      process.exit(1);
-    } else {
-      await sign({
-        rawDocumentsPath: args.rawDocumentsPath,
-        outputPath,
-        outputPathType,
-        privateKey: args.privateKey,
-        publicKey: args.publicKey
-      });
-      signale.success(`Proof block appended`);
-    }
+    await sign({
+      rawDocumentsPath: args.rawDocumentsPath,
+      outputPath,
+      outputPathType,
+      privateKey: args.privateKey,
+      publicKey: args.publicKey
+    });
+    signale.success(`Proof block appended`);
   } catch (err) {
     signale.error(err.message);
     process.exit(1);
