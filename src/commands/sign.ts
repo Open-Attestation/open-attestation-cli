@@ -31,7 +31,7 @@ export const builder = (yargs: Argv): Argv =>
       type: "string"
     })
     .option("public-key", {
-      description: "Public key to sign document(s) with",
+      description: "Public key, added to the document, used to verify the signature is valid",
       type: "string"
     });
 
