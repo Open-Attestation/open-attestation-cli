@@ -458,9 +458,8 @@ describe("wrap", () => {
       });
       it("should allow output as StdOut when input path is a file", async () => {
         let stdOut: any;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const stdOutSpy = jest.spyOn(console, "log").mockImplementation(input => {
-          stdOut = JSON.parse(JSON.stringify(input));
+        jest.spyOn(console, "log").mockImplementation(input => {
+          stdOut = input;
         });
         fs.copyFileSync(
           path.resolve(__dirname, validFileName),
@@ -472,6 +471,8 @@ describe("wrap", () => {
           unwrap: false,
           outputPathType: Output.StdOut
         });
+
+        stdOut = JSON.parse(stdOut);
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(stdOut.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(stdOut.signature.targetHash);

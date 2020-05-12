@@ -2,7 +2,7 @@ import { Argv } from "yargs";
 import signale from "signale";
 import { VerifyCommand } from "./command-types";
 import { isValid, VerificationFragment, verify } from "@govtechsg/oa-verify";
-import { readDocumentFile } from "../implementations/wrap/diskUtils";
+import { readDocumentFile } from "../implementations/utils/disk";
 
 export const command = "verify [options]";
 
