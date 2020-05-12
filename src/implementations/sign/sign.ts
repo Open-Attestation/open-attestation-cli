@@ -45,7 +45,7 @@ export const sign = async ({
       } else if (outputPath && outputPathType === Output.Directory) {
         writeDocumentToDisk(outputPath, path.parse(file).base, signedDocument);
       } else {
-        console.log(signedDocument); // print to console, no file created
+        console.log(JSON.stringify(signedDocument, undefined, 2)); // print to console, no file created
       }
       return signedDocument;
     })

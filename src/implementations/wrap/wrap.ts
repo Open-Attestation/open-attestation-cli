@@ -100,7 +100,7 @@ export const appendProofToDocuments = async (
     } else if (outputPathType === Output.Directory && digestedDocumentPath) {
       writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
     } else {
-      console.log(document); // print to console, no file created
+      console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
     }
   });
 
