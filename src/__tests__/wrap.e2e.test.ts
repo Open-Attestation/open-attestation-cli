@@ -1,4 +1,3 @@
-import { SchemaId } from "@govtechsg/open-attestation";
 import { Output, wrap } from "../implementations/wrap";
 import { handler } from "../commands/wrap";
 import fs from "fs";
