@@ -18,3 +18,13 @@ export interface DeployTitleEscrowCreatorCommand {
   key?: string;
   keyFile?: string;
 }
+
+export interface DeployTitleEscrowCommand {
+  tokenRegistryAddress: string;
+  beneficiary: string;
+  holder: string;
+  titleEscrowFactoryAddress: string;
+  network: string;
+  key?: string;
+  keyFile?: string;
+}

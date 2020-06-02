@@ -2,13 +2,11 @@ import { deployTitleEscrowCreator } from "./title-escrow-creator";
 import { join } from "path";
 import { TitleEscrowCreatorFactory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
-import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { DeployTitleEscrowCreatorCommand } from "../../../commands/deploy/deploy.types";
 
 jest.mock("@govtechsg/token-registry");
 
-const deployParams: DeployTokenRegistryCommand = {
-  registryName: "Test",
-  registrySymbol: "Tst",
+const deployParams: DeployTitleEscrowCreatorCommand = {
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001"
 };
