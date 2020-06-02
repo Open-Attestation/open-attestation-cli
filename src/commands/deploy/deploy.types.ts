@@ -12,3 +12,9 @@ export interface DeployTokenRegistryCommand {
   key?: string;
   keyFile?: string;
 }
+
+export interface DeployTitleEscrowCreatorCommand {
+  network: string;
+  key?: string;
+  keyFile?: string;
+}
