@@ -5,6 +5,7 @@ import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "ethers/providers";
 import { DeployTitleEscrowCommand } from "../../../commands/deploy/deploy.types";
+import { validateAddress } from "../../utils/validation";
 
 const { trace } = getLogger("deploy:title-escrow");
 
@@ -17,6 +18,10 @@ export const deployTitleEscrow = async ({
   key,
   keyFile
 }: DeployTitleEscrowCommand): Promise<TransactionReceipt> => {
+  validateAddress(tokenRegistry);
+  validateAddress(beneficiary);
+  validateAddress(holder);
+  validateAddress(titleEscrowFactory);
   const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   const factory = new TitleEscrowFactory(new Wallet(privateKey, provider));

@@ -26,7 +26,7 @@ describe("token-registry", () => {
       mockedTokenFactory.mockReset();
       mockedDeploy.mockReset();
       mockedDeploy.mockResolvedValue({
-        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contract: "contractAddress" }) }
+        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) }
       });
     });
 
