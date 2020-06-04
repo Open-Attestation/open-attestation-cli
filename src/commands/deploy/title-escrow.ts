@@ -6,25 +6,29 @@ import { DeployTitleEscrowCommand } from "./deploy.types";
 
 const { trace } = getLogger("deploy:title-escrow");
 
-export const command = "title-escrow <token-registry> <beneficiary> <holder> <title-escrow-factory> [options]";
+export const command = "title-escrow [options]";
 
 export const describe = "Deploys a title escrow on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   yargs
-    .positional("token-registry", {
+    .option("token-registry", {
+      alias: "r",
       description: "Address of ERC721 contract that the escrow will receive the token from",
       normalize: true
     })
-    .positional("beneficiary", {
+    .option("beneficiary", {
+      alias: "b",
       description: "Beneficiary address",
       normalize: true
     })
-    .positional("holder", {
+    .option("holder", {
+      alias: "h",
       description: "Holder address",
       normalize: true
     })
-    .positional("title-escrow-factory", {
+    .option("title-escrow-factory", {
+      alias: "c",
       description: "Address of title escrow creator/factory",
       normalize: true
     })
