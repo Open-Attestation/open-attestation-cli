@@ -20,10 +20,10 @@ export interface DeployTitleEscrowCreatorCommand {
 }
 
 export interface DeployTitleEscrowCommand {
-  tokenRegistryAddress: string;
+  tokenRegistry: string;
   beneficiary: string;
   holder: string;
-  titleEscrowFactoryAddress: string;
+  titleEscrowFactory: string;
   network: string;
   key?: string;
   keyFile?: string;

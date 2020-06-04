@@ -7,10 +7,10 @@ import { DeployTitleEscrowCommand } from "../../../commands/deploy/deploy.types"
 jest.mock("@govtechsg/token-registry");
 
 const deployParams: DeployTitleEscrowCommand = {
-  tokenRegistryAddress: "0x0000000000000000000000000000000000000000",
+  tokenRegistry: "0x0000000000000000000000000000000000000000",
   beneficiary: "0x0000000000000000000000000000000000000001",
   holder: "0x0000000000000000000000000000000000000002",
-  titleEscrowFactoryAddress: "0x0000000000000000000000000000000000000003",
+  titleEscrowFactory: "0x0000000000000000000000000000000000000003",
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001"
 };
@@ -26,7 +26,7 @@ describe("token-registry", () => {
       mockedTokenFactory.mockReset();
       mockedDeploy.mockReset();
       mockedDeploy.mockResolvedValue({
-        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) }
+        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contract: "contractAddress" }) }
       });
     });
 
@@ -34,10 +34,10 @@ describe("token-registry", () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
       await deployTitleEscrow({
-        tokenRegistryAddress: "0x0000000000000000000000000000000000000000",
+        tokenRegistry: "0x0000000000000000000000000000000000000000",
         beneficiary: "0x0000000000000000000000000000000000000001",
         holder: "0x0000000000000000000000000000000000000002",
-        titleEscrowFactoryAddress: "0x0000000000000000000000000000000000000003",
+        titleEscrowFactory: "0x0000000000000000000000000000000000000003",
         network: "ropsten"
       });
 
@@ -48,10 +48,10 @@ describe("token-registry", () => {
     it("should take in the key from key file", async () => {
       await deployTitleEscrow({
         network: "ropsten",
-        tokenRegistryAddress: "0x0000000000000000000000000000000000000000",
+        tokenRegistry: "0x0000000000000000000000000000000000000000",
         beneficiary: "0x0000000000000000000000000000000000000001",
         holder: "0x0000000000000000000000000000000000000002",
-        titleEscrowFactoryAddress: "0x0000000000000000000000000000000000000003",
+        titleEscrowFactory: "0x0000000000000000000000000000000000000003",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key")
       });
 
@@ -84,10 +84,10 @@ describe("token-registry", () => {
       await expect(
         deployTitleEscrow({
           network: "ropsten",
-          tokenRegistryAddress: "0x0000000000000000000000000000000000000000",
+          tokenRegistry: "0x0000000000000000000000000000000000000000",
           beneficiary: "0x0000000000000000000000000000000000000001",
           holder: "0x0000000000000000000000000000000000000002",
-          titleEscrowFactoryAddress: "0x0000000000000000000000000000000000000003"
+          titleEscrowFactory: "0x0000000000000000000000000000000000000003"
         })
       ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
     });

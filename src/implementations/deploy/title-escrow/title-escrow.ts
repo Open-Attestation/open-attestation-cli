@@ -9,10 +9,10 @@ import { DeployTitleEscrowCommand } from "../../../commands/deploy/deploy.types"
 const { trace } = getLogger("deploy:title-escrow");
 
 export const deployTitleEscrow = async ({
-  tokenRegistryAddress,
+  tokenRegistry,
   beneficiary,
   holder,
-  titleEscrowFactoryAddress,
+  titleEscrowFactory,
   network,
   key,
   keyFile
@@ -21,7 +21,7 @@ export const deployTitleEscrow = async ({
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   const factory = new TitleEscrowFactory(new Wallet(privateKey, provider));
   signale.await(`Sending transaction to pool`);
-  const transaction = await factory.deploy(tokenRegistryAddress, beneficiary, holder, titleEscrowFactoryAddress);
+  const transaction = await factory.deploy(tokenRegistry, beneficiary, holder, titleEscrowFactory);
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);
