@@ -21,38 +21,45 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 This command process all documents in the input directory and issue all of them in a single
 batch. It will then add the issuance proofs to the individual documents.
 
-```bash
-open-attestation wrap <PathToDocumentsOrFile> <PathToWrappedDocuments>
-```
-
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ --oav3
+open-attestation wrap ./examples/raw-documents/example.0.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
 
-You can also set a single document as input
+The command will display the result in the console. If you need to save the file you can use the `--output-file` file.
 
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/example.0.json ./tmp/wrapped-documents/ --schema ./examples/schema.json --oav3
+open-attestation wrap ./examples/raw-documents/example.0.json --output-file ./examples/wrapped-documents/example.0.json
 
 ✔  success   Batch Document Root: 0x5d318c8083aac18f8075ca2a2eac74b06f2cc37d6ccad680c7c80c9bb36f7be1
 ```
+
+If you need to wrap a folder you will need to provide the `--output-dir` options to specify in which folder the documents must be wrapped in.
+
+Example:
+
+```bash
+open-attestation wrap ./examples/raw-documents --output-dir ./examples/wrapped-documents
+
+✔  success   Batch Document Root: 0x5d318c8083aac18f8075ca2a2eac74b06f2cc37d6ccad680c7c80c9bb36f7be1
+```
+
 
 You can also provide an optional JSON schema document to perform extra check on the documents
 
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ --schema ./examples/schema.json --oav3
+open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --schema ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ -s ./examples/schema.json --oav3
+open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ -s ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -62,20 +69,29 @@ The JSON schema parameter also allow for http endpoint returning valid JSON sche
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json --oav3
+open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json --oav3
+open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
+```
+
+You can also re-wrap a document by editing a wrapped document content and using the `--unwrap` option:
+
+```bash
+open-attestation wrap ./examples/raw-documents/example.0.json --output-file ./examples/wrapped-documents/example.0.json
+
+# edit the recipient name in ./tmp/wrapped-documents/example.0.json for instance for Your Name to Another Name
+open-attestation wrap ./examples/wrapped-documents/example.0.json --of ./examples/wrapped-documents/example.1.json --unwrap
 ```
 
 By default the CLI will use open-attestation schema v2 but you can opt in for open-attestation schema v3 using `open-attestation-v3` option:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ --open-attestation-v3
-open-attestation wrap ./examples/raw-documents/ ./tmp/wrapped-documents/ --oav3
+open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --open-attestation-v3
+open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
 ## Document privacy filter
