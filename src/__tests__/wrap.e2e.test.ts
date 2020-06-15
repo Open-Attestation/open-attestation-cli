@@ -74,7 +74,7 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           version: SchemaId.v3,
@@ -85,6 +85,7 @@ describe("wrap", () => {
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -102,7 +103,7 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryName}/valid-open-attestation-document-3.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           version: SchemaId.v3,
@@ -118,6 +119,7 @@ describe("wrap", () => {
         const file3 = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-open-attestation-document-3.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file1.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file2.signature.merkleRoot);
@@ -213,7 +215,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
         );
 
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           version: SchemaId.v3,
@@ -225,6 +227,7 @@ describe("wrap", () => {
           fs.readFileSync(`${outputDirectory}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
         );
 
+        expect(documentStore).toStrictEqual("0xb53499ee758352fAdDfCed863d9ac35C809E2F20");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -236,7 +239,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
@@ -248,6 +251,7 @@ describe("wrap", () => {
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-custom-schema-document.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -280,7 +284,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryName}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: inputDirectory,
           outputPath: outputDirectory,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
@@ -292,6 +296,7 @@ describe("wrap", () => {
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectory}/valid-custom-schema-document.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -354,7 +359,7 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
           outputPath: outputDirectoryTwo,
           version: SchemaId.v3,
@@ -365,6 +370,7 @@ describe("wrap", () => {
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/valid-open-attestation-document.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -422,7 +428,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
         );
 
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
           outputPath: outputDirectoryTwo,
           version: SchemaId.v3,
@@ -434,6 +440,7 @@ describe("wrap", () => {
           fs.readFileSync(`${outputDirectoryTwo}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
         );
 
+        expect(documentStore).toStrictEqual("0xb53499ee758352fAdDfCed863d9ac35C809E2F20");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -443,7 +450,7 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
           outputPath: fullOutputFilePathTwo,
           version: SchemaId.v3,
@@ -452,6 +459,7 @@ describe("wrap", () => {
         });
 
         const file = JSON.parse(fs.readFileSync(fullOutputFilePathTwo, { encoding: "utf8" }));
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -465,7 +473,7 @@ describe("wrap", () => {
           path.resolve(__dirname, validFileName),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-open-attestation-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-open-attestation-document.json"),
           version: SchemaId.v3,
           unwrap: false,
@@ -473,6 +481,7 @@ describe("wrap", () => {
         });
 
         stdOut = JSON.parse(stdOut);
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(stdOut.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(stdOut.signature.targetHash);
@@ -484,7 +493,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           outputPath: outputDirectoryTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
@@ -496,6 +505,7 @@ describe("wrap", () => {
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/valid-custom-schema-document.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -528,7 +538,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           outputPath: outputDirectoryTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
@@ -540,6 +550,7 @@ describe("wrap", () => {
         const file = JSON.parse(
           fs.readFileSync(`${outputDirectoryTwo}/valid-custom-schema-document.json`, { encoding: "utf8" })
         );
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);
@@ -589,7 +600,7 @@ describe("wrap", () => {
           path.resolve(__dirname, `${fixtureFolderName}/valid-custom-schema-document.json`),
           path.resolve(__dirname, `${inputDirectoryNameTwo}/valid-custom-schema-document.json`)
         );
-        const merkleRoot = await wrap({
+        const { merkleRoot, documentStore } = await wrap({
           inputPath: path.resolve(inputDirectoryTwo, "valid-custom-schema-document.json"),
           outputPath: fullOutputFilePathTwo,
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
@@ -599,6 +610,7 @@ describe("wrap", () => {
         });
 
         const file = JSON.parse(fs.readFileSync(fullOutputFilePathTwo, { encoding: "utf8" }));
+        expect(documentStore).toStrictEqual("0x9178F546D3FF57D7A6352bD61B80cCCD46199C2d");
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.signature.targetHash);

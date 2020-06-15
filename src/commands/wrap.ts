@@ -4,6 +4,7 @@ import { Output, wrap } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir } from "../implementations/utils/disk";
 import { SchemaId } from "@govtechsg/open-attestation";
+import QrCode from "qrcode";
 
 interface WrapCommand {
   rawDocumentsPath: string;
@@ -13,6 +14,7 @@ interface WrapCommand {
   openAttestationV3: boolean;
   unwrap: boolean;
   silent?: boolean;
+  qrCode?: boolean;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -58,9 +60,13 @@ export const builder = (yargs: Argv): Argv =>
       conflicts: "output-file"
     })
     .option("silent", {
-      alias: "silent",
       description: "Disable console outputs when outputting to stdout",
       type: "boolean"
+    })
+    .option("qr-code", {
+      description: "Print the Merkle Root has a qr code",
+      type: "boolean",
+      default: false
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
@@ -83,7 +89,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       signale.disable();
     }
 
-    const merkleRoot = await wrap({
+    const { merkleRoot, documentStore } = await wrap({
       inputPath: args.rawDocumentsPath,
       outputPath,
       schemaPath: args.schema,
@@ -93,7 +99,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
     });
 
     signale.success(`Batch Document Root: 0x${merkleRoot}`);
-
+    if (args.qrCode) {
+      const qrcode = await QrCode.toString(`ethereum:${documentStore}/issue?document=0x${merkleRoot}`, {
+        type: "terminal"
+      });
+      console.log(qrcode);
+    }
     return merkleRoot;
   } catch (err) {
     signale.error(err.message);
