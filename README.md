@@ -143,6 +143,27 @@ open-attestation deploy document-store "My Name" --network ropsten
 ✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
+## Token registry
+
+### Issue
+
+Issue a hash to a token registry deployed on the blockchain
+
+```bash
+open-attestation token-registry issue --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+
+```bash
+open-attestation token-registry mint --network ropsten --address 6133f580aE903b8e79845340375cCfd78a45FF35 --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c
+
+
+✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
+`mint` can be used instead of issue and will be strictly equivalent.
+
 ## Document Store
 
 ### Issue
