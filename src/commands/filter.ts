@@ -25,10 +25,3 @@ export const builder = (yargs: Argv): Argv =>
 export const handler = (args: FilterCommand): void => {
   return filter(args.source, args.destination, args.fields);
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

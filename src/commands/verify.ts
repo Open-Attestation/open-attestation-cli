@@ -74,10 +74,3 @@ export const handler = async ({ document, network, verbose }: VerifyCommand): Pr
     }
   } catch (err) {}
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

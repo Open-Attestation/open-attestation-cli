@@ -52,10 +52,3 @@ export const handler = async (args: any): Promise<string | undefined> => {
     error(e.message);
   }
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

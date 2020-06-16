@@ -24,10 +24,3 @@ export const builder = (yargs: Argv): Argv =>
 export const handler = (args: EncryptCommand): void => {
   return encrypt(args.wrappedFile, args.encryptedFile);
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};
