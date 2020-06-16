@@ -45,10 +45,3 @@ export const handler = async (args: DeployTitleEscrowCreatorCommand): Promise<st
     error(e.message);
   }
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

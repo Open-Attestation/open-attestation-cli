@@ -9,10 +9,3 @@ export const describe = "Invoke a function over a document store smart contract 
 export const builder = (yargs: Argv): Argv => yargs.commandDir("document-store", { extensions: ["ts", "js"] });
 
 export const handler = (): void => {};
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

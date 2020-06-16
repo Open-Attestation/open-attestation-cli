@@ -49,10 +49,3 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
     error(e.message);
   }
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

@@ -105,10 +105,3 @@ export const handler = async (args: WrapCommand): Promise<string> => {
     process.exit(1);
   }
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

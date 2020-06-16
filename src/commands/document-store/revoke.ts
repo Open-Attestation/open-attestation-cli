@@ -59,10 +59,3 @@ export const handler = async (args: DocumentStoreRevokeCommand): Promise<string 
     error(e.message);
   }
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};

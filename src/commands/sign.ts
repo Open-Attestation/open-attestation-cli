@@ -69,10 +69,3 @@ export const handler = async (args: SignCommand): Promise<void> => {
     process.exit(1);
   }
 };
-
-export default {
-  command,
-  describe,
-  builder,
-  handler
-};
