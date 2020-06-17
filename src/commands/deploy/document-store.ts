@@ -3,7 +3,7 @@ import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
-import { withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:document-store");
@@ -13,11 +13,13 @@ export const command = "document-store <store-name> [options]";
 export const describe = "Deploys a document store contract on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndKeyOption(
-    yargs.positional("store-name", {
-      description: "Name of the store",
-      normalize: true
-    })
+  withGasPriceOption(
+    withNetworkAndKeyOption(
+      yargs.positional("store-name", {
+        description: "Name of the store",
+        normalize: true
+      })
+    )
   );
 
 export const handler = async (args: DeployDocumentStoreCommand): Promise<string | undefined> => {

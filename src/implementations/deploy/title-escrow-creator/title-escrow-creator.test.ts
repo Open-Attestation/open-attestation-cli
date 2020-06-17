@@ -8,7 +8,8 @@ jest.mock("@govtechsg/token-registry");
 
 const deployParams: DeployTitleEscrowCreatorCommand = {
   network: "ropsten",
-  key: "0000000000000000000000000000000000000000000000000000000000000001"
+  key: "0000000000000000000000000000000000000000000000000000000000000001",
+  gasPriceScale: 1
 };
 
 describe("token-registry", () => {
@@ -30,7 +31,8 @@ describe("token-registry", () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
       await deployTitleEscrowCreator({
-        network: "ropsten"
+        network: "ropsten",
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -40,7 +42,8 @@ describe("token-registry", () => {
     it("should take in the key from key file", async () => {
       await deployTitleEscrowCreator({
         network: "ropsten",
-        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key")
+        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -53,7 +56,7 @@ describe("token-registry", () => {
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
-      expect(mockedDeploy.mock.calls[0]).toEqual([]);
+      expect(mockedDeploy.mock.calls[0][0].gasPrice.toString()).toStrictEqual("1000000000");
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
@@ -66,7 +69,8 @@ describe("token-registry", () => {
       delete process.env.OA_PRIVATE_KEY;
       await expect(
         deployTitleEscrowCreator({
-          network: "ropsten"
+          network: "ropsten",
+          gasPriceScale: 1
         })
       ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
     });

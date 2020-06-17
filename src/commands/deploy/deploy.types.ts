@@ -1,17 +1,17 @@
-import { NetworkAndKeyOption } from "../shared";
+import { GasOption, NetworkAndKeyOption } from "../shared";
 
-export interface DeployDocumentStoreCommand extends NetworkAndKeyOption {
+export interface DeployDocumentStoreCommand extends NetworkAndKeyOption, GasOption {
   storeName: string;
 }
 
-export interface DeployTokenRegistryCommand extends NetworkAndKeyOption {
+export interface DeployTokenRegistryCommand extends NetworkAndKeyOption, GasOption {
   registryName: string;
   registrySymbol: string;
 }
 
-export type DeployTitleEscrowCreatorCommand = NetworkAndKeyOption;
+export interface DeployTitleEscrowCreatorCommand extends NetworkAndKeyOption, GasOption {}
 
-export interface DeployTitleEscrowCommand extends NetworkAndKeyOption {
+export interface DeployTitleEscrowCommand extends NetworkAndKeyOption, GasOption {
   tokenRegistry: string;
   beneficiary: string;
   holder: string;

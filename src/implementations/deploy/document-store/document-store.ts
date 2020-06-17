@@ -11,13 +11,15 @@ export const deployDocumentStore = async ({
   storeName,
   network,
   key,
-  keyFile
+  keyFile,
+  gasPriceScale
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+  const gasPrice = await provider.getGasPrice();
   const factory = new DocumentStoreFactory(new Wallet(privateKey, provider));
   signale.await(`Sending transaction to pool`);
-  const transaction = await factory.deploy(storeName);
+  const transaction = await factory.deploy(storeName, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);

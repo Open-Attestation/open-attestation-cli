@@ -3,7 +3,7 @@ import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { issueToDocumentStore } from "../../implementations/document-store/issue";
 import { DocumentStoreIssueCommand } from "./document-store-command.type";
-import { withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("document-store:issue");
@@ -13,20 +13,22 @@ export const command = "issue [options]";
 export const describe = "Issue a hash to a document store deployed on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndKeyOption(
-    yargs
-      .option("address", {
-        alias: "a",
-        description: "Address to issue the hash to",
-        type: "string",
-        demandOption: true
-      })
-      .option("hash", {
-        alias: "h",
-        description: "Hash to add to the document store",
-        type: "string",
-        demandOption: true
-      })
+  withGasPriceOption(
+    withNetworkAndKeyOption(
+      yargs
+        .option("address", {
+          alias: "a",
+          description: "Address to issue the hash to",
+          type: "string",
+          demandOption: true
+        })
+        .option("hash", {
+          alias: "h",
+          description: "Hash to add to the document store",
+          type: "string",
+          demandOption: true
+        })
+    )
   );
 
 export const handler = async (args: DocumentStoreIssueCommand): Promise<string | undefined> => {

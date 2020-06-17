@@ -3,7 +3,7 @@ import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { issueToTokenRegistry } from "../../implementations/token-registry/issue";
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
-import { withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("token-registry:issue");
@@ -13,24 +13,26 @@ export const command = "issue [options]";
 export const describe = "Issue a hash to a token registry deployed on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndKeyOption(
-    yargs
-      .option("address", {
-        alias: "a",
-        description: "Address of the token registry to issue the hash to",
-        type: "string",
-        demandOption: true
-      })
-      .option("tokenId", {
-        description: "Hash to add to the token registry",
-        type: "string",
-        demandOption: true
-      })
-      .option("to", {
-        description: "Initial recipient of the tokenId",
-        type: "string",
-        demandOption: true
-      })
+  withGasPriceOption(
+    withNetworkAndKeyOption(
+      yargs
+        .option("address", {
+          alias: "a",
+          description: "Address of the token registry to issue the hash to",
+          type: "string",
+          demandOption: true
+        })
+        .option("tokenId", {
+          description: "Hash to add to the token registry",
+          type: "string",
+          demandOption: true
+        })
+        .option("to", {
+          description: "Initial recipient of the tokenId",
+          type: "string",
+          demandOption: true
+        })
+    )
   );
 
 export const handler = async (args: TokenRegistryIssueCommand): Promise<string | undefined> => {
