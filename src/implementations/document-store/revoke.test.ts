@@ -10,7 +10,8 @@ const deployParams: DocumentStoreRevokeCommand = {
   hash: "0xabcd",
   address: "0x1234",
   network: "ropsten",
-  key: "0000000000000000000000000000000000000000000000000000000000000001"
+  key: "0000000000000000000000000000000000000000000000000000000000000001",
+  gasPriceScale: 1
 };
 
 // TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
@@ -43,7 +44,8 @@ describe("document-store", () => {
       await revokeToDocumentStore({
         hash: "0xabcd",
         address: "0x1234",
-        network: "ropsten"
+        network: "ropsten",
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -55,7 +57,8 @@ describe("document-store", () => {
         hash: "0xabcd",
         address: "0x1234",
         network: "ropsten",
-        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key")
+        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -85,7 +88,8 @@ describe("document-store", () => {
         revokeToDocumentStore({
           hash: "0xabcd",
           address: "0x1234",
-          network: "ropsten"
+          network: "ropsten",
+          gasPriceScale: 1
         })
       ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
     });

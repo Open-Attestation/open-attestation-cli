@@ -10,7 +10,8 @@ const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
   registrySymbol: "Tst",
   network: "ropsten",
-  key: "0000000000000000000000000000000000000000000000000000000000000001"
+  key: "0000000000000000000000000000000000000000000000000000000000000001",
+  gasPriceScale: 1
 };
 
 describe("token-registry", () => {
@@ -34,7 +35,8 @@ describe("token-registry", () => {
       await deployTokenRegistry({
         registryName: "Test",
         registrySymbol: "Tst",
-        network: "ropsten"
+        network: "ropsten",
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -46,7 +48,8 @@ describe("token-registry", () => {
         registryName: "Test",
         registrySymbol: "Tst",
         network: "ropsten",
-        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key")
+        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -59,7 +62,9 @@ describe("token-registry", () => {
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
-      expect(mockedDeploy.mock.calls[0]).toEqual([deployParams.registryName, deployParams.registrySymbol]);
+      expect(mockedDeploy.mock.calls[0][0]).toEqual(deployParams.registryName);
+      expect(mockedDeploy.mock.calls[0][1]).toEqual(deployParams.registrySymbol);
+      expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual("1000000000");
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
@@ -74,7 +79,8 @@ describe("token-registry", () => {
         deployTokenRegistry({
           registryName: "Test",
           registrySymbol: "Tst",
-          network: "ropsten"
+          network: "ropsten",
+          gasPriceScale: 1
         })
       ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
     });

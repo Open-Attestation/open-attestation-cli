@@ -12,12 +12,16 @@ export const revokeToDocumentStore = async ({
   hash,
   network,
   key,
-  keyFile
+  keyFile,
+  gasPriceScale
 }: DocumentStoreRevokeCommand): Promise<{ transactionHash: string }> => {
   const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+  const gasPrice = await provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const transaction = await DocumentStoreFactory.connect(address, new Wallet(privateKey, provider)).revoke(hash);
+  const transaction = await DocumentStoreFactory.connect(address, new Wallet(privateKey, provider)).revoke(hash, {
+    gasPrice: gasPrice.mul(gasPriceScale)
+  });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

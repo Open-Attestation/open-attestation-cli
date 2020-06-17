@@ -3,7 +3,7 @@ import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { revokeToDocumentStore } from "../../implementations/document-store/revoke";
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
-import { withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("document-store:revoke");
@@ -13,20 +13,22 @@ export const command = "revoke [options]";
 export const describe = "Revoke a hash to a document store deployed on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndKeyOption(
-    yargs
-      .option("address", {
-        alias: "a",
-        description: "Address to revoke the hash to",
-        type: "string",
-        demandOption: true
-      })
-      .option("hash", {
-        alias: "h",
-        description: "Hash to revoke in the document store",
-        type: "string",
-        demandOption: true
-      })
+  withGasPriceOption(
+    withNetworkAndKeyOption(
+      yargs
+        .option("address", {
+          alias: "a",
+          description: "Address to revoke the hash to",
+          type: "string",
+          demandOption: true
+        })
+        .option("hash", {
+          alias: "h",
+          description: "Hash to revoke in the document store",
+          type: "string",
+          demandOption: true
+        })
+    )
   );
 
 export const handler = async (args: DocumentStoreRevokeCommand): Promise<string | undefined> => {

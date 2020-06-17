@@ -9,6 +9,10 @@ export interface KeyOption {
   keyFile?: string;
 }
 
+export interface GasOption {
+  gasPriceScale: number;
+}
+
 export interface NetworkAndKeyOption extends NetworkOption, KeyOption {}
 
 export const withNetworkOption = (yargs: Argv): Argv =>
@@ -17,6 +21,13 @@ export const withNetworkOption = (yargs: Argv): Argv =>
     choices: ["mainnet", "ropsten", "rinkeby"],
     default: "mainnet",
     description: "Ethereum network to deploy to"
+  });
+export const withGasPriceOption = (yargs: Argv): Argv =>
+  yargs.option("gas-price-scale", {
+    alias: "gps",
+    type: "number",
+    default: 1,
+    description: "Gas price scale to apply to the estimated gas price"
   });
 export const withKeyOption = (yargs: Argv): Argv =>
   yargs

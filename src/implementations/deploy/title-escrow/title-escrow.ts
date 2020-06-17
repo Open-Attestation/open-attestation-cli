@@ -16,7 +16,8 @@ export const deployTitleEscrow = async ({
   titleEscrowFactory,
   network,
   key,
-  keyFile
+  keyFile,
+  gasPriceScale
 }: DeployTitleEscrowCommand): Promise<TransactionReceipt> => {
   validateAddress(tokenRegistry);
   validateAddress(beneficiary);
@@ -24,9 +25,13 @@ export const deployTitleEscrow = async ({
   validateAddress(titleEscrowFactory);
   const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+  const gasPrice = await provider.getGasPrice();
+
   const factory = new TitleEscrowFactory(new Wallet(privateKey, provider));
   signale.await(`Sending transaction to pool`);
-  const transaction = await factory.deploy(tokenRegistry, beneficiary, holder, titleEscrowFactory);
+  const transaction = await factory.deploy(tokenRegistry, beneficiary, holder, titleEscrowFactory, {
+    gasPrice: gasPrice.mul(gasPriceScale)
+  });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);

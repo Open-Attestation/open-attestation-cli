@@ -13,15 +13,17 @@ export const issueToTokenRegistry = async ({
   tokenId,
   network,
   key,
-  keyFile
+  keyFile,
+  gasPriceScale
 }: TokenRegistryIssueCommand): Promise<{ transactionHash: string }> => {
   const privateKey = getPrivateKey({ key, keyFile });
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+  const gasPrice = await provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const erc721 = await TradeTrustERC721Factory.connect(address, new Wallet(privateKey, provider));
   // must invoke the function manually, the lib doesn't handle overload functions
   // https://github.com/ethereum-ts/TypeChain/issues/150
-  const transaction = await erc721["safeMint(address,uint256)"](to, tokenId);
+  const transaction = await erc721["safeMint(address,uint256)"](to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

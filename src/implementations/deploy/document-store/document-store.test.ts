@@ -9,7 +9,8 @@ jest.mock("@govtechsg/document-store");
 const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",
   network: "ropsten",
-  key: "0000000000000000000000000000000000000000000000000000000000000001"
+  key: "0000000000000000000000000000000000000000000000000000000000000001",
+  gasPriceScale: 1
 };
 
 describe("document-store", () => {
@@ -33,7 +34,8 @@ describe("document-store", () => {
 
       await deployDocumentStore({
         storeName: "Test",
-        network: "ropsten"
+        network: "ropsten",
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -44,7 +46,8 @@ describe("document-store", () => {
       await deployDocumentStore({
         storeName: "Test",
         network: "ropsten",
-        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key")
+        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
+        gasPriceScale: 1
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -57,7 +60,8 @@ describe("document-store", () => {
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
-      expect(mockedDeploy.mock.calls[0]).toEqual([deployParams.storeName]);
+      expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
+      expect(mockedDeploy.mock.calls[0][1].gasPrice.toString()).toStrictEqual("1000000000");
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
@@ -70,7 +74,8 @@ describe("document-store", () => {
       await expect(
         deployDocumentStore({
           storeName: "Test",
-          network: "ropsten"
+          network: "ropsten",
+          gasPriceScale: 1
         })
       ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
     });

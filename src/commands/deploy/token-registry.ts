@@ -2,7 +2,7 @@ import { Argv } from "yargs";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 import { success, error, info } from "signale";
 import { getLogger } from "../../logger";
-import { withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:token-registry");
@@ -12,16 +12,18 @@ export const command = "token-registry <registry-name> <registry-symbol> [option
 export const describe = "Deploys a token registry contract on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndKeyOption(
-    yargs
-      .positional("registry-name", {
-        description: "Name of the token",
-        normalize: true
-      })
-      .positional("registry-symbol", {
-        description: "Symbol of the token (typically 3 characters)",
-        normalize: true
-      })
+  withGasPriceOption(
+    withNetworkAndKeyOption(
+      yargs
+        .positional("registry-name", {
+          description: "Name of the token",
+          normalize: true
+        })
+        .positional("registry-symbol", {
+          description: "Symbol of the token (typically 3 characters)",
+          normalize: true
+        })
+    )
   );
 
 export const handler = async (args: any): Promise<string | undefined> => {
