@@ -1,15 +1,11 @@
-export interface DocumentStoreIssueCommand {
+import { NetworkAndKeyOption } from "../shared";
+
+export interface DocumentStoreIssueCommand extends NetworkAndKeyOption {
   address: string;
   hash: string;
-  network: string;
-  key?: string;
-  keyFile?: string;
 }
 
-export interface DocumentStoreRevokeCommand {
+export interface DocumentStoreRevokeCommand extends NetworkAndKeyOption {
   address: string;
   hash: string;
-  network: string;
-  key?: string;
-  keyFile?: string;
 }

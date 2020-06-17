@@ -1,5 +1,6 @@
-export interface VerifyCommand {
+import { NetworkOption } from "./shared";
+
+export interface VerifyCommand extends NetworkOption {
   document: string;
-  network: string;
   verbose: boolean;
 }
