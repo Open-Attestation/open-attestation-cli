@@ -1,30 +1,19 @@
-export interface DeployDocumentStoreCommand {
+import { NetworkAndKeyOption } from "../shared";
+
+export interface DeployDocumentStoreCommand extends NetworkAndKeyOption {
   storeName: string;
-  network: string;
-  key?: string;
-  keyFile?: string;
 }
 
-export interface DeployTokenRegistryCommand {
+export interface DeployTokenRegistryCommand extends NetworkAndKeyOption {
   registryName: string;
   registrySymbol: string;
-  network: string;
-  key?: string;
-  keyFile?: string;
 }
 
-export interface DeployTitleEscrowCreatorCommand {
-  network: string;
-  key?: string;
-  keyFile?: string;
-}
+export type DeployTitleEscrowCreatorCommand = NetworkAndKeyOption;
 
-export interface DeployTitleEscrowCommand {
+export interface DeployTitleEscrowCommand extends NetworkAndKeyOption {
   tokenRegistry: string;
   beneficiary: string;
   holder: string;
   titleEscrowFactory: string;
-  network: string;
-  key?: string;
-  keyFile?: string;
 }

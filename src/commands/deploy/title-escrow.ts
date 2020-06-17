@@ -3,6 +3,7 @@ import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
 import { deployTitleEscrow } from "../../implementations/deploy/title-escrow";
 import { DeployTitleEscrowCommand } from "./deploy.types";
+import { withNetworkAndKeyOption } from "../shared";
 
 const { trace } = getLogger("deploy:title-escrow");
 
@@ -11,47 +12,33 @@ export const command = "title-escrow [options]";
 export const describe = "Deploys a title escrow on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs
-    .option("token-registry", {
-      alias: "r",
-      description: "Address of ERC721 contract that the escrow will receive the token from",
-      normalize: true,
-      required: true
-    })
-    .option("beneficiary", {
-      alias: "b",
-      description: "Beneficiary address",
-      normalize: true,
-      required: true
-    })
-    .option("holder", {
-      alias: "h",
-      description: "Holder address",
-      normalize: true,
-      required: true
-    })
-    .option("title-escrow-factory", {
-      alias: "c",
-      description: "Address of title escrow creator/factory",
-      normalize: true,
-      required: true
-    })
-    .option("network", {
-      alias: "n",
-      choices: ["mainnet", "ropsten"],
-      default: "mainnet",
-      description: "Ethereum network to deploy to"
-    })
-    .option("key", {
-      alias: "k",
-      type: "string",
-      description: "Private key of deployer account"
-    })
-    .option("key-file", {
-      alias: "f",
-      type: "string",
-      description: "Path to file containing private key of deployer account"
-    });
+  withNetworkAndKeyOption(
+    yargs
+      .option("token-registry", {
+        alias: "r",
+        description: "Address of ERC721 contract that the escrow will receive the token from",
+        normalize: true,
+        required: true
+      })
+      .option("beneficiary", {
+        alias: "b",
+        description: "Beneficiary address",
+        normalize: true,
+        required: true
+      })
+      .option("holder", {
+        alias: "h",
+        description: "Holder address",
+        normalize: true,
+        required: true
+      })
+      .option("title-escrow-factory", {
+        alias: "c",
+        description: "Address of title escrow creator/factory",
+        normalize: true,
+        required: true
+      })
+  );
 
 export const handler = async (args: DeployTitleEscrowCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);

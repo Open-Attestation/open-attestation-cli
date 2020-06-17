@@ -3,6 +3,7 @@ import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { revokeToDocumentStore } from "../../implementations/document-store/revoke";
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
+import { withNetworkAndKeyOption } from "../shared";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -11,35 +12,21 @@ export const command = "revoke [options]";
 export const describe = "Revoke a hash to a document store deployed on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs
-    .option("address", {
-      alias: "a",
-      description: "Address to revoke the hash to",
-      type: "string",
-      demandOption: true
-    })
-    .option("hash", {
-      alias: "h",
-      description: "Hash to revoke in the document store",
-      type: "string",
-      demandOption: true
-    })
-    .option("network", {
-      alias: "n",
-      choices: ["mainnet", "ropsten"],
-      default: "mainnet",
-      description: "Ethereum network to deploy to"
-    })
-    .option("key", {
-      alias: "k",
-      type: "string",
-      description: "Private key of owner account"
-    })
-    .option("key-file", {
-      alias: "f",
-      type: "string",
-      description: "Path to file containing private key of owner account"
-    });
+  withNetworkAndKeyOption(
+    yargs
+      .option("address", {
+        alias: "a",
+        description: "Address to revoke the hash to",
+        type: "string",
+        demandOption: true
+      })
+      .option("hash", {
+        alias: "h",
+        description: "Hash to revoke in the document store",
+        type: "string",
+        demandOption: true
+      })
+  );
 
 export const handler = async (args: DocumentStoreRevokeCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);

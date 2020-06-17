@@ -3,31 +3,28 @@ import signale from "signale";
 import { VerifyCommand } from "./command-types";
 import { isValid, VerificationFragment, verify } from "@govtechsg/oa-verify";
 import { readDocumentFile } from "../implementations/utils/disk";
+import { withNetworkOption } from "./shared";
 
 export const command = "verify [options]";
 
 export const describe = "Verify an OpenAttestation file";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs
-    .option("document", {
-      alias: "d",
-      description: "OpenAttestation document to verify.",
-      normalize: true,
-      type: "string"
-    })
-    .option("network", {
-      alias: "n",
-      choices: ["mainnet", "ropsten"],
-      default: "mainnet",
-      description: "Ethereum network to verify against"
-    })
-    .option("verbose", {
-      alias: "v",
-      type: "boolean",
-      default: false,
-      description: "Display more details"
-    });
+  withNetworkOption(
+    yargs
+      .option("document", {
+        alias: "d",
+        description: "OpenAttestation document to verify.",
+        normalize: true,
+        type: "string"
+      })
+      .option("verbose", {
+        alias: "v",
+        type: "boolean",
+        default: false,
+        description: "Display more details"
+      })
+  );
 
 export const getRevokeFragment = (fragments: VerificationFragment[]): VerificationFragment[] =>
   fragments.filter(status => status.name === "OpenAttestationEthereumDocumentStoreRevoked");
