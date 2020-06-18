@@ -1,7 +1,7 @@
 import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
-import { isSchemaValidationError, wrapDocument, utils, getData, SchemaId } from "@govtechsg/open-attestation";
+import { getData, isSchemaValidationError, SchemaId, utils, wrapDocument } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
@@ -173,6 +173,20 @@ interface WrapArguments {
   outputPathType: Output;
 }
 
+const findDocumentStoreInDigestedDocument = async (path: string): Promise<string> => {
+  const documents = await documentsInDirectory(path);
+  const document = await readDocumentFile(documents[0]);
+  if (utils.isWrappedV2Document(document)) {
+    const data = getData(document);
+    // disable eslint because at least one of the info is correct
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return data.issuers[0].certificateStore || data.issuers[0].documentStore || data.issuers[0].tokenRegistry!;
+  } else if (utils.isWrappedV3Document(document)) {
+    return getData(document).proof.value;
+  }
+  throw new Error("Not able to find the document store in the digested documents");
+};
+
 export const wrap = async ({
   inputPath,
   outputPath,
@@ -180,7 +194,7 @@ export const wrap = async ({
   version,
   unwrap,
   outputPathType
-}: WrapArguments): Promise<string> => {
+}: WrapArguments): Promise<{ merkleRoot: string; documentStore: string }> => {
   // Create output dir
   if (outputPath) {
     mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
@@ -195,6 +209,8 @@ export const wrap = async ({
   const schema = await loadSchema(schemaPath);
   const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema);
 
+  const documentStore = await findDocumentStoreInDigestedDocument(intermediateDir);
+
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
 
@@ -207,5 +223,5 @@ export const wrap = async ({
   // Remove intermediate dir
   removeCallback();
 
-  return merkleRoot;
+  return { merkleRoot, documentStore };
 };
