@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
 import { withNetworkAndKeyOption } from "../shared";
+import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -26,9 +27,7 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
     const documentStore = await deployDocumentStore(args);
     success(`Document store ${args.storeName} deployed at ${documentStore.contractAddress}`);
     info(
-      `Find more details at https://${args.network === "ropsten" ? "ropsten." : ""}etherscan.io/address/${
-        documentStore.contractAddress
-      }`
+      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${documentStore.contractAddress}`
     );
     return documentStore.contractAddress;
   } catch (e) {

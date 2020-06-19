@@ -3,6 +3,7 @@ import { deployTokenRegistry } from "../../implementations/deploy/token-registry
 import { success, error, info } from "signale";
 import { getLogger } from "../../logger";
 import { withNetworkAndKeyOption } from "../shared";
+import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -30,9 +31,7 @@ export const handler = async (args: any): Promise<string | undefined> => {
     const tokenRegistry = await deployTokenRegistry(args);
     success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
     info(
-      `Find more details at https://${args.network === "ropsten" ? "ropsten." : ""}etherscan.io/address/${
-        tokenRegistry.contractAddress
-      }`
+      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
     );
     return tokenRegistry.contractAddress;
   } catch (e) {

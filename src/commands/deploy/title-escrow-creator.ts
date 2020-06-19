@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { deployTitleEscrowCreator } from "../../implementations/deploy/title-escrow-creator";
 import { DeployTitleEscrowCreatorCommand } from "./deploy.types";
 import { withNetworkAndKeyOption } from "../shared";
+import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:title-escrow-creator");
 
@@ -20,7 +21,7 @@ export const handler = async (args: DeployTitleEscrowCreatorCommand): Promise<st
     const titleEscrowCreator = await deployTitleEscrowCreator(args);
     success(`Title escrow creator deployed at ${titleEscrowCreator.contractAddress}`);
     info(
-      `Find more details at https://${args.network === "ropsten" ? "ropsten." : ""}etherscan.io/address/${
+      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${
         titleEscrowCreator.contractAddress
       }`
     );

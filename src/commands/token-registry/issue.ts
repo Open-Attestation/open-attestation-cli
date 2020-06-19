@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { issueToTokenRegistry } from "../../implementations/token-registry/issue";
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
 import { withNetworkAndKeyOption } from "../shared";
+import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -42,9 +43,7 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
     success(
       `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.to}`
     );
-    info(
-      `Find more details at https://${args.network === "ropsten" ? "ropsten." : ""}etherscan.io/tx/${transactionHash}`
-    );
+    info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
     error(e.message);
