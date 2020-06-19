@@ -14,7 +14,7 @@ export interface NetworkAndKeyOption extends NetworkOption, KeyOption {}
 export const withNetworkOption = (yargs: Argv): Argv =>
   yargs.option("network", {
     alias: "n",
-    choices: ["mainnet", "ropsten"],
+    choices: ["mainnet", "ropsten", "rinkeby"],
     default: "mainnet",
     description: "Ethereum network to deploy to"
   });

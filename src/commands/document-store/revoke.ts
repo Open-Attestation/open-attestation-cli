@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { revokeToDocumentStore } from "../../implementations/document-store/revoke";
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
 import { withNetworkAndKeyOption } from "../shared";
+import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -38,9 +39,7 @@ export const handler = async (args: DocumentStoreRevokeCommand): Promise<string 
       hash: args.hash.startsWith("0x") ? args.hash : `0x${args.hash}`
     });
     success(`Document/Document Batch with hash ${args.hash} has been revoked on ${args.address}`);
-    info(
-      `Find more details at https://${args.network === "ropsten" ? "ropsten." : ""}etherscan.io/tx/${transactionHash}`
-    );
+    info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
     error(e.message);
