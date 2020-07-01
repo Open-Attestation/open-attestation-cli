@@ -1,9 +1,8 @@
 import { DocumentStoreFactory } from "@govtechsg/document-store";
-import { getDefaultProvider, Wallet } from "ethers";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { DocumentStoreIssueCommand } from "../../commands/document-store/document-store-command.type";
-import { getPrivateKey } from "../private-key";
+import { getWallet } from "../utils/wallet";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -13,13 +12,13 @@ export const issueToDocumentStore = async ({
   network,
   key,
   keyFile,
-  gasPriceScale
+  gasPriceScale,
+  encryptedWalletPath
 }: DocumentStoreIssueCommand): Promise<{ transactionHash: string }> => {
-  const privateKey = getPrivateKey({ key, keyFile });
-  const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
-  const gasPrice = await provider.getGasPrice();
+  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const transaction = await DocumentStoreFactory.connect(address, new Wallet(privateKey, provider)).issue(hash, {
+  const transaction = await DocumentStoreFactory.connect(address, wallet).issue(hash, {
     gasPrice: gasPrice.mul(gasPriceScale)
   });
   trace(`Tx hash: ${transaction.hash}`);

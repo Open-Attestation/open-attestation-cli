@@ -1,4 +1,4 @@
-import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import { isSchemaValidationError, wrapDocument, utils, getData, SchemaId } from "@govtechsg/open-attestation";
@@ -37,7 +37,7 @@ export const digestDocument = async (
   }
 
   documentFileNames.forEach(file => {
-    const document = unwrap ? getData(readDocumentFile(file)) : readDocumentFile(file);
+    const document = unwrap ? getData(readOpenAttestationFile(file)) : readOpenAttestationFile(file);
 
     // Digest individual document
     if (compile) {
@@ -80,7 +80,7 @@ export const appendProofToDocuments = async (
   let merkleRoot = "";
 
   documentFileNames.forEach(file => {
-    const document = readDocumentFile(file);
+    const document = readOpenAttestationFile(file);
     const documentHash = document.signature.targetHash;
     const proof = [];
     let candidateRoot = documentHash;

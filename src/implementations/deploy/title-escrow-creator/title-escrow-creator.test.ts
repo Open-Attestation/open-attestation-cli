@@ -73,7 +73,9 @@ describe("token-registry", () => {
           network: "ropsten",
           gasPriceScale: 1
         })
-      ).rejects.toThrow("No private key found in OA_PRIVATE_KEY, key or key-file, please supply at least one");
+      ).rejects.toThrow(
+        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
+      );
     });
   });
 });

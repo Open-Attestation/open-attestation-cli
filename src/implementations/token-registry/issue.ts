@@ -1,8 +1,7 @@
 import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
-import { getDefaultProvider, Wallet } from "ethers";
 import signale from "signale";
 import { getLogger } from "../../logger";
-import { getPrivateKey } from "../private-key";
+import { getWallet } from "../utils/wallet";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 
 const { trace } = getLogger("token-registry:issue");
@@ -14,13 +13,13 @@ export const issueToTokenRegistry = async ({
   network,
   key,
   keyFile,
-  gasPriceScale
+  gasPriceScale,
+  encryptedWalletPath
 }: TokenRegistryIssueCommand): Promise<{ transactionHash: string }> => {
-  const privateKey = getPrivateKey({ key, keyFile });
-  const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
-  const gasPrice = await provider.getGasPrice();
+  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const erc721 = await TradeTrustERC721Factory.connect(address, new Wallet(privateKey, provider));
+  const erc721 = await TradeTrustERC721Factory.connect(address, wallet);
   // must invoke the function manually, the lib doesn't handle overload functions
   // https://github.com/ethereum-ts/TypeChain/issues/150
   const transaction = await erc721["safeMint(address,uint256)"](to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
