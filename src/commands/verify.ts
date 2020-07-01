@@ -13,6 +13,7 @@ export const builder = (yargs: Argv): Argv =>
   withNetworkOption(
     yargs
       .option("document", {
+        demandOption: true,
         alias: "d",
         description: "OpenAttestation document to verify.",
         normalize: true,
