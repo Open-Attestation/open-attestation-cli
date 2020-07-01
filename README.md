@@ -49,7 +49,6 @@ open-attestation wrap ./examples/raw-documents --output-dir ./examples/wrapped-d
 ✔  success   Batch Document Root: 0x5d318c8083aac18f8075ca2a2eac74b06f2cc37d6ccad680c7c80c9bb36f7be1
 ```
 
-
 You can also provide an optional JSON schema document to perform extra check on the documents
 
 Example:
@@ -223,6 +222,41 @@ open-attestation document-store verify --document ./examples/wrapped-documents/e
 
 …  awaiting  Verifying examples/wrapped-documents/example.0.json
 ✔  success   The document is valid
+```
+
+## DNS TXT record
+
+Create a temporary DNS TXT record in OpenAttestation sandbox
+
+```bash
+open-attestation dns txt-record create --address 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc --networkId 10
+✔  success   Record created at exotic-blush-primate.sandbox.openattestation.com and will stay valid until Thu Jul 02 2020 13:51:34 GMT+0800 (Singapore Standard Time)
+```
+
+Get the list of DNS TXT records associated to a domain
+
+```bash
+open-attestation dns txt-record get --location resulting-magenta-locust.sandbox.openattestation.com
+┌─────────┬────────────┬────────────┬───────┬──────────┬────────┐
+│ (index) │    type    │    net     │ netId │   addr   │ dnssec │
+├─────────┼────────────┼────────────┼───────┼──────────┼────────┤
+│    0    │ 'openatts' │ 'ethereum' │ '10'  │ '0xabcd' │ false  │
+└─────────┴────────────┴────────────┴───────┴──────────┴────────┘
+```
+
+Filter the list of DNS TXT records associated to a domain on a specific network
+
+```bash
+open-attestation dns txt-record get --location example.openattestation.com --networkId 3
+┌─────────┬────────────┬────────────┬───────┬──────────────────────────────────────────────┬────────┐
+│ (index) │    type    │    net     │ netId │                     addr                     │ dnssec │
+├─────────┼────────────┼────────────┼───────┼──────────────────────────────────────────────┼────────┤
+│    0    │ 'openatts' │ 'ethereum' │  '3'  │ '0x2f60375e8144e16Adf1979936301D8341D58C36C' │ false  │
+│    1    │ 'openatts' │ 'ethereum' │  '3'  │ '0x532C9Ff853CA54370D7492cD84040F9f8099f11B' │ false  │
+│    2    │ 'openatts' │ 'ethereum' │  '3'  │ '0x53f3a47C129Ea30D80bC727556b015F02bE63811' │ false  │
+│    3    │ 'openatts' │ 'ethereum' │  '3'  │ '0x8Fc57204c35fb9317D91285eF52D6b892EC08cD3' │ false  │
+│    4    │ 'openatts' │ 'ethereum' │  '3'  │ '0xdcA6Eea7024151c270b50FcA9E67161119B06BAD' │ false  │
+└─────────┴────────────┴────────────┴───────┴──────────────────────────────────────────────┴────────┘
 ```
 
 ## Providing the private key

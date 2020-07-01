@@ -1,5 +1,5 @@
 import Ajv, { AdditionalPropertiesParams, EnumParams, RequiredParams } from "ajv";
-import chalk from "chalk";
+import { highlight } from "../../../utils";
 
 const isRequiredParamsError = (params: any): params is RequiredParams => {
   return params.missingProperty;
@@ -13,9 +13,6 @@ const isAllowedValuesError = (params: any): params is EnumParams => {
 const isFormatUriError = (params: any): params is RequiredParams => {
   return params.format === "uri";
 };
-
-const orange = chalk.hsl(39, 100, 50);
-const highlight = orange.bold;
 
 export const transformAdditionalPropertyErrors = (errors: Ajv.ErrorObject[]): string[] => {
   return errors
@@ -80,7 +77,7 @@ export const transformValidationErrors = (errors: Ajv.ErrorObject[]): string[] =
     requiredErrors.length + additionalPropertyErrors.length + allowedValuesErrors.length + formatErrors.length;
   const additionalError =
     errors.length !== processedErrors
-      ? `There ${errors.length - processedErrors > 1 ? "are" : "is"} ${orange.bold(
+      ? `There ${errors.length - processedErrors > 1 ? "are" : "is"} ${highlight(
           String(errors.length - processedErrors)
         )} unprocessed error${errors.length - processedErrors > 1 ? "s" : ""}`
       : "";
