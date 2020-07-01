@@ -4,16 +4,17 @@ export interface NetworkOption {
   network: string;
 }
 
-export interface KeyOption {
+export interface WalletOption {
   key?: string;
   keyFile?: string;
+  encryptedWalletPath?: string;
 }
 
 export interface GasOption {
   gasPriceScale: number;
 }
 
-export interface NetworkAndKeyOption extends NetworkOption, KeyOption {}
+export interface NetworkAndKeyOption extends NetworkOption, WalletOption {}
 
 export const withNetworkOption = (yargs: Argv): Argv =>
   yargs.option("network", {
@@ -29,7 +30,7 @@ export const withGasPriceOption = (yargs: Argv): Argv =>
     default: 1,
     description: "Gas price scale to apply to the estimated gas price"
   });
-export const withKeyOption = (yargs: Argv): Argv =>
+export const withWalletOption = (yargs: Argv): Argv =>
   yargs
     .option("key", {
       alias: "k",
@@ -40,5 +41,10 @@ export const withKeyOption = (yargs: Argv): Argv =>
       alias: "f",
       type: "string",
       description: "Path to file containing private key of owner account"
+    })
+    .option("encrypted-wallet-path", {
+      type: "string",
+      description: "Path to file containing private key of owner account",
+      normalize: true
     });
-export const withNetworkAndKeyOption = (yargs: Argv): Argv => withNetworkOption(withKeyOption(yargs));
+export const withNetworkAndKeyOption = (yargs: Argv): Argv => withNetworkOption(withWalletOption(yargs));

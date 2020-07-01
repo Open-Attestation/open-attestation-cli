@@ -1,9 +1,8 @@
 import { DocumentStoreFactory } from "@govtechsg/document-store";
-import { getDefaultProvider, Wallet } from "ethers";
 import signale from "signale";
 import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
-import { getPrivateKey } from "../../private-key";
+import { getWallet } from "../../utils/wallet";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -12,12 +11,12 @@ export const deployDocumentStore = async ({
   network,
   key,
   keyFile,
-  gasPriceScale
+  gasPriceScale,
+  encryptedWalletPath
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
-  const privateKey = getPrivateKey({ key, keyFile });
-  const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
-  const gasPrice = await provider.getGasPrice();
-  const factory = new DocumentStoreFactory(new Wallet(privateKey, provider));
+  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const gasPrice = await wallet.provider.getGasPrice();
+  const factory = new DocumentStoreFactory(wallet);
   signale.await(`Sending transaction to pool`);
   const transaction = await factory.deploy(storeName, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);

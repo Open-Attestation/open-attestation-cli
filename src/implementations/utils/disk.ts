@@ -15,8 +15,12 @@ export const isDir = (path: fs.PathLike): boolean => {
 
 const validExtensions = /(.*)(\.)(opencert|json|tt)$/;
 
-export const readDocumentFile = (filename: string): any => {
-  return JSON.parse(fs.readFileSync(filename, "utf8"));
+export const readFile = (filename: string): any => {
+  return fs.readFileSync(filename, "utf8");
+};
+
+export const readOpenAttestationFile = (filename: string): any => {
+  return JSON.parse(readFile(filename));
 };
 
 const isValidExtension = (filename: string): boolean => validExtensions.test(filename.toLowerCase());

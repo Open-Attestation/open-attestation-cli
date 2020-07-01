@@ -1,6 +1,6 @@
 import mkdirp from "mkdirp";
 import path from "path";
-import { documentsInDirectory, readDocumentFile, writeDocumentToDisk } from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
 import { sign as oaSign, ProofType, SignedWrappedDocument } from "@govtechsg/open-attestation";
 
 export enum Output {
@@ -32,7 +32,7 @@ export const sign = async ({
   const fileNames = await documentsInDirectory(rawDocumentsPath);
   return Promise.all(
     fileNames.map(async file => {
-      const document = readDocumentFile(file);
+      const document = readOpenAttestationFile(file);
       const signedDocument = await oaSign(document, {
         privateKey: privateKey,
         verificationMethod: publicKey,

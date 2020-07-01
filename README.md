@@ -261,15 +261,21 @@ open-attestation dns txt-record get --location example.openattestation.com --net
 
 ## Providing the private key
 
-When interacting with blockchain you will likely need to provide your private key. All functions - when the private key is required - will provide 3 ways for you to pass it in:
+When interacting with blockchain you will likely need to provide a way to access your wallet. All functions - when the wallet is required - will provide multiples ways for you to pass it in:
 
-1. Using `OA_PRIVATE_KEY` environment variable holding the private key(recommended).
+1. Using `encrypted-wallet-path` option where you provide a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt) (recommended).
+1. Using `OA_PRIVATE_KEY` environment variable holding the private key.
 1. Using `--key-file` option where you provide a path to a file containing the private key.
 1. Using `--key` option where you provide the private key directly to the command (**Note that for this method, the private key may be stored in the machine's bash history**).
 
 Example:
 
 ```bash
+# Using encrypted-wallet-path option
+open-attestation deploy document-store "My Name" --network ropsten --encrypted-wallet-path /path/to/wallet.json
+# Then you will be prompted to type your password to decrypt the wallet
+? Wallet password [input is hidden] 
+
 # Using environment variable
 export OA_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
 open-attestation deploy document-store "My Name" --network ropsten

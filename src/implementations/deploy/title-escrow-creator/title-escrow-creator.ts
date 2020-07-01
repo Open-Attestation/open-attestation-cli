@@ -1,6 +1,5 @@
 import { TitleEscrowCreatorFactory } from "@govtechsg/token-registry";
-import { getDefaultProvider, Wallet } from "ethers";
-import { getPrivateKey } from "../../private-key";
+import { getWallet } from "../../utils/wallet";
 import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "ethers/providers";
@@ -12,12 +11,12 @@ export const deployTitleEscrowCreator = async ({
   network,
   key,
   keyFile,
-  gasPriceScale
+  gasPriceScale,
+  encryptedWalletPath
 }: DeployTitleEscrowCreatorCommand): Promise<TransactionReceipt> => {
-  const privateKey = getPrivateKey({ key, keyFile });
-  const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
-  const gasPrice = await provider.getGasPrice();
-  const factory = new TitleEscrowCreatorFactory(new Wallet(privateKey, provider));
+  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const gasPrice = await wallet.provider.getGasPrice();
+  const factory = new TitleEscrowCreatorFactory(wallet);
   signale.await(`Sending transaction to pool`);
   const transaction = await factory.deploy({ gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
