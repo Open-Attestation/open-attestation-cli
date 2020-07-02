@@ -134,7 +134,7 @@ Deploys a token registry contract on the blockchain
 open-attestation deploy token-registry <registry-name> <registry-symbol> [options]
 ```
 
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
 open-attestation deploy token-registry "My Sample Token" MST --network ropsten
@@ -150,7 +150,7 @@ Deploys a document store contract on the blockchain
 open-attestation deploy document-store <store-name> [options]
 ```
 
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
 open-attestation deploy document-store "My Name" --network ropsten
@@ -168,7 +168,7 @@ Issue a hash to a token registry deployed on the blockchain
 open-attestation token-registry issue --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
 ```
 
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
 open-attestation token-registry mint --network ropsten --address 6133f580aE903b8e79845340375cCfd78a45FF35 --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c
@@ -189,7 +189,7 @@ Issue a hash to a document store deployed on the blockchain
 open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
 ```
 
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
 open-attestation document-store issue --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
@@ -205,7 +205,7 @@ Revoke a hash to a document store deployed on the blockchain
 open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
 ```
 
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-private-key).
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
 open-attestation document-store revoke --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
@@ -259,7 +259,34 @@ open-attestation dns txt-record get --location example.openattestation.com --net
 └─────────┴────────────┴────────────┴───────┴──────────────────────────────────────────────┴────────┘
 ```
 
-## Providing the private key
+## Wallet
+
+Creating a wallet
+
+```bash
+open-attestation wallet create --of ./tmp
+
+ℹ  info      Creating a new wallet
+? Wallet password [hidden]
+…  awaiting  Encrypting Wallet [====================] [100/100%]
+ℹ  info      Wallet with public address 0x6348a96D96D56665C2E9619f81355918779f3d9E successfully created. Find more details:
+✔  success   Wallet successfully saved into /path/to/tmp
+```
+
+Encrypting a wallet (see [below](#providing-the-wallet) to find out how to provide the key)
+
+```bash
+open-attestation wallet encrypt --of ./tmp
+
+ℹ  info      Encrypting a wallet
+? Wallet password [hidden]
+…  awaiting  Encrypting Wallet [====================] [100/100%]
+ℹ  info      Wallet with public address 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 successfully created. Find more details:
+✔  success   Wallet successfully saved into /path/to/tmp
+
+```
+
+## Providing the wallet
 
 When interacting with blockchain you will likely need to provide a way to access your wallet. All functions - when the wallet is required - will provide multiples ways for you to pass it in:
 
@@ -274,7 +301,7 @@ Example:
 # Using encrypted-wallet-path option
 open-attestation deploy document-store "My Name" --network ropsten --encrypted-wallet-path /path/to/wallet.json
 # Then you will be prompted to type your password to decrypt the wallet
-? Wallet password [input is hidden] 
+? Wallet password [input is hidden]
 
 # Using environment variable
 export OA_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
