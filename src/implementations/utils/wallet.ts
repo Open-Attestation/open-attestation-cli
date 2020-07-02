@@ -1,16 +1,16 @@
 import { readFileSync } from "fs";
-import signale, { Signale } from "signale";
+import signale from "signale";
 import { ethers, getDefaultProvider, Wallet } from "ethers";
-import { WalletOption, NetworkOption } from "../../commands/shared";
+import { NetworkOption, WalletOption } from "../../commands/shared";
 import { readFile } from "./disk";
 import inquirer from "inquirer";
-const interactive = new Signale({ interactive: true, scope: "" });
+import { progress as defaultProgress } from "./progress";
 
 const getKeyFromFile = (file?: string): undefined | string => {
   return file ? readFileSync(file).toString() : undefined;
 };
 
-const getPrivateKey = ({ keyFile, key }: WalletOption): string | undefined => {
+export const getPrivateKey = ({ keyFile, key }: WalletOption): string | undefined => {
   if (key) {
     signale.warn(
       "Be aware that by using the `key` parameter, the private key may be stored in your machine's sh history"
@@ -21,24 +21,12 @@ const getPrivateKey = ({ keyFile, key }: WalletOption): string | undefined => {
   }
   return key || getKeyFromFile(keyFile) || process.env["OA_PRIVATE_KEY"];
 };
-
-const defaultProgress = (progress: number): void => {
-  const stepInPercentage = 5; // one dot = 5%
-  const numberOfSteps = 100 / stepInPercentage;
-  const numberOfStepsDone = Math.floor((progress * 100) / stepInPercentage);
-  const numberOfStepsLeft = numberOfSteps - numberOfStepsDone;
-  interactive.await(
-    `Decrypting wallet [${"=".repeat(numberOfStepsDone)}${"-".repeat(numberOfStepsLeft)}] [%d/100%]`,
-    (progress * 100).toFixed()
-  );
-};
-
 export const getWallet = async ({
   keyFile,
   key,
   network,
   encryptedWalletPath,
-  progress = defaultProgress
+  progress = defaultProgress("Decrypting Wallet")
 }: WalletOption & NetworkOption & { progress?: (progress: number) => void }): Promise<Wallet> => {
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   if (encryptedWalletPath) {
