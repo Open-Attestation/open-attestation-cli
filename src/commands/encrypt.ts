@@ -14,11 +14,11 @@ export const builder = (yargs: Argv): Argv =>
   yargs
     .positional("wrapped-file", {
       description: "Source wrapped document filename",
-      normalize: true
+      normalize: true,
     })
     .positional("encrypted-file", {
       description: "Destination to write encrypted document file to",
-      normalize: true
+      normalize: true,
     });
 
 export const handler = (args: EncryptCommand): void => {

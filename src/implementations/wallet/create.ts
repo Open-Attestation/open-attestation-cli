@@ -9,13 +9,13 @@ import { progress as defaultProgress } from "../../implementations/utils/progres
 
 export const create = async ({
   progress = defaultProgress("Encrypting Wallet"),
-  outputFile
+  outputFile,
 }: CreateWalletCommand & { progress?: (progress: number) => void }): Promise<string> => {
   const wallet = ethers.Wallet.createRandom();
   const { password } = await inquirer.prompt({
     type: "password",
     name: "password",
-    message: "Wallet password"
+    message: "Wallet password",
   });
 
   const json = await wallet.encrypt(password, progress);

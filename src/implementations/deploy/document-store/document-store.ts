@@ -12,7 +12,7 @@ export const deployDocumentStore = async ({
   key,
   keyFile,
   gasPriceScale,
-  encryptedWalletPath
+  encryptedWalletPath,
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();

@@ -26,7 +26,7 @@ export const getWallet = async ({
   key,
   network,
   encryptedWalletPath,
-  progress = defaultProgress("Decrypting Wallet")
+  progress = defaultProgress("Decrypting Wallet"),
 }: WalletOption & NetworkOption & { progress?: (progress: number) => void }): Promise<Wallet> => {
   const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   if (encryptedWalletPath) {

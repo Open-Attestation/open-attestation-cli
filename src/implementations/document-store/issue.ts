@@ -13,13 +13,13 @@ export const issueToDocumentStore = async ({
   key,
   keyFile,
   gasPriceScale,
-  encryptedWalletPath
+  encryptedWalletPath,
 }: DocumentStoreIssueCommand): Promise<{ transactionHash: string }> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const transaction = await DocumentStoreFactory.connect(address, wallet).issue(hash, {
-    gasPrice: gasPrice.mul(gasPriceScale)
+    gasPrice: gasPrice.mul(gasPriceScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

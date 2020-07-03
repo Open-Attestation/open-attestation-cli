@@ -2,7 +2,7 @@ import {
   transformAdditionalPropertyErrors,
   transformAllowedValuesErrors,
   transformFormatErrors,
-  transformRequiredErrors
+  transformRequiredErrors,
 } from "./ajvErrorTransformer";
 import chalk from "chalk";
 
@@ -31,10 +31,10 @@ describe("errors", () => {
             dataPath: "",
             schemaPath: "#/required",
             params: {
-              missingProperty: "proof"
+              missingProperty: "proof",
             },
-            message: "should have required property 'proof'"
-          }
+            message: "should have required property 'proof'",
+          },
         ])
       ).toStrictEqual([`The required property "proof" is missing`]);
     });
@@ -46,10 +46,10 @@ describe("errors", () => {
             dataPath: ".issuer",
             schemaPath: "#/definitions/issuer/required",
             params: {
-              missingProperty: "identityProof"
+              missingProperty: "identityProof",
             },
-            message: "should have required property 'identityProof'"
-          }
+            message: "should have required property 'identityProof'",
+          },
         ])
       ).toStrictEqual([`The required property "issuer.identityProof" is missing`]);
     });
@@ -61,10 +61,10 @@ describe("errors", () => {
             dataPath: ".issuer.identityProof",
             schemaPath: "#/definitions/issuer/properties/identityProof/required",
             params: {
-              missingProperty: "location"
+              missingProperty: "location",
             },
-            message: "should have required property 'location'"
-          }
+            message: "should have required property 'location'",
+          },
         ])
       ).toStrictEqual([`The required property "issuer.identityProof.location" is missing`]);
     });
@@ -73,7 +73,7 @@ describe("errors", () => {
     it("should return nothing when error is not a additional property error", () => {
       expect(
         transformAdditionalPropertyErrors([
-          { dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } }
+          { dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } },
         ])
       ).toStrictEqual([]);
     });
@@ -85,10 +85,10 @@ describe("errors", () => {
             dataPath: "",
             schemaPath: "#/properties/template/additionalProperties",
             params: {
-              additionalProperty: "foo"
+              additionalProperty: "foo",
             },
-            message: "should NOT have additional properties"
-          }
+            message: "should NOT have additional properties",
+          },
         ])
       ).toStrictEqual([`An unexpected additional property with key "foo" was found at the top level object`]);
     });
@@ -100,10 +100,10 @@ describe("errors", () => {
             dataPath: ".template",
             schemaPath: "#/properties/template/additionalProperties",
             params: {
-              additionalProperty: "foo"
+              additionalProperty: "foo",
             },
-            message: "should NOT have additional properties"
-          }
+            message: "should NOT have additional properties",
+          },
         ])
       ).toStrictEqual([`An unexpected additional property with key "foo" was found in object template`]);
     });
@@ -112,7 +112,7 @@ describe("errors", () => {
     it("should return nothing when error is not a allowder values error", () => {
       expect(
         transformAllowedValuesErrors([
-          { dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } }
+          { dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } },
         ])
       ).toStrictEqual([]);
     });
@@ -124,13 +124,13 @@ describe("errors", () => {
             dataPath: ".foo",
             schemaPath: "#/properties/template/properties/type/enum",
             params: {
-              allowedValues: ["ABC", "DEF"]
+              allowedValues: ["ABC", "DEF"],
             },
-            message: "should be equal to one of the allowed values"
-          }
+            message: "should be equal to one of the allowed values",
+          },
         ])
       ).toStrictEqual([
-        `The provided value at path "foo" is not one of the allowed values defined by the schema: ABC, DEF`
+        `The provided value at path "foo" is not one of the allowed values defined by the schema: ABC, DEF`,
       ]);
     });
     it("should return error when allowed values error is in first level deep property", () => {
@@ -141,13 +141,13 @@ describe("errors", () => {
             dataPath: ".template.type",
             schemaPath: "#/properties/template/properties/type/enum",
             params: {
-              allowedValues: ["EMBEDDED_RENDERER"]
+              allowedValues: ["EMBEDDED_RENDERER"],
             },
-            message: "should be equal to one of the allowed values"
-          }
+            message: "should be equal to one of the allowed values",
+          },
         ])
       ).toStrictEqual([
-        `The provided value at path "template.type" is not one of the allowed values defined by the schema: EMBEDDED_RENDERER`
+        `The provided value at path "template.type" is not one of the allowed values defined by the schema: EMBEDDED_RENDERER`,
       ]);
     });
   });
@@ -160,10 +160,10 @@ describe("errors", () => {
             dataPath: ".id",
             schemaPath: "#/properties/id/format",
             params: {
-              format: "uri"
+              format: "uri",
             },
-            message: 'should match format "uri"'
-          }
+            message: 'should match format "uri"',
+          },
         ])
       ).toStrictEqual([`The property "id" is not a valid URI`]);
     });

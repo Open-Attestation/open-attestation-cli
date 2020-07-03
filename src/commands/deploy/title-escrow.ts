@@ -20,25 +20,25 @@ export const builder = (yargs: Argv): Argv =>
           alias: "r",
           description: "Address of ERC721 contract that the escrow will receive the token from",
           normalize: true,
-          required: true
+          required: true,
         })
         .option("beneficiary", {
           alias: "b",
           description: "Beneficiary address",
           normalize: true,
-          required: true
+          required: true,
         })
         .option("holder", {
           alias: "h",
           description: "Holder address",
           normalize: true,
-          required: true
+          required: true,
         })
         .option("title-escrow-factory", {
           alias: "c",
           description: "Address of title escrow creator/factory",
           normalize: true,
-          required: true
+          required: true,
         })
     )
   );

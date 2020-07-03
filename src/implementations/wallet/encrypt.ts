@@ -23,7 +23,7 @@ export const encrypt = async ({
   const { password } = await inquirer.prompt({
     type: "password",
     name: "password",
-    message: "Wallet password"
+    message: "Wallet password",
   });
 
   const json = await wallet.encrypt(password, progress);

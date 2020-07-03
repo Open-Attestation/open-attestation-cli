@@ -13,7 +13,7 @@ const wrappedFileName = "wrapped-open-attestation-document.json";
 
 describe("wrap", () => {
   describe("wrap handler arguments check", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
     const signaleErrorSpy = jest.spyOn(signale, "error");
@@ -23,7 +23,7 @@ describe("wrap", () => {
         rawDocumentsPath: path.resolve("examples", "raw-documents"),
         openAttestationV3: true,
         unwrap: false,
-        outputFile: path.resolve("examples", "wrapped-documents")
+        outputFile: path.resolve("examples", "wrapped-documents"),
       });
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(signaleErrorSpy).toHaveBeenCalledWith(
@@ -34,7 +34,7 @@ describe("wrap", () => {
       await handler({
         rawDocumentsPath: path.resolve("examples", "raw-documents"),
         openAttestationV3: true,
-        unwrap: false
+        unwrap: false,
       });
       expect(mockExit).toHaveBeenCalledWith(1);
       expect(signaleErrorSpy).toHaveBeenCalledWith(
@@ -57,12 +57,12 @@ describe("wrap", () => {
           outputPath: outputDirectory.name,
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-open-attestation-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -89,21 +89,21 @@ describe("wrap", () => {
           outputPath: outputDirectory.name,
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
         const file1 = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-open-attestation-document-1.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         const file2 = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-open-attestation-document-2.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         const file3 = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-open-attestation-document-3.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -131,13 +131,13 @@ describe("wrap", () => {
             outputPath: outputDirectory.name,
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-open-attestation-document.json is not valid against open-attestation schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -164,13 +164,13 @@ describe("wrap", () => {
             outputPath: outputDirectory.name,
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-open-attestation-document-1.json is not valid against open-attestation schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -189,13 +189,13 @@ describe("wrap", () => {
             outputPath: outputDirectory.name,
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "wrapped-open-attestation-document.json is not valid against open-attestation schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -213,12 +213,12 @@ describe("wrap", () => {
           outputPath: outputDirectory.name,
           version: SchemaId.v3,
           unwrap: true,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "wrapped-open-attestation-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
 
@@ -241,12 +241,12 @@ describe("wrap", () => {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-custom-schema-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -267,13 +267,13 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-custom-schema-document.json is not valid against the provided schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -291,12 +291,12 @@ describe("wrap", () => {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-custom-schema-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -317,13 +317,13 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-custom-schema-document.json is not valid against the provided schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -338,7 +338,7 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -355,12 +355,12 @@ describe("wrap", () => {
           outputPath: outputDirectory.name,
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-open-attestation-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -376,13 +376,13 @@ describe("wrap", () => {
             outputPath: outputDirectory.name,
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-open-attestation-document.json is not valid against open-attestation schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -396,13 +396,13 @@ describe("wrap", () => {
             outputPath: outputDirectory.name,
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "wrapped-open-attestation-document.json is not valid against open-attestation schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -414,12 +414,12 @@ describe("wrap", () => {
           outputPath: outputDirectory.name,
           version: SchemaId.v3,
           unwrap: true,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "wrapped-open-attestation-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
 
@@ -434,7 +434,7 @@ describe("wrap", () => {
           outputPath: outputFile.name,
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.File
+          outputPathType: Output.File,
         });
 
         const file = JSON.parse(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
@@ -444,14 +444,14 @@ describe("wrap", () => {
       });
       it("should allow output as StdOut when input path is a file", async () => {
         let stdOut: any;
-        jest.spyOn(console, "log").mockImplementation(input => {
+        jest.spyOn(console, "log").mockImplementation((input) => {
           stdOut = input;
         });
         const merkleRoot = await wrap({
           inputPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.StdOut
+          outputPathType: Output.StdOut,
         });
 
         stdOut = JSON.parse(stdOut);
@@ -469,12 +469,12 @@ describe("wrap", () => {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-custom-schema-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -490,13 +490,13 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-custom-schema-document.json is not valid against the provided schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -509,12 +509,12 @@ describe("wrap", () => {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.Directory
+          outputPathType: Output.Directory,
         });
 
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, "valid-custom-schema-document.json"), {
-            encoding: "utf8"
+            encoding: "utf8",
           })
         );
         expect(merkleRoot).toHaveLength(64);
@@ -530,13 +530,13 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow(
           expect.objectContaining({
             message: expect.stringContaining(
               "invalid-custom-schema-document.json is not valid against the provided schema"
-            )
+            ),
           })
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -550,7 +550,7 @@ describe("wrap", () => {
             schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
             version: SchemaId.v3,
             unwrap: false,
-            outputPathType: Output.Directory
+            outputPathType: Output.Directory,
           })
         ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
@@ -563,7 +563,7 @@ describe("wrap", () => {
           schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
           version: SchemaId.v3,
           unwrap: false,
-          outputPathType: Output.File
+          outputPathType: Output.File,
         });
 
         const file = JSON.parse(fs.readFileSync(outputFile.name, { encoding: "utf8" }));

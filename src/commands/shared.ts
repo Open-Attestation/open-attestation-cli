@@ -24,14 +24,14 @@ export const withNetworkOption = (yargs: Argv): Argv =>
     alias: "n",
     choices: ["mainnet", "ropsten", "rinkeby"],
     default: "mainnet",
-    description: "Ethereum network to deploy to"
+    description: "Ethereum network to deploy to",
   });
 export const withGasPriceOption = (yargs: Argv): Argv =>
   yargs.option("gas-price-scale", {
     alias: "gps",
     type: "number",
     default: 1,
-    description: "Gas price scale to apply to the estimated gas price"
+    description: "Gas price scale to apply to the estimated gas price",
   });
 
 export const withPrivateKeyOption = (yargs: Argv): Argv =>
@@ -39,12 +39,12 @@ export const withPrivateKeyOption = (yargs: Argv): Argv =>
     .option("key", {
       alias: "k",
       type: "string",
-      description: "Private key of owner account"
+      description: "Private key of owner account",
     })
     .option("key-file", {
       alias: "f",
       type: "string",
-      description: "Path to file containing private key of owner account"
+      description: "Path to file containing private key of owner account",
     });
 
 export const withWalletOption = (yargs: Argv): Argv =>
@@ -52,7 +52,7 @@ export const withWalletOption = (yargs: Argv): Argv =>
     yargs.option("encrypted-wallet-path", {
       type: "string",
       description: "Path to file containing private key of owner account",
-      normalize: true
+      normalize: true,
     })
   );
 export const withNetworkAndKeyOption = (yargs: Argv): Argv => withNetworkOption(withWalletOption(yargs));

@@ -19,7 +19,7 @@ interface Schema {
 export enum Output {
   File,
   Directory,
-  StdOut
+  StdOut,
 }
 
 export const digestDocument = async (
@@ -36,7 +36,7 @@ export const digestDocument = async (
     compile = new Ajv().compile(schema);
   }
 
-  documentFileNames.forEach(file => {
+  documentFileNames.forEach((file) => {
     const document = unwrap ? getData(readOpenAttestationFile(file)) : readOpenAttestationFile(file);
 
     // Digest individual document
@@ -79,7 +79,7 @@ export const appendProofToDocuments = async (
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
 
-  documentFileNames.forEach(file => {
+  documentFileNames.forEach((file) => {
     const document = readOpenAttestationFile(file);
     const documentHash = document.signature.targetHash;
     const proof = [];
@@ -127,11 +127,11 @@ export const merkleHashmap = (leafHashes: Buffer[]): Record<string, { sibling: s
 
       hashMap[element1.toString("hex")] = {
         sibling: element2.toString("hex"),
-        parent: nextHash.toString("hex")
+        parent: nextHash.toString("hex"),
       };
       hashMap[element2.toString("hex")] = {
         sibling: element1.toString("hex"),
-        parent: nextHash.toString("hex")
+        parent: nextHash.toString("hex"),
       };
 
       hashArray[nextLayerIndex].push(nextHash);
@@ -156,7 +156,7 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   };
   if (schemaPath && (schemaPath.startsWith("http://") || schemaPath.startsWith("https://"))) {
     return fetch(schemaPath)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then(checkSchema);
   } else if (schemaPath) {
     return import(path.resolve(schemaPath)).then(checkSchema);
@@ -179,7 +179,7 @@ export const wrap = async ({
   schemaPath,
   version,
   unwrap,
-  outputPathType
+  outputPathType,
 }: WrapArguments): Promise<string> => {
   // Create output dir
   if (outputPath) {
@@ -188,7 +188,7 @@ export const wrap = async ({
 
   // Create intermediate dir
   const { name: intermediateDir, removeCallback } = dirSync({
-    unsafeCleanup: true
+    unsafeCleanup: true,
   });
 
   // Phase 1: For each document, read content, digest and write to file

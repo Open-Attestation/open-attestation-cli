@@ -11,7 +11,7 @@ const deployParams: TokenRegistryIssueCommand = {
   tokenId: "0xzyxw",
   address: "0x1234",
   network: "ropsten",
-  gasPriceScale: 1
+  gasPriceScale: 1,
 };
 
 // TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
@@ -19,7 +19,7 @@ const deployParams: TokenRegistryIssueCommand = {
 describe("token-registry", () => {
   describe("issue", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721Factory> = TradeTrustERC721Factory as any;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnect: jest.Mock = mockedTradeTrustERC721Factory.connect;
     const mockedIssue = jest.fn();
@@ -30,11 +30,11 @@ describe("token-registry", () => {
       mockedTradeTrustERC721Factory.mockReset();
       mockedConnect.mockReset();
       mockedConnect.mockReturnValue({
-        "safeMint(address,uint256)": mockedIssue
+        "safeMint(address,uint256)": mockedIssue,
       });
       mockedIssue.mockReturnValue({
         hash: "hash",
-        wait: () => Promise.resolve({ transactionHash: "transactionHash" })
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
     });
 
@@ -50,7 +50,7 @@ describe("token-registry", () => {
     it("should take in the key from key file", async () => {
       await issueToTokenRegistry({
         ...deployParams,
-        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key")
+        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -61,7 +61,7 @@ describe("token-registry", () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       const instance = await issueToTokenRegistry({
         ...deployParams,
-        key: privateKey
+        key: privateKey,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];

@@ -17,25 +17,25 @@ export const builder = (yargs: Argv): Argv =>
       alias: "a",
       description: "Contract address of the Document Store or Token Registry",
       type: "string",
-      demandOption: true
+      demandOption: true,
     })
     .option("networkId", {
       description: "Ethereum network (chain ID) that this record is for",
       type: "number",
-      demandOption: true
+      demandOption: true,
     });
 
 const baseUrl = "https://sandbox.openattestation.com";
 
 const request = (url: string, options?: RequestInit): Promise<any> => {
   return fetch(url, options)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`unexpected response ${response.statusText}`);
       }
       return response;
     })
-    .then(response => response.json());
+    .then((response) => response.json());
 };
 
 export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string | undefined> => {
@@ -44,9 +44,9 @@ export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string |
     const { executionId } = await request(baseUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ address: args.address, networkId: args.networkId })
+      body: JSON.stringify({ address: args.address, networkId: args.networkId }),
     });
     const { name, expiryDate } = await request(`${baseUrl}/execution/${executionId}`);
     success(

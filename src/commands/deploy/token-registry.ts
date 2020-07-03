@@ -4,6 +4,7 @@ import { success, error, info } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
+import { DeployTokenRegistryCommand } from "./deploy.types";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -17,16 +18,16 @@ export const builder = (yargs: Argv): Argv =>
       yargs
         .positional("registry-name", {
           description: "Name of the token",
-          normalize: true
+          normalize: true,
         })
         .positional("registry-symbol", {
           description: "Symbol of the token (typically 3 characters)",
-          normalize: true
+          normalize: true,
         })
     )
   );
 
-export const handler = async (args: any): Promise<string | undefined> => {
+export const handler = async (args: DeployTokenRegistryCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Deploying token registry ${args.registryName}`);

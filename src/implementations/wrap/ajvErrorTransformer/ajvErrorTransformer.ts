@@ -16,8 +16,8 @@ const isFormatUriError = (params: any): params is RequiredParams => {
 
 export const transformAdditionalPropertyErrors = (errors: Ajv.ErrorObject[]): string[] => {
   return errors
-    .filter(error => error.keyword === "additionalProperties")
-    .map(error => {
+    .filter((error) => error.keyword === "additionalProperties")
+    .map((error) => {
       if (isAdditionalPropertiesError(error.params)) {
         return `An unexpected additional property with key ${highlight(
           `"${error.params.additionalProperty}"`
@@ -31,13 +31,13 @@ export const transformAdditionalPropertyErrors = (errors: Ajv.ErrorObject[]): st
 
 export const transformAllowedValuesErrors = (errors: Ajv.ErrorObject[]): string[] => {
   return errors
-    .filter(error => error.keyword === "enum")
-    .map(error => {
+    .filter((error) => error.keyword === "enum")
+    .map((error) => {
       if (isAllowedValuesError(error.params)) {
         return `The provided value at path ${highlight(
           `"${error.dataPath.substr(1)}"`
         )} is not one of the allowed values defined by the schema: ${error.params.allowedValues
-          .map(allowedValue => highlight(allowedValue))
+          .map((allowedValue) => highlight(allowedValue))
           .join(", ")}`;
       }
       throw new Error("Unexpected error while computing allowed values errors");
@@ -46,8 +46,8 @@ export const transformAllowedValuesErrors = (errors: Ajv.ErrorObject[]): string[
 
 export const transformRequiredErrors = (errors: Ajv.ErrorObject[]): string[] => {
   return errors
-    .filter(error => error.keyword === "required")
-    .map(error => {
+    .filter((error) => error.keyword === "required")
+    .map((error) => {
       if (isRequiredParamsError(error.params)) {
         return `The required property ${highlight(
           `"${error.dataPath.substr(1)}${error.dataPath ? "." : ""}${error.params.missingProperty}"`
@@ -59,8 +59,8 @@ export const transformRequiredErrors = (errors: Ajv.ErrorObject[]): string[] => 
 
 export const transformFormatErrors = (errors: Ajv.ErrorObject[]): string[] => {
   return errors
-    .filter(error => error.keyword === "format")
-    .map(error => {
+    .filter((error) => error.keyword === "format")
+    .map((error) => {
       if (isFormatUriError(error.params)) {
         return `The property ${highlight(`"${error.dataPath.substr(1)}"`)} is not a valid URI`;
       }
@@ -86,6 +86,6 @@ export const transformValidationErrors = (errors: Ajv.ErrorObject[]): string[] =
     ...additionalPropertyErrors,
     ...allowedValuesErrors,
     ...formatErrors,
-    additionalError
+    additionalError,
   ].filter(Boolean);
 };

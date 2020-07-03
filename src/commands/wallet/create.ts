@@ -16,7 +16,7 @@ export const builder = (yargs: Argv): Argv =>
     alias: "of",
     description: "Write output to a file",
     type: "string",
-    demandOption: true
+    demandOption: true,
   });
 
 export const handler = async (args: CreateWalletCommand): Promise<void> => {

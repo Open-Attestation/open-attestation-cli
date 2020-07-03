@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 jest.mock("inquirer");
 
 // assigning the mock so that we get correct typing
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const promptMock: jest.Mock = prompt;
 const privateKey = "0xcd27dc84c82c5814e7edac518edd5f263e7db7f25adb7a1afe13996a95583cf2";
@@ -37,7 +37,7 @@ describe("create wallet", () => {
         Crypto: {
           cipher: "aes-128-ctr",
           cipherparams: {
-            iv: expect.any(String)
+            iv: expect.any(String),
           },
           ciphertext: expect.any(String),
           kdf: "scrypt",
@@ -46,10 +46,10 @@ describe("create wallet", () => {
             n: 131072,
             dklen: 32,
             p: 1,
-            r: 8
+            r: 8,
           },
-          mac: expect.any(String)
-        }
+          mac: expect.any(String),
+        },
       })
     );
 

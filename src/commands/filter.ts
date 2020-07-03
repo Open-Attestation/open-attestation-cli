@@ -15,11 +15,11 @@ export const builder = (yargs: Argv): Argv =>
   yargs
     .positional("source", {
       description: "Source wrapped document filename",
-      normalize: true
+      normalize: true,
     })
     .positional("destination", {
       description: "Destination to write obfuscated document file to",
-      normalize: true
+      normalize: true,
     });
 
 export const handler = (args: FilterCommand): void => {
