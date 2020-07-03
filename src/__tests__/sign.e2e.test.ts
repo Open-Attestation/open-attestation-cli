@@ -1,56 +1,33 @@
 import { sign, Output } from "../implementations/sign";
 import fs from "fs";
 import path from "path";
-import rimraf from "rimraf";
+import tmp from "tmp";
 
 const fixtureFolderName = "fixture";
 const wrappedFileName = `${fixtureFolderName}/wrapped-open-attestation-document.json`;
 const wrappedFileNameTwo = `${fixtureFolderName}/wrapped-open-attestation-document-2.json`;
 
-const inputDirectoryName = `${fixtureFolderName}/_sign_tmp_in`;
-const outputDirectoryName = `${fixtureFolderName}/_sign_tmp_out`;
-const inputDirectory = path.resolve(__dirname, inputDirectoryName);
-const outputDirectory = path.resolve(__dirname, outputDirectoryName);
-
-// separate set of temp folders use for second test to prevent race condition between rimraf
-const inputDirectoryNameTwo = `${fixtureFolderName}/_sign_tmp_in_two`;
-const outputDirectoryNameTwo = `${fixtureFolderName}/_sign_tmp_out_two`;
-const inputDirectoryTwo = path.resolve(__dirname, inputDirectoryNameTwo);
-const outputDirectoryTwo = path.resolve(__dirname, outputDirectoryNameTwo);
-const fullOutputFilePath = path.resolve(outputDirectoryTwo, "_tmp_output_file.json");
-
 describe("sign", () => {
   describe("sign with directory input", () => {
     // eslint-disable-next-line jest/no-hooks
-    beforeEach(() => {
-      rimraf.sync(inputDirectory);
-      rimraf.sync(outputDirectory);
-      fs.mkdirSync(inputDirectory);
-      fs.mkdirSync(outputDirectory);
-    });
-
-    // eslint-disable-next-line jest/no-hooks
-    afterEach(() => {
-      rimraf.sync(inputDirectory);
-      rimraf.sync(outputDirectory);
-    });
-
     it("should sign document when folder contains one valid open attestation document", async () => {
+      const inputDirectory = tmp.dirSync();
+      const outputDirectory = tmp.dirSync();
       fs.copyFileSync(
         path.resolve(__dirname, wrappedFileName),
-        path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document.json`)
+        path.resolve(__dirname, `${inputDirectory.name}/wrapped-open-attestation-document.json`)
       );
 
       await sign({
-        rawDocumentsPath: inputDirectory,
-        outputPath: outputDirectory,
+        rawDocumentsPath: inputDirectory.name,
+        outputPath: outputDirectory.name,
         outputPathType: Output.Directory,
         privateKey: "0x0123456789012345678901234567890123456789012345678901234567890123",
         publicKey: "0x14791697260E4c9A71f18484C9f997B308e59325"
       });
 
       const file = JSON.parse(
-        fs.readFileSync(`${outputDirectory}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
+        fs.readFileSync(`${outputDirectory.name}/wrapped-open-attestation-document.json`, { encoding: "utf8" })
       );
 
       expect(file).toMatchObject({
@@ -64,28 +41,30 @@ describe("sign", () => {
       });
     });
     it("should sign documents when folder contain multiple valid open attestation documents", async () => {
+      const inputDirectory = tmp.dirSync();
+      const outputDirectory = tmp.dirSync();
       fs.copyFileSync(
         path.resolve(__dirname, wrappedFileName),
-        path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document-1.json`)
+        path.resolve(__dirname, `${inputDirectory.name}/wrapped-open-attestation-document-1.json`)
       );
       fs.copyFileSync(
         path.resolve(__dirname, wrappedFileNameTwo),
-        path.resolve(__dirname, `${inputDirectoryName}/wrapped-open-attestation-document-2.json`)
+        path.resolve(__dirname, `${inputDirectory.name}/wrapped-open-attestation-document-2.json`)
       );
 
       await sign({
-        rawDocumentsPath: inputDirectory,
-        outputPath: outputDirectory,
+        rawDocumentsPath: inputDirectory.name,
+        outputPath: outputDirectory.name,
         outputPathType: Output.Directory,
         privateKey: "0x0123456789012345678901234567890123456789012345678901234567890123",
         publicKey: "0x14791697260E4c9A71f18484C9f997B308e59325"
       });
 
       const file1 = JSON.parse(
-        fs.readFileSync(`${outputDirectory}/wrapped-open-attestation-document-1.json`, { encoding: "utf8" })
+        fs.readFileSync(`${outputDirectory.name}/wrapped-open-attestation-document-1.json`, { encoding: "utf8" })
       );
       const file2 = JSON.parse(
-        fs.readFileSync(`${outputDirectory}/wrapped-open-attestation-document-2.json`, { encoding: "utf8" })
+        fs.readFileSync(`${outputDirectory.name}/wrapped-open-attestation-document-2.json`, { encoding: "utf8" })
       );
 
       expect(file1).toMatchObject({
@@ -111,35 +90,23 @@ describe("sign", () => {
   });
 
   describe("sign with file input", () => {
-    // eslint-disable-next-line jest/no-hooks
-    beforeEach(() => {
-      rimraf.sync(inputDirectoryTwo);
-      rimraf.sync(outputDirectoryTwo);
-      fs.mkdirSync(inputDirectoryTwo);
-      fs.mkdirSync(outputDirectoryTwo);
-    });
-
-    // eslint-disable-next-line jest/no-hooks
-    afterEach(() => {
-      rimraf.sync(inputDirectoryTwo);
-      rimraf.sync(outputDirectoryTwo);
-    });
-
     it("should output as file when input path is a file", async () => {
+      const inputDirectory = tmp.dirSync();
+      const outputFile = tmp.fileSync();
       fs.copyFileSync(
         path.resolve(__dirname, wrappedFileName),
-        path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
+        path.resolve(__dirname, `${inputDirectory.name}/wrapped-open-attestation-document.json`)
       );
 
       await sign({
-        rawDocumentsPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
-        outputPath: fullOutputFilePath,
+        rawDocumentsPath: path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json"),
+        outputPath: outputFile.name,
         outputPathType: Output.File,
         privateKey: "0x0123456789012345678901234567890123456789012345678901234567890123",
         publicKey: "0x14791697260E4c9A71f18484C9f997B308e59325"
       });
 
-      const file = JSON.parse(fs.readFileSync(`${outputDirectoryTwo}/_tmp_output_file.json`, { encoding: "utf8" }));
+      const file = JSON.parse(fs.readFileSync(`${outputFile.name}`, { encoding: "utf8" }));
 
       expect(file).toMatchObject({
         proof: {
@@ -157,12 +124,13 @@ describe("sign", () => {
       jest.spyOn(console, "log").mockImplementation(input => {
         stdOut = input;
       });
+      const inputDirectory = tmp.dirSync();
       fs.copyFileSync(
         path.resolve(__dirname, wrappedFileName),
-        path.resolve(__dirname, `${inputDirectoryNameTwo}/wrapped-open-attestation-document.json`)
+        path.resolve(__dirname, `${inputDirectory.name}/wrapped-open-attestation-document.json`)
       );
       await sign({
-        rawDocumentsPath: path.resolve(inputDirectoryTwo, "wrapped-open-attestation-document.json"),
+        rawDocumentsPath: path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json"),
         outputPathType: Output.StdOut,
         privateKey: "0x0123456789012345678901234567890123456789012345678901234567890123",
         publicKey: "0x14791697260E4c9A71f18484C9f997B308e59325"

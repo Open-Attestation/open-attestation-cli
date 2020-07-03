@@ -30,7 +30,7 @@ export const sign = async ({
   }
 
   const fileNames = await documentsInDirectory(rawDocumentsPath);
-  const returnDocuments = Promise.all(
+  return Promise.all(
     fileNames.map(async file => {
       const document = readDocumentFile(file);
       const signedDocument = await oaSign(document, {
@@ -50,6 +50,4 @@ export const sign = async ({
       return signedDocument;
     })
   );
-
-  return returnDocuments;
 };
