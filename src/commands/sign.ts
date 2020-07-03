@@ -12,27 +12,27 @@ export const builder = (yargs: Argv): Argv =>
     .positional("raw-documents-path", {
       description: "Directory containing the unissued raw documents or a single raw document file",
       normalize: true,
-      type: "string"
+      type: "string",
     })
     .option("output-file", {
       alias: "of",
       description: "Write output to a file. Only use when <wrapped-documents-dir> is a document",
       type: "string",
-      conflicts: "output-dir"
+      conflicts: "output-dir",
     })
     .option("output-dir", {
       alias: "od",
       description: "Write output to a directory",
       type: "string",
-      conflicts: "output-file"
+      conflicts: "output-file",
     })
     .option("private-key", {
       description: "Private key to sign document(s) with",
-      type: "string"
+      type: "string",
     })
     .option("public-key", {
       description: "Public key, added to the document, used to verify the signature is valid",
-      type: "string"
+      type: "string",
     });
 
 export interface SignCommand {
@@ -61,7 +61,7 @@ export const handler = async (args: SignCommand): Promise<void> => {
       outputPath,
       outputPathType,
       privateKey: args.privateKey,
-      publicKey: args.publicKey
+      publicKey: args.publicKey,
     });
     signale.success(`Proof block appended`);
   } catch (err) {

@@ -6,7 +6,7 @@ import { sign as oaSign, ProofType, SignedWrappedDocument } from "@govtechsg/ope
 export enum Output {
   File,
   Directory,
-  StdOut
+  StdOut,
 }
 
 interface SignArguments {
@@ -22,7 +22,7 @@ export const sign = async ({
   outputPath,
   outputPathType,
   privateKey,
-  publicKey
+  publicKey,
 }: SignArguments): Promise<SignedWrappedDocument<any>[]> => {
   if (outputPath) {
     // Create output dir
@@ -31,12 +31,12 @@ export const sign = async ({
 
   const fileNames = await documentsInDirectory(rawDocumentsPath);
   return Promise.all(
-    fileNames.map(async file => {
+    fileNames.map(async (file) => {
       const document = readOpenAttestationFile(file);
       const signedDocument = await oaSign(document, {
         privateKey: privateKey,
         verificationMethod: publicKey,
-        type: ProofType.EcdsaSecp256k1Signature2019
+        type: ProofType.EcdsaSecp256k1Signature2019,
       });
 
       // Write to destination folder

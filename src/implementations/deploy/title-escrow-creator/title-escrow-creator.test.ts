@@ -9,7 +9,7 @@ jest.mock("@govtechsg/token-registry");
 const deployParams: DeployTitleEscrowCreatorCommand = {
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1
+  gasPriceScale: 1,
 };
 
 describe("token-registry", () => {
@@ -23,7 +23,7 @@ describe("token-registry", () => {
       mockedTokenFactory.mockReset();
       mockedDeploy.mockReset();
       mockedDeploy.mockResolvedValue({
-        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) }
+        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) },
       });
     });
 
@@ -32,7 +32,7 @@ describe("token-registry", () => {
 
       await deployTitleEscrowCreator({
         network: "ropsten",
-        gasPriceScale: 1
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -43,7 +43,7 @@ describe("token-registry", () => {
       await deployTitleEscrowCreator({
         network: "ropsten",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
-        gasPriceScale: 1
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -71,7 +71,7 @@ describe("token-registry", () => {
       await expect(
         deployTitleEscrowCreator({
           network: "ropsten",
-          gasPriceScale: 1
+          gasPriceScale: 1,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"

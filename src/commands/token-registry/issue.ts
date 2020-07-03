@@ -20,17 +20,17 @@ export const builder = (yargs: Argv): Argv =>
           alias: "a",
           description: "Address of the token registry to issue the hash to",
           type: "string",
-          demandOption: true
+          demandOption: true,
         })
         .option("tokenId", {
           description: "Hash to add to the token registry",
           type: "string",
-          demandOption: true
+          demandOption: true,
         })
         .option("to", {
           description: "Initial recipient of the tokenId",
           type: "string",
-          demandOption: true
+          demandOption: true,
         })
     )
   );
@@ -40,7 +40,7 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
   try {
     info(`Issuing ${args.tokenId} to the initial recipient ${args.to} in the registry ${args.address}`);
     const { transactionHash } = await issueToTokenRegistry({
-      ...args
+      ...args,
     });
     success(
       `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.to}`

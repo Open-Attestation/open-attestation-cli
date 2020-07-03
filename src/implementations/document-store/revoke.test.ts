@@ -11,7 +11,7 @@ const deployParams: DocumentStoreRevokeCommand = {
   address: "0x1234",
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1
+  gasPriceScale: 1,
 };
 
 // TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
@@ -19,7 +19,7 @@ const deployParams: DocumentStoreRevokeCommand = {
 describe("document-store", () => {
   describe("revokeDocumentStore", () => {
     const mockedDocumentStoreFactory: jest.Mock<DocumentStoreFactory> = DocumentStoreFactory as any;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnect: jest.Mock = mockedDocumentStoreFactory.connect;
     const mockedRevoke = jest.fn();
@@ -30,11 +30,11 @@ describe("document-store", () => {
       mockedDocumentStoreFactory.mockReset();
       mockedConnect.mockReset();
       mockedConnect.mockReturnValue({
-        revoke: mockedRevoke
+        revoke: mockedRevoke,
       });
       mockedRevoke.mockReturnValue({
         hash: "hash",
-        wait: () => Promise.resolve({ transactionHash: "transactionHash" })
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
     });
 
@@ -45,7 +45,7 @@ describe("document-store", () => {
         hash: "0xabcd",
         address: "0x1234",
         network: "ropsten",
-        gasPriceScale: 1
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -58,7 +58,7 @@ describe("document-store", () => {
         address: "0x1234",
         network: "ropsten",
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
-        gasPriceScale: 1
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -89,7 +89,7 @@ describe("document-store", () => {
           hash: "0xabcd",
           address: "0x1234",
           network: "ropsten",
-          gasPriceScale: 1
+          gasPriceScale: 1,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"

@@ -20,13 +20,13 @@ export const builder = (yargs: Argv): Argv =>
           alias: "a",
           description: "Address to revoke the hash to",
           type: "string",
-          demandOption: true
+          demandOption: true,
         })
         .option("hash", {
           alias: "h",
           description: "Hash to revoke in the document store",
           type: "string",
-          demandOption: true
+          demandOption: true,
         })
     )
   );
@@ -38,7 +38,7 @@ export const handler = async (args: DocumentStoreRevokeCommand): Promise<string 
     const { transactionHash } = await revokeToDocumentStore({
       ...args,
       // add 0x automatically in front of the hash if it's not provided
-      hash: args.hash.startsWith("0x") ? args.hash : `0x${args.hash}`
+      hash: args.hash.startsWith("0x") ? args.hash : `0x${args.hash}`,
     });
     success(`Document/Document Batch with hash ${args.hash} has been revoked on ${args.address}`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);

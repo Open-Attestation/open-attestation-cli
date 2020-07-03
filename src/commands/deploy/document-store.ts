@@ -17,7 +17,7 @@ export const builder = (yargs: Argv): Argv =>
     withNetworkAndKeyOption(
       yargs.positional("store-name", {
         description: "Name of the store",
-        normalize: true
+        normalize: true,
       })
     )
   );

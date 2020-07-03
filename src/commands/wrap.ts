@@ -24,43 +24,43 @@ export const builder = (yargs: Argv): Argv =>
     .positional("raw-documents-path", {
       description: "Directory containing the unissued raw documents or a single raw document file",
       normalize: true,
-      type: "string"
+      type: "string",
     })
     .option("schema", {
       alias: "s",
       description: "Path or URL to custom schema",
-      type: "string"
+      type: "string",
     })
     .option("open-attestation-v2", {
       alias: "oav2",
-      conflicts: "open-attestation-v3"
+      conflicts: "open-attestation-v3",
     })
     .option("open-attestation-v3", {
       alias: "oav3",
-      conflicts: "open-attestation-v2"
+      conflicts: "open-attestation-v2",
     })
     .option("unwrap", {
       alias: "u",
       description: "Use if raw directory contains wrapped files",
       type: "boolean",
-      default: false
+      default: false,
     })
     .option("output-file", {
       alias: "of",
       description: "Write output to a file. Only use when <wrapped-documents-dir> is a document",
       type: "string",
-      conflicts: "output-dir"
+      conflicts: "output-dir",
     })
     .option("output-dir", {
       alias: "od",
       description: "Write output to a directory",
       type: "string",
-      conflicts: "output-file"
+      conflicts: "output-file",
     })
     .option("silent", {
       alias: "silent",
       description: "Disable console outputs when outputting to stdout",
-      type: "boolean"
+      type: "boolean",
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
@@ -78,7 +78,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
 
     // when outputting to stdout, disable signale so that the logs do not interfere
     if (args.silent) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       signale.disable();
     }
@@ -89,7 +89,7 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       schemaPath: args.schema,
       version: args.openAttestationV3 ? SchemaId.v3 : SchemaId.v2,
       unwrap: args.unwrap,
-      outputPathType
+      outputPathType,
     });
 
     signale.success(`Batch Document Root: 0x${merkleRoot}`);

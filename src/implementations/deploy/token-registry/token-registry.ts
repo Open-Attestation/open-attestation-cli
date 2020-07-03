@@ -14,7 +14,7 @@ export const deployTokenRegistry = async ({
   key,
   keyFile,
   gasPriceScale,
-  encryptedWalletPath
+  encryptedWalletPath,
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();

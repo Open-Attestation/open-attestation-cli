@@ -14,7 +14,7 @@ export const issueToTokenRegistry = async ({
   key,
   keyFile,
   gasPriceScale,
-  encryptedWalletPath
+  encryptedWalletPath,
 }: TokenRegistryIssueCommand): Promise<{ transactionHash: string }> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();

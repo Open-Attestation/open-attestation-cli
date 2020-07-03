@@ -4,7 +4,7 @@ import { prompt } from "inquirer";
 jest.mock("inquirer");
 
 // assigning the mock so that we get correct typing
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const promptMock: jest.Mock = prompt;
 
@@ -39,7 +39,7 @@ describe("wallet", () => {
     const wallet = await getWallet({
       network: "ropsten",
       encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
-      progress: () => void 0 // shut up progress bar
+      progress: () => void 0, // shut up progress bar
     });
     expect(wallet.address).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
@@ -51,7 +51,7 @@ describe("wallet", () => {
       getWallet({
         network: "ropsten",
         encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
-        progress: () => void 0 // shut up progress bar
+        progress: () => void 0, // shut up progress bar
       })
     ).rejects.toStrictEqual(new Error("invalid password"));
   });

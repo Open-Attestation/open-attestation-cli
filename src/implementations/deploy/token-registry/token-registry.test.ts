@@ -11,7 +11,7 @@ const deployParams: DeployTokenRegistryCommand = {
   registrySymbol: "Tst",
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1
+  gasPriceScale: 1,
 };
 
 describe("token-registry", () => {
@@ -25,7 +25,7 @@ describe("token-registry", () => {
       mockedTokenFactory.mockReset();
       mockedDeploy.mockReset();
       mockedDeploy.mockResolvedValue({
-        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) }
+        deployTransaction: { hash: "hash", wait: () => Promise.resolve({ contractAddress: "contractAddress" }) },
       });
     });
 
@@ -36,7 +36,7 @@ describe("token-registry", () => {
         registryName: "Test",
         registrySymbol: "Tst",
         network: "ropsten",
-        gasPriceScale: 1
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -49,7 +49,7 @@ describe("token-registry", () => {
         registrySymbol: "Tst",
         network: "ropsten",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
-        gasPriceScale: 1
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedTokenFactory.mock.calls[0][0];
@@ -81,7 +81,7 @@ describe("token-registry", () => {
           registryName: "Test",
           registrySymbol: "Tst",
           network: "ropsten",
-          gasPriceScale: 1
+          gasPriceScale: 1,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"

@@ -12,7 +12,7 @@ export const deployTitleEscrowCreator = async ({
   key,
   keyFile,
   gasPriceScale,
-  encryptedWalletPath
+  encryptedWalletPath,
 }: DeployTitleEscrowCreatorCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();

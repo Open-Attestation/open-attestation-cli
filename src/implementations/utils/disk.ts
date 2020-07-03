@@ -29,11 +29,12 @@ const isValidExtension = (filename: string): boolean => validExtensions.test(fil
 // only documents with valid extension are returned (opencert, json, tt)
 export const documentsInDirectory = async (documentPath: string): Promise<string[]> => {
   const items = isDir(documentPath)
-    ? (await readdir(documentPath)).map(filename => path.join(documentPath, filename))
+    ? (await readdir(documentPath)).map((filename) => path.join(documentPath, filename))
     : [documentPath];
   return items.filter(isValidExtension);
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const writeDocumentToDisk = (destinationDir: string, filename: string, document: any): void => {
   fs.writeFileSync(path.join(path.resolve(destinationDir), filename), JSON.stringify(document, null, 2));
 };

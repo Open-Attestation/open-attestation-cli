@@ -17,20 +17,20 @@ export const builder = (yargs: Argv): Argv =>
         alias: "d",
         description: "OpenAttestation document to verify.",
         normalize: true,
-        type: "string"
+        type: "string",
       })
       .option("verbose", {
         alias: "v",
         type: "boolean",
         default: false,
-        description: "Display more details"
+        description: "Display more details",
       })
   );
 
 export const getRevokeFragment = (fragments: VerificationFragment[]): VerificationFragment[] =>
-  fragments.filter(status => status.name === "OpenAttestationEthereumDocumentStoreRevoked");
+  fragments.filter((status) => status.name === "OpenAttestationEthereumDocumentStoreRevoked");
 export const getAllButRevokeFragment = (fragments: VerificationFragment[]): VerificationFragment[] =>
-  fragments.filter(status => status.name !== "OpenAttestationEthereumDocumentStoreRevoked");
+  fragments.filter((status) => status.name !== "OpenAttestationEthereumDocumentStoreRevoked");
 
 export const handler = async ({ document, network, verbose }: VerifyCommand): Promise<void> => {
   const show = (status: boolean, successMessage: string, errorMessage: string): void => {

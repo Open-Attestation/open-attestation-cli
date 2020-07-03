@@ -17,7 +17,7 @@ export const deployTitleEscrow = async ({
   key,
   keyFile,
   gasPriceScale,
-  encryptedWalletPath
+  encryptedWalletPath,
 }: DeployTitleEscrowCommand): Promise<TransactionReceipt> => {
   validateAddress(tokenRegistry);
   validateAddress(beneficiary);
@@ -29,7 +29,7 @@ export const deployTitleEscrow = async ({
   const factory = new TitleEscrowFactory(wallet);
   signale.await(`Sending transaction to pool`);
   const transaction = await factory.deploy(tokenRegistry, beneficiary, holder, titleEscrowFactory, {
-    gasPrice: gasPrice.mul(gasPriceScale)
+    gasPrice: gasPrice.mul(gasPriceScale),
   });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);

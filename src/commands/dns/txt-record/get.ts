@@ -15,18 +15,18 @@ export const builder = (yargs: Argv): Argv =>
     .option("location", {
       description: "Domain name to look up for Issuer DNS records",
       type: "string",
-      demandOption: true
+      demandOption: true,
     })
     .option("networkId", {
       description: "Ethereum Network (chain ID) to filter results by",
-      type: "number"
+      type: "number",
     });
 
 export const handler = async (args: DnsGetTxtRecordCommand): Promise<OpenAttestationDNSTextRecord[]> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     const records = await getDocumentStoreRecords(args.location);
-    console.table(args.networkId ? records.filter(record => record.netId == String(args.networkId)) : records);
+    console.table(args.networkId ? records.filter((record) => record.netId == String(args.networkId)) : records);
     return records;
   } catch (e) {
     error(e.message);
