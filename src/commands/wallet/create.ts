@@ -12,12 +12,18 @@ export const command = "create [options]";
 export const describe = "Create a random wallet and encrypt the result into the provided path";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs.option("output-file", {
-    alias: "of",
-    description: "Write output to a file",
-    type: "string",
-    demandOption: true,
-  });
+  yargs
+    .option("output-file", {
+      alias: "of",
+      description: "Write output to a file",
+      type: "string",
+      demandOption: true,
+    })
+    .option("fund", {
+      description: "Automatically add funds for the specified network",
+      type: "string",
+      choices: ["ropsten"],
+    });
 
 export const handler = async (args: CreateWalletCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);

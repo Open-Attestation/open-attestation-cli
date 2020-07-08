@@ -6,4 +6,5 @@ export interface EncryptWalletCommand extends PrivateKeyOption {
 
 export interface CreateWalletCommand {
   outputFile: string;
+  fund?: string;
 }
