@@ -15,5 +15,5 @@ export interface DeployTitleEscrowCommand extends NetworkAndKeyOption, GasOption
   tokenRegistry: string;
   beneficiary: string;
   holder: string;
-  titleEscrowFactory: string;
+  titleEscrowFactory?: string;
 }
