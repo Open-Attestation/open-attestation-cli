@@ -38,7 +38,6 @@ export const builder = (yargs: Argv): Argv =>
           alias: "c",
           description: "Address of title escrow creator/factory",
           normalize: true,
-          required: true,
         })
     )
   );
