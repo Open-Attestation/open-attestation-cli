@@ -29,7 +29,7 @@ export const getWallet = async ({
   progress = defaultProgress("Decrypting Wallet"),
 }: WalletOption & NetworkOption & { progress?: (progress: number) => void }): Promise<Wallet> => {
   const provider =
-    network === "rpc"
+    network === "local"
       ? new providers.JsonRpcProvider()
       : getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   if (encryptedWalletPath) {
