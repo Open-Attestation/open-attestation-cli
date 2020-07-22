@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import signale from "signale";
-import { ethers, getDefaultProvider, Wallet } from "ethers";
+import { ethers, getDefaultProvider, Wallet, providers } from "ethers";
 import { NetworkOption, WalletOption } from "../../commands/shared";
 import { readFile } from "./disk";
 import inquirer from "inquirer";
@@ -28,7 +28,10 @@ export const getWallet = async ({
   encryptedWalletPath,
   progress = defaultProgress("Decrypting Wallet"),
 }: WalletOption & NetworkOption & { progress?: (progress: number) => void }): Promise<Wallet> => {
-  const provider = getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+  const provider =
+    network === "rpc"
+      ? new providers.JsonRpcProvider()
+      : getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   if (encryptedWalletPath) {
     const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
 
