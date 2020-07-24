@@ -4,6 +4,7 @@ import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "ethers/providers";
 import { DeployTitleEscrowCreatorCommand } from "../../../commands/deploy/deploy.types";
+import { dryRunMode } from "../../utils/dryRun";
 
 const { trace } = getLogger("deploy:title-escrow-creator");
 
@@ -13,7 +14,17 @@ export const deployTitleEscrowCreator = async ({
   keyFile,
   gasPriceScale,
   encryptedWalletPath,
+  dryRun,
 }: DeployTitleEscrowCreatorCommand): Promise<TransactionReceipt> => {
+  if (dryRun) {
+    const factory = new TitleEscrowCreatorFactory();
+    await dryRunMode({
+      network,
+      gasPriceScale: gasPriceScale,
+      transaction: factory.getDeployTransaction(),
+    });
+    process.exit(0);
+  }
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new TitleEscrowCreatorFactory(wallet);

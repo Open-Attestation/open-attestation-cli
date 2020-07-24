@@ -4,6 +4,7 @@ import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "ethers/providers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { dryRunMode } from "../../utils/dryRun";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -15,7 +16,18 @@ export const deployTokenRegistry = async ({
   keyFile,
   gasPriceScale,
   encryptedWalletPath,
+  dryRun,
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
+  if (dryRun) {
+    // TODO this does not work ?
+    const factory = new TradeTrustERC721Factory();
+    await dryRunMode({
+      network,
+      gasPriceScale: gasPriceScale,
+      transaction: factory.getDeployTransaction(registryName, registrySymbol, {}),
+    });
+    process.exit(0);
+  }
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new TradeTrustERC721Factory(wallet);

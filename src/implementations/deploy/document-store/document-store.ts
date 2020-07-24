@@ -3,6 +3,7 @@ import signale from "signale";
 import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
 import { getWallet } from "../../utils/wallet";
+import { dryRunMode } from "../../utils/dryRun";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -12,8 +13,18 @@ export const deployDocumentStore = async ({
   key,
   keyFile,
   gasPriceScale,
+  dryRun,
   encryptedWalletPath,
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
+  if (dryRun) {
+    await dryRunMode({
+      gasPriceScale: gasPriceScale,
+      transaction: new DocumentStoreFactory().getDeployTransaction(storeName),
+      network,
+    });
+    process.exit(0);
+  }
+
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new DocumentStoreFactory(wallet);

@@ -3,6 +3,8 @@ import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWallet } from "../utils/wallet";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
+import { dryRunMode } from "../utils/dryRun";
+import { TransactionReceipt } from "ethers/providers";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -15,8 +17,18 @@ export const issueToTokenRegistry = async ({
   keyFile,
   gasPriceScale,
   encryptedWalletPath,
-}: TokenRegistryIssueCommand): Promise<{ transactionHash: string }> => {
+  dryRun,
+}: TokenRegistryIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  if (dryRun) {
+    const tokenRegistry = await TradeTrustERC721Factory.connect(address, wallet);
+    await dryRunMode({
+      gasPriceScale: gasPriceScale,
+      estimatedGas: await tokenRegistry.estimate.safeMint(to, tokenId, []),
+      network,
+    });
+    process.exit(0);
+  }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const erc721 = await TradeTrustERC721Factory.connect(address, wallet);

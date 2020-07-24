@@ -15,6 +15,7 @@ export interface WalletOption extends PrivateKeyOption {
 
 export interface GasOption {
   gasPriceScale: number;
+  dryRun: boolean;
 }
 
 export interface NetworkAndKeyOption extends NetworkOption, WalletOption {}
@@ -27,12 +28,19 @@ export const withNetworkOption = (yargs: Argv): Argv =>
     description: "Ethereum network to deploy to",
   });
 export const withGasPriceOption = (yargs: Argv): Argv =>
-  yargs.option("gas-price-scale", {
-    alias: "gps",
-    type: "number",
-    default: 1,
-    description: "Gas price scale to apply to the estimated gas price",
-  });
+  yargs
+    .option("gas-price-scale", {
+      alias: "gps",
+      type: "number",
+      default: 1,
+      description: "Gas price scale to apply to the estimated gas price",
+    })
+    .option("dry-run", {
+      alias: "dr",
+      type: "boolean",
+      default: false,
+      description: "Dry run",
+    });
 
 export const withPrivateKeyOption = (yargs: Argv): Argv =>
   yargs
