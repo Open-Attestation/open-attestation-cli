@@ -12,6 +12,7 @@ const deployParams: DocumentStoreRevokeCommand = {
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
+  dryRun: false,
 };
 
 // TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
@@ -46,6 +47,7 @@ describe("document-store", () => {
         address: "0x1234",
         network: "ropsten",
         gasPriceScale: 1,
+        dryRun: false,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -59,6 +61,7 @@ describe("document-store", () => {
         network: "ropsten",
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
         gasPriceScale: 1,
+        dryRun: false,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -90,6 +93,7 @@ describe("document-store", () => {
           address: "0x1234",
           network: "ropsten",
           gasPriceScale: 1,
+          dryRun: false,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"

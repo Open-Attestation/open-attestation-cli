@@ -5,6 +5,7 @@ import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "ethers/providers";
 import { DeployTitleEscrowCommand } from "../../../commands/deploy/deploy.types";
 import { validateAddress } from "../../utils/validation";
+import { dryRunMode } from "../../utils/dryRun";
 
 const { trace } = getLogger("deploy:title-escrow");
 
@@ -33,12 +34,24 @@ export const deployTitleEscrow = async ({
   keyFile,
   gasPriceScale,
   encryptedWalletPath,
+  dryRun,
 }: DeployTitleEscrowCommand): Promise<TransactionReceipt> => {
   const titleEscrowFactoryAddress = titleEscrowFactory || getDefaultEscrowFactory(network);
   validateAddress(tokenRegistry);
   validateAddress(beneficiary);
   validateAddress(holder);
   validateAddress(titleEscrowFactoryAddress);
+
+  if (dryRun) {
+    const factory = new TitleEscrowFactory();
+    await dryRunMode({
+      network,
+      gasPriceScale: gasPriceScale,
+      transaction: factory.getDeployTransaction(tokenRegistry, beneficiary, holder, titleEscrowFactoryAddress),
+    });
+    process.exit(0);
+  }
+
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const gasPrice = await wallet.provider.getGasPrice();
 

@@ -12,6 +12,7 @@ const deployParams: TokenRegistryIssueCommand = {
   address: "0x1234",
   network: "ropsten",
   gasPriceScale: 1,
+  dryRun: false,
 };
 
 // TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory

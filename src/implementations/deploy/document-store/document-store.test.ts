@@ -11,6 +11,7 @@ const deployParams: DeployDocumentStoreCommand = {
   network: "ropsten",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
+  dryRun: false,
 };
 
 describe("document-store", () => {
@@ -36,6 +37,7 @@ describe("document-store", () => {
         storeName: "Test",
         network: "ropsten",
         gasPriceScale: 1,
+        dryRun: false,
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -48,6 +50,7 @@ describe("document-store", () => {
         network: "ropsten",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         gasPriceScale: 1,
+        dryRun: false,
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -77,6 +80,7 @@ describe("document-store", () => {
           storeName: "Test",
           network: "ropsten",
           gasPriceScale: 1,
+          dryRun: false,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
