@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { DocumentStoreIssueCommand } from "../../commands/document-store/document-store-command.type";
 import { getWallet } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
-import { TransactionReceipt } from "ethers/providers";
+import { TransactionReceipt } from "@ethersproject/providers";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -23,7 +23,7 @@ export const issueToDocumentStore = async ({
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await documentStore.estimate.issue(hash),
+      estimatedGas: await documentStore.estimateGas.issue(hash),
       network,
     });
     process.exit(0);

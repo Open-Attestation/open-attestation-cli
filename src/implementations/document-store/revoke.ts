@@ -22,7 +22,7 @@ export const revokeToDocumentStore = async ({
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await documentStore.estimate.revoke(hash),
+      estimatedGas: await documentStore.estimateGas.revoke(hash),
       network,
     });
     process.exit(0);

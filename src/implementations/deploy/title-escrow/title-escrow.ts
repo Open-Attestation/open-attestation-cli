@@ -2,7 +2,7 @@ import { TitleEscrowFactory } from "@govtechsg/token-registry";
 import { getWallet } from "../../utils/wallet";
 import signale from "signale";
 import { getLogger } from "../../../logger";
-import { TransactionReceipt } from "ethers/providers";
+import { TransactionReceipt } from "@ethersproject/providers";
 import { DeployTitleEscrowCommand } from "../../../commands/deploy/deploy.types";
 import { validateAddress } from "../../utils/validation";
 import { dryRunMode } from "../../utils/dryRun";

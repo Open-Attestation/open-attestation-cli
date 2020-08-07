@@ -1,6 +1,4 @@
 import { Argv } from "yargs";
-import * as ethers from "ethers";
-ethers.errors.setLogLevel("error"); // disable warning from ethers
 
 export const command = "deploy <contract-type>";
 
