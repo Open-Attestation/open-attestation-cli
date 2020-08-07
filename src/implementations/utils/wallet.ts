@@ -47,6 +47,7 @@ export const getWallet = async ({
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
       );
 
-    return new Wallet(privateKey, provider);
+    const hexlifiedPrivateKey = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
+    return new Wallet(hexlifiedPrivateKey, provider);
   }
 };

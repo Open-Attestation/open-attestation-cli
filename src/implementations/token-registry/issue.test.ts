@@ -1,7 +1,7 @@
 import { issueToTokenRegistry } from "./issue";
 import { join } from "path";
 import { Wallet } from "ethers";
-import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 
 jest.mock("@govtechsg/token-registry");
@@ -15,20 +15,20 @@ const deployParams: TokenRegistryIssueCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
+// TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
 // ideally must setup ganache, and run the function over it
 describe("token-registry", () => {
   describe("issue", () => {
-    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721Factory> = TradeTrustERC721Factory as any;
+    const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnect: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockedConnect: jest.Mock = mockedTradeTrustErc721Factory.connect;
     const mockedIssue = jest.fn();
 
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustERC721Factory.mockReset();
+      mockedTradeTrustErc721Factory.mockReset();
       mockedConnect.mockReset();
       mockedConnect.mockReturnValue({
         "safeMint(address,uint256)": mockedIssue,

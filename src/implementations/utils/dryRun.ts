@@ -1,7 +1,8 @@
 import { ethers, utils } from "ethers";
 import fetch from "node-fetch";
 import { green, highlight, red } from "../../utils";
-import { BigNumber, UnsignedTransaction } from "ethers/utils";
+import { BigNumber } from "ethers";
+import { TransactionRequest } from "@ethersproject/providers";
 
 export const dryRunMode = async ({
   gasPriceScale,
@@ -11,7 +12,7 @@ export const dryRunMode = async ({
 }: {
   gasPriceScale: number;
   network: string;
-  transaction?: UnsignedTransaction;
+  transaction?: TransactionRequest;
   estimatedGas?: BigNumber;
 }): Promise<void> => {
   // estimated gas or a transaction must be provided, if a transaction is provided let's estimate the gas automatically
