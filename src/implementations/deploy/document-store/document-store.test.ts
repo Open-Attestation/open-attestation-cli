@@ -64,8 +64,8 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
-      // looks like the pattern is somethin like 1000000000 or 2000000000
-      expect(mockedDeploy.mock.calls[0][1].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d000000000/));
+      // price should be any length string of digits
+      expect(mockedDeploy.mock.calls[0][1].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
