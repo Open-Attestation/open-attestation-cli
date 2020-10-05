@@ -14,7 +14,14 @@ export interface SignCommand extends PrivateKeyOption {
 
 export const supportedAlgorithms = Array.from(defaultSigners.keys());
 
-export const sign = async ({ rawDocumentsPath, outputDir, publicKey, algorithm, key, keyFile }: SignCommand) => {
+export const sign = async ({
+  rawDocumentsPath,
+  outputDir,
+  publicKey,
+  algorithm,
+  key,
+  keyFile,
+}: SignCommand): Promise<void> => {
   const privateKey = await getPrivateKey({ key, keyFile });
   if (!privateKey) throw new Error("Private key is not specified (use -k or -f to specify key)");
   if (!isDir(outputDir)) throw new Error("output-dir must be a director");
