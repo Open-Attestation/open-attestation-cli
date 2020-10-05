@@ -2,7 +2,8 @@ import { Argv } from "yargs";
 import { error } from "signale";
 import { getLogger } from "../../../logger";
 import { DnsGetTxtRecordCommand } from "./dns-command.type";
-import { getDocumentStoreRecords, OpenAttestationDNSTextRecord } from "@govtechsg/dnsprove";
+import { getDocumentStoreRecords } from "@govtechsg/dnsprove";
+import { OpenAttestationDNSTextRecord } from "@govtechsg/dnsprove/dist/ts/records/dnsTxt";
 
 const { trace } = getLogger("dns:txt-record");
 
