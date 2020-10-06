@@ -1,6 +1,6 @@
 import { PrivateKeyOption } from "../../commands/shared";
 import { getPrivateKey } from "../utils/wallet";
-import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk, isDir } from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
 import { signDocument, defaultSigners } from "@govtechsg/oa-did-sign";
 import path from "path";
 import mkdirp from "mkdirp";
