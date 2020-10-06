@@ -23,8 +23,7 @@ export const sign = async ({
   keyFile,
 }: SignCommand): Promise<void> => {
   const privateKey = await getPrivateKey({ key, keyFile });
-  if (!privateKey) throw new Error("Private key is not specified (use -k or -f to specify key)");
-  if (!isDir(outputDir)) throw new Error("output-dir must be a director");
+  if (!privateKey) throw new Error("Private key is not specified (use -k, -f or OA_PRIVATE_KEY to specify key)");
 
   // Create output dir
   if (outputDir) {

@@ -1,5 +1,5 @@
 import { Argv } from "yargs";
-import { withWalletOption } from "./shared";
+import { withPrivateKeyOption } from "./shared";
 import signale from "signale";
 import { sign, SignCommand, supportedAlgorithms } from "../implementations/sign";
 
@@ -8,7 +8,7 @@ export const command = "sign <raw-documents-path>";
 export const describe = "Sign document(s) and appends proof block";
 
 export const builder = (yargs: Argv): Argv =>
-  withWalletOption(
+  withPrivateKeyOption(
     yargs
       .positional("raw-documents-path", {
         description: "Directory containing the unissued raw documents or a single raw document file",
