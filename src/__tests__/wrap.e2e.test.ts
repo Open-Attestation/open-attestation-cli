@@ -18,6 +18,11 @@ describe("wrap", () => {
     const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
     const signaleErrorSpy = jest.spyOn(signale, "error");
 
+    // eslint-disable-next-line jest/no-hooks
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it("should not allow output as file when input path is a directory", async () => {
       await handler({
         rawDocumentsPath: path.resolve("examples", "raw-documents"),
