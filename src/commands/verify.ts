@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import signale from "signale";
 import { VerifyCommand } from "./command-types";
-import { isValid, VerificationFragment, verify } from "@govtechsg/oa-verify";
+import { isValid, verify } from "@govtechsg/oa-verify";
 import { readOpenAttestationFile } from "../implementations/utils/disk";
 import { withNetworkOption } from "./shared";
 
@@ -26,12 +26,6 @@ export const builder = (yargs: Argv): Argv =>
         description: "Display more details",
       })
   );
-
-export const getRevokeFragment = (fragments: VerificationFragment[]): VerificationFragment[] =>
-  fragments.filter((status) => status.name === "OpenAttestationEthereumDocumentStoreRevoked");
-export const getAllButRevokeFragment = (fragments: VerificationFragment[]): VerificationFragment[] =>
-  fragments.filter((status) => status.name !== "OpenAttestationEthereumDocumentStoreRevoked");
-
 export const handler = async ({ document, network, verbose }: VerifyCommand): Promise<void> => {
   const show = (status: boolean, successMessage: string, errorMessage: string): void => {
     if (status) {
@@ -51,16 +45,7 @@ export const handler = async ({ document, network, verbose }: VerifyCommand): Pr
         "The document has not been tampered",
         "The document has been tampered"
       );
-      show(
-        isValid(getAllButRevokeFragment(fragments), ["DOCUMENT_STATUS"]),
-        "The document has been issued",
-        "The document has not been issued"
-      );
-      show(
-        isValid(getRevokeFragment(fragments), ["DOCUMENT_STATUS"]),
-        "The document has not been revoked",
-        "The document has been revoked"
-      );
+      show(isValid(fragments, ["DOCUMENT_STATUS"]), "The document has been issued", "The document has not been issued");
       show(
         isValid(fragments, ["ISSUER_IDENTITY"]),
         "The issuer identity has been verified",
