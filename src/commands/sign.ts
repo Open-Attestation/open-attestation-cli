@@ -1,69 +1,44 @@
 import { Argv } from "yargs";
+import { withPrivateKeyOption } from "./shared";
 import signale from "signale";
-import { sign, Output } from "../implementations/sign";
-import { isDir } from "../implementations/utils/disk";
+import { sign, SignCommand, supportedAlgorithms } from "../implementations/sign";
 
 export const command = "sign <raw-documents-path>";
 
 export const describe = "Sign document(s) and appends proof block";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs
-    .positional("raw-documents-path", {
-      description: "Directory containing the unissued raw documents or a single raw document file",
-      normalize: true,
-      type: "string",
-    })
-    .option("output-file", {
-      alias: "of",
-      description: "Write output to a file. Only use when <wrapped-documents-dir> is a document",
-      type: "string",
-      conflicts: "output-dir",
-    })
-    .option("output-dir", {
-      alias: "od",
-      description: "Write output to a directory",
-      type: "string",
-      conflicts: "output-file",
-    })
-    .option("private-key", {
-      description: "Private key to sign document(s) with",
-      type: "string",
-    })
-    .option("public-key", {
-      description: "Public key, added to the document, used to verify the signature is valid",
-      type: "string",
-    });
-
-export interface SignCommand {
-  rawDocumentsPath: string;
-  outputDir?: string;
-  outputFile?: string;
-  privateKey: string;
-  publicKey: string;
-}
+  withPrivateKeyOption(
+    yargs
+      .positional("raw-documents-path", {
+        description: "Directory containing the unissued raw documents or a single raw document file",
+        normalize: true,
+        type: "string",
+      })
+      .option("output-dir", {
+        alias: "od",
+        description: "Write output to a directory",
+        type: "string",
+        required: true,
+      })
+      .option("public-key", {
+        alias: "p",
+        description: "Public key in did (ie did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89#controller)",
+        type: "string",
+        required: true,
+      })
+      .option("algorithm", {
+        alias: "a",
+        choices: supportedAlgorithms,
+        default: "Secp256k1VerificationKey2018",
+        description: "Algorithm to sign with",
+      })
+  );
 
 export const handler = async (args: SignCommand): Promise<void> => {
   try {
-    const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.StdOut;
-    const outputPath = args.outputDir || args.outputFile; // undefined when we use std out
-
-    // when input type is directory, output type must only be directory
-    if (isDir(args.rawDocumentsPath) && outputPathType !== Output.Directory) {
-      signale.error(
-        "Output path type can only be directory when using directory as raw documents path, use --output-dir"
-      );
-      process.exit(1);
-    }
-
-    await sign({
-      rawDocumentsPath: args.rawDocumentsPath,
-      outputPath,
-      outputPathType,
-      privateKey: args.privateKey,
-      publicKey: args.publicKey,
-    });
-    signale.success(`Proof block appended`);
+    await sign(args);
+    signale.success(`Signed documents saved to ${args.outputDir}`);
   } catch (err) {
     signale.error(err.message);
     process.exit(1);

@@ -224,6 +224,14 @@ open-attestation document-store verify --document ./examples/wrapped-documents/e
 ✔  success   The document is valid
 ```
 
+## DID Direct Signing
+
+Sign on an OA document directly with a private key.
+
+```bash
+open-attestation sign ./examples/unsigned-documents -f ./examples/sample-key -p did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller --output-dir ./examples/signed-documents
+```
+
 ## DNS TXT record
 
 Create a temporary DNS TXT record in OpenAttestation sandbox
@@ -328,6 +336,7 @@ open-attestation encrypt
 open-attestation filter
 open-attestation verify
 open-attestation wrap
+open-attestation sign
 ```
 
 ## Test
