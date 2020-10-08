@@ -70,30 +70,39 @@ export const digestDocument = async (
   return hashArray;
 };
 
-export const appendProofToDocuments = async (
-  intermediateDir: string,
-  hashMap: Record<string, { sibling: string; parent: string }>,
-  outputPathType: Output,
-  digestedDocumentPath?: string
-): Promise<string> => {
+export const appendProofToDocuments = async ({
+  intermediateDir,
+  hashMap,
+  outputPathType,
+  digestedDocumentPath,
+  batched,
+}: {
+  intermediateDir: string;
+  hashMap: Record<string, { sibling: string; parent: string }>;
+  outputPathType: Output;
+  digestedDocumentPath?: string;
+  batched: boolean;
+}): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
 
   documentFileNames.forEach((file) => {
     const document = readOpenAttestationFile(file);
-    const documentHash = document.signature.targetHash;
-    const proof = [];
-    let candidateRoot = documentHash;
-    let nextStep = hashMap[documentHash];
-    while (nextStep) {
-      // nextStep will be empty when there is no parent
-      proof.push(nextStep.sibling);
-      candidateRoot = nextStep.parent;
-      nextStep = hashMap[candidateRoot];
+    if (batched) {
+      const documentHash = document.signature.targetHash;
+      const proof = [];
+      let candidateRoot = documentHash;
+      let nextStep = hashMap[documentHash];
+      while (nextStep) {
+        // nextStep will be empty when there is no parent
+        proof.push(nextStep.sibling);
+        candidateRoot = nextStep.parent;
+        nextStep = hashMap[candidateRoot];
+      }
+      document.signature.proof = proof;
+      document.signature.merkleRoot = candidateRoot;
+      if (!merkleRoot) merkleRoot = candidateRoot;
     }
-    document.signature.proof = proof;
-    document.signature.merkleRoot = candidateRoot;
-    if (!merkleRoot) merkleRoot = candidateRoot;
 
     if (outputPathType === Output.File && digestedDocumentPath) {
       writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
@@ -170,6 +179,7 @@ interface WrapArguments {
   schemaPath?: string;
   version: SchemaId;
   unwrap: boolean;
+  batched: boolean;
   outputPathType: Output;
 }
 
@@ -179,8 +189,9 @@ export const wrap = async ({
   schemaPath,
   version,
   unwrap,
+  batched,
   outputPathType,
-}: WrapArguments): Promise<string> => {
+}: WrapArguments): Promise<string | undefined> => {
   // Create output dir
   if (outputPath) {
     mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
@@ -202,10 +213,15 @@ export const wrap = async ({
   const hashMap = merkleHashmap(individualDocumentHashes);
 
   // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToDocuments(intermediateDir, hashMap, outputPathType, outputPath);
+  const merkleRoot = await appendProofToDocuments({
+    intermediateDir,
+    hashMap,
+    outputPathType,
+    digestedDocumentPath: outputPath,
+    batched,
+  });
 
   // Remove intermediate dir
   removeCallback();
-
-  return merkleRoot;
+  return batched ? merkleRoot : undefined;
 };

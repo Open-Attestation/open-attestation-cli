@@ -86,6 +86,13 @@ open-attestation wrap ./examples/raw-documents/example.0.json --output-file ./ex
 open-attestation wrap ./examples/wrapped-documents/example.0.json --of ./examples/wrapped-documents/example.1.json --unwrap
 ```
 
+You can disable the `--batched` option to wrap multiple documents individually (i.e. they will not have the same merkle root):
+
+```bash
+open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --batched false
+✔  success   All documents have been individually wrapped
+```
+
 By default the CLI will use open-attestation schema v2 but you can opt in for open-attestation schema v3 using `open-attestation-v3` option:
 
 ```bash

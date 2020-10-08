@@ -19,6 +19,8 @@ describe("document-store", () => {
     const documentStoreFactory: any = DocumentStoreFactory;
     const mockedDocumentStoreFactory: jest.Mock<DocumentStoreFactory> = documentStoreFactory;
     const mockedDeploy: jest.Mock = mockedDocumentStoreFactory.prototype.deploy;
+    // increase timeout because ethers is throttling
+    jest.setTimeout(20000);
 
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {

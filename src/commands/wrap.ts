@@ -13,6 +13,7 @@ interface WrapCommand {
   openAttestationV3: boolean;
   unwrap: boolean;
   silent?: boolean;
+  batched: boolean;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -61,6 +62,11 @@ export const builder = (yargs: Argv): Argv =>
       alias: "silent",
       description: "Disable console outputs when outputting to stdout",
       type: "boolean",
+    })
+    .option("batched", {
+      description: "Indicate whether documents must be wrap together or individually",
+      type: "boolean",
+      default: true,
     });
 
 export const handler = async (args: WrapCommand): Promise<string> => {
@@ -90,11 +96,16 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       version: args.openAttestationV3 ? SchemaId.v3 : SchemaId.v2,
       unwrap: args.unwrap,
       outputPathType,
+      batched: args.batched,
     });
 
-    signale.success(`Batch Document Root: 0x${merkleRoot}`);
+    if (merkleRoot) {
+      signale.success(`Batch Document Root: 0x${merkleRoot}`);
+    } else {
+      signale.success("All documents have been individually wrapped");
+    }
 
-    return merkleRoot;
+    return merkleRoot || "";
   } catch (err) {
     signale.error(err.message);
     if (err.validationErrors) {
