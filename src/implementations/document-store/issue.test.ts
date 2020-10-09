@@ -19,7 +19,7 @@ const deployParams: DocumentStoreIssueCommand = {
 // ideally must setup ganache, and run the function over it
 describe("document-store", () => {
   // increase timeout because ethers is throttling
-  jest.setTimeout(20000);
+  jest.setTimeout(30000);
   describe("issueDocumentStore", () => {
     const mockedDocumentStoreFactory: jest.Mock<DocumentStoreFactory> = DocumentStoreFactory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -12,6 +12,8 @@ const password = "password123";
 const promptMock: jest.Mock = prompt;
 
 describe("create wallet", () => {
+  // increase timeout because ethers is throttling
+  jest.setTimeout(30000);
   // eslint-disable-next-line jest/no-hooks
   afterEach(() => {
     promptMock.mockRestore();

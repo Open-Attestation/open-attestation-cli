@@ -114,7 +114,6 @@ describe("batchIssue", () => {
         hashMap,
         outputPathType: Output.Directory,
         digestedDocumentPath: "DIR",
-        batched: true,
       });
 
       expect(root).toStrictEqual("e");

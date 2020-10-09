@@ -70,47 +70,57 @@ export const digestDocument = async (
   return hashArray;
 };
 
+const writeOutput = ({
+  outputPathType,
+  digestedDocumentPath,
+  file,
+  document,
+}: {
+  outputPathType: Output;
+  digestedDocumentPath?: string;
+  file: string;
+  document: any;
+}): void => {
+  if (outputPathType === Output.File && digestedDocumentPath) {
+    writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
+  } else if (outputPathType === Output.Directory && digestedDocumentPath) {
+    writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
+  } else {
+    console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
+  }
+};
+
 export const appendProofToDocuments = async ({
   intermediateDir,
   hashMap,
   outputPathType,
   digestedDocumentPath,
-  batched,
 }: {
   intermediateDir: string;
   hashMap: Record<string, { sibling: string; parent: string }>;
   outputPathType: Output;
   digestedDocumentPath?: string;
-  batched: boolean;
 }): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
 
   documentFileNames.forEach((file) => {
     const document = readOpenAttestationFile(file);
-    if (batched) {
-      const documentHash = document.signature.targetHash;
-      const proof = [];
-      let candidateRoot = documentHash;
-      let nextStep = hashMap[documentHash];
-      while (nextStep) {
-        // nextStep will be empty when there is no parent
-        proof.push(nextStep.sibling);
-        candidateRoot = nextStep.parent;
-        nextStep = hashMap[candidateRoot];
-      }
-      document.signature.proof = proof;
-      document.signature.merkleRoot = candidateRoot;
-      if (!merkleRoot) merkleRoot = candidateRoot;
+    const documentHash = document.signature.targetHash;
+    const proof = [];
+    let candidateRoot = documentHash;
+    let nextStep = hashMap[documentHash];
+    while (nextStep) {
+      // nextStep will be empty when there is no parent
+      proof.push(nextStep.sibling);
+      candidateRoot = nextStep.parent;
+      nextStep = hashMap[candidateRoot];
     }
+    document.signature.proof = proof;
+    document.signature.merkleRoot = candidateRoot;
+    if (!merkleRoot) merkleRoot = candidateRoot;
 
-    if (outputPathType === Output.File && digestedDocumentPath) {
-      writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
-    } else if (outputPathType === Output.Directory && digestedDocumentPath) {
-      writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
-    } else {
-      console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
-    }
+    writeOutput({ outputPathType, digestedDocumentPath, file, document });
   });
 
   return merkleRoot;
@@ -209,19 +219,27 @@ export const wrap = async ({
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
 
-  // Phase 2: Efficient merkling to build hashmap
-  const hashMap = merkleHashmap(individualDocumentHashes);
+  let merkleRoot: string | undefined;
+  if (batched) {
+    // Phase 2: Efficient merkling to build hashmap
+    const hashMap = merkleHashmap(individualDocumentHashes);
 
-  // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToDocuments({
-    intermediateDir,
-    hashMap,
-    outputPathType,
-    digestedDocumentPath: outputPath,
-    batched,
-  });
+    // Phase 3: Add proofs to signedDocuments
+    merkleRoot = await appendProofToDocuments({
+      intermediateDir,
+      hashMap,
+      outputPathType,
+      digestedDocumentPath: outputPath,
+    });
+  } else {
+    const documentFileNames = await documentsInDirectory(intermediateDir);
+    documentFileNames.forEach((file) => {
+      const document = readOpenAttestationFile(file);
+      writeOutput({ outputPathType, digestedDocumentPath: outputPath, file, document });
+    });
+  }
 
   // Remove intermediate dir
   removeCallback();
-  return batched ? merkleRoot : undefined;
+  return merkleRoot;
 };
