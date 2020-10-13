@@ -1,9 +1,7 @@
-import { Output, wrap } from "../implementations/wrap";
 import { handler } from "../commands/wrap";
 import fs from "fs";
 import path from "path";
 import signale from "signale";
-import { SchemaId } from "@govtechsg/open-attestation";
 import tmp from "tmp";
 
 const fixtureFolderName = "fixture";
@@ -12,16 +10,16 @@ const invalidFileName = "invalid-open-attestation-document.json";
 const wrappedFileName = "wrapped-open-attestation-document.json";
 
 describe("wrap", () => {
+  const signaleErrorSpy = jest.spyOn(signale, "error");
+
+  // eslint-disable-next-line jest/no-hooks
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   describe("wrap handler arguments check", () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const mockExit = jest.spyOn(process, "exit").mockImplementation(() => {});
-    const signaleErrorSpy = jest.spyOn(signale, "error");
-
-    // eslint-disable-next-line jest/no-hooks
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
 
     it("should not allow output as file when input path is a directory", async () => {
       await handler({
@@ -59,12 +57,11 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, validFileName),
           path.resolve(inputDirectory.name, "valid-open-attestation-document.json")
         );
-        const merkleRoot = await wrap({
-          inputPath: inputDirectory.name,
-          outputPath: outputDirectory.name,
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: inputDirectory.name,
+          openAttestationV3: true,
+          outputDir: outputDirectory.name,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -92,12 +89,12 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, validFileName),
           path.resolve(inputDirectory.name, "valid-open-attestation-document-3.json")
         );
-        const merkleRoot = await wrap({
-          inputPath: inputDirectory.name,
-          outputPath: outputDirectory.name,
-          version: SchemaId.v3,
+
+        const merkleRoot = await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
         const file1 = JSON.parse(
@@ -141,12 +138,11 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, validFileName),
           path.resolve(inputDirectory.name, "valid-open-attestation-document-3.json")
         );
-        const merkleRoot = await wrap({
-          inputPath: inputDirectory.name,
-          outputPath: outputDirectory.name,
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: false,
         });
         const file1 = JSON.parse(
@@ -181,22 +177,17 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, invalidFileName),
           path.resolve(inputDirectory.name, "invalid-open-attestation-document.json")
         );
+        await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
 
-        await expect(
-          wrap({
-            inputPath: inputDirectory.name,
-            outputPath: outputDirectory.name,
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-open-attestation-document.json is not valid against open-attestation schema"
-            ),
-          })
+        const filepath = path.resolve(inputDirectory.name, "invalid-open-attestation-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(
+          `Document ${filepath} is not valid against open-attestation schema`
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
@@ -216,21 +207,16 @@ describe("wrap", () => {
           path.resolve(__dirname, inputDirectory.name, "invalid-open-attestation-document-3.json")
         );
 
-        await expect(
-          wrap({
-            inputPath: inputDirectory.name,
-            outputPath: outputDirectory.name,
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-open-attestation-document-1.json is not valid against open-attestation schema"
-            ),
-          })
+        await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+        const filepath = path.resolve(inputDirectory.name, "invalid-open-attestation-document-1.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(
+          `Document ${filepath} is not valid against open-attestation schema`
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
@@ -242,21 +228,17 @@ describe("wrap", () => {
           path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json")
         );
 
-        await expect(
-          wrap({
-            inputPath: inputDirectory.name,
-            outputPath: outputDirectory.name,
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "wrapped-open-attestation-document.json is not valid against open-attestation schema"
-            ),
-          })
+        await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        const filepath = path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(
+          `Document ${filepath} is not valid against open-attestation schema`
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
@@ -268,12 +250,11 @@ describe("wrap", () => {
           path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json")
         );
 
-        const merkleRoot = await wrap({
-          inputPath: inputDirectory.name,
-          outputPath: outputDirectory.name,
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
           unwrap: true,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -296,13 +277,12 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
           path.resolve(inputDirectory.name, "valid-custom-schema-document.json")
         );
-        const merkleRoot = await wrap({
-          inputPath: inputDirectory.name,
-          outputPath: outputDirectory.name,
-          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -322,23 +302,17 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json"),
           path.resolve(inputDirectory.name, "invalid-custom-schema-document.json")
         );
-        await expect(
-          wrap({
-            inputPath: inputDirectory.name,
-            outputPath: outputDirectory.name,
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-custom-schema-document.json is not valid against the provided schema"
-            ),
-          })
-        );
+        await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        const filepath = path.resolve(inputDirectory.name, "invalid-custom-schema-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(`Document ${filepath} is not valid against the provided schema`);
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should issue documents when folder contain one valid open attestation that is also valid against the remote schema provided", async () => {
@@ -348,13 +322,12 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
           path.resolve(inputDirectory.name, "valid-custom-schema-document.json")
         );
-        const merkleRoot = await wrap({
-          inputPath: inputDirectory.name,
-          outputPath: outputDirectory.name,
-          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -374,39 +347,32 @@ describe("wrap", () => {
           path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json"),
           path.resolve(inputDirectory.name, "invalid-custom-schema-document.json")
         );
-        await expect(
-          wrap({
-            inputPath: inputDirectory.name,
-            outputPath: outputDirectory.name,
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-custom-schema-document.json is not valid against the provided schema"
-            ),
-          })
-        );
+        await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        const filepath = path.resolve(inputDirectory.name, "invalid-custom-schema-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(`Document ${filepath} is not valid against the provided schema`);
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should not issue documents when schema is not valid", async () => {
         const inputDirectory = tmp.dirSync();
         const outputDirectory = tmp.dirSync();
-        await expect(
-          wrap({
-            inputPath: inputDirectory.name,
-            outputPath: outputDirectory.name,
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
+        await handler({
+          rawDocumentsPath: inputDirectory.name,
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        expect(signaleErrorSpy).toHaveBeenCalledWith("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
     });
@@ -416,12 +382,11 @@ describe("wrap", () => {
     describe("without schema", () => {
       it("should issue document when given valid open attestation document", async () => {
         const outputDirectory = tmp.dirSync();
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
-          outputPath: outputDirectory.name,
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -437,53 +402,43 @@ describe("wrap", () => {
       it("should not issue document when given invalid open attestation document", async () => {
         const outputDirectory = tmp.dirSync();
 
-        await expect(
-          wrap({
-            inputPath: path.resolve(__dirname, fixtureFolderName, "invalid-open-attestation-document.json"),
-            outputPath: outputDirectory.name,
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-open-attestation-document.json is not valid against open-attestation schema"
-            ),
-          })
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "invalid-open-attestation-document.json"),
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        const filepath = path.resolve(__dirname, fixtureFolderName, "invalid-open-attestation-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(
+          `Document ${filepath} is not valid against open-attestation schema`
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should not issue document when given wrapped document without --unwrap", async () => {
         const outputDirectory = tmp.dirSync();
 
-        await expect(
-          wrap({
-            inputPath: path.resolve(__dirname, fixtureFolderName, "wrapped-open-attestation-document.json"),
-            outputPath: outputDirectory.name,
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "wrapped-open-attestation-document.json is not valid against open-attestation schema"
-            ),
-          })
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "wrapped-open-attestation-document.json"),
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+        const filepath = path.resolve(__dirname, fixtureFolderName, "wrapped-open-attestation-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(
+          `Document ${filepath} is not valid against open-attestation schema`
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should issue document when the given wrapped document and --unwrap is specified", async () => {
         const outputDirectory = tmp.dirSync();
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "wrapped-open-attestation-document.json"),
-          outputPath: outputDirectory.name,
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "wrapped-open-attestation-document.json"),
+          outputDir: outputDirectory.name,
+          openAttestationV3: true,
           unwrap: true,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -499,49 +454,44 @@ describe("wrap", () => {
       });
       it("should output as file when input path is a file", async () => {
         const outputFile = tmp.fileSync();
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
-          outputPath: outputFile.name,
-          version: SchemaId.v3,
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
+          outputFile: outputFile.name,
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.File,
           batched: true,
         });
 
         const file = JSON.parse(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
-        expect(merkleRoot).toHaveLength(64);
-        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
-        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
+        expect(file.signature.merkleRoot).toHaveLength(64);
+        expect(file.signature.targetHash).toStrictEqual(file.signature.merkleRoot);
       });
       it("should allow output as StdOut when input path is a file", async () => {
         let stdOut: any;
         jest.spyOn(console, "log").mockImplementation((input) => {
           stdOut = input;
         });
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
-          version: SchemaId.v3,
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.StdOut,
           batched: true,
         });
 
         stdOut = JSON.parse(stdOut);
-        expect(merkleRoot).toHaveLength(64);
-        expect(merkleRoot).toStrictEqual(stdOut.signature.merkleRoot);
-        expect(merkleRoot).toStrictEqual(stdOut.signature.targetHash);
+        expect(stdOut.signature.merkleRoot).toHaveLength(64);
+        expect(stdOut.signature.targetHash).toStrictEqual(stdOut.signature.merkleRoot);
       });
     });
     describe("with schema", () => {
       it("should not issue document when the given wrapped document and --unwrap is not specified", async () => {
         const outputDirectory = tmp.dirSync();
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
-          outputPath: outputDirectory.name,
-          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -556,34 +506,27 @@ describe("wrap", () => {
       });
       it("should not issue document when given valid open attestation document that is not valid against the local schema provided", async () => {
         const outputDirectory = tmp.dirSync();
-        await expect(
-          wrap({
-            inputPath: path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json"),
-            outputPath: outputDirectory.name,
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-custom-schema-document.json is not valid against the provided schema"
-            ),
-          })
-        );
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json"),
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        const filepath = path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(`Document ${filepath} is not valid against the provided schema`);
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should issue document when given valid open attestation document that is also valid against the remote schema provided", async () => {
         const outputDirectory = tmp.dirSync();
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
-          outputPath: outputDirectory.name,
-          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: SchemaId.v3,
+        const merkleRoot = await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.Directory,
           batched: true,
         });
 
@@ -598,56 +541,46 @@ describe("wrap", () => {
       });
       it("should not issue document when given open attestation document that is not valid against the remote schema provided", async () => {
         const outputDirectory = tmp.dirSync();
-        await expect(
-          wrap({
-            inputPath: path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json"),
-            outputPath: outputDirectory.name,
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow(
-          expect.objectContaining({
-            message: expect.stringContaining(
-              "invalid-custom-schema-document.json is not valid against the provided schema"
-            ),
-          })
-        );
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json"),
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+        const filepath = path.resolve(__dirname, fixtureFolderName, "invalid-custom-schema-document.json");
+        expect(signaleErrorSpy).toHaveBeenCalledWith(`Document ${filepath} is not valid against the provided schema`);
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should not issue documents when schema is not valid", async () => {
         const outputDirectory = tmp.dirSync();
-        await expect(
-          wrap({
-            inputPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
-            outputPath: outputDirectory.name,
-            schemaPath: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
-            version: SchemaId.v3,
-            unwrap: false,
-            outputPathType: Output.Directory,
-            batched: true,
-          })
-        ).rejects.toThrow("Invalid schema, you must provide an $id property to your schema");
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-open-attestation-document.json"),
+          outputDir: outputDirectory.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "invalid-schema.json"),
+          openAttestationV3: true,
+          unwrap: false,
+          batched: true,
+        });
+
+        expect(signaleErrorSpy).toHaveBeenCalledWith("Invalid schema, you must provide an $id property to your schema");
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
       it("should allow output as file if input path is a input file with custom schema", async () => {
         const outputFile = tmp.fileSync();
-        const merkleRoot = await wrap({
-          inputPath: path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
-          outputPath: outputFile.name,
-          schemaPath: path.resolve(__dirname, fixtureFolderName, "schema.json"),
-          version: SchemaId.v3,
+        await handler({
+          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "valid-custom-schema-document.json"),
+          outputFile: outputFile.name,
+          schema: path.resolve(__dirname, fixtureFolderName, "schema.json"),
+          openAttestationV3: true,
           unwrap: false,
-          outputPathType: Output.File,
           batched: true,
         });
 
         const file = JSON.parse(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
-        expect(merkleRoot).toHaveLength(64);
-        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
-        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
+        expect(file.signature.merkleRoot).toHaveLength(64);
+        expect(file.signature.merkleRoot).toStrictEqual(file.signature.targetHash);
       });
     });
   });

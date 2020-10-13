@@ -24,9 +24,10 @@ export enum Output {
 
 export const digestDocument = async (
   undigestedDocumentPath: string,
-  digestedDocumentDir: string,
+  digestedDocumentDir: string | undefined,
   version: SchemaId,
   unwrap: boolean,
+  outputPathType: Output,
   schema?: Schema
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
@@ -51,11 +52,15 @@ export const digestDocument = async (
       }
     }
     try {
-      const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
-      hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
-      const filename = path.parse(file).base;
+      const wrappedDocument = wrapDocument(document, { externalSchemaId: schema?.$id, version });
+      hashArray.push(utils.hashToBuffer(wrappedDocument.signature.merkleRoot));
       // Write digested document to new directory
-      writeDocumentToDisk(digestedDocumentDir, filename, digest);
+      writeOutput({
+        outputPathType,
+        digestedDocumentPath: digestedDocumentDir,
+        file,
+        document: wrappedDocument,
+      });
     } catch (e) {
       if (isSchemaValidationError(e)) {
         throw new SchemaValidationError(
@@ -214,7 +219,15 @@ export const wrap = async ({
 
   // Phase 1: For each document, read content, digest and write to file
   const schema = await loadSchema(schemaPath);
-  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema);
+  const individualDocumentHashes = await digestDocument(
+    inputPath,
+    // if we dont batch document we can directly write to the destination folder.
+    batched ? intermediateDir : outputPath,
+    version,
+    unwrap,
+    batched ? Output.Directory : outputPathType,
+    schema
+  );
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
