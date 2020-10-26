@@ -22,7 +22,7 @@ export enum Output {
   StdOut,
 }
 
-export const digestDocument = async (
+export const wrapIndividualDocuments = async (
   undigestedDocumentPath: string,
   digestedDocumentDir: string | undefined,
   version: SchemaId,
@@ -219,9 +219,9 @@ export const wrap = async ({
 
   // Phase 1: For each document, read content, digest and write to file
   const schema = await loadSchema(schemaPath);
-  const individualDocumentHashes = await digestDocument(
+  const individualDocumentHashes = await wrapIndividualDocuments(
     inputPath,
-    // if we dont batch document we can directly write to the destination folder.
+    // if we dont batch document we can directly write to the destination folder. Otherwise we need to output in a temporary folder to compute the merkle root later
     batched ? intermediateDir : outputPath,
     version,
     unwrap,
@@ -243,12 +243,6 @@ export const wrap = async ({
       hashMap,
       outputPathType,
       digestedDocumentPath: outputPath,
-    });
-  } else {
-    const documentFileNames = await documentsInDirectory(intermediateDir);
-    documentFileNames.forEach((file) => {
-      const document = readOpenAttestationFile(file);
-      writeOutput({ outputPathType, digestedDocumentPath: outputPath, file, document });
     });
   }
 
