@@ -1,0 +1,65 @@
+{
+  "version": "https://schema.openattestation.com/2.0/schema.json",
+  "data": {
+    "id": "3280e86b-4caa-4243-b2d0-c5fa02189fe5:string:SGCNM21566325",
+    "$template": {
+      "name": "ade6c04b-84ff-4fae-9c92-913c60ce2991:string:CERTIFICATE_OF_NON_MANIPULATION",
+      "type": "9ac8bc3b-f036-4e49-80b9-645e22059996:string:EMBEDDED_RENDERER",
+      "url": "8fb2c9c4-a20c-4bf4-b639-bf3af16a6ec7:string:https://demo-cnm.openattestation.com"
+    },
+    "issuers": [
+      {
+        "id": "0fea2337-fd03-430c-8f03-f008dd92f156:string:did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69",
+        "name": "1ec2e081-e108-4435-9f8a-120d53de89f0:string:DEMO STORE",
+        "revocation": {
+          "type": "9eac45c9-06d6-4f83-ba20-0f4c7b55452f:string:NONE"
+        },
+        "identityProof": {
+          "type": "2c5c6fe5-5061-4aac-8035-fe4d2f210862:string:DNS-DID",
+          "key": "a51ab9e9-7b1b-458b-ab88-455e694975f7:string:did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller",
+          "location": "bb241fcf-11fa-4607-aa73-dfc86fefaa68:string:donotverify.testing.openattestation.com"
+        }
+      }
+    ],
+    "recipient": {
+      "name": "0151d7dc-3a80-4f45-b302-bfd9f13cfe59:string:SG FREIGHT",
+      "address": {
+        "street": "2c0935eb-ee9b-417d-81aa-6c30c2394245:string:101 ORCHARD ROAD",
+        "country": "15dfddf5-5776-4232-88b9-7c8c08f5fd1c:string:SINGAPORE"
+      }
+    },
+    "consignment": {
+      "description": "c4f245cf-7255-4fd2-a1b8-b6ad766fe56d:string:16667 CARTONS OF RED WINE",
+      "quantity": {
+        "value": "013be6b5-cabd-42c2-b5b3-90a05e34366c:number:5000",
+        "unit": "96d4e88a-0db3-4dd0-b4f1-d24cb93a9ea5:string:LITRES"
+      },
+      "countryOfOrigin": "e5ff63f1-74d4-4f7e-b5a4-d89f62d6b2dd:string:AUSTRALIA",
+      "outwardBillNo": "0fc1e46f-30af-4ff1-bcdf-fe6307f7bd18:string:AQSIQ170923130",
+      "dateOfDischarge": "43caa208-843c-4963-baf9-6a449a929c52:string:2018-01-26",
+      "dateOfDeparture": "c3b3e65a-9162-4658-864c-f5f6a1e8d485:string:2018-01-30",
+      "countryOfFinalDestination": "cf1b625b-f33b-4886-b7cb-2349e4ce88da:string:CHINA",
+      "outgoingVehicleNo": "7db188ee-68f8-4f29-9531-d11ea8ecca21:string:COSCO JAPAN 074E/30-JAN"
+    },
+    "declaration": {
+      "name": "1db3a389-0053-4b59-a8a1-19e8ed53a55b:string:PETER LEE",
+      "designation": "9ccc4931-265f-4977-8a85-559287f44dc2:string:SHIPPING MANAGER",
+      "date": "a12d3d74-888b-44a4-9c4d-77a738bcf5d4:string:2018-01-28"
+    }
+  },
+  "signature": {
+    "type": "SHA3MerkleProof",
+    "targetHash": "12e27173dcef6761c3eaa31a4a23412412e314abaec790eef1706e752fb8d51f",
+    "proof": [],
+    "merkleRoot": "12e27173dcef6761c3eaa31a4a23412412e314abaec790eef1706e752fb8d51f"
+  },
+  "proof": [
+    {
+      "type": "OpenAttestationSignature2018",
+      "created": "2020-10-05T09:05:35.171Z",
+      "proofPurpose": "assertionMethod",
+      "verificationMethod": "did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller",
+      "signature": "0x04b56b7a8405364cc925143c2fc28f91ee7a3e340402ba66e616f275110cbc446e140716f88f418581e02a371d246e1b98f07c937ee9b96d7bc8aebb470345c71b"
+    }
+  ]
+}
