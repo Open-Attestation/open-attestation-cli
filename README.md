@@ -109,7 +109,7 @@ open-attestation filter examples/wrapped-documents/example.0.json tmp/example.0.
 ✔  success  Obfuscated document saved to: tmp/example.0.out.json
 ```
 
-## Decrypting document
+## Encrypting document
 
 This allows you to encrypt document in order to share and store them safely.
 
@@ -126,7 +126,7 @@ open-attestation encrypt ./examples/wrapped-documents/example.0.json ./tmp/encry
 ⚠  warning   Here is the key to decrypt the document: don't lose it: 9bac5be27bac31d852fc1e48eb9d5249ec6ad7978da23377b5879f7a24994cb2
 ```
 
-## Encrypting document
+## Decrypting document
 
 This allows you to decrypt document encrypted using the method above.
 
