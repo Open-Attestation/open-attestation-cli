@@ -11,11 +11,6 @@ class SchemaValidationError extends Error {
     super(message);
   }
 }
-
-interface Schema {
-  $id: string;
-}
-
 export enum Output {
   File,
   Directory,
@@ -27,8 +22,9 @@ export const digestDocument = async (
   digestedDocumentDir: string,
   version: SchemaId,
   unwrap: boolean,
-  schema?: Schema
+  schemaPath?: string
 ): Promise<Buffer[]> => {
+  const schema = await loadSchema(schemaPath);
   const hashArray: Buffer[] = [];
   const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
   let compile: Ajv.ValidateFunction;
@@ -43,15 +39,15 @@ export const digestDocument = async (
     if (compile) {
       const valid = compile(document);
       if (!valid) {
-        throw new SchemaValidationError(
-          `Document ${path.resolve(file)} is not valid against the provided schema`,
-          compile.errors ?? [],
-          document
-        );
+        // throw new SchemaValidationError(
+        //   `Document ${path.resolve(file)} is not valid against the provided schema`,
+        //   compile.errors ?? [],
+        //   document
+        // );
       }
     }
     try {
-      const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
+      const digest = wrapDocument(document, { externalSchemaId: schemaPath, version });
       hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
       const filename = path.parse(file).base;
       // Write digested document to new directory
@@ -147,8 +143,8 @@ export const merkleHashmap = (leafHashes: Buffer[]): Record<string, { sibling: s
   return hashMap;
 };
 
-const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
-  const checkSchema = (schema: any): Schema => {
+const loadSchema = (schemaPath?: string): Promise<any | undefined> => {
+  const checkSchema = (schema: any): any => {
     if (!schema.$id) {
       throw new Error("Invalid schema, you must provide an $id property to your schema");
     }
@@ -192,8 +188,7 @@ export const wrap = async ({
   });
 
   // Phase 1: For each document, read content, digest and write to file
-  const schema = await loadSchema(schemaPath);
-  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema);
+  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schemaPath);
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
