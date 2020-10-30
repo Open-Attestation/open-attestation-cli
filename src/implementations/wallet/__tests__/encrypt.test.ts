@@ -13,6 +13,8 @@ const privateKey = "0xcd27dc84c82c5814e7edac518edd5f263e7db7f25adb7a1afe13996a95
 const password = "password123";
 
 describe("create wallet", () => {
+  // increase timeout because ethers is throttling
+  jest.setTimeout(30000);
   // eslint-disable-next-line jest/no-hooks
   afterEach(() => {
     promptMock.mockRestore();

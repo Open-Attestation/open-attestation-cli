@@ -22,11 +22,12 @@ export enum Output {
   StdOut,
 }
 
-export const digestDocument = async (
+export const wrapIndividualDocuments = async (
   undigestedDocumentPath: string,
-  digestedDocumentDir: string,
+  digestedDocumentDir: string | undefined,
   version: SchemaId,
   unwrap: boolean,
+  outputPathType: Output,
   schema?: Schema
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
@@ -51,11 +52,15 @@ export const digestDocument = async (
       }
     }
     try {
-      const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
-      hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
-      const filename = path.parse(file).base;
+      const wrappedDocument = wrapDocument(document, { externalSchemaId: schema?.$id, version });
+      hashArray.push(utils.hashToBuffer(wrappedDocument.signature.merkleRoot));
       // Write digested document to new directory
-      writeDocumentToDisk(digestedDocumentDir, filename, digest);
+      writeOutput({
+        outputPathType,
+        digestedDocumentPath: digestedDocumentDir,
+        file,
+        document: wrappedDocument,
+      });
     } catch (e) {
       if (isSchemaValidationError(e)) {
         throw new SchemaValidationError(
@@ -70,12 +75,37 @@ export const digestDocument = async (
   return hashArray;
 };
 
-export const appendProofToDocuments = async (
-  intermediateDir: string,
-  hashMap: Record<string, { sibling: string; parent: string }>,
-  outputPathType: Output,
-  digestedDocumentPath?: string
-): Promise<string> => {
+const writeOutput = ({
+  outputPathType,
+  digestedDocumentPath,
+  file,
+  document,
+}: {
+  outputPathType: Output;
+  digestedDocumentPath?: string;
+  file: string;
+  document: any;
+}): void => {
+  if (outputPathType === Output.File && digestedDocumentPath) {
+    writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
+  } else if (outputPathType === Output.Directory && digestedDocumentPath) {
+    writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
+  } else {
+    console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
+  }
+};
+
+export const appendProofToDocuments = async ({
+  intermediateDir,
+  hashMap,
+  outputPathType,
+  digestedDocumentPath,
+}: {
+  intermediateDir: string;
+  hashMap: Record<string, { sibling: string; parent: string }>;
+  outputPathType: Output;
+  digestedDocumentPath?: string;
+}): Promise<string> => {
   const documentFileNames = await documentsInDirectory(intermediateDir);
   let merkleRoot = "";
 
@@ -95,13 +125,7 @@ export const appendProofToDocuments = async (
     document.signature.merkleRoot = candidateRoot;
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    if (outputPathType === Output.File && digestedDocumentPath) {
-      writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
-    } else if (outputPathType === Output.Directory && digestedDocumentPath) {
-      writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
-    } else {
-      console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
-    }
+    writeOutput({ outputPathType, digestedDocumentPath, file, document });
   });
 
   return merkleRoot;
@@ -170,6 +194,7 @@ interface WrapArguments {
   schemaPath?: string;
   version: SchemaId;
   unwrap: boolean;
+  batched: boolean;
   outputPathType: Output;
 }
 
@@ -179,8 +204,9 @@ export const wrap = async ({
   schemaPath,
   version,
   unwrap,
+  batched,
   outputPathType,
-}: WrapArguments): Promise<string> => {
+}: WrapArguments): Promise<string | undefined> => {
   // Create output dir
   if (outputPath) {
     mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
@@ -193,19 +219,34 @@ export const wrap = async ({
 
   // Phase 1: For each document, read content, digest and write to file
   const schema = await loadSchema(schemaPath);
-  const individualDocumentHashes = await digestDocument(inputPath, intermediateDir, version, unwrap, schema);
+  const individualDocumentHashes = await wrapIndividualDocuments(
+    inputPath,
+    // if we dont batch document we can directly write to the destination folder. Otherwise we need to output in a temporary folder to compute the merkle root later
+    batched ? intermediateDir : outputPath,
+    version,
+    unwrap,
+    batched ? Output.Directory : outputPathType,
+    schema
+  );
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)
     throw new Error(`No documents found in ${inputPath}`);
 
-  // Phase 2: Efficient merkling to build hashmap
-  const hashMap = merkleHashmap(individualDocumentHashes);
+  let merkleRoot: string | undefined;
+  if (batched) {
+    // Phase 2: Efficient merkling to build hashmap
+    const hashMap = merkleHashmap(individualDocumentHashes);
 
-  // Phase 3: Add proofs to signedDocuments
-  const merkleRoot = await appendProofToDocuments(intermediateDir, hashMap, outputPathType, outputPath);
+    // Phase 3: Add proofs to signedDocuments
+    merkleRoot = await appendProofToDocuments({
+      intermediateDir,
+      hashMap,
+      outputPathType,
+      digestedDocumentPath: outputPath,
+    });
+  }
 
   // Remove intermediate dir
   removeCallback();
-
   return merkleRoot;
 };

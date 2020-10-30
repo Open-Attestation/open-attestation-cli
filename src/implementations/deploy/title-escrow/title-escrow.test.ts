@@ -22,6 +22,8 @@ describe("token-registry", () => {
     const tokenFactory: any = TitleEscrowFactory;
     const mockedTokenFactory: jest.Mock<TitleEscrowFactory> = tokenFactory;
     const mockedDeploy: jest.Mock = mockedTokenFactory.prototype.deploy;
+    // increase timeout because ethers is throttling
+    jest.setTimeout(30000);
 
     // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {

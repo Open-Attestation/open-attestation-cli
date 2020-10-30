@@ -13,6 +13,7 @@ interface WrapCommand {
   openAttestationV3: boolean;
   unwrap: boolean;
   silent?: boolean;
+  batched: boolean;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -61,9 +62,14 @@ export const builder = (yargs: Argv): Argv =>
       alias: "silent",
       description: "Disable console outputs when outputting to stdout",
       type: "boolean",
+    })
+    .option("batched", {
+      description: "Indicate whether documents must be wrap together or individually",
+      type: "boolean",
+      default: true,
     });
 
-export const handler = async (args: WrapCommand): Promise<string> => {
+export const handler = async (args: WrapCommand): Promise<string | undefined> => {
   try {
     const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.StdOut;
     const outputPath = args.outputDir || args.outputFile; // undefined when we use std out
@@ -83,6 +89,12 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       signale.disable();
     }
 
+    // if output to a file or stdout, we handle only one file. In that case we disable the batch mode
+    const batched = outputPathType !== Output.Directory ? false : args.batched;
+    if (!batched && args.batched) {
+      signale.warn("Detected single file: batch mode disabled.");
+    }
+
     const merkleRoot = await wrap({
       inputPath: args.rawDocumentsPath,
       outputPath,
@@ -90,9 +102,14 @@ export const handler = async (args: WrapCommand): Promise<string> => {
       version: args.openAttestationV3 ? SchemaId.v3 : SchemaId.v2,
       unwrap: args.unwrap,
       outputPathType,
+      batched,
     });
 
-    signale.success(`Batch Document Root: 0x${merkleRoot}`);
+    if (merkleRoot) {
+      signale.success(`Batch Document Root: 0x${merkleRoot}`);
+    } else {
+      signale.success("All documents have been individually wrapped");
+    }
 
     return merkleRoot;
   } catch (err) {

@@ -109,7 +109,12 @@ describe("batchIssue", () => {
         throw new Error(`unhandled ${path} in spy`);
       });
 
-      const root = await appendProofToDocuments("DIR", hashMap, Output.Directory, "DIR");
+      const root = await appendProofToDocuments({
+        intermediateDir: "DIR",
+        hashMap,
+        outputPathType: Output.Directory,
+        digestedDocumentPath: "DIR",
+      });
 
       expect(root).toStrictEqual("e");
     });
