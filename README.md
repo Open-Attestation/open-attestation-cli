@@ -133,6 +133,22 @@ open-attestation encrypt ./examples/wrapped-documents/example.0.json ./tmp/encry
 ⚠  warning   Here is the key to decrypt the document: don't lose it: 9bac5be27bac31d852fc1e48eb9d5249ec6ad7978da23377b5879f7a24994cb2
 ```
 
+## Decrypting document
+
+This allows you to decrypt document encrypted using the method above.
+
+```bash
+open-attestation decrypt <input> <output> <key>
+```
+
+Example:
+
+```bash
+open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypted.json 88da9b9cd61cfc1677ae7e79dba9b3aeba4b40c95f94c950759e76c6210b5402
+
+✔  success   Decrypted document saved to: decrypted.json
+```
+
 ## Deploying Token Registry
 
 Deploys a token registry contract on the blockchain
