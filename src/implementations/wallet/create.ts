@@ -6,6 +6,7 @@ import { highlight } from "../../utils";
 import fs from "fs";
 import { CreateWalletCommand } from "../../commands/wallet/wallet.type";
 import { progress as defaultProgress } from "../../implementations/utils/progress";
+import fetch from "node-fetch";
 
 export const create = async ({
   fund,
@@ -24,13 +25,14 @@ export const create = async ({
   fs.writeFileSync(outputPath, json);
 
   if (fund === "ropsten") {
-    // const response = await fetch(`https://faucet.ropsten.be/donate/${wallet.address}`).then((res) => res.json());
-    // if (response.message) {
-    // signale.warn(`[ropsten] Adding fund to ${wallet.address} failed: ${response.message}`);
-    // } else {
-    //   signale.info(`[ropsten] Added fund to ${wallet.address}`);
-    // }
-    signale.warn(`[ropsten] https://faucet.ropsten.be is down. Adding fund is disabled.`);
+    const response = await fetch(`https://faucet.ropsten.be/donate/${wallet.address}`).then((res) => res.json());
+    if (response.message) {
+      signale.warn(`[ropsten] Adding fund to ${wallet.address} failed: ${response.message}`);
+    } else {
+      signale.info(
+        `[ropsten] Request to add funds into ${wallet.address} sent. Please wait a while before the funds being added into your wallet. You can check the transaction at https://ropsten.etherscan.io/tx/${response.txhash}`
+      );
+    }
   }
   signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created. Find more details:`);
 
