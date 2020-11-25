@@ -3,7 +3,6 @@ import path from "path";
 import signale from "signale";
 
 describe("verify", () => {
-  // eslint-disable-next-line jest/no-hooks
   afterEach(() => {
     jest.clearAllMocks();
   });

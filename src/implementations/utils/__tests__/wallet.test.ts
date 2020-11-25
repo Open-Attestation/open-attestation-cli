@@ -12,7 +12,6 @@ const privateKey = "0xcd27dc84c82c5814e7edac518edd5f263e7db7f25adb7a1afe13996a95
 const walletAddress = "0xB26B4941941C51a4885E5B7D3A1B861E54405f90";
 
 describe("wallet", () => {
-  // eslint-disable-next-line jest/no-hooks
   afterEach(() => {
     delete process.env.OA_PRIVATE_KEY;
     promptMock.mockRestore();

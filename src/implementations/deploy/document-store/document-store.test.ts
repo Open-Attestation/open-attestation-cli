@@ -22,7 +22,6 @@ describe("document-store", () => {
     // increase timeout because ethers is throttling
     jest.setTimeout(30000);
 
-    // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedDocumentStoreFactory.mockReset();

@@ -1,7 +1,6 @@
 import { handler } from "../get";
 
 describe("get", () => {
-  // eslint-disable-next-line jest/no-hooks
   afterEach(() => {
     jest.clearAllMocks();
   });

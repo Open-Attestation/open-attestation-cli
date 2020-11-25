@@ -138,6 +138,7 @@
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-function": "off",
       "jest/prefer-expect-assertions": "off",
+      "jest/no-hooks": "off",
       "jest/prefer-strict-equal": "off",
       "array-callback-return": "error"
     }

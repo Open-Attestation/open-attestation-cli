@@ -23,7 +23,6 @@ describe("token-registry", () => {
     // increase timeout because ethers is throttling
     jest.setTimeout(30000);
 
-    // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
       mockedTokenFactory.mockReset();
       mockedDeploy.mockReset();
