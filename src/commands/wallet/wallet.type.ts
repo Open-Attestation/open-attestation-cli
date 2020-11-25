@@ -8,3 +8,7 @@ export interface CreateWalletCommand {
   outputFile: string;
   fund?: string;
 }
+
+export interface DecryptWalletCommand {
+  inputFile: string;
+}

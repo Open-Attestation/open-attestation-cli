@@ -27,7 +27,7 @@ export const getWallet = async ({
   network,
   encryptedWalletPath,
   progress = defaultProgress("Decrypting Wallet"),
-}: WalletOption & NetworkOption & { progress?: (progress: number) => void }): Promise<Wallet> => {
+}: WalletOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<Wallet> => {
   const provider =
     network === "local"
       ? new providers.JsonRpcProvider()

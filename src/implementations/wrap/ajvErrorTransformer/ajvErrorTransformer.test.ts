@@ -4,11 +4,10 @@ import {
   transformFormatErrors,
   transformRequiredErrors,
 } from "./ajvErrorTransformer";
-import chalk from "chalk";
+import chalk, { Level } from "chalk";
 
 describe("errors", () => {
-  let level = 0;
-  // eslint-disable-next-line jest/no-hooks
+  let level = 0 as Level;
   beforeAll(() => {
     level = chalk.level;
     chalk.level = 0;

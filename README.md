@@ -317,6 +317,22 @@ open-attestation wallet encrypt --of ./tmp
 
 ```
 
+Decrypt a wallet to get information about it. Some information might be sensitive
+
+```bash
+open-attestation wallet decrypt wallet.json
+⚠  warning   You are about to reveal the private key of your wallet. Please type the following word into the terminal to prove that you understand the risks: active-aqua-swordtail
+? ack: active-aqua-swordtail
+ℹ  info      User consented to risks
+? Wallet password [hidden]
+…  awaiting  Decrypting Wallet [====================] [100/100%]
+ℹ  info      Wallet successfully decrypted
+✔  success   Wallet information:
+- address: 0x19bf1b00f78f521999d9A4246818F362fcaA1A96
+- public key: 0x04e1a6facd0fee89e44ae51c1352e32224e79caaa3ccf5afa9d77f10f92f7c4c584ccdf6cfb9a71584c18408a1a0e12341556757268117afebda00d6d6e71133bf
+- private key ....
+```
+
 ## Providing the wallet
 
 When interacting with blockchain you will likely need to provide a way to access your wallet. All functions - when the wallet is required - will provide multiples ways for you to pass it in:
