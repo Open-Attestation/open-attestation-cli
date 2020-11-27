@@ -11,4 +11,5 @@ export interface CreateWalletCommand {
 
 export interface DecryptWalletCommand {
   inputFile: string;
+  yes: boolean;
 }
