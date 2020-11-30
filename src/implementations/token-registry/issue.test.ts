@@ -25,7 +25,6 @@ describe("token-registry", () => {
     const mockedConnect: jest.Mock = mockedTradeTrustErc721Factory.connect;
     const mockedIssue = jest.fn();
 
-    // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedTradeTrustErc721Factory.mockReset();

@@ -27,7 +27,6 @@ describe("document-store", () => {
     const mockedConnect: jest.Mock = mockedDocumentStoreFactory.connect;
     const mockedRevoke = jest.fn();
 
-    // eslint-disable-next-line jest/no-hooks
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedDocumentStoreFactory.mockReset();

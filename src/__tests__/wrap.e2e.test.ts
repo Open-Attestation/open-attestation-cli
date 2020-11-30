@@ -12,7 +12,6 @@ const wrappedFileName = "wrapped-open-attestation-document.json";
 describe("wrap", () => {
   const signaleErrorSpy = jest.spyOn(signale, "error");
 
-  // eslint-disable-next-line jest/no-hooks
   afterEach(() => {
     jest.clearAllMocks();
   });
