@@ -1,7 +1,15 @@
 import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
-import { isSchemaValidationError, wrapDocument, utils, getData, SchemaId } from "@govtechsg/open-attestation";
+import {
+  __unsafe__use__it__at__your__own__risks__wrapCredential,
+  getData,
+  isSchemaValidationError,
+  SchemaId,
+  utils,
+  v3,
+  wrapDocument,
+} from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv from "ajv";
@@ -28,17 +36,53 @@ export const wrapIndividualDocuments = async (
   version: SchemaId,
   unwrap: boolean,
   outputPathType: Output,
-  schema?: Schema
+  schema?: Schema,
+  dnsTxt?: string,
+  documentStore?: string,
+  templateUrl?: string
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
   const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
-  let compile: Ajv.ValidateFunction;
+  let compile: Ajv.ValidateFunction | undefined;
   if (schema) {
     compile = new Ajv().compile(schema);
   }
 
-  documentFileNames.forEach((file) => {
+  for (const file of documentFileNames) {
+    // TODO how to type this
     const document = unwrap ? getData(readOpenAttestationFile(file)) : readOpenAttestationFile(file);
+
+    // Append DNS proof if given
+    if (dnsTxt) {
+      document.openAttestationMetadata = {
+        ...document.openAttestationMetadata,
+        identityProof: { location: dnsTxt, type: v3.IdentityProofType.DNSTxt },
+      };
+    }
+
+    // Append document store if given
+    if (documentStore) {
+      document.openAttestationMetadata = {
+        ...document.openAttestationMetadata,
+        proof: {
+          type: v3.ProofType.OpenAttestationProofMethod,
+          method: v3.Method.DocumentStore,
+          value: documentStore,
+        },
+      };
+    }
+
+    // Append template url if given
+    if (templateUrl) {
+      document.openAttestationMetadata = {
+        ...document.openAttestationMetadata,
+        template: {
+          name: "CUSTOM_TEMPLATE",
+          type: v3.TemplateType.EmbeddedRenderer,
+          url: templateUrl,
+        },
+      };
+    }
 
     // Digest individual document
     if (compile) {
@@ -52,8 +96,19 @@ export const wrapIndividualDocuments = async (
       }
     }
     try {
-      const wrappedDocument = wrapDocument(document, { externalSchemaId: schema?.$id, version });
-      hashArray.push(utils.hashToBuffer(wrappedDocument.signature.merkleRoot));
+      let wrappedDocument: any;
+      if (version === SchemaId.v3) {
+        const digest = await __unsafe__use__it__at__your__own__risks__wrapCredential(document, {
+          externalSchemaId: schema?.$id,
+          version,
+        });
+        hashArray.push(utils.hashToBuffer(digest.proof.merkleRoot));
+        wrappedDocument = digest;
+      } else {
+        const digest = wrapDocument(document, { externalSchemaId: schema?.$id, version });
+        hashArray.push(utils.hashToBuffer(digest.signature.merkleRoot));
+        wrappedDocument = digest;
+      }
       // Write digested document to new directory
       writeOutput({
         outputPathType,
@@ -71,7 +126,7 @@ export const wrapIndividualDocuments = async (
       }
       throw e;
     }
-  });
+  }
   return hashArray;
 };
 
@@ -111,7 +166,7 @@ export const appendProofToDocuments = async ({
 
   documentFileNames.forEach((file) => {
     const document = readOpenAttestationFile(file);
-    const documentHash = document.signature.targetHash;
+    const documentHash = document.signature ? document.signature.targetHash : document.proof.targetHash;
     const proof = [];
     let candidateRoot = documentHash;
     let nextStep = hashMap[documentHash];
@@ -121,8 +176,8 @@ export const appendProofToDocuments = async ({
       candidateRoot = nextStep.parent;
       nextStep = hashMap[candidateRoot];
     }
-    document.signature.proof = proof;
-    document.signature.merkleRoot = candidateRoot;
+    document.signature ? (document.signature.proof = proof) : (document.proof.proofs = proof);
+    document.signature ? (document.signature.merkleRoot = candidateRoot) : (document.proof.merkleRoot = candidateRoot);
     if (!merkleRoot) merkleRoot = candidateRoot;
 
     writeOutput({ outputPathType, digestedDocumentPath, file, document });
@@ -196,6 +251,9 @@ interface WrapArguments {
   unwrap: boolean;
   batched: boolean;
   outputPathType: Output;
+  dnsTxt?: string;
+  documentStore?: string;
+  templateUrl?: string;
 }
 
 export const wrap = async ({
@@ -206,6 +264,9 @@ export const wrap = async ({
   unwrap,
   batched,
   outputPathType,
+  dnsTxt,
+  documentStore,
+  templateUrl,
 }: WrapArguments): Promise<string | undefined> => {
   // Create output dir
   if (outputPath) {
@@ -226,7 +287,10 @@ export const wrap = async ({
     version,
     unwrap,
     batched ? Output.Directory : outputPathType,
-    schema
+    schema,
+    dnsTxt,
+    documentStore,
+    templateUrl
   );
 
   if (!individualDocumentHashes || individualDocumentHashes.length === 0)

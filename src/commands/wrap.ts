@@ -14,6 +14,9 @@ interface WrapCommand {
   unwrap: boolean;
   silent?: boolean;
   batched: boolean;
+  dnsTxt?: string;
+  documentStore?: string;
+  templateUrl?: string;
 }
 
 export const command = "wrap <raw-documents-path> [options]";
@@ -67,6 +70,21 @@ export const builder = (yargs: Argv): Argv =>
       description: "Indicate whether documents must be wrap together or individually",
       type: "boolean",
       default: true,
+    })
+    .option("dns-txt", {
+      alias: "dt",
+      description: "Add DNS-TXT proof to the document(s) to be wrapped",
+      type: "string",
+    })
+    .option("document-store", {
+      alias: "ds",
+      description: "Add document store to proof of the document(s) to be wrapped",
+      type: "string",
+    })
+    .option("template-url", {
+      alias: "tu",
+      description: "Add template url to document(s) to be wrapped",
+      type: "string",
     });
 
 export const handler = async (args: WrapCommand): Promise<string | undefined> => {
@@ -82,10 +100,26 @@ export const handler = async (args: WrapCommand): Promise<string | undefined> =>
       process.exit(1);
     }
 
+    // throw error when dns-txt is given, but document type is not oav3
+    if (args.dnsTxt && !args.openAttestationV3) {
+      signale.error("DNS-TXT proof can only be be added on v3 documents");
+      process.exit(1);
+    }
+
+    // throw error when document store is given, but document type is not oav3
+    if (args.documentStore && !args.openAttestationV3) {
+      signale.error("Document store can only be added for v3 documents");
+      process.exit(1);
+    }
+
+    // throw error when template-url is given, but document type is not oav3 file
+    if (args.templateUrl && !args.openAttestationV3) {
+      signale.error("Template url can only be added for v3 documents");
+      process.exit(1);
+    }
+
     // when outputting to stdout, disable signale so that the logs do not interfere
     if (args.silent) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       signale.disable();
     }
 
@@ -103,6 +137,9 @@ export const handler = async (args: WrapCommand): Promise<string | undefined> =>
       unwrap: args.unwrap,
       outputPathType,
       batched,
+      dnsTxt: args.dnsTxt,
+      documentStore: args.documentStore,
+      templateUrl: args.templateUrl,
     });
 
     if (merkleRoot) {
