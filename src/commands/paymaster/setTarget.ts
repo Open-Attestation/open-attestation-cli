@@ -10,7 +10,7 @@ const { trace } = getLogger("paymaster:set-target");
 
 export const command = "set-target [options]";
 
-export const describe = "Registers a contract a paymaster deployed on the blockchain is willing to pay for";
+export const describe = "Registers a contract with a paymaster deployed on the blockchain is willing to pay for";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(

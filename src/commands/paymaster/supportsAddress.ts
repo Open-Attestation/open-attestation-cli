@@ -9,7 +9,7 @@ const { trace } = getLogger("paymaster:supports-address");
 
 export const command = "supports-address [options]";
 
-export const describe = "Registers a contract a paymaster deployed on the blockchain is willing to pay for";
+export const describe = "Check if given address is supported by paymaster";
 
 export const builder = (yargs: Argv): Argv =>
   withNetworkOption(
