@@ -69,7 +69,7 @@
   },
   "dependencies": {
     "@govtechsg/dnsprove": "^2.1.1",
-    "@govtechsg/document-store": "^2.0.0",
+    "@govtechsg/document-store": "^2.2.0",
     "@govtechsg/oa-did-sign": "^1.0.0",
     "@govtechsg/oa-encryption": "^1.3.2",
     "@govtechsg/oa-verify": "^5.1.0",
