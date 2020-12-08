@@ -16,7 +16,7 @@ const deployParams: DeployPaymasterCommand = {
 
 describe("paymaster", () => {
   describe("deployPaymaster", () => {
-    const paymasterFactory: any = deployPaymaster;
+    const paymasterFactory: any = NaivePaymasterFactory;
     const mockedPaymasterFactory: jest.Mock<NaivePaymasterFactory> = paymasterFactory;
     const mockedDeploy: jest.Mock = mockedPaymasterFactory.prototype.deploy;
     // increase timeout because ethers is throttling
