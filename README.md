@@ -183,7 +183,7 @@ open-attestation deploy document-store "My Name" --network ropsten
 
 ## Deploying Paymaster
 
-Deploys a paymaster contract on the blockchain
+Deploys a [paymaster](https://docs.opengsn.org/learn/index.html#paymaster) contract on the blockchain. (this is used for GSN network)
 
 ```bash
 open-attestation deploy paymaster <paymaster-name> [options]
@@ -255,50 +255,50 @@ open-attestation document-store revoke --network ropsten --address 0x19f89607b52
 
 ## Paymaster
 
-### set-target
+### add-target
 
-Registers a contract with a paymaster deployed on the blockchain is willing to pay for
+Registers a contract with a paymaster deployed on the blockchain. Paymasters only pay for registered contracts.
 
 ```bash
-open-attestation paymaster set-target --targetAddress <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymasterAddress <PAYMASTER_ADDRESS> [options]
+open-attestation paymaster add-target --target-address <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymaster-address <PAYMASTER_ADDRESS> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation paymaster set-target --network ropsten --targetAddress 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --paymasterAddress 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+open-attestation paymaster add-target --network ropsten --target-address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --paymaster-address 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 
 ✔  success   Contract with address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 has been registered on paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 ```
 
 ### remove-target
 
-Revoke a contract from being paid by a paymaster deployed on the blockchain
+Remove a contract from being paid by a paymaster deployed on the blockchain
 
 ```bash
-open-attestation paymaster remove-target --targetAddress <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymasterAddress <PAYMASTER_ADDRESS> [options]
+open-attestation paymaster remove-target --target-address <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymaster-address <PAYMASTER_ADDRESS> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation paymaster remove-target --network ropsten --targetAddress 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --paymasterAddress 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+open-attestation paymaster remove-target --network ropsten --target-address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --paymaster-address 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 
 ✔  success   Contract with address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 has been revoked on paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 ```
 
-### supports-address
+### supports-contract
 
 Check if given address is supported by paymaster
 
 ```bash
-open-attestation paymaster supports-address --targetAddress <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymasterAddress <PAYMASTER_ADDRESS> [options]
+open-attestation paymaster supports-contract --target-address <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymaster-address <PAYMASTER_ADDRESS> [options]
 ```
 
 Example -
 
 ```bash
-open-attestation paymaster remove-target --network ropsten --targetAddress 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --paymasterAddress 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+open-attestation paymaster supports-contract --network ropsten --target-address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --paymaster-address 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 
 ℹ  info      Checking 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 is supported on paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 ✔  success   Contract with address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 is supported paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
@@ -434,7 +434,7 @@ open-attestation deploy document-store "My Name" --network ropsten --key 0000000
 
 ## Providing you own Infura Key
 
-When reading blockchain blocks you will likely need a provider to connect to a node. We use a Infura Provider by `ethers@v5` and have provisioned a API Key for it. If you would like to use your own key you can pass it in by following these steps:
+When reading blockchain blocks you will likely need a provider to connect to a node. We use a Infura Provider by `ethers@v5` and have provisioned a API Key for it. We **strongly recommend** using your own key. You can pass it in by following these steps:
 
 1. Generate a API Key by registering for a [Infura account](https://infura.io/) and opening a project.
 1. Add API key as an environment variable named `INFURA_KEY`.
@@ -444,7 +444,7 @@ Example:
 ```bash
 # Using environment variable
 export INFURA_KEY=<put your key here>
-open-attestation paymaster supports-address -p 0xcB94584760bCA09e9fa7117C4eE966814f17a306 -a 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --network ropsten
+open-attestation paymaster supports-contract -p 0xcB94584760bCA09e9fa7117C4eE966814f17a306 -a 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --network ropsten
 unset INFURA_KEY
 ```
 

@@ -10,7 +10,7 @@ const { trace } = getLogger("paymaster:remove-target");
 
 export const command = "remove-target [options]";
 
-export const describe = "Revoke a contract from being paid by a paymaster deployed on the blockchain";
+export const describe = "Remove a contract from being paid by a paymaster deployed on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(

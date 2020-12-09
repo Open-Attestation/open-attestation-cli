@@ -1,14 +1,14 @@
 import { NaivePaymasterFactory } from "@govtechsg/document-store";
 import signale from "signale";
 import { getLogger } from "../../logger";
-import { PaymasterSetTargetCommand } from "../../commands/paymaster/paymaster-command.type";
+import { PaymasterAddTargetCommand } from "../../commands/paymaster/paymaster-command.type";
 import { getWallet } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("paymaster:set-target");
+const { trace } = getLogger("paymaster:add-target");
 
-export const setTargetToPaymaster = async ({
+export const addTargetToPaymaster = async ({
   targetAddress,
   paymasterAddress,
   network,
@@ -17,7 +17,7 @@ export const setTargetToPaymaster = async ({
   gasPriceScale,
   encryptedWalletPath,
   dryRun,
-}: PaymasterSetTargetCommand): Promise<TransactionReceipt> => {
+}: PaymasterAddTargetCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   if (dryRun) {
     const paymaster = await NaivePaymasterFactory.connect(paymasterAddress, wallet);

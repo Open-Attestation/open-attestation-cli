@@ -10,14 +10,13 @@ const { trace } = getLogger("deploy:paymaster");
 
 export const command = "paymaster <paymaster-name> [options]";
 
-export const describe = "Deploys a naive paymaster contract on the blockchain";
+export const describe = "Deploys a paymaster contract on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndKeyOption(
       yargs.positional("paymaster-name", {
         description: "Name of the paymaster",
-        normalize: true,
       })
     )
   );

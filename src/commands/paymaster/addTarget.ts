@@ -1,16 +1,16 @@
 import { Argv } from "yargs";
 import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
-import { setTargetToPaymaster } from "../../implementations/paymaster/setTarget";
-import { PaymasterSetTargetCommand } from "./paymaster-command.type";
+import { addTargetToPaymaster } from "../../implementations/paymaster/addTarget";
+import { PaymasterAddTargetCommand } from "./paymaster-command.type";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
-const { trace } = getLogger("paymaster:set-target");
+const { trace } = getLogger("paymaster:add-target");
 
-export const command = "set-target [options]";
+export const command = "add-target [options]";
 
-export const describe = "Registers a contract with a paymaster deployed on the blockchain is willing to pay for";
+export const describe = "Registers a contract with a paymaster deployed on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
@@ -31,11 +31,11 @@ export const builder = (yargs: Argv): Argv =>
     )
   );
 
-export const handler = async (args: PaymasterSetTargetCommand): Promise<void> => {
+export const handler = async (args: PaymasterAddTargetCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Registering ${args.targetAddress} to paymaster ${args.paymasterAddress}`);
-    const { transactionHash } = await setTargetToPaymaster({
+    const { transactionHash } = await addTargetToPaymaster({
       ...args,
     });
     success(`Contract with address ${args.targetAddress} has been registered on paymaster ${args.paymasterAddress}`);

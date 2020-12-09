@@ -1,12 +1,12 @@
-import { setTargetToPaymaster } from "./setTarget";
+import { addTargetToPaymaster } from "./addTarget";
 import { join } from "path";
 import { Wallet } from "ethers";
 import { NaivePaymasterFactory } from "@govtechsg/document-store";
-import { PaymasterSetTargetCommand } from "../../commands/paymaster/paymaster-command.type";
+import { PaymasterAddTargetCommand } from "../../commands/paymaster/paymaster-command.type";
 
 jest.mock("@govtechsg/document-store");
 
-const deployParams: PaymasterSetTargetCommand = {
+const deployParams: PaymasterAddTargetCommand = {
   targetAddress: "0xabcd",
   paymasterAddress: "0x1234",
   network: "ropsten",
@@ -18,7 +18,7 @@ const deployParams: PaymasterSetTargetCommand = {
 describe("paymaster", () => {
   // increase timeout because ethers is throttling
   jest.setTimeout(30000);
-  describe("setTargetToPaymaster", () => {
+  describe("addTargetToPaymaster", () => {
     const mockedPaymasterFactory: jest.Mock<NaivePaymasterFactory> = NaivePaymasterFactory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -41,7 +41,7 @@ describe("paymaster", () => {
     it("should take in the key from environment variable", async () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
-      await setTargetToPaymaster({
+      await addTargetToPaymaster({
         targetAddress: "0xabcd",
         paymasterAddress: "0x1234",
         network: "ropsten",
@@ -54,7 +54,7 @@ describe("paymaster", () => {
     });
 
     it("should take in the key from key file", async () => {
-      await setTargetToPaymaster({
+      await addTargetToPaymaster({
         targetAddress: "0xabcd",
         paymasterAddress: "0x1234",
         network: "ropsten",
@@ -68,7 +68,7 @@ describe("paymaster", () => {
     });
 
     it("should pass in the correct params and run setTarget on targetAddress", async () => {
-      const instance = await setTargetToPaymaster(deployParams);
+      const instance = await addTargetToPaymaster(deployParams);
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
 
@@ -83,12 +83,12 @@ describe("paymaster", () => {
       mockedConnect.mockImplementation(() => {
         throw new Error("An Error");
       });
-      await expect(setTargetToPaymaster(deployParams)).rejects.toThrow("An Error");
+      await expect(addTargetToPaymaster(deployParams)).rejects.toThrow("An Error");
     });
 
     it("should throw when keys are not found anywhere", async () => {
       await expect(
-        setTargetToPaymaster({
+        addTargetToPaymaster({
           targetAddress: "0xabcd",
           paymasterAddress: "0x1234",
           network: "ropsten",

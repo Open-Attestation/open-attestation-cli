@@ -1,15 +1,15 @@
 import { NaivePaymasterFactory } from "@govtechsg/document-store";
 import { getLogger } from "../../logger";
-import { PaymasterSupportsAddressCommand } from "../../commands/paymaster/paymaster-command.type";
+import { PaymasterSupportsContractCommand } from "../../commands/paymaster/paymaster-command.type";
 import { getProvider } from "../utils/provider";
 
-const { trace } = getLogger("paymaster:supports-address");
+const { trace } = getLogger("paymaster:supports-contract");
 
-export const paymasterSupportsAddress = async ({
+export const paymasterSupportsContract = async ({
   targetAddress,
   paymasterAddress,
   network,
-}: PaymasterSupportsAddressCommand): Promise<boolean> => {
+}: PaymasterSupportsContractCommand): Promise<boolean> => {
   const provider = getProvider(network);
   const isSupported = await NaivePaymasterFactory.connect(paymasterAddress, provider).supportsAddress(targetAddress);
   trace(`Selected network: ${network}`);
