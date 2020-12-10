@@ -70,7 +70,7 @@ describe("gsn-document-store", () => {
       expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
       expect(mockedDeploy.mock.calls[0][1]).toStrictEqual(deployParams.trustForwarderAddress);
       // price should be any length string of digits
-      expect(mockedDeploy.mock.calls[0][1].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+      expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
