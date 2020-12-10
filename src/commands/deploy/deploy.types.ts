@@ -8,6 +8,11 @@ export interface DeployPaymasterCommand extends NetworkAndKeyOption, GasOption {
   paymasterName: string;
 }
 
+export interface DeployGsnDocumentStoreCommand extends NetworkAndKeyOption, GasOption {
+  storeName: string;
+  trustForwarderAddress: string;
+}
+
 export interface DeployTokenRegistryCommand extends NetworkAndKeyOption, GasOption {
   registryName: string;
   registrySymbol: string;
