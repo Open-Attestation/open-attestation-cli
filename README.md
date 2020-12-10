@@ -198,6 +198,22 @@ open-attestation deploy paymaster "My Name" --network ropsten
 ✔  success   Paymaster My Name deployed at 0xC234Fb1F1ef0ABCD1faC90ad12F4DfC97D583F95
 ```
 
+## Deploying Gsn Document Store
+
+Deploys a gsn document store contract on the blockchain
+
+```bash
+open-attestation deploy gsn-document-store <STORE_NAME> <TRUST_FORWARDER_ADDRESS> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation deploy gsn-document-store "My Name" 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --network ropsten
+
+✔  success   Document store deployed at 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168
+```
+
 ## Token registry
 
 ### Issue
@@ -302,6 +318,24 @@ open-attestation paymaster supports-contract --network ropsten --target-address 
 
 ℹ  info      Checking 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 is supported on paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 ✔  success   Contract with address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 is supported paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+```
+
+## Gsn Capable
+
+### setPaymaster
+
+Declare paymaster address to request payment from for relayed transactions
+
+```bash
+open-attestation gsn-capable set-paymaster --gsn-capable-address <CONTRACT_ADDRESS> --paymaster-address <PAYMASTER_CONTRACT> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation gsn-capable set-paymaster --network ropsten --gsn-capable-address 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168 --paymaster-address 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+
+✔ success Paymaster address 0xcB94584760bCA09e9fa7117C4eE966814f17a306 has been successfully set on 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168
 ```
 
 ## Verify
