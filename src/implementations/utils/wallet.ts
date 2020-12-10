@@ -7,7 +7,7 @@ import inquirer from "inquirer";
 import { progress as defaultProgress } from "./progress";
 
 const getKeyFromFile = (file?: string): undefined | string => {
-  return file ? readFileSync(file).toString() : undefined;
+  return file ? readFileSync(file).toString().trim() : undefined;
 };
 
 export const getPrivateKey = ({ keyFile, key }: WalletOption): string | undefined => {
