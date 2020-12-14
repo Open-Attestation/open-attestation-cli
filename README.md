@@ -322,6 +322,8 @@ open-attestation paymaster supports-contract --network ropsten --target-address 
 
 ## Gsn Capable
 
+Gsn Capable denotes any contract with is able to receive relayed transactions. A paymaster should be declared who will sponsor the relayed transaction.
+
 ### setPaymaster
 
 This is a method to set a paymaster for the Gsn Capable recipient contract who will pay the relayer of the meta transaction.
