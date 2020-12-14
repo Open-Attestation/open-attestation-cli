@@ -203,13 +203,13 @@ open-attestation deploy paymaster "My Name" --network ropsten
 Deploys a [gsn capable document store](https://docs.opengsn.org/) contract on the blockchain. The [Trust Forwarder](https://docs.opengsn.org/learn/index.html#forwarder) for your network is provided by GSN. You can find a the most updated list [here](https://docs.opengsn.org/gsn-provider/networks.html).
 
 ```bash
-open-attestation deploy gsn-document-store <STORE_NAME> <TRUST_FORWARDER_ADDRESS> [options]
+open-attestation deploy gsn-capable-document-store <STORE_NAME> <TRUST_FORWARDER_ADDRESS> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy gsn-document-store "My Name" 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --network ropsten
+open-attestation deploy gsn-capable-document-store "My Name" 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --network ropsten
 
 ✔  success   Document store deployed at 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168
 ```

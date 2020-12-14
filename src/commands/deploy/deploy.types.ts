@@ -8,7 +8,7 @@ export interface DeployPaymasterCommand extends NetworkAndKeyOption, GasOption {
   paymasterName: string;
 }
 
-export interface DeployGsnDocumentStoreCommand extends NetworkAndKeyOption, GasOption {
+export interface DeployGsnCapableDocumentStoreCommand extends NetworkAndKeyOption, GasOption {
   storeName: string;
   trustForwarderAddress: string;
 }

@@ -1,12 +1,12 @@
-import { deployGsnDocumentStore } from "./gsn-capable-document-store";
+import { deployGsnCapableDocumentStore } from "./gsn-capable-document-store";
 import { join } from "path";
 import { Wallet } from "ethers";
 import { GsnCapableDocumentStoreFactory } from "@govtechsg/document-store";
-import { DeployGsnDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
+import { DeployGsnCapableDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 
 jest.mock("@govtechsg/document-store");
 
-const deployParams: DeployGsnDocumentStoreCommand = {
+const deployParams: DeployGsnCapableDocumentStoreCommand = {
   storeName: "Test Document Store",
   trustForwarderAddress: "0x1234",
   network: "ropsten",
@@ -16,7 +16,7 @@ const deployParams: DeployGsnDocumentStoreCommand = {
 };
 
 describe("gsn-capable-document-store", () => {
-  describe("deployGsnDocumentStore", () => {
+  describe("deployGsnCapableDocumentStore", () => {
     const documentStoreFactory: any = GsnCapableDocumentStoreFactory;
     const mockedDocumentStoreFactory: jest.Mock<GsnCapableDocumentStoreFactory> = documentStoreFactory;
     const mockedDeploy: jest.Mock = mockedDocumentStoreFactory.prototype.deploy;
@@ -35,7 +35,7 @@ describe("gsn-capable-document-store", () => {
     it("should take in the key from environment variable", async () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
-      await deployGsnDocumentStore({
+      await deployGsnCapableDocumentStore({
         storeName: "Test",
         trustForwarderAddress: "0x1234",
         network: "ropsten",
@@ -48,7 +48,7 @@ describe("gsn-capable-document-store", () => {
     });
 
     it("should take in the key from key file", async () => {
-      await deployGsnDocumentStore({
+      await deployGsnCapableDocumentStore({
         storeName: "Test",
         trustForwarderAddress: "0x1234",
         network: "ropsten",
@@ -62,7 +62,7 @@ describe("gsn-capable-document-store", () => {
     });
 
     it("should pass in the correct params and return the deployed instance", async () => {
-      const instance = await deployGsnDocumentStore(deployParams);
+      const instance = await deployGsnCapableDocumentStore(deployParams);
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
 
@@ -76,12 +76,12 @@ describe("gsn-capable-document-store", () => {
 
     it("should allow errors to bubble up", async () => {
       mockedDeploy.mockRejectedValue(new Error("An Error"));
-      await expect(deployGsnDocumentStore(deployParams)).rejects.toThrow("An Error");
+      await expect(deployGsnCapableDocumentStore(deployParams)).rejects.toThrow("An Error");
     });
 
     it("should throw when keys are not found anywhere", async () => {
       await expect(
-        deployGsnDocumentStore({
+        deployGsnCapableDocumentStore({
           storeName: "Test",
           trustForwarderAddress: "0x1234",
           network: "ropsten",

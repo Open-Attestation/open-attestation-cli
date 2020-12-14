@@ -1,13 +1,13 @@
 import { GsnCapableDocumentStoreFactory } from "@govtechsg/document-store";
 import signale from "signale";
-import { DeployGsnDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
+import { DeployGsnCapableDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
 import { getWallet } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
 
 const { trace } = getLogger("deploy:gsn-capable-document-store");
 
-export const deployGsnDocumentStore = async ({
+export const deployGsnCapableDocumentStore = async ({
   storeName,
   trustForwarderAddress,
   network,
@@ -16,7 +16,7 @@ export const deployGsnDocumentStore = async ({
   gasPriceScale,
   dryRun,
   encryptedWalletPath,
-}: DeployGsnDocumentStoreCommand): Promise<{ contractAddress: string }> => {
+}: DeployGsnCapableDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,

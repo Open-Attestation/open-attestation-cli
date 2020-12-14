@@ -20,10 +20,10 @@ export const setPaymasterForGsnCapableContract = async ({
 }: GsnCapableSetPaymasterCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   if (dryRun) {
-    const gsnDocumentStore = await GsnCapableDocumentStoreFactory.connect(gsnCapableAddress, wallet);
+    const gsnCapableDocumentStore = await GsnCapableDocumentStoreFactory.connect(gsnCapableAddress, wallet);
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await gsnDocumentStore.estimateGas.setPaymaster(paymasterAddress),
+      estimatedGas: await gsnCapableDocumentStore.estimateGas.setPaymaster(paymasterAddress),
       network,
     });
     process.exit(0);

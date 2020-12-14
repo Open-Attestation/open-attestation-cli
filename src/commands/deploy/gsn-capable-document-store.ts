@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
-import { deployGsnDocumentStore } from "../../implementations/deploy/gsn-capable-document-store";
-import { DeployGsnDocumentStoreCommand } from "./deploy.types";
+import { deployGsnCapableDocumentStore } from "../../implementations/deploy/gsn-capable-document-store";
+import { DeployGsnCapableDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
@@ -26,18 +26,18 @@ export const builder = (yargs: Argv): Argv =>
     )
   );
 
-export const handler = async (args: DeployGsnDocumentStoreCommand): Promise<string | undefined> => {
+export const handler = async (args: DeployGsnCapableDocumentStoreCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Deploying gsn capable document store ${args.storeName} with forwarder ${args.trustForwarderAddress}`);
-    const gsnDocumentStore = await deployGsnDocumentStore(args);
-    success(`Gsn document store ${args.storeName} deployed at ${gsnDocumentStore.contractAddress}`);
+    const gsnCapableDocumentStore = await deployGsnCapableDocumentStore(args);
+    success(`Gsn document store ${args.storeName} deployed at ${gsnCapableDocumentStore.contractAddress}`);
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${
-        gsnDocumentStore.contractAddress
+        gsnCapableDocumentStore.contractAddress
       }`
     );
-    return gsnDocumentStore.contractAddress;
+    return gsnCapableDocumentStore.contractAddress;
   } catch (e) {
     error(e.message);
   }
