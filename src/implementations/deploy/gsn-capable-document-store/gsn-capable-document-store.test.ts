@@ -4,7 +4,7 @@ import { Wallet } from "ethers";
 import { GsnCapableDocumentStoreFactory } from "@govtechsg/document-store";
 import { DeployGsnDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 
-jest.mock("@govtechsg/gsn-capable-document-store");
+jest.mock("@govtechsg/document-store");
 
 const deployParams: DeployGsnDocumentStoreCommand = {
   storeName: "Test Document Store",
