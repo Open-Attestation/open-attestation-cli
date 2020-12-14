@@ -198,9 +198,9 @@ open-attestation deploy paymaster "My Name" --network ropsten
 ✔  success   Paymaster My Name deployed at 0xC234Fb1F1ef0ABCD1faC90ad12F4DfC97D583F95
 ```
 
-## Deploying Gsn Document Store
+## Deploying Gsn Capable Document Store
 
-Deploys a gsn document store contract on the blockchain
+Deploys a [gsn capable document store](https://docs.opengsn.org/) contract on the blockchain. The [Trust Forwarder](https://docs.opengsn.org/learn/index.html#forwarder) for your network is provided by GSN. You can find a the most updated list [here](https://docs.opengsn.org/gsn-provider/networks.html).
 
 ```bash
 open-attestation deploy gsn-document-store <STORE_NAME> <TRUST_FORWARDER_ADDRESS> [options]
@@ -324,7 +324,7 @@ open-attestation paymaster supports-contract --network ropsten --target-address 
 
 ### setPaymaster
 
-Declare paymaster address to request payment from for relayed transactions
+This is a method to set a paymaster for the Gsn Capable recipient contract who will pay the relayer of the meta transaction.
 
 ```bash
 open-attestation gsn-capable set-paymaster --gsn-capable-address <CONTRACT_ADDRESS> --paymaster-address <PAYMASTER_CONTRACT> [options]

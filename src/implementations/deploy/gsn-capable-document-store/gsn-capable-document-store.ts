@@ -5,7 +5,7 @@ import { getLogger } from "../../../logger";
 import { getWallet } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
 
-const { trace } = getLogger("deploy:gsn-document-store");
+const { trace } = getLogger("deploy:gsn-capable-document-store");
 
 export const deployGsnDocumentStore = async ({
   storeName,

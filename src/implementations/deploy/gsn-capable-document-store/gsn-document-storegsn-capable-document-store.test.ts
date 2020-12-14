@@ -1,10 +1,10 @@
-import { deployGsnDocumentStore } from "./gsn-document-store";
+import { deployGsnDocumentStore } from "./gsn-capable-document-store";
 import { join } from "path";
 import { Wallet } from "ethers";
 import { GsnCapableDocumentStoreFactory } from "@govtechsg/document-store";
 import { DeployGsnDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 
-jest.mock("@govtechsg/document-store");
+jest.mock("@govtechsg/gsn-capable-document-store");
 
 const deployParams: DeployGsnDocumentStoreCommand = {
   storeName: "Test Document Store",
@@ -15,7 +15,7 @@ const deployParams: DeployGsnDocumentStoreCommand = {
   dryRun: false,
 };
 
-describe("gsn-document-store", () => {
+describe("gsn-capable-document-store", () => {
   describe("deployGsnDocumentStore", () => {
     const documentStoreFactory: any = GsnCapableDocumentStoreFactory;
     const mockedDocumentStoreFactory: jest.Mock<GsnCapableDocumentStoreFactory> = documentStoreFactory;

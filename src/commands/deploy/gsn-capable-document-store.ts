@@ -1,16 +1,16 @@
 import { Argv } from "yargs";
 import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
-import { deployGsnDocumentStore } from "../../implementations/deploy/gsn-document-store";
+import { deployGsnDocumentStore } from "../../implementations/deploy/gsn-capable-document-store";
 import { DeployGsnDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
-const { trace } = getLogger("deploy:gsn-document-store");
+const { trace } = getLogger("deploy:gsn-capable-document-store");
 
-export const command = "gsn-document-store <store-name> <trust-forwarder-address> [options]";
+export const command = "gsn-capable-document-store <store-name> <trust-forwarder-address> [options]";
 
-export const describe = "Deploys a gsn document store contract on the blockchain";
+export const describe = "Deploys a gsn capable document store contract on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(

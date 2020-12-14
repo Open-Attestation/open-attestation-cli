@@ -16,13 +16,13 @@ export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndKeyOption(
       yargs
-        .option("gsnCapableAddress", {
+        .option("gsn-capable-address", {
           alias: "a",
           description: "Address to set paymaster address for",
           type: "string",
           demandOption: true,
         })
-        .option("paymasterAddress", {
+        .option("paymaster-address", {
           alias: "p",
           description: "Paymaster address to set",
           type: "string",
