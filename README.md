@@ -326,7 +326,7 @@ Gsn Capable denotes any contract with is able to receive relayed transactions. A
 
 ### setPaymaster
 
-This is a method to set a paymaster for the Gsn Capable recipient contract who will pay the relayer of the meta transaction.
+This method sets a paymaster address for the Gsn Capable recipient contract who will pay the relayer of the meta transaction. Refer [here](https://www.openattestation.com/docs/advanced/gas-station-network#gsncapabledocumentstore) for a detailed use case.
 
 ```bash
 open-attestation gsn-capable set-paymaster --gsn-capable-address <CONTRACT_ADDRESS> --paymaster-address <PAYMASTER_CONTRACT> [options]
