@@ -198,6 +198,22 @@ open-attestation deploy paymaster "My Name" --network ropsten
 ✔  success   Paymaster My Name deployed at 0xC234Fb1F1ef0ABCD1faC90ad12F4DfC97D583F95
 ```
 
+## Deploying Gsn Capable Document Store
+
+Deploys a [gsn capable document store](https://docs.opengsn.org/) contract on the blockchain. The [Trust Forwarder](https://docs.opengsn.org/learn/index.html#forwarder) for your network is provided by GSN. You can find a the most updated list [here](https://docs.opengsn.org/gsn-provider/networks.html).
+
+```bash
+open-attestation deploy gsn-capable-document-store <STORE_NAME> <TRUST_FORWARDER_ADDRESS> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation deploy gsn-capable-document-store "My Name" 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 --network ropsten
+
+✔  success   Document store deployed at 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168
+```
+
 ## Token registry
 
 ### Issue
@@ -302,6 +318,26 @@ open-attestation paymaster supports-contract --network ropsten --target-address 
 
 ℹ  info      Checking 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 is supported on paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
 ✔  success   Contract with address 0x9Eb76E132fCA96779A5225419352Fb1B3B5Fd706 is supported paymaster 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+```
+
+## Gsn Capable
+
+Gsn Capable denotes any contract with is able to receive relayed transactions. A paymaster should be declared who will sponsor the relayed transaction.
+
+### setPaymaster
+
+This method sets a paymaster address for the Gsn Capable recipient contract who will pay the relayer of the meta transaction. Refer [here](https://www.openattestation.com/docs/advanced/gas-station-network#gsncapabledocumentstore) for a detailed use case.
+
+```bash
+open-attestation gsn-capable set-paymaster --gsn-capable-address <CONTRACT_ADDRESS> --paymaster-address <PAYMASTER_CONTRACT> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation gsn-capable set-paymaster --network ropsten --gsn-capable-address 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168 --paymaster-address 0xcB94584760bCA09e9fa7117C4eE966814f17a306
+
+✔ success Paymaster address 0xcB94584760bCA09e9fa7117C4eE966814f17a306 has been successfully set on 0x0d3dFdd82FF13Ff06a336e28CABE465B64fD8168
 ```
 
 ## Verify
