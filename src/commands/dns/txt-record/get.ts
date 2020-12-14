@@ -22,7 +22,7 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
       demandOption: true,
     })
-    .option("networkId", {
+    .option("network-id", {
       description: "Ethereum Network (chain ID) to filter results by",
       type: "number",
     });

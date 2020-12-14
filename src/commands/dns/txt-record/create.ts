@@ -20,7 +20,7 @@ export const builder = (yargs: Argv): Argv =>
       demandOption: false,
       conflicts: "publicKey",
     })
-    .option("networkId", {
+    .option("network-id", {
       description: "Ethereum network (chain ID) that this record is for",
       type: "number",
       demandOption: false,

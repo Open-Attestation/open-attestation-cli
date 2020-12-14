@@ -289,7 +289,7 @@ open-attestation paymaster remove-target --network ropsten --target-address 0x9E
 
 ### supports-contract
 
-Check if given address is supported by paymaster
+Check if given contract is supported by paymaster
 
 ```bash
 open-attestation paymaster supports-contract --target-address <GSN_CAPABLE_DOCUMENT_STORE_ADDRESS> --paymaster-address <PAYMASTER_ADDRESS> [options]

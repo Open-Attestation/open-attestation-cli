@@ -14,13 +14,13 @@ export const describe = "Check if given address is supported by paymaster";
 export const builder = (yargs: Argv): Argv =>
   withNetworkOption(
     yargs
-      .option("targetAddress", {
+      .option("target-address", {
         alias: "a",
         description: "Address of contract to register to paymaster",
         type: "string",
         demandOption: true,
       })
-      .option("paymasterAddress", {
+      .option("paymaster-address", {
         alias: "p",
         description: "Address of paymaster paying for contract",
         type: "string",

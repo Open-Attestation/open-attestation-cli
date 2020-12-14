@@ -22,7 +22,7 @@ export const builder = (yargs: Argv): Argv =>
           type: "string",
           demandOption: true,
         })
-        .option("tokenId", {
+        .option("token-id", {
           description: "Hash to add to the token registry",
           type: "string",
           demandOption: true,
