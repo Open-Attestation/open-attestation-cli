@@ -31,9 +31,14 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
       demandOption: false,
       conflicts: ["networkId", "address"],
+    })
+    .option("sandbox-endpoint", {
+      description: "Sandbox address to create record at",
+      default: "https://sandbox.openattestation.com",
+      alias: "t",
+      demandOption: false,
+      type: "string",
     });
-
-const baseUrl = "https://sandbox.openattestation.com";
 
 const request = (url: string, options?: RequestInit): Promise<any> => {
   return fetch(url, options)
@@ -51,6 +56,7 @@ export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string |
     signale.error("You need to provided a public key or an address with a networkId");
     return;
   }
+  const baseUrl = args.sandboxEndpoint;
   try {
     const { executionId } = await request(baseUrl, {
       method: "POST",
