@@ -1,5 +1,5 @@
-export interface CreateConfigFileCommand {
-    outputDir: string;
+export interface CreateConfigCommand {
     outputFile: string;
     fund?: string;
-}
+  }
+  
