@@ -11,33 +11,21 @@ import fetch, { RequestInit } from "node-fetch";
 
 const { trace } = getLogger("document-store:issue");
 
-export const createWallet = async ({
-  fund,
-  progress = defaultProgress("Encrypting Wallet"),
-}: CreateConfigCommand & { progress?: (progress: number) => void }): Promise<string> => {
-  const wallet = ethers.Wallet.createRandom();
-  const { password } = await inquirer.prompt({
-    type: "password",
-    name: "password",
-    message: "Wallet password",
-  });
+// export const createWallet = async ({
+//   progress = defaultProgress("Encrypting Wallet"),
+// }: CreateConfigCommand & { progress?: (progress: number) => void }): Promise<string> => {
+//   const wallet = ethers.Wallet.createRandom();
+//   const { password } = await inquirer.prompt({
+//     type: "password",
+//     name: "password",
+//     message: "Wallet password",
+//   });
 
-  const json = await wallet.encrypt(password, progress);
-  if (fund === "ropsten") {
-    const response = await fetch(`https://faucet.ropsten.be/donate/${wallet.address}`).then((res) => res.json());
-    console.log(response.message);
-    if (response.message) {
-      signale.warn(`[ropsten] Adding fund to ${wallet.address} failed: ${response.message}`);
-    } else {
-      signale.info(
-        `[ropsten] Request to add funds into ${wallet.address} sent. Please wait a while before the funds being added into your wallet. You can check the transaction at https://ropsten.etherscan.io/tx/${response.txhash}`
-      );
-    }
-  }
-  signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created. Find more details: `);
+//   const json = await wallet.encrypt(password, progress);
+//   signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created. Find more details: `);
 
-  return json;
-};
+//   return json;
+// };
 
 interface GetWalletProps {
   network: string;

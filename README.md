@@ -378,6 +378,14 @@ open-attestation wrap
 open-attestation sign
 ```
 
+## Development
+
+To run on local for development
+
+```
+npm run dev -- <command> <options>
+```
+
 ## Test
 
 ```
