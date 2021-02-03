@@ -1,15 +1,15 @@
 import { ethers, getDefaultProvider, Wallet, providers } from "ethers";
 import inquirer from "inquirer";
-import signale from "signale";
+import signale, { error, success } from "signale";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { CreateConfigCommand } from "../../commands/config/config.type";
 import { progress as defaultProgress } from "../../implementations/utils/progress";
-import { NetworkOption, WalletOption, NetworkAndKeyOption, GasOption } from "../../commands/shared";
-
 import { DocumentStoreFactory } from "@govtechsg/document-store";
-import { TransactionReceipt } from "@ethersproject/providers";
-import { DocumentStoreIssueCommand } from "../../commands/document-store/document-store-command.type";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import fetch, { RequestInit } from "node-fetch";
+
+
 // import { getWallet } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 
@@ -51,6 +51,14 @@ interface DocumentStoreProps {
   gasPriceScale: number;
 }
 
+interface TokenRegistryProps {
+  registryName: string;
+  registrySymbol: string;
+  network: string;
+  walletJson: string;
+  gasPriceScale: number;
+}
+
 const getWallet = async ({
   network,
   walletJson,
@@ -82,3 +90,53 @@ export const deployDocumentStore = async ({
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);
   return transaction.deployTransaction.wait();
 }
+
+export const deployTokenRegistry = async ({
+  registryName,
+  registrySymbol,
+  network,
+  walletJson,
+  gasPriceScale,
+}: TokenRegistryProps) => {
+  const wallet = await getWallet({network, walletJson})
+  const gasPrice = await wallet.provider.getGasPrice();
+  const factory = new TradeTrustErc721Factory(wallet);
+  signale.await(`Sending transaction to pool`);
+  const transaction = await factory.deploy(registryName, registrySymbol, { gasPrice: gasPrice.mul(gasPriceScale) });
+  trace(`Tx hash: ${transaction.deployTransaction.hash}`);
+  trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
+  signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);
+  return transaction.deployTransaction.wait();
+};
+
+export const createTempDNS = async (
+  args : CreateConfigCommand ) => {
+  const baseUrl = args.sandboxEndpoint;
+  try {
+    const { executionId } = await request(baseUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(args),
+    });
+    const result = await request(`${baseUrl}/execution/${executionId}`);
+    // success(
+    //   `Record created at ${highlight(name)} and will stay valid until ${highlight(new Date(expiryDate).toString())}`
+    // );
+    return result;
+  } catch (e) {
+    error(e.message);
+  }
+
+};
+const request = (url: string, options?: RequestInit): Promise<any> => {
+  return fetch(url, options)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`unexpected response ${response.statusText}`);
+      }
+      return response;
+    })
+    .then((response) => response.json());
+};
