@@ -69,6 +69,7 @@ const getWallet = async ({
 };
 
 export const deployDocumentStore = async ({ storeName, network, walletJson, gasPriceScale }: DocumentStoreProps) => {
+  if (!walletJson) throw new Error("No encrypted wallet found");
   const wallet = await getWallet({ network, walletJson });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new DocumentStoreFactory(wallet);
@@ -87,6 +88,7 @@ export const deployTokenRegistry = async ({
   walletJson,
   gasPriceScale,
 }: TokenRegistryProps) => {
+  if (!walletJson) throw new Error("No encrypted wallet found");
   const wallet = await getWallet({ network, walletJson });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new TradeTrustErc721Factory(wallet);

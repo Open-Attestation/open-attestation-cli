@@ -60,23 +60,22 @@ describe("config", () => {
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
-    // it("should allow errors to bubble up", async () => {
-    //   mockedDeploy.mockRejectedValue(new Error("An Error"));
-    //   await expect(deployDocumentStore(deployParams)).rejects.toThrow("An Error");
-    // });
+    it("should allow errors to bubble up", async () => {
+      promptMock.mockResolvedValueOnce({ password: "password" }); // wallet password
+      mockedDeploy.mockRejectedValue(new Error("An Error"));
+      await expect(deployDocumentStore(deployDocStoreParams)).rejects.toThrow("An Error");
+    });
 
-    // it("should throw when keys are not found anywhere", async () => {
-    //   await expect(
-    //     deployDocumentStore({
-    //       storeName: "Test",
-    //       network: "ropsten",
-    //       gasPriceScale: 1,
-    //       dryRun: false,
-    //     })
-    //   ).rejects.toThrow(
-    //     "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
-    //   );
-    // });
+    it("should throw when keys are not found anywhere", async () => {
+      await expect(
+        deployDocumentStore({
+          storeName: "Test",
+          network: "ropsten",
+          walletJson: "",
+          gasPriceScale: 1,
+        })
+      ).rejects.toThrow("No encrypted wallet found");
+    });
   });
 
   describe("deployTokenRegistry", () => {
@@ -108,9 +107,27 @@ describe("config", () => {
       expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
+
+    it("should throw when keys are not found anywhere", async () => {
+      await expect(
+        deployTokenRegistry({
+          registryName: "Test",
+          registrySymbol: "Tst",
+          network: "ropsten",
+          walletJson: "",
+          gasPriceScale: 1,
+        })
+      ).rejects.toThrow("No encrypted wallet found");
+    });
+
+    it("should allow errors to bubble up", async () => {
+      promptMock.mockResolvedValueOnce({ password: "password" }); // wallet password
+      mockedDeploy.mockRejectedValue(new Error("An Error"));
+      await expect(deployTokenRegistry(deployTokenRegistryParams)).rejects.toThrow("An Error");
+    });
   });
 
-  describe("Create dns record for Document Store", () => {});
+  // describe("Create dns record for Document Store", async () => {});
 
-  describe("Create dns record for Token Registry", () => {});
+  // describe("Create dns record for Token Registry", async () => {});
 });
