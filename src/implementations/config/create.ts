@@ -3,7 +3,12 @@ import inquirer from "inquirer";
 import signale, { error, success } from "signale";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
-import { CreateConfigCommand } from "../../commands/config/config.type";
+import {
+  CreateConfigCommand,
+  GetWalletProps,
+  DocumentStoreProps,
+  TokenRegistryProps,
+} from "../../commands/config/config.type";
 import { progress as defaultProgress } from "../../implementations/utils/progress";
 import { DocumentStoreFactory } from "@govtechsg/document-store";
 import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
@@ -27,26 +32,26 @@ const { trace } = getLogger("document-store:issue");
 //   return json;
 // };
 
-interface GetWalletProps {
-  network: string;
-  walletJson: string;
-  progress?: (progress: number) => void;
-}
+// interface GetWalletProps {
+//   network: string;
+//   walletJson: string;
+//   progress?: (progress: number) => void;
+// }
 
-interface DocumentStoreProps {
-  storeName: string;
-  network: string;
-  walletJson: string;
-  gasPriceScale: number;
-}
+// interface DocumentStoreProps {
+//   storeName: string;
+//   network: string;
+//   walletJson: string;
+//   gasPriceScale: number;
+// }
 
-interface TokenRegistryProps {
-  registryName: string;
-  registrySymbol: string;
-  network: string;
-  walletJson: string;
-  gasPriceScale: number;
-}
+// interface TokenRegistryProps {
+//   registryName: string;
+//   registrySymbol: string;
+//   network: string;
+//   walletJson: string;
+//   gasPriceScale: number;
+// }
 
 const getWallet = async ({
   network,
