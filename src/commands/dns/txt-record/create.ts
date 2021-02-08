@@ -40,7 +40,7 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
     });
 
-const request = (url: string, options?: RequestInit): Promise<any> => {
+export const request = (url: string, options?: RequestInit): Promise<any> => {
   return fetch(url, options)
     .then((response) => {
       if (!response.ok) {

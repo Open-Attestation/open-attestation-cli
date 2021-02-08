@@ -1,14 +1,14 @@
-import { Argv } from "yargs";
+import fs from "fs";
+import path from "path";
 import { error, info, success } from "signale";
+import { Argv } from "yargs";
+import { createTempDNS, deployDocumentStore, deployTokenRegistry } from "../../implementations/config/create";
+import { readFile } from "../../implementations/utils/disk";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
-import { CreateConfigCommand } from "./config.type";
-import { deployDocumentStore, deployTokenRegistry, createTempDNS } from "../../implementations/config/create";
-import fs from "fs";
 import { withGasPriceOption } from "../shared";
 import ConfigTemplate from "./config-template.json";
-import { readFile } from "../../implementations/utils/disk";
-import path from "path";
+import { CreateConfigCommand } from "./config.type";
 
 const { trace } = getLogger("config:create");
 

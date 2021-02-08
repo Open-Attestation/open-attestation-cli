@@ -1,18 +1,17 @@
-import { ethers, getDefaultProvider, Wallet, providers } from "ethers";
-import inquirer from "inquirer";
-import signale, { error, success } from "signale";
-import { getLogger } from "../../logger";
-import { highlight } from "../../utils";
-import {
-  CreateConfigCommand,
-  GetWalletProps,
-  DocumentStoreProps,
-  TokenRegistryProps,
-} from "../../commands/config/config.type";
-import { progress as defaultProgress } from "../../implementations/utils/progress";
 import { DocumentStoreFactory } from "@govtechsg/document-store";
 import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
-import fetch, { RequestInit } from "node-fetch";
+import { ethers, getDefaultProvider, providers, Wallet } from "ethers";
+import inquirer from "inquirer";
+import signale, { error } from "signale";
+import {
+  CreateConfigCommand,
+  DocumentStoreProps,
+  GetWalletProps,
+  TokenRegistryProps,
+} from "../../commands/config/config.type";
+import { request } from "../../commands/dns/txt-record/create";
+import { progress as defaultProgress } from "../../implementations/utils/progress";
+import { getLogger } from "../../logger";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -32,28 +31,7 @@ const { trace } = getLogger("document-store:issue");
 //   return json;
 // };
 
-// interface GetWalletProps {
-//   network: string;
-//   walletJson: string;
-//   progress?: (progress: number) => void;
-// }
-
-// interface DocumentStoreProps {
-//   storeName: string;
-//   network: string;
-//   walletJson: string;
-//   gasPriceScale: number;
-// }
-
-// interface TokenRegistryProps {
-//   registryName: string;
-//   registrySymbol: string;
-//   network: string;
-//   walletJson: string;
-//   gasPriceScale: number;
-// }
-
-const getWallet = async ({
+export const getWallet = async ({
   network,
   walletJson,
   progress = defaultProgress("Decrypting Wallet"),
@@ -115,15 +93,4 @@ export const createTempDNS = async (args: CreateConfigCommand) => {
   } catch (e) {
     error(e.message);
   }
-};
-
-const request = (url: string, options?: RequestInit): Promise<any> => {
-  return fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`unexpected response ${response.statusText}`);
-      }
-      return response;
-    })
-    .then((response) => response.json());
 };

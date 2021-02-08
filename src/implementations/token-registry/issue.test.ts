@@ -1,8 +1,8 @@
-import { issueToTokenRegistry } from "./issue";
-import { join } from "path";
-import { Wallet } from "ethers";
 import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { Wallet } from "ethers";
+import { join } from "path";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
+import { issueToTokenRegistry } from "./issue";
 
 jest.mock("@govtechsg/token-registry");
 
@@ -19,6 +19,7 @@ const deployParams: TokenRegistryIssueCommand = {
 // ideally must setup ganache, and run the function over it
 describe("token-registry", () => {
   describe("issue", () => {
+    jest.setTimeout(30000);
     const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
