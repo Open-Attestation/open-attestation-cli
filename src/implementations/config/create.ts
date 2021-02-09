@@ -15,22 +15,6 @@ import { getLogger } from "../../logger";
 
 const { trace } = getLogger("document-store:issue");
 
-// export const createWallet = async ({
-//   progress = defaultProgress("Encrypting Wallet"),
-// }: CreateConfigCommand & { progress?: (progress: number) => void }): Promise<string> => {
-//   const wallet = ethers.Wallet.createRandom();
-//   const { password } = await inquirer.prompt({
-//     type: "password",
-//     name: "password",
-//     message: "Wallet password",
-//   });
-
-//   const json = await wallet.encrypt(password, progress);
-//   signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created. Find more details: `);
-
-//   return json;
-// };
-
 export const getWallet = async ({
   network,
   walletJson,

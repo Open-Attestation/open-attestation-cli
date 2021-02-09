@@ -1,8 +1,9 @@
 import { DnsCreateTxtRecordCommand } from "../../commands/dns/txt-record/dns-command.type";
 import { GasOption } from "../../commands/shared";
+import { CreateWalletCommand } from "../wallet/wallet.type";
 
-export interface CreateConfigCommand extends DnsCreateTxtRecordCommand, GasOption {
-  outputFile: string;
+export interface CreateConfigCommand extends CreateWalletCommand, DnsCreateTxtRecordCommand, GasOption {
+  outputDir: string;
   encryptedWalletPath: string;
 }
 
