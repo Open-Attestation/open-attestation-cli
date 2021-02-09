@@ -3,10 +3,10 @@ import { error, info, success } from "signale";
 import { Argv } from "yargs";
 import { deployDocumentStore } from "../../implementations/deploy/document-store/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry/token-registry";
-import { handler as CreateTempDns } from "../dns/txt-record/create";
 import { readFile } from "../../implementations/utils/disk";
 import { create as CreateWallet } from "../../implementations/wallet/create";
 import { getLogger } from "../../logger";
+import { handler as CreateTempDns } from "../dns/txt-record/create";
 import ConfigTemplate from "./config-template.json";
 import { CreateConfigCommand } from "./config.type";
 
@@ -25,6 +25,7 @@ export const builder = (yargs: Argv): Argv =>
       demandOption: true,
     })
     .option("encrypted-wallet-path", {
+      alias: "ewp",
       type: "string",
       description: "Path to file containing wallet.json",
       normalize: true,
@@ -33,7 +34,7 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  if (!fs.existsSync("./" + args.outputDir)) {
+  if (!fs.existsSync(args.outputDir)) {
     fs.mkdirSync(args.outputDir);
   }
 
@@ -42,7 +43,9 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     if (!args.encryptedWalletPath) {
       info(`Enter password to create wallet`);
       args.outputFile = `${args.outputDir}/wallet.json`;
+      args.fund = "ropsten";
       walletPath = await CreateWallet(args);
+      info(`Wallet created at ${walletPath}`);
       args.encryptedWalletPath = walletPath;
     }
     const wallet = await readFile(walletPath ? walletPath : args.encryptedWalletPath);
@@ -52,9 +55,6 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     args.gasPriceScale = 1;
     args.dryRun = false;
     args.sandboxEndpoint = "https://sandbox.openattestation.com";
-
-    // const wallet =
-    //   '{"address":"709731d94d65b078496937655582401157c8a640","id":"90167e7e-af5c-44b1-a6a3-2525300d1032","version":3,"Crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"02004e981623b906938a205c24805bef"},"ciphertext":"06568387223b88fe860bfed23442966124fe38e463fdb5501a0a0f8b9d1519db","kdf":"scrypt","kdfparams":{"salt":"56b3c1e89f4d8a3f76564d4e6f64e832e46729c881764328a4509a2e96c052fe","n":131072,"dklen":32,"p":1,"r":8},"mac":"7611744a709d7cac37379617e8ddd9f134658b7a99b09f55eeaa50b4af6e0d39"},"x-ethers":{"client":"ethers.js","gethFilename":"UTC--2021-02-01T06-07-08.0Z--709731d94d65b078496937655582401157c8a640","mnemonicCounter":"f2706de1481a3541e7b49885f9a21fa7","mnemonicCiphertext":"7eb14f3487659d100e5dddac1cef72dd","path":"m/44\'/60\'/0\'/0/0","locale":"en","version":"0.1"}}';
 
     info(`Enter password to continue deployment of Document Store`);
     args.storeName = "Demo Document Store";
@@ -67,11 +67,9 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const tokenRegistry = await deployTokenRegistry(args);
     const tokenRegistryAddress = tokenRegistry.contractAddress;
 
-    // const documentStoreAddress = "0xce604d09941a7601dA58a3A63C0AE025fEd60770";
     args.address = documentStoreAddress;
     const docStoreDnsName = await CreateTempDns(args);
 
-    // const tokenRegistryAddress = "0x46503426b0F2825dbccB2932Fb5d42bF64E255B5";
     args.address = tokenRegistryAddress;
     const tokenRegistryDnsName = await CreateTempDns(args);
 
@@ -82,7 +80,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       .replace(/"<Token Registry Address>"/g, JSON.stringify(tokenRegistryAddress))
       .replace(/"<Token Registry DNS>"/g, JSON.stringify(tokenRegistryDnsName));
 
-    fs.writeFileSync(`./${args.outputDir}/demo-config.json`, configTemplateString);
+    fs.writeFileSync(`${args.outputDir}/demo-config.json`, configTemplateString);
     success(`Config file successfully generated`);
   } catch (e) {
     error(e.message);

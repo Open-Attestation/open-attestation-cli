@@ -1,16 +1,22 @@
 import fs from "fs";
 import { prompt } from "inquirer";
 import tmp from "tmp";
-import { createTempDNS, deployDocumentStore, deployTokenRegistry } from "../../../implementations/config/create";
+import { deployDocumentStore } from "../../../implementations/deploy/document-store/document-store";
+import { deployTokenRegistry } from "../../../implementations/deploy/token-registry/token-registry";
+import { handler as createTempDNS } from "../../dns/txt-record/create";
 import { CreateConfigCommand } from "../config.type";
-import { handler } from "../create";
+import { handler as createConfig } from "../create";
 import wallet from "./wallet.json";
 
 jest.mock("inquirer");
-jest.mock("../../../implementations/config/create", () => ({
-  createTempDNS: jest.fn(),
+jest.mock("../../../implementations/deploy/document-store/document-store", () => ({
   deployDocumentStore: jest.fn(),
+}));
+jest.mock("../../../implementations/deploy/token-registry/token-registry", () => ({
   deployTokenRegistry: jest.fn(),
+}));
+jest.mock("../../dns/txt-record/create", () => ({
+  handler: jest.fn(),
 }));
 
 const mockCreateTempDNS = createTempDNS as jest.Mock;
@@ -22,14 +28,19 @@ const mockDeployTokenRegistry = deployTokenRegistry as jest.Mock;
 // @ts-ignore
 const promptMock = prompt as jest.Mock;
 
-let file: any;
+let folder: any;
 let args: CreateConfigCommand;
 
 describe("config-file", () => {
   beforeEach(() => {
-    file = tmp.fileSync();
+    folder = tmp.dirSync();
     args = {
-      outputFile: file.name,
+      outputDir: folder.name,
+      outputFile: "demo-config.json",
+      storeName: "Demo Store Name",
+      network: "ropsten",
+      registryName: "Demo Token Registry",
+      registrySymbol: "DTR",
       encryptedWalletPath: "./wallet.json",
       address: "0x709731d94d65b078496937655582401157c8a640",
       networkId: 3,
@@ -38,17 +49,20 @@ describe("config-file", () => {
       dryRun: false,
     };
   });
+
   afterEach(() => {
     promptMock.mockRestore();
   });
+
   it("should create a config file with correct values", async () => {
     promptMock.mockReturnValue({ password: "password" });
     mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xce604d09941a7601dA58a3A63C0AE025fEd60770" });
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x46503426b0F2825dbccB2932Fb5d42bF64E255B5" });
-    mockCreateTempDNS.mockReturnValue({ name: "DNS", expiryDate: "2021-02-09T04:44:54.227Z" });
+    mockCreateTempDNS.mockReturnValue("DNS");
 
-    await handler(args);
-    const configFileAsString = fs.readFileSync(file.name, "utf-8");
+    await createConfig(args);
+    const configFileAsString = fs.readFileSync(`${folder.name}/demo-config.json`, "utf-8");
+
     expect(JSON.parse(configFileAsString)).toStrictEqual({
       network: "ropsten",
       wallet: JSON.stringify(wallet),
