@@ -6,7 +6,7 @@ import { deployTokenRegistry } from "../../implementations/deploy/token-registry
 import { readFile } from "../../implementations/utils/disk";
 import { create as CreateWallet } from "../../implementations/wallet/create";
 import { getLogger } from "../../logger";
-import { handler as CreateTempDns } from "../dns/txt-record/create";
+import { handler as CreateTemporaryDns } from "../dns/txt-record/create";
 import ConfigTemplate from "./config-template.json";
 import { CreateConfigCommand } from "./config.type";
 
@@ -68,15 +68,15 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const tokenRegistryAddress = tokenRegistry.contractAddress;
 
     args.address = documentStoreAddress;
-    const docStoreDnsName = await CreateTempDns(args);
+    const documentStoreDnsName = await CreateTemporaryDns(args);
 
     args.address = tokenRegistryAddress;
-    const tokenRegistryDnsName = await CreateTempDns(args);
+    const tokenRegistryDnsName = await CreateTemporaryDns(args);
 
     const configTemplateString = JSON.stringify(ConfigTemplate, null, 2)
       .replace(/"<Wallet string>"/g, JSON.stringify(wallet))
       .replace(/"<Document Store Address>"/g, JSON.stringify(documentStoreAddress))
-      .replace(/"<Document Store DNS>"/g, JSON.stringify(docStoreDnsName))
+      .replace(/"<Document Store DNS>"/g, JSON.stringify(documentStoreDnsName))
       .replace(/"<Token Registry Address>"/g, JSON.stringify(tokenRegistryAddress))
       .replace(/"<Token Registry DNS>"/g, JSON.stringify(tokenRegistryDnsName));
 
