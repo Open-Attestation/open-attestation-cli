@@ -1,13 +1,12 @@
 import fs from "fs";
 import { error, info, success } from "signale";
 import { Argv } from "yargs";
-import { createTempDNS } from "../../implementations/config/create";
 import { deployDocumentStore } from "../../implementations/deploy/document-store/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry/token-registry";
+import { handler as CreateTempDns } from "../dns/txt-record/create";
 import { readFile } from "../../implementations/utils/disk";
 import { create as CreateWallet } from "../../implementations/wallet/create";
 import { getLogger } from "../../logger";
-import { highlight } from "../../utils";
 import ConfigTemplate from "./config-template.json";
 import { CreateConfigCommand } from "./config.type";
 
@@ -70,28 +69,18 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
 
     // const documentStoreAddress = "0xce604d09941a7601dA58a3A63C0AE025fEd60770";
     args.address = documentStoreAddress;
-    const docStoreDns = await createTempDNS(args);
-    success(
-      `Record created for Document Store at ${highlight(docStoreDns.name)} and will stay valid until ${highlight(
-        new Date(docStoreDns.expiryDate).toString()
-      )}`
-    );
+    const docStoreDnsName = await CreateTempDns(args);
 
     // const tokenRegistryAddress = "0x46503426b0F2825dbccB2932Fb5d42bF64E255B5";
     args.address = tokenRegistryAddress;
-    const tokenRegistryDns = await createTempDNS(args);
-    success(
-      `Record created for Token Registry at ${highlight(tokenRegistryDns.name)} and will stay valid until ${highlight(
-        new Date(tokenRegistryDns.expiryDate).toString()
-      )}`
-    );
+    const tokenRegistryDnsName = await CreateTempDns(args);
 
     const configTemplateString = JSON.stringify(ConfigTemplate, null, 2)
       .replace(/"<Wallet string>"/g, JSON.stringify(wallet))
       .replace(/"<Document Store Address>"/g, JSON.stringify(documentStoreAddress))
-      .replace(/"<Document Store DNS>"/g, JSON.stringify(docStoreDns.name))
+      .replace(/"<Document Store DNS>"/g, JSON.stringify(docStoreDnsName))
       .replace(/"<Token Registry Address>"/g, JSON.stringify(tokenRegistryAddress))
-      .replace(/"<Token Registry DNS>"/g, JSON.stringify(tokenRegistryDns.name));
+      .replace(/"<Token Registry DNS>"/g, JSON.stringify(tokenRegistryDnsName));
 
     fs.writeFileSync(`./${args.outputDir}/demo-config.json`, configTemplateString);
     success(`Config file successfully generated`);
