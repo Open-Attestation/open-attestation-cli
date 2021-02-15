@@ -62,12 +62,12 @@
         },
         "issuers": [
           {
+            "name": "DEMO TOKEN REGISTRY",
+            "tokenRegistry": "<Token Registry Address>",
             "identityProof": {
               "type": "DNS-TXT",
               "location": "<Token Registry DNS>"
-            },
-            "name": "DEMO TOKEN REGISTRY",
-            "tokenRegistry": "<Token Registry Address>"
+            }
           }
         ],
         "blNumber": "<BL Number>",
