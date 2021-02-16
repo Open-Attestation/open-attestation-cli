@@ -314,6 +314,7 @@ describe("wrap", () => {
             encoding: "utf8",
           })
         );
+
         expect(merkleRoot).toHaveLength(64);
         expect(merkleRoot).toStrictEqual(file.proof.merkleRoot);
         expect(merkleRoot).toStrictEqual(file.proof.targetHash);
@@ -394,22 +395,6 @@ describe("wrap", () => {
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
-      it("should not issue document when given wrapped document without --unwrap", async () => {
-        const outputDirectory = tmp.dirSync();
-
-        await handler({
-          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, wrappedFileName),
-          outputDir: outputDirectory.name,
-          openAttestationV3: true,
-          unwrap: false,
-          batched: true,
-        });
-        const filepath = path.resolve(__dirname, fixtureFolderName, wrappedFileName);
-        expect(signaleErrorSpy).toHaveBeenCalledWith(
-          `Document ${filepath} is not valid against open-attestation schema`
-        );
-        expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
-      });
       // eslint-disable-next-line jest/no-disabled-tests
       it.skip("should issue document when the given wrapped document and --unwrap is specified", async () => {
         const outputDirectory = tmp.dirSync();
@@ -473,7 +458,6 @@ describe("wrap", () => {
           unwrap: false,
           batched: true,
         });
-
         const file = JSON.parse(
           fs.readFileSync(path.resolve(outputDirectory.name, validFileNameWithCustomSchema), {
             encoding: "utf8",
