@@ -41,7 +41,7 @@ describe("wallet", () => {
         ",
         ]
       `);
-    });
+    }, 20000);
     it("should fail when user does not consent correctly", async () => {
       const signaleErrorSpy = jest.spyOn(signale, "error");
       promptMock.mockResolvedValueOnce({ ack: "no!!" }); // what the user type
@@ -71,6 +71,6 @@ describe("wallet", () => {
         ",
         ]
       `);
-    });
+    }, 20000);
   });
 });
