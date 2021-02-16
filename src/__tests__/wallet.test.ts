@@ -10,6 +10,7 @@ jest.mock("inquirer");
 const promptMock = mocked(prompt);
 
 describe("wallet", () => {
+  jest.setTimeout(20000);
   let level = 0 as Level;
   beforeAll(() => {
     process.env.DISABLE_PROGRESS_BAR = "disabled";
