@@ -73,7 +73,7 @@
     "@govtechsg/oa-did-sign": "^1.0.0",
     "@govtechsg/oa-encryption": "^1.3.2",
     "@govtechsg/oa-verify": "^5.1.0",
-    "@govtechsg/open-attestation": "^4.2.0",
+    "@govtechsg/open-attestation": "^4.5.0",
     "@govtechsg/token-registry": "^2.3.0",
     "ajv": "^6.12.3",
     "chalk": "^4.1.0",
@@ -160,7 +160,8 @@
     "watchPlugins": [
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
-    ]
+    ],
+    "testTimeout":20000
   },
   "prettier": {
     "printWidth": 120

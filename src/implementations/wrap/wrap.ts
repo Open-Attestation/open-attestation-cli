@@ -2,7 +2,7 @@ import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } fr
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import {
-  __unsafe__use__it__at__your__own__risks__wrapCredential,
+  __unsafe__use__it__at__your__own__risks__wrapDocument,
   getData,
   isSchemaValidationError,
   SchemaId,
@@ -51,7 +51,6 @@ export const wrapIndividualDocuments = async (
   for (const file of documentFileNames) {
     // TODO how to type this
     const document = unwrap ? getData(readOpenAttestationFile(file)) : readOpenAttestationFile(file);
-
     // Append DNS proof if given
     if (dnsTxt) {
       document.openAttestationMetadata = {
@@ -98,7 +97,7 @@ export const wrapIndividualDocuments = async (
     try {
       let wrappedDocument: any;
       if (version === SchemaId.v3) {
-        const digest = await __unsafe__use__it__at__your__own__risks__wrapCredential(document, {
+        const digest = await __unsafe__use__it__at__your__own__risks__wrapDocument(document, {
           externalSchemaId: schema?.$id,
           version,
         });
