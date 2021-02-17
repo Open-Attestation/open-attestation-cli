@@ -161,7 +161,7 @@
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
     ],
-    "testTimeout":20000
+    "testTimeout": 20000
   },
   "prettier": {
     "printWidth": 120

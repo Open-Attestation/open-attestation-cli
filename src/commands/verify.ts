@@ -55,5 +55,7 @@ export const handler = async ({ document, network, verbose }: VerifyCommand): Pr
       // if the document is not valid and the verbose flag has not been set, let's suggest the user to display more information
       signale.note("You might want to use `--verbose` flag to get additional information about the document status");
     }
-  } catch (err) {}
+  } catch (error) {
+    signale.error(error);
+  }
 };
