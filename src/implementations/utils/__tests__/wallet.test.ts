@@ -42,7 +42,7 @@ describe("wallet", () => {
     });
     expect(wallet.address).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
-  }, 20000);
+  });
   it("should throw an error when the wallet password is invalid", async () => {
     promptMock.mockReturnValue({ password: "invalid" });
 
@@ -53,7 +53,7 @@ describe("wallet", () => {
         progress: () => void 0, // shut up progress bar
       })
     ).rejects.toStrictEqual(new Error("invalid password"));
-  }, 20000);
+  });
   it("should throw an error when no option is provided", async () => {
     await expect(getWallet({ network: "ropsten" })).rejects.toStrictEqual(
       new Error(

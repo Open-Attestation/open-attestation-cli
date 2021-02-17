@@ -9,7 +9,6 @@ const validFileName = "valid-open-attestation-document.json";
 const validFileNameWithCustomSchema = "valid-custom-schema-document.json";
 const invalidFileName = "invalid-open-attestation-document.json";
 const invalidCustomFileName = "invalid-custom-schema-document.json";
-const wrappedFileName = "wrapped-open-attestation-document.json";
 
 describe("wrap", () => {
   const signaleErrorSpy = jest.spyOn(signale, "error");
@@ -221,56 +220,6 @@ describe("wrap", () => {
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
       });
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip("should not issue document when given wrapped document without --unwrap", async () => {
-        const inputDirectory = tmp.dirSync();
-        const outputDirectory = tmp.dirSync();
-        fs.copyFileSync(
-          path.resolve(__dirname, fixtureFolderName, wrappedFileName),
-          path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json")
-        );
-
-        await handler({
-          rawDocumentsPath: inputDirectory.name,
-          outputDir: outputDirectory.name,
-          openAttestationV3: true,
-          unwrap: false,
-          batched: true,
-        });
-
-        const filepath = path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json");
-        expect(signaleErrorSpy).toHaveBeenCalledWith(
-          `Document ${filepath} is not valid against open-attestation schema`
-        );
-        expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
-      });
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip("should issue document when the given document is wrapped and --unwrap is specified", async () => {
-        const inputDirectory = tmp.dirSync();
-        const outputDirectory = tmp.dirSync();
-        fs.copyFileSync(
-          path.resolve(__dirname, fixtureFolderName, wrappedFileName),
-          path.resolve(inputDirectory.name, "wrapped-open-attestation-document.json")
-        );
-
-        const merkleRoot = await handler({
-          rawDocumentsPath: inputDirectory.name,
-          outputDir: outputDirectory.name,
-          openAttestationV3: true,
-          unwrap: true,
-          batched: true,
-        });
-
-        const file = JSON.parse(
-          fs.readFileSync(path.resolve(outputDirectory.name, "wrapped-open-attestation-document.json"), {
-            encoding: "utf8",
-          })
-        );
-
-        expect(merkleRoot).toHaveLength(64);
-        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
-        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
-      });
     });
     describe("with schema", () => {
       it("should not issue documents when folder contain one valid open attestation that is not valid against the local schema provided", async () => {
@@ -394,27 +343,6 @@ describe("wrap", () => {
           `Document ${filepath} is not valid against open-attestation schema`
         );
         expect(fs.readdirSync(outputDirectory.name)).toHaveLength(0);
-      });
-      // eslint-disable-next-line jest/no-disabled-tests
-      it.skip("should issue document when the given wrapped document and --unwrap is specified", async () => {
-        const outputDirectory = tmp.dirSync();
-        const merkleRoot = await handler({
-          rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, "wrapped-open-attestation-document.json"),
-          outputDir: outputDirectory.name,
-          openAttestationV3: true,
-          unwrap: true,
-          batched: true,
-        });
-
-        const file = JSON.parse(
-          fs.readFileSync(path.resolve(outputDirectory.name, "wrapped-open-attestation-document.json"), {
-            encoding: "utf8",
-          })
-        );
-
-        expect(merkleRoot).toHaveLength(64);
-        expect(merkleRoot).toStrictEqual(file.signature.merkleRoot);
-        expect(merkleRoot).toStrictEqual(file.signature.targetHash);
       });
       it("should output as file when input path is a file", async () => {
         const outputFile = tmp.fileSync();
