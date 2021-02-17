@@ -4,6 +4,15 @@ export interface DeployDocumentStoreCommand extends NetworkAndKeyOption, GasOpti
   storeName: string;
 }
 
+export interface DeployPaymasterCommand extends NetworkAndKeyOption, GasOption {
+  paymasterName: string;
+}
+
+export interface DeployGsnCapableDocumentStoreCommand extends NetworkAndKeyOption, GasOption {
+  storeName: string;
+  trustForwarderAddress: string;
+}
+
 export interface DeployTokenRegistryCommand extends NetworkAndKeyOption, GasOption {
   registryName: string;
   registrySymbol: string;
