@@ -36,17 +36,7 @@ describe("config-file", () => {
     folder = tmp.dirSync();
     args = {
       outputDir: folder.name,
-      outputFile: "demo-config.json",
-      storeName: "Demo Store Name",
-      network: "ropsten",
-      registryName: "Demo Token Registry",
-      registrySymbol: "DTR",
-      encryptedWalletPath: "./wallet.json",
-      address: "0x709731d94d65b078496937655582401157c8a640",
-      networkId: 3,
-      sandboxEndpoint: "https://sandbox.openattestation.com",
-      gasPriceScale: 1,
-      dryRun: false,
+      encryptedWalletPath: "src/commands/demo-config/__tests__/wallet.json",
     };
   });
 
