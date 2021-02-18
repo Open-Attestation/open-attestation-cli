@@ -1,7 +1,12 @@
 import { Argv } from "yargs";
 import signale from "signale";
 import { VerifyCommand } from "./command-types";
-import { isValid, verify } from "@govtechsg/oa-verify";
+import {
+  isValid,
+  openAttestationVerifiers,
+  openAttestationDidIdentityProof,
+  verificationBuilder,
+} from "@govtechsg/oa-verify";
 import { readOpenAttestationFile } from "../implementations/utils/disk";
 import { withNetworkOption } from "./shared";
 
@@ -36,7 +41,8 @@ export const handler = async ({ document, network, verbose }: VerifyCommand): Pr
   };
   try {
     signale.await(`Verifying ${document}`);
-    const fragments = await verify(readOpenAttestationFile(document), { network });
+    const verify = verificationBuilder([...openAttestationVerifiers, openAttestationDidIdentityProof], { network });
+    const fragments = await verify(readOpenAttestationFile(document));
     show(isValid(fragments), "The document is valid", "The document is not valid");
     if (verbose) {
       signale.note("Showing additional information on the status of the verification");

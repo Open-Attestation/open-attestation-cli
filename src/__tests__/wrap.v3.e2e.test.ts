@@ -23,10 +23,10 @@ describe("wrap", () => {
 
     it("should not allow output as file when input path is a directory", async () => {
       await handler({
-        rawDocumentsPath: path.resolve("examples", "raw-documents"),
+        rawDocumentsPath: path.resolve("examples", "v2", "raw-documents"),
         openAttestationV3: true,
         unwrap: false,
-        outputFile: path.resolve("examples", "wrapped-documents"),
+        outputFile: path.resolve("examples", "v2", "wrapped-documents"),
         batched: true,
       });
       expect(mockExit).toHaveBeenCalledWith(1);
@@ -36,7 +36,7 @@ describe("wrap", () => {
     });
     it("should not allow output as StdOut when input path is a directory", async () => {
       await handler({
-        rawDocumentsPath: path.resolve("examples", "raw-documents"),
+        rawDocumentsPath: path.resolve("examples", "v2", "raw-documents"),
         openAttestationV3: true,
         unwrap: false,
         batched: true,
@@ -468,7 +468,7 @@ describe("wrap", () => {
           unwrap: false,
           batched: true,
         });
-        // console.log(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
+        console.log(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
         const file = JSON.parse(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
         expect(file.proof.merkleRoot).toHaveLength(64);
         expect(file.proof.merkleRoot).toStrictEqual(file.proof.targetHash);

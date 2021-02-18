@@ -14,7 +14,7 @@ describe("decrypt", () => {
     });
     const results = readFileSync(output, "utf8");
     const expected = readFileSync("src/__tests__/fixture/did-dns-decrypted.json", "utf8");
-    expect(results).toBe(expected);
+    expect(JSON.parse(results)).toStrictEqual(JSON.parse(expected));
     outputDirectory.removeCallback();
   });
 
