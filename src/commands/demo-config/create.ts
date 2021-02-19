@@ -88,32 +88,27 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       walletPath = await CreatedWalletPath(createWalletParams);
       info(`Wallet created at ${walletPath}`);
     }
-    const walletFile = walletPath ? walletPath : args.encryptedWalletPath;
-    const wallet = await readFile(walletFile);
+    const walletFilePath = walletPath ? walletPath : args.encryptedWalletPath;
+    const wallet = await readFile(walletFilePath);
+    const walletObject = JSON.parse(wallet);
 
     // Verifiable documents flow
     const { useVerifiableDocuments } = await inquirer.prompt({
       type: "confirm",
       name: "useVerifiableDocuments",
-      message: "Would you like to add verifiable documents to the config file?",
+      message: "Include verifiable document in the config file?",
     });
     if (useVerifiableDocuments) {
-      const { useDnsDid } = await inquirer.prompt({
+      const { useDnsTxt } = await inquirer.prompt({
         type: "confirm",
-        name: "useDnsDid",
-        message: "Would you like to create a DNS-DID record?",
+        name: "useDnsTxt",
+        message: "Deploy using DNS-TXT record?",
       });
       let DocumentStoreTemporaryDnsParams;
-      if (useDnsDid) {
-        DocumentStoreTemporaryDnsParams = {
-          networkId: 3,
-          publicKey: `did:ethr:0x${wallet.address}#controller`,
-          sandboxEndpoint: "https://sandbox.openattestation.com",
-        };
-      } else {
+      if (useDnsTxt) {
         info(`Enter password to continue deployment of Document Store`);
         const deployDocumentStoreParams = {
-          encryptedWalletPath: walletFile,
+          encryptedWalletPath: walletFilePath,
           network: "ropsten",
           gasPriceScale: 1,
           dryRun: false,
@@ -128,13 +123,28 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
           address: documentStoreAddress,
           sandboxEndpoint: "https://sandbox.openattestation.com",
         };
+      } else {
+        DocumentStoreTemporaryDnsParams = {
+          networkId: 3,
+          publicKey: `did:ethr:0x${walletObject.address}#controller`,
+          sandboxEndpoint: "https://sandbox.openattestation.com",
+        };
       }
       info(`Creating temporary DNS for verifiable documents`);
       const documentStoreDnsName = await CreateTemporaryDns(DocumentStoreTemporaryDnsParams);
       let formIssuers: VerifiableDocumentIssuers;
-      if (useDnsDid) {
+      if (useDnsTxt) {
         formIssuers = {
-          id: `did:ethr:0x${wallet.address}`,
+          name: "Demo Issuer",
+          documentStore: documentStoreAddress,
+          identityProof: {
+            type: "DNS-TXT",
+            location: documentStoreDnsName,
+          },
+        };
+      } else {
+        formIssuers = {
+          id: `did:ethr:0x${walletObject.address}`,
           name: "Demo Issuer",
           revocation: {
             type: "NONE",
@@ -142,16 +152,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
           identityProof: {
             type: "DNS-DID",
             location: documentStoreDnsName,
-            key: `did:ethr:0x${wallet.address}#controller`,
-          },
-        };
-      } else {
-        formIssuers = {
-          name: "Demo Issuer",
-          documentStore: documentStoreAddress,
-          identityProof: {
-            type: "DNS-TXT",
-            location: documentStoreDnsName,
+            key: `did:ethr:0x${walletObject.address}#controller`,
           },
         };
       }
@@ -172,7 +173,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       const deployTokenRegistryParams = {
         registryName: "Demo Token Registry",
         registrySymbol: "DTR",
-        encryptedWalletPath: walletFile,
+        encryptedWalletPath: walletFilePath,
         network: "ropsten",
         gasPriceScale: 1,
         dryRun: false,
