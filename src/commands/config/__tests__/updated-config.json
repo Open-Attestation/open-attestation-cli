@@ -1,0 +1,328 @@
+{
+  "network": "ropsten",
+  "wallet": "{\"address\":\"709731d94d65b078496937655582401157c8a640\",\"id\":\"90167e7e-af5c-44b1-a6a3-2525300d1032\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"02004e981623b906938a205c24805bef\"},\"ciphertext\":\"06568387223b88fe860bfed23442966124fe38e463fdb5501a0a0f8b9d1519db\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"56b3c1e89f4d8a3f76564d4e6f64e832e46729c881764328a4509a2e96c052fe\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"7611744a709d7cac37379617e8ddd9f134658b7a99b09f55eeaa50b4af6e0d39\"},\"x-ethers\":{\"client\":\"ethers.js\",\"gethFilename\":\"UTC--2021-02-01T06-07-08.0Z--709731d94d65b078496937655582401157c8a640\",\"mnemonicCounter\":\"f2706de1481a3541e7b49885f9a21fa7\",\"mnemonicCiphertext\":\"7eb14f3487659d100e5dddac1cef72dd\",\"path\":\"m/44'/60'/0'/0/0\",\"locale\":\"en\",\"version\":\"0.1\"}}",
+  "forms": [
+    {
+      "name": "Bill of Lading",
+      "type": "TRANSFERABLE_RECORD",
+      "defaults": {
+        "$template": {
+          "type": "EMBEDDED_RENDERER",
+          "name": "BILL_OF_LADING",
+          "url": "https://generic-templates.tradetrust.io"
+        },
+        "issuers": [
+          {
+            "identityProof": {
+              "type": "DNS-TXT",
+              "location": "alert-cyan-stoat.sandbox.openattestation.com"
+            },
+            "name": "Demo Issuer",
+            "tokenRegistry": "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D"
+          }
+        ],
+        "name": "Maersk Bill of Lading",
+        "scac": "SGPU"
+      },
+      "schema": {
+        "type": "object",
+        "required": ["blNumber", "scac"],
+        "properties": {
+          "blNumber": {
+            "type": "string",
+            "title": "BL Number"
+          },
+          "scac": {
+            "type": "string",
+            "title": "Standard Carrier Alpha Code (SCAC)"
+          },
+          "carrierName": {
+            "title": "Signed for the Carrier",
+            "type": "string"
+          },
+          "shipper": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "consignee": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "notifyParty": {
+            "title": "Notify Party",
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "vessel": {
+            "type": "string"
+          },
+          "voyageNo": {
+            "title": "Voyage No.",
+            "type": "string"
+          },
+          "portOfLoading": {
+            "title": "Port of Loading",
+            "type": "string"
+          },
+          "portOfDischarge": {
+            "title": "Port of Discharge",
+            "type": "string"
+          },
+          "placeOfReceipt": {
+            "title": "Place of Receipt",
+            "type": "string"
+          },
+          "placeOfDelivery": {
+            "title": "Place of Delivery",
+            "type": "string"
+          },
+          "packages": {
+            "type": "array",
+            "title": "Packages",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "measurement": {
+                  "type": "string"
+                },
+                "weight": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "attachments": {
+        "allow": true,
+        "accept": ".pdf, .json"
+      }
+    },
+    {
+      "name": "Covering Letter (GT)",
+      "type": "VERIFIABLE_DOCUMENT",
+      "defaults": {
+        "$template": {
+          "type": "EMBEDDED_RENDERER",
+          "name": "COVERING_LETTER",
+          "url": "https://generic-templates.tradetrust.io"
+        },
+        "issuers": [
+          {
+            "name": "Demo Issuer",
+            "documentStore": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
+            "identityProof": {
+              "type": "DNS-TXT",
+              "location": "alert-cyan-stoat.sandbox.openattestation.com"
+            }
+          }
+        ],
+        "name": "Covering Letter",
+        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif",
+        "title": "Documents Bundle",
+        "remarks": "Some very important documents in here for some submission",
+        "uiSchema": {
+          "remarks": {
+            "ui:widget": "textarea"
+          }
+        }
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Document Title"
+          },
+          "remarks": {
+            "type": "string",
+            "title": "Remarks"
+          }
+        }
+      },
+      "attachments": {
+        "allow": true
+      }
+    },
+    {
+      "name": "Invoice (IMDA)",
+      "type": "VERIFIABLE_DOCUMENT",
+      "defaults": {
+        "$template": {
+          "type": "EMBEDDED_RENDERER",
+          "name": "INVOICE",
+          "url": "https://generic-templates.tradetrust.io"
+        },
+        "issuers": [
+          {
+            "id": "did:ethr:0x709731d94d65b078496937655582401157c8a640",
+            "name": "Demo Issuer",
+            "revocation": {
+              "type": "NONE"
+            },
+            "identityProof": {
+              "type": "DNS-DID",
+              "location": "alert-cyan-stoat.sandbox.openattestation.com",
+              "key": "did:ethr:0x709731d94d65b078496937655582401157c8a640#controller"
+            }
+          }
+        ],
+        "name": "Invoice (IMDA)"
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Invoice ID"
+          },
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "customerId": {
+            "type": "string",
+            "title": "Customer ID"
+          },
+          "terms": {
+            "type": "string",
+            "title": "Terms"
+          },
+          "billFrom": {
+            "type": "object",
+            "title": "Bill From",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "streetAddress": {
+                "type": "string",
+                "title": "Street Address"
+              },
+              "city": {
+                "type": "string",
+                "title": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "title": "Postal Code"
+              },
+              "phoneNumber": {
+                "type": "string",
+                "title": "Phone Number"
+              }
+            }
+          },
+          "billTo": {
+            "type": "object",
+            "title": "Bill To",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "email": {
+                "type": "string",
+                "title": "Email"
+              },
+              "company": {
+                "type": "object",
+                "title": "Bill To Company",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "Name"
+                  },
+                  "streetAddress": {
+                    "type": "string",
+                    "title": "Street Address"
+                  },
+                  "city": {
+                    "type": "string",
+                    "title": "City"
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "title": "Postal Code"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "title": "Phone Number"
+                  }
+                }
+              }
+            }
+          },
+          "billableItems": {
+            "type": "array",
+            "title": "Billable Items",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "title": "Description"
+                },
+                "quantity": {
+                  "type": "string",
+                  "title": "Quantity"
+                },
+                "unitPrice": {
+                  "type": "string",
+                  "title": "Unit Price"
+                },
+                "amount": {
+                  "type": "string",
+                  "title": "Amount"
+                }
+              }
+            }
+          },
+          "subtotal": {
+            "type": "string",
+            "title": "Subtotal"
+          },
+          "tax": {
+            "type": "string",
+            "title": "Tax (%)"
+          },
+          "taxTotal": {
+            "type": "string",
+            "title": "Tax Total"
+          },
+          "total": {
+            "type": "string",
+            "title": "Total"
+          }
+        }
+      }
+    }
+  ]
+}
