@@ -4,23 +4,24 @@ import { Argv } from "yargs";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 import { readFile } from "../../implementations/utils/disk";
-import { create as CreatedWalletPath } from "../../implementations/wallet/create";
+import { create as createdWalletPath } from "../../implementations/wallet/create";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
-import { handler as CreateTemporaryDns } from "../dns/txt-record/create";
-import ConfigTemplate from "./config-template.json";
+import { handler as createTemporaryDns } from "../dns/txt-record/create";
 import { CreateConfigCommand } from "./config.type";
-
+// import { OpenAttestationDocument } from "@govtechsg/open-attestation";
+// v2.issuer;
 interface ConfigFile {
   wallet: string;
-  forms: Form[];
+  forms: Form[]; // either Replace this
 }
 
 interface Form {
   defaults: {
-    issuers: (VerifiableDocumentIssuers | TransferableRecordIssuers)[];
+    issuers: (VerifiableDocumentIssuers | TransferableRecordIssuers)[]; // or replace this with OA types
   };
 }
+// to delete
 interface VerifiableDocumentIssuers {
   id?: string;
   revocation?: { type: string };
@@ -32,6 +33,7 @@ interface VerifiableDocumentIssuers {
     key?: string;
   };
 }
+// to delete
 interface TransferableRecordIssuers {
   name: string;
   tokenRegistry: string;
@@ -64,7 +66,12 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
       description: "Path to file containing config template",
       normalize: true,
-      demandOption: true,
+    })
+    .option("config-type", {
+      type: "string",
+      description: "type of config to create (i.e. tradetrust)",
+      normalize: true,
+      choices: ["tradetrust"],
     });
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
@@ -81,18 +88,21 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
         outputFile: `${args.outputDir}/wallet.json`,
         fund: "ropsten",
       };
-      walletPath = await CreatedWalletPath(createWalletParams);
+      walletPath = await createdWalletPath(createWalletParams);
       info(`Wallet created at ${walletPath}`);
     }
     const walletFilePath = walletPath ? walletPath : args.encryptedWalletPath;
     const wallet = await readFile(walletFilePath);
     const walletObject = JSON.parse(wallet);
 
-    const configFile: ConfigFile = ConfigTemplate;
+    const configFile: ConfigFile = JSON.parse(
+      await readFile(
+        args.configTemplatePath ? args.configTemplatePath : "src/commands/config/__tests__/initial-config.json"
+      )
+    );
     configFile.wallet = wallet;
 
-    const template = JSON.parse(await readFile(args.configTemplatePath));
-    const formsInTemplate = template.forms;
+    const formsInTemplate = configFile.forms;
     let documentStoreAddress = "";
     let tokenRegistryAddress = "";
     let verifiableDocumentDnsName = "";
@@ -110,13 +120,17 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       const documentStore = await deployDocumentStore(deployDocumentStoreParams);
       documentStoreAddress = documentStore.contractAddress;
       success(`Document store deployed, address: ${highlight(documentStoreAddress)}`);
+
+      // this flow is for DNS-TXT only
       const DocumentStoreTemporaryDnsParams = {
         networkId: 3,
         address: documentStoreAddress,
         sandboxEndpoint: "https://sandbox.openattestation.com",
       };
       info(`Creating temporary DNS for verifiable documents`);
-      verifiableDocumentDnsName = (await CreateTemporaryDns(DocumentStoreTemporaryDnsParams)) || "";
+      verifiableDocumentDnsName = (await createTemporaryDns(DocumentStoreTemporaryDnsParams)) || "";
+
+      // Need check for DNS-DID then construct DNS-DID params and createTemporaryDns()
     }
     if (typeOfDocuments.includes("TRANSFERABLE_RECORD")) {
       info(`Enter password to continue deployment of Token Registry`);
@@ -137,7 +151,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
         address: tokenRegistryAddress,
         sandboxEndpoint: "https://sandbox.openattestation.com",
       };
-      tokenRegistryDnsName = (await CreateTemporaryDns(TokenRegistryTemporaryDnsParams)) || "";
+      tokenRegistryDnsName = (await createTemporaryDns(TokenRegistryTemporaryDnsParams)) || "";
     }
 
     formsInTemplate.forEach((form: any) => {
@@ -146,11 +160,12 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       if (form.type === "VERIFIABLE_DOCUMENT") {
         updatedIssuers = form.defaults.issuers.map((issuer: any) => {
           if (issuer.identityProof.type === "DNS-DID") {
+            // update using the DNS-DID value from above
             issuer.name = "Demo Issuer";
-            issuer.id = `did:ethr:0x${walletObject.address}`;
+            issuer.id = `did:ethr:0x${walletObject.address}`; // replace
             issuer.revocation.type = "NONE";
-            issuer.identityProof.location = verifiableDocumentDnsName;
-            issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
+            issuer.identityProof.location = verifiableDocumentDnsName; // replace this with the DNS-DID dns name
+            issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`; // replace
           } else {
             issuer.name = "Demo Issuer";
             issuer.documentStore = documentStoreAddress;

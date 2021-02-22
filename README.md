@@ -378,11 +378,12 @@ Example:
 open-attestation config create --output-dir ./examples/config --encrypted-wallet-path /path/to/wallet.json --config-template-path /path/tp/config.json
 ```
 
-You will need to provide the `--output-dir` option to specify in which folder the config file will be created in.
+You will need:
 
-You will need to use the `--encrypted-wallet-path` option where you provide a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
-
-You will need to use the `--config-template-path` option where you provide a path to a config file.
+- `--output-dir` option specify which folder the config file will be created in.
+- `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
+- `--config-template-path` option to provide a path to a config file.
+- `--config-type` option specify which default template to use to create the config file.
 
 ## Help
 
