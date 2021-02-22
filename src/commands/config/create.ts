@@ -64,6 +64,7 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
       description: "Path to file containing config template",
       normalize: true,
+      demandOption: true,
     });
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
@@ -90,88 +91,87 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const configFile: ConfigFile = ConfigTemplate;
     configFile.wallet = wallet;
 
-    if (args.configTemplatePath) {
-      const template = JSON.parse(await readFile(args.configTemplatePath));
-      const formsInTemplate = template.forms;
-      let documentStoreAddress = "";
-      let tokenRegistryAddress = "";
-      let verifiableDocumentDnsName = "";
-      let tokenRegistryDnsName = "";
-      const typeOfDocuments = formsInTemplate.map((formTemplate: any) => formTemplate.type);
-      if (typeOfDocuments.includes("VERIFIABLE_DOCUMENT")) {
-        info(`Enter password to continue deployment of Document Store`);
-        const deployDocumentStoreParams = {
-          encryptedWalletPath: walletFilePath,
-          network: "ropsten",
-          gasPriceScale: 1,
-          dryRun: false,
-          storeName: "Document Store",
-        };
-        const documentStore = await deployDocumentStore(deployDocumentStoreParams);
-        documentStoreAddress = documentStore.contractAddress;
-        success(`Document store deployed, address: ${highlight(documentStoreAddress)}`);
-        const DocumentStoreTemporaryDnsParams = {
-          networkId: 3,
-          address: documentStoreAddress,
-          sandboxEndpoint: "https://sandbox.openattestation.com",
-        };
-        info(`Creating temporary DNS for verifiable documents`);
-        verifiableDocumentDnsName = (await CreateTemporaryDns(DocumentStoreTemporaryDnsParams)) || "";
-      }
-      if (typeOfDocuments.includes("TRANSFERABLE_RECORD")) {
-        info(`Enter password to continue deployment of Token Registry`);
-        const deployTokenRegistryParams = {
-          registryName: "Token Registry",
-          registrySymbol: "DTR",
-          encryptedWalletPath: walletFilePath,
-          network: "ropsten",
-          gasPriceScale: 1,
-          dryRun: false,
-        };
-        const tokenRegistry = await deployTokenRegistry(deployTokenRegistryParams);
-        tokenRegistryAddress = tokenRegistry.contractAddress;
-        success(`Token registry deployed, address: ${highlight(tokenRegistryAddress)}`);
-        info(`Creating temporary DNS for transferable records`);
-        const TokenRegistryTemporaryDnsParams = {
-          networkId: 3,
-          address: tokenRegistryAddress,
-          sandboxEndpoint: "https://sandbox.openattestation.com",
-        };
-        tokenRegistryDnsName = (await CreateTemporaryDns(TokenRegistryTemporaryDnsParams)) || "";
-      }
-
-      formsInTemplate.forEach((form: any) => {
-        let updatedIssuers;
-        const updatedForm = form;
-        if (form.type === "VERIFIABLE_DOCUMENT") {
-          updatedIssuers = form.defaults.issuers.map((issuer: any) => {
-            if (issuer.identityProof.type === "DNS-DID") {
-              issuer.name = "Demo Issuer";
-              issuer.id = `did:ethr:0x${walletObject.address}`;
-              issuer.revocation.type = "NONE";
-              issuer.identityProof.location = verifiableDocumentDnsName;
-              issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
-            } else {
-              issuer.name = "Demo Issuer";
-              issuer.documentStore = documentStoreAddress;
-              issuer.identityProof.location = verifiableDocumentDnsName;
-            }
-
-            return issuer;
-          });
-        }
-        if (form.type === "TRANSFERABLE_RECORD") {
-          updatedIssuers = form.defaults.issuers.map((issuer: any) => {
-            issuer.name = "Demo Issuer";
-            issuer.tokenRegistry = tokenRegistryAddress;
-            issuer.identityProof.location = tokenRegistryDnsName;
-            return issuer;
-          });
-        }
-        updatedForm.defaults.issuers = updatedIssuers;
-        configFile.forms.push(updatedForm);
-      });
+    const template = JSON.parse(await readFile(args.configTemplatePath));
+    const formsInTemplate = template.forms;
+    let documentStoreAddress = "";
+    let tokenRegistryAddress = "";
+    let verifiableDocumentDnsName = "";
+    let tokenRegistryDnsName = "";
+    const typeOfDocuments = formsInTemplate.map((formTemplate: any) => formTemplate.type);
+    if (typeOfDocuments.includes("VERIFIABLE_DOCUMENT")) {
+      info(`Enter password to continue deployment of Document Store`);
+      const deployDocumentStoreParams = {
+        encryptedWalletPath: walletFilePath,
+        network: "ropsten",
+        gasPriceScale: 1,
+        dryRun: false,
+        storeName: "Document Store",
+      };
+      const documentStore = await deployDocumentStore(deployDocumentStoreParams);
+      documentStoreAddress = documentStore.contractAddress;
+      success(`Document store deployed, address: ${highlight(documentStoreAddress)}`);
+      const DocumentStoreTemporaryDnsParams = {
+        networkId: 3,
+        address: documentStoreAddress,
+        sandboxEndpoint: "https://sandbox.openattestation.com",
+      };
+      info(`Creating temporary DNS for verifiable documents`);
+      verifiableDocumentDnsName = (await CreateTemporaryDns(DocumentStoreTemporaryDnsParams)) || "";
     }
+    if (typeOfDocuments.includes("TRANSFERABLE_RECORD")) {
+      info(`Enter password to continue deployment of Token Registry`);
+      const deployTokenRegistryParams = {
+        registryName: "Token Registry",
+        registrySymbol: "DTR",
+        encryptedWalletPath: walletFilePath,
+        network: "ropsten",
+        gasPriceScale: 1,
+        dryRun: false,
+      };
+      const tokenRegistry = await deployTokenRegistry(deployTokenRegistryParams);
+      tokenRegistryAddress = tokenRegistry.contractAddress;
+      success(`Token registry deployed, address: ${highlight(tokenRegistryAddress)}`);
+      info(`Creating temporary DNS for transferable records`);
+      const TokenRegistryTemporaryDnsParams = {
+        networkId: 3,
+        address: tokenRegistryAddress,
+        sandboxEndpoint: "https://sandbox.openattestation.com",
+      };
+      tokenRegistryDnsName = (await CreateTemporaryDns(TokenRegistryTemporaryDnsParams)) || "";
+    }
+
+    formsInTemplate.forEach((form: any) => {
+      let updatedIssuers;
+      const updatedForm = form;
+      if (form.type === "VERIFIABLE_DOCUMENT") {
+        updatedIssuers = form.defaults.issuers.map((issuer: any) => {
+          if (issuer.identityProof.type === "DNS-DID") {
+            issuer.name = "Demo Issuer";
+            issuer.id = `did:ethr:0x${walletObject.address}`;
+            issuer.revocation.type = "NONE";
+            issuer.identityProof.location = verifiableDocumentDnsName;
+            issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
+          } else {
+            issuer.name = "Demo Issuer";
+            issuer.documentStore = documentStoreAddress;
+            issuer.identityProof.location = verifiableDocumentDnsName;
+          }
+
+          return issuer;
+        });
+      }
+      if (form.type === "TRANSFERABLE_RECORD") {
+        updatedIssuers = form.defaults.issuers.map((issuer: any) => {
+          issuer.name = "Demo Issuer";
+          issuer.tokenRegistry = tokenRegistryAddress;
+          issuer.identityProof.location = tokenRegistryDnsName;
+          return issuer;
+        });
+      }
+      updatedForm.defaults.issuers = updatedIssuers;
+      configFile.forms.push(updatedForm);
+    });
+
     fs.writeFileSync(`${args.outputDir}/config.json`, JSON.stringify(configFile, null, 2));
     success(`Config file successfully generated`);
   } catch (e) {

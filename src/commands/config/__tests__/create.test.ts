@@ -45,12 +45,9 @@ describe("config-file", () => {
     promptMock.mockRestore();
   });
 
-  it("should create a config file with correct values for DNS-TXT", async () => {
+  it("should create a config file with correct values for DNS-TXT and DNS-DID", async () => {
     promptMock.mockReturnValue({
       password: "password",
-      useVerifiableDocuments: true,
-      useDnsTxt: true,
-      useTransferableRecords: true,
     });
     mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd" });
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
