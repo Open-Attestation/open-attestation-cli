@@ -468,7 +468,6 @@ describe("wrap", () => {
           unwrap: false,
           batched: true,
         });
-        console.log(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
         const file = JSON.parse(fs.readFileSync(outputFile.name, { encoding: "utf8" }));
         expect(file.proof.merkleRoot).toHaveLength(64);
         expect(file.proof.merkleRoot).toStrictEqual(file.proof.targetHash);
