@@ -11,3 +11,4 @@ yarn.lock
 *.iml
 /tmp
 key
+/.vscode/

@@ -8,11 +8,11 @@ describe("verify", () => {
   });
   const signaleSuccessSpy = jest.spyOn(signale, "success");
   const signaleErrorSpy = jest.spyOn(signale, "error");
-  it("should fail on did.json because identity is not verified", async () => {
+  it("should fail on dnsdid-invalid-v3.json because identity is not verified", async () => {
     await handler({
-      document: path.resolve("examples", "signed-documents", "did.json"),
+      document: path.resolve("examples", "v3", "signed-documents", "dnsdid-invalid-v3.json"),
       verbose: true,
-      network: "",
+      network: "ropsten",
     });
     expect(signaleSuccessSpy).toHaveBeenCalledTimes(2);
     expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "The document has not been tampered");
@@ -21,11 +21,11 @@ describe("verify", () => {
     expect(signaleErrorSpy).toHaveBeenNthCalledWith(1, "The document is not valid");
     expect(signaleErrorSpy).toHaveBeenNthCalledWith(2, "The issuer identity has not been verified");
   });
-  it("should work on dnsDid.json", async () => {
+  it("should work on dnsdid-v3.json", async () => {
     await handler({
-      document: path.resolve("examples", "signed-documents", "dnsDid.json"),
+      document: path.resolve("examples", "v3", "signed-documents", "did-v3.json"),
       verbose: true,
-      network: "",
+      network: "ropsten",
     });
     expect(signaleSuccessSpy).toHaveBeenCalledTimes(4);
     expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "The document is valid");

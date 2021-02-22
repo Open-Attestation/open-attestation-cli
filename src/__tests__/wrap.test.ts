@@ -49,8 +49,8 @@ describe("batchIssue", () => {
         return "";
       });
       jest.spyOn(fs, "writeFileSync").mockImplementation((path, document) => {
-        // @ts-ignore
-        if (path.includes("DIR/file_1.json")) {
+        if (typeof path !== "string") throw new Error("path is not string");
+        if (path.includes("file_1.json")) {
           // sorry lint I did my best to avoid that
           // eslint-disable-next-line jest/no-conditional-expect
           expect(document).toStrictEqual(
@@ -69,7 +69,7 @@ describe("batchIssue", () => {
           return;
         }
         // @ts-ignore
-        else if (path.includes("DIR/file_2.json")) {
+        else if (path.includes("file_2.json")) {
           // sorry lint I did my best to avoid that
           // eslint-disable-next-line jest/no-conditional-expect
           expect(document).toStrictEqual(
@@ -88,7 +88,7 @@ describe("batchIssue", () => {
           return;
         }
         // @ts-ignore
-        else if (path.includes("DIR/file_3.json")) {
+        else if (path.includes("file_3.json")) {
           // sorry lint I did my best to avoid that
           // eslint-disable-next-line jest/no-conditional-expect
           expect(document).toStrictEqual(
