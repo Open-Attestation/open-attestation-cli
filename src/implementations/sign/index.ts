@@ -1,7 +1,7 @@
 import { PrivateKeyOption } from "../../commands/shared";
 import { getPrivateKey } from "../utils/wallet";
 import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
-import { signDocument, defaultSigners } from "@govtechsg/oa-did-sign";
+import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/oa-did-sign";
 import path from "path";
 import mkdirp from "mkdirp";
 
@@ -9,10 +9,8 @@ export interface SignCommand extends PrivateKeyOption {
   rawDocumentsPath: string;
   outputDir: string;
   publicKey: string;
-  algorithm: string;
+  algorithm: SUPPORTED_SIGNING_ALGORITHM;
 }
-
-export const supportedAlgorithms = Array.from(defaultSigners.keys());
 
 export const sign = async ({
   rawDocumentsPath,
