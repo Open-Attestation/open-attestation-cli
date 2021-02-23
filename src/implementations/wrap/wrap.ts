@@ -55,7 +55,7 @@ export const wrapIndividualDocuments = async (
     if (dnsTxt) {
       document.openAttestationMetadata = {
         ...document.openAttestationMetadata,
-        identityProof: { location: dnsTxt, type: v3.IdentityProofType.DNSTxt },
+        identityProof: { identifier: dnsTxt, type: v3.IdentityProofType.DNSTxt },
       };
     }
 

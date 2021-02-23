@@ -476,17 +476,33 @@ describe("wrap", () => {
     });
   });
 
-  describe("w3c verifiable claims", () => {
-    it("should work for the v3c demo", async () => {
+  describe("w3c (https://github.com/w3c/vc-test-suite)", () => {
+    it("should work for the v3c demo with DNS-TXT & document store", async () => {
       const outputDirectory = tmp.dirSync();
-      await handler({
+      const merkleRoot = await handler({
         rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, minimumVc),
         outputDir: outputDirectory.name,
+        documentStore: "0x1234",
+        templateUrl: "https://example.org/renderer",
+        dnsTxt: "example.com",
         openAttestationV3: true,
         unwrap: false,
         batched: true,
       });
       expect(signaleErrorSpy).not.toBeCalled();
+      const file = JSON.parse(
+        fs.readFileSync(path.resolve(outputDirectory.name, minimumVc), {
+          encoding: "utf8",
+        })
+      );
+      expect(merkleRoot).toStrictEqual(file.proof.merkleRoot);
+      expect(merkleRoot).toStrictEqual(file.proof.targetHash);
     });
+
+    xit("should work for the v3c demo with DNS-TXT & token registry", async () => {});
+
+    xit("should work for the v3c demo with DNS-DID & DID", async () => {});
+
+    xit("should work for the v3c demo with DID & DID", async () => {});
   });
 });
