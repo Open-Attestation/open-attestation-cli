@@ -9,6 +9,7 @@ const validFileName = "valid-open-attestation-document.json";
 const validFileNameWithCustomSchema = "valid-custom-schema-document.json";
 const invalidFileName = "invalid-open-attestation-document.json";
 const invalidCustomFileName = "invalid-custom-schema-document.json";
+const minimumVc = "minimal-vc.json";
 
 describe("wrap", () => {
   const signaleErrorSpy = jest.spyOn(signale, "error");
@@ -472,6 +473,20 @@ describe("wrap", () => {
         expect(file.proof.merkleRoot).toHaveLength(64);
         expect(file.proof.merkleRoot).toStrictEqual(file.proof.targetHash);
       });
+    });
+  });
+
+  describe("w3c verifiable claims", () => {
+    it("should work for the v3c demo", async () => {
+      const outputDirectory = tmp.dirSync();
+      await handler({
+        rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, minimumVc),
+        outputDir: outputDirectory.name,
+        openAttestationV3: true,
+        unwrap: false,
+        batched: true,
+      });
+      expect(signaleErrorSpy).not.toBeCalled();
     });
   });
 });
