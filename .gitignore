@@ -12,3 +12,4 @@ yarn.lock
 /tmp
 key
 /.vscode/
+/vc-test-suite

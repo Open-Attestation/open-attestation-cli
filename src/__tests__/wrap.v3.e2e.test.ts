@@ -9,6 +9,7 @@ const validFileName = "valid-open-attestation-document.json";
 const validFileNameWithCustomSchema = "valid-custom-schema-document.json";
 const invalidFileName = "invalid-open-attestation-document.json";
 const invalidCustomFileName = "invalid-custom-schema-document.json";
+const minimumVc = "minimal-vc.json";
 
 describe("wrap", () => {
   const signaleErrorSpy = jest.spyOn(signale, "error");
@@ -473,5 +474,35 @@ describe("wrap", () => {
         expect(file.proof.merkleRoot).toStrictEqual(file.proof.targetHash);
       });
     });
+  });
+
+  describe("w3c (https://github.com/w3c/vc-test-suite)", () => {
+    it("should work for the v3c demo with DNS-TXT & document store", async () => {
+      const outputDirectory = tmp.dirSync();
+      const merkleRoot = await handler({
+        rawDocumentsPath: path.resolve(__dirname, fixtureFolderName, minimumVc),
+        outputDir: outputDirectory.name,
+        documentStore: "0x1234",
+        templateUrl: "https://example.org/renderer",
+        dnsTxt: "example.com",
+        openAttestationV3: true,
+        unwrap: false,
+        batched: true,
+      });
+      expect(signaleErrorSpy).not.toHaveBeenCalled();
+      const file = JSON.parse(
+        fs.readFileSync(path.resolve(outputDirectory.name, minimumVc), {
+          encoding: "utf8",
+        })
+      );
+      expect(merkleRoot).toStrictEqual(file.proof.merkleRoot);
+      expect(merkleRoot).toStrictEqual(file.proof.targetHash);
+    });
+
+    it.todo("should work for the v3c demo with DNS-TXT & token registry");
+
+    it.todo("should work for the v3c demo with DNS-DID & DID");
+
+    it.todo("should work for the v3c demo with DID & DID");
   });
 });
