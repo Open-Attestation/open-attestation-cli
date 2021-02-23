@@ -2,6 +2,7 @@ import { sign } from "../implementations/sign";
 import fs from "fs";
 import path from "path";
 import tmp from "tmp";
+import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/oa-did-sign";
 
 const fixtureFolderName = "fixture";
 const wrappedFileName1 = `${fixtureFolderName}/unsigned-did.json`;
@@ -25,7 +26,7 @@ describe("sign", () => {
       outputDir: outputDirectory.name,
       key: "0x0000000000000000000000000000000000000000000000000000000000000003",
       publicKey: "did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller",
-      algorithm: "Secp256k1VerificationKey2018",
+      algorithm: SUPPORTED_SIGNING_ALGORITHM.Secp256k1VerificationKey2018,
     });
 
     const file1 = JSON.parse(fs.readFileSync(`${outputDirectory.name}/did.json`, { encoding: "utf8" }));
