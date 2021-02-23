@@ -489,7 +489,7 @@ describe("wrap", () => {
         unwrap: false,
         batched: true,
       });
-      expect(signaleErrorSpy).not.toBeCalled();
+      expect(signaleErrorSpy).not.toHaveBeenCalled();
       const file = JSON.parse(
         fs.readFileSync(path.resolve(outputDirectory.name, minimumVc), {
           encoding: "utf8",
@@ -499,10 +499,10 @@ describe("wrap", () => {
       expect(merkleRoot).toStrictEqual(file.proof.targetHash);
     });
 
-    xit("should work for the v3c demo with DNS-TXT & token registry", async () => {});
+    it.todo("should work for the v3c demo with DNS-TXT & token registry");
 
-    xit("should work for the v3c demo with DNS-DID & DID", async () => {});
+    it.todo("should work for the v3c demo with DNS-DID & DID");
 
-    xit("should work for the v3c demo with DID & DID", async () => {});
+    it.todo("should work for the v3c demo with DID & DID");
   });
 });
