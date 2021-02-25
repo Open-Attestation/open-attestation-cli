@@ -1,3 +1,4 @@
+import { OpenAttestationDocument } from "@govtechsg/open-attestation";
 import fs from "fs";
 import { error, info, success } from "signale";
 import { Argv } from "yargs";
@@ -9,7 +10,6 @@ import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { handler as createTemporaryDns } from "../dns/txt-record/create";
 import { CreateConfigCommand } from "./config.type";
-import { OpenAttestationDocument } from "@govtechsg/open-attestation";
 
 interface ConfigFile {
   wallet: string;
@@ -148,7 +148,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       let updatedIssuers = [] as any[];
       const updatedForm = form;
       if (form.type === "VERIFIABLE_DOCUMENT") {
-        updatedIssuers = await form.defaults.issuers.map(async (issuer: any) => {
+        updatedIssuers = form.defaults.issuers.map(async (issuer: any) => {
           if (issuer.identityProof.type === "DNS-TXT") {
             if (!verifiableDocumentDnsTxtName) await verifiableDnsTxt();
             issuer.name = "DEMO STORE";
@@ -166,7 +166,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
         });
       }
       if (form.type === "TRANSFERABLE_RECORD") {
-        updatedIssuers = await form.defaults.issuers.map(async (issuer: any) => {
+        updatedIssuers = form.defaults.issuers.map(async (issuer: any) => {
           if (!tokenRegistryDnsName) await transferableDnsTxt();
           issuer.name = "DEMO TOKEN REGISTRY";
           issuer.tokenRegistry = tokenRegistryAddress;
