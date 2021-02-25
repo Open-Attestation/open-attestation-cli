@@ -1,7 +1,8 @@
 import { Argv } from "yargs";
 import { withPrivateKeyOption } from "./shared";
 import signale from "signale";
-import { sign, SignCommand, supportedAlgorithms } from "../implementations/sign";
+import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attestation";
+import { sign, SignCommand } from "../implementations/sign";
 
 export const command = "sign <raw-documents-path>";
 
@@ -29,8 +30,8 @@ export const builder = (yargs: Argv): Argv =>
       })
       .option("algorithm", {
         alias: "a",
-        choices: supportedAlgorithms,
-        default: "Secp256k1VerificationKey2018",
+        choices: Object.values(SUPPORTED_SIGNING_ALGORITHM),
+        default: SUPPORTED_SIGNING_ALGORITHM.Secp256k1VerificationKey2018,
         description: "Algorithm to sign with",
       })
   );
