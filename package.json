@@ -70,11 +70,10 @@
   "dependencies": {
     "@govtechsg/dnsprove": "^2.1.1",
     "@govtechsg/document-store": "^2.2.0",
-    "@govtechsg/oa-did-sign": "^2.2.0",
     "@govtechsg/oa-encryption": "^1.3.2",
     "@govtechsg/oa-verify": "^7.1.0",
-    "@govtechsg/open-attestation": "^4.7.0",
     "@govtechsg/token-registry": "^2.4.0",
+    "@govtechsg/open-attestation": "^4.7.2",
     "ajv": "^6.12.3",
     "chalk": "^4.1.0",
     "debug": "^4.1.1",
