@@ -2,7 +2,7 @@ import { sign } from "../implementations/sign";
 import fs from "fs";
 import path from "path";
 import tmp from "tmp";
-import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/oa-did-sign";
+import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attestation";
 
 const fixtureFolderName = "fixture";
 const wrappedFileName1 = `${fixtureFolderName}/unsigned-did.json`;
