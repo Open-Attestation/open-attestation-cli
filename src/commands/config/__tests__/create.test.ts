@@ -38,6 +38,7 @@ describe("config-file", () => {
       outputDir: folder.name,
       encryptedWalletPath: "src/commands/config/__tests__/wallet.json",
       configTemplatePath: "src/commands/config/__tests__/initial-config.json",
+      configType: "tradetrust",
     };
   });
 

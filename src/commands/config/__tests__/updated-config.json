@@ -17,7 +17,7 @@
               "type": "DNS-TXT",
               "location": "alert-cyan-stoat.sandbox.openattestation.com"
             },
-            "name": "Demo Issuer",
+            "name": "DEMO TOKEN REGISTRY",
             "tokenRegistry": "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D"
           }
         ],
@@ -135,7 +135,7 @@
         },
         "issuers": [
           {
-            "name": "Demo Issuer",
+            "name": "DEMO STORE",
             "documentStore": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
             "identityProof": {
               "type": "DNS-TXT",
@@ -324,5 +324,9 @@
         }
       }
     }
-  ]
+  ],
+  "documentStorage": {
+    "apiKey": "randomKey",
+    "url": "https://api-ropsten.tradetrust.io/storage"
+  }
 }
