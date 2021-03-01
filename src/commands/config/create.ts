@@ -96,6 +96,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       sandboxEndpoint: "https://sandbox.openattestation.com",
     };
 
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const verifiableDnsTxt = async () => {
       info(`Enter password to continue deployment of Document Store`);
       const deployDocumentStoreParams = {
@@ -114,6 +115,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       verifiableDocumentDnsTxtName = (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
     };
 
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const verifiableDnsDid = async () => {
       documentStoreTemporaryDnsParams.address = "";
       documentStoreTemporaryDnsParams.publicKey = `did:ethr:0x${walletObject.address}#controller`;
@@ -121,6 +123,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       verifiableDocumentDnsDidName = (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
     };
 
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const transferableDnsTxt = async () => {
       info(`Enter password to continue deployment of Token Registry`);
       const deployTokenRegistryParams = {
