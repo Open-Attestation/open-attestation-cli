@@ -25,6 +25,8 @@ interface Form {
   defaults: OpenAttestationDocument;
 }
 
+const sandboxEndpointUrl = "https://sandbox.openattestation.com";
+
 const { trace } = getLogger("config:create");
 
 export const command = "create [options]";
@@ -56,7 +58,10 @@ export const builder = (yargs: Argv): Argv =>
       choices: ["tradetrust"],
     })
     .conflicts("config-type", "config-template-path")
-    .check((argv) => argv.configType || argv.configTemplatePath);
+    .check((argv) => {
+      if (argv["config-type"] || argv["config-template-path"]) return true;
+      throw new Error("Please provide either a config-type or a config template path");
+    });
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
@@ -69,7 +74,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     if (!args.encryptedWalletPath) {
       info(`Please enter password to create wallet`);
       const createWalletParams = {
-        outputFile: `${args.outputDir}`,
+        outputFile: `${args.outputDir}/wallet.json`,
         fund: "ropsten",
       };
       walletPath = await createWallet(createWalletParams);
@@ -93,13 +98,6 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     let verifiableDocumentDnsDidName = "";
     let tokenRegistryDnsName = "";
 
-    const documentStoreTemporaryDnsParams = {
-      networkId: 3,
-      address: "",
-      publicKey: "",
-      sandboxEndpoint: "https://sandbox.openattestation.com",
-    };
-
     const createDocumentStore = async (): Promise<string> => {
       info(`Enter password to continue deployment of Document Store`);
       const deployDocumentStoreParams = {
@@ -116,17 +114,23 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const createTemporaryDnsWithDocumentStore = async (): Promise<string> => {
       documentStoreAddress = await createDocumentStore();
       success(`Document store deployed, address: ${highlight(documentStoreAddress)}`);
-      documentStoreTemporaryDnsParams.address = documentStoreAddress;
-      documentStoreTemporaryDnsParams.publicKey = "";
+      const documentStoreTemporaryDnsParams = {
+        networkId: 3,
+        address: documentStoreAddress,
+        sandboxEndpoint: sandboxEndpointUrl,
+      };
       info(`Creating DNS-TXT record..`);
       return (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
     };
 
     const createTemporaryDnsWithDid = async (): Promise<string> => {
-      documentStoreTemporaryDnsParams.address = "";
-      documentStoreTemporaryDnsParams.publicKey = `did:ethr:0x${walletObject.address}#controller`;
+      const didTemporaryDnsParams = {
+        networkId: 3,
+        publicKey: `did:ethr:0x${walletObject.address}#controller`,
+        sandboxEndpoint: sandboxEndpointUrl,
+      };
       info(`Creating DNS-DID record..`);
-      return (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
+      return (await createTemporaryDns(didTemporaryDnsParams)) || "";
     };
 
     const createTokenRegistry = async (): Promise<string> => {
@@ -150,14 +154,13 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       const tokenRegistryTemporaryDnsParams = {
         networkId: 3,
         address: tokenRegistryAddress,
-        sandboxEndpoint: "https://sandbox.openattestation.com",
+        sandboxEndpoint: sandboxEndpointUrl,
       };
       return (await createTemporaryDns(tokenRegistryTemporaryDnsParams)) || "";
     };
 
-    const updatedForms = [] as Form[];
+    const updatedForms: Form[] = [];
     for (const form of formsInTemplate) {
-      // let updatedDefaults: Promise<OpenAttestationDocument> = { issuers: [] as  };
       let updatedIssuers: Promise<Issuer>[] = [];
       const updatedForm = form;
       if (form.type === "VERIFIABLE_DOCUMENT") {
@@ -180,11 +183,11 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
         });
       }
       if (form.type === "TRANSFERABLE_RECORD") {
-        updatedIssuers = form.defaults.issuers.map(async (issuer: any) => {
+        updatedIssuers = form.defaults.issuers.map(async (issuer: Issuer) => {
           if (!tokenRegistryDnsName) tokenRegistryDnsName = await createTemporaryDnsWithTokenRegistry();
           issuer.name = "DEMO TOKEN REGISTRY";
           issuer.tokenRegistry = tokenRegistryAddress;
-          issuer.identityProof.location = tokenRegistryDnsName;
+          if (issuer.identityProof?.location) issuer.identityProof.location = tokenRegistryDnsName;
           return issuer;
         });
       }
