@@ -84,11 +84,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const wallet = await readFile(walletFilePath);
     const walletObject = JSON.parse(wallet);
 
-    const configFile: ConfigFile = JSON.parse(
-      await readFile(
-        args.configTemplatePath ? args.configTemplatePath : "src/commands/config/__tests__/initial-config.json"
-      )
-    );
+    const configFile: ConfigFile = JSON.parse(await readFile(whichFileToUseAsTemplate(args)));
     configFile.wallet = wallet;
 
     const formsInTemplate = configFile.forms;
@@ -201,5 +197,15 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     success(`Config file successfully generated`);
   } catch (e) {
     error(e.message);
+  }
+};
+
+const whichFileToUseAsTemplate = (args: CreateConfigCommand): string => {
+  switch (args.configType) {
+    case "tradetrust":
+      return "src/commands/config/__tests__/initial-config.json";
+
+    default:
+      return args.configTemplatePath;
   }
 };
