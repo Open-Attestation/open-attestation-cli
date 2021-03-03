@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
+import fs from "fs";
 import inquirer from "inquirer";
+import fetch from "node-fetch";
 import path from "path";
 import signale from "signale";
-import { highlight } from "../../utils";
-import fs from "fs";
 import { CreateWalletCommand } from "../../commands/wallet/wallet.type";
 import { progress as defaultProgress } from "../../implementations/utils/progress";
-import fetch from "node-fetch";
+import { highlight } from "../../utils";
 
 export const create = async ({
   fund,
@@ -25,7 +25,9 @@ export const create = async ({
   fs.writeFileSync(outputPath, json);
 
   if (fund === "ropsten") {
-    const response = await fetch(`https://faucet.ropsten.be/donate/${wallet.address}`).then((res) => res.json());
+    const response = await fetch(`https://faucet.openattestation.com/donate/${wallet.address}`).then((res) =>
+      res.json()
+    );
     if (response.message) {
       signale.warn(`[ropsten] Adding fund to ${wallet.address} failed: ${response.message}`);
     } else {
