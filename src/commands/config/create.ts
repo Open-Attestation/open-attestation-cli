@@ -4,6 +4,7 @@ import {
   RevocationType,
 } from "@govtechsg/open-attestation/dist/types/__generated__/schema.2.0";
 import fs from "fs";
+import path from "path";
 import { error, info, success } from "signale";
 import { Argv } from "yargs";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
@@ -72,9 +73,9 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
   try {
     let walletPath = "";
     if (!args.encryptedWalletPath) {
-      info(`Please enter password to create wallet`);
+      info(`Wallet file not provided, please enter password to create a new wallet`);
       const createWalletParams = {
-        outputFile: `${args.outputDir}/wallet.json`,
+        outputFile: path.join(args.outputDir, "wallet.json"),
         fund: "ropsten",
       };
       walletPath = await createWallet(createWalletParams);
@@ -84,7 +85,9 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const wallet = await readFile(walletFilePath);
     const walletObject = JSON.parse(wallet);
 
-    const configFile: ConfigFile = JSON.parse(await readFile(whichFileToUseAsTemplate(args)));
+    info(`Wallet detected at ${walletFilePath}`);
+
+    const configFile: ConfigFile = JSON.parse(await readFile(selectTemplatePath(args)));
     configFile.wallet = wallet;
 
     const formsInTemplate = configFile.forms;
@@ -193,17 +196,17 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     }
 
     configFile.forms = updatedForms;
-    fs.writeFileSync(`${args.outputDir}/config.json`, JSON.stringify(configFile, null, 2));
+    fs.writeFileSync(path.join(args.outputDir, "config.json"), JSON.stringify(configFile, null, 2));
     success(`Config file successfully generated`);
   } catch (e) {
     error(e.message);
   }
 };
 
-const whichFileToUseAsTemplate = (args: CreateConfigCommand): string => {
+const selectTemplatePath = (args: CreateConfigCommand): string => {
   switch (args.configType) {
     case "tradetrust":
-      return "src/commands/config/__tests__/initial-config.json";
+      return path.join("src", "commands", "config", "__tests__", "initial-config.json");
 
     default:
       return args.configTemplatePath;
