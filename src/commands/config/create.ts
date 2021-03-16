@@ -91,11 +91,6 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     configFile.wallet = wallet;
 
     const formsInTemplate = configFile.forms;
-    let documentStoreAddress = "";
-    let tokenRegistryAddress = "";
-    let verifiableDocumentDnsTxtName = "";
-    let verifiableDocumentDnsDidName = "";
-    let tokenRegistryDnsName = "";
 
     const createDocumentStore = async (): Promise<string> => {
       info(`Enter password to continue deployment of Document Store`);
@@ -107,29 +102,8 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
         storeName: "Document Store",
       };
       const { contractAddress } = await deployDocumentStore(deployDocumentStoreParams);
+      success(`Document store deployed, address: ${highlight(contractAddress)}`);
       return contractAddress;
-    };
-
-    const createTemporaryDnsWithDocumentStore = async (): Promise<string> => {
-      documentStoreAddress = await createDocumentStore();
-      success(`Document store deployed, address: ${highlight(documentStoreAddress)}`);
-      const documentStoreTemporaryDnsParams = {
-        networkId: 3,
-        address: documentStoreAddress,
-        sandboxEndpoint: sandboxEndpointUrl,
-      };
-      info(`Creating DNS-TXT record..`);
-      return (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
-    };
-
-    const createTemporaryDnsWithDid = async (): Promise<string> => {
-      const didTemporaryDnsParams = {
-        networkId: 3,
-        publicKey: `did:ethr:0x${walletObject.address}#controller`,
-        sandboxEndpoint: sandboxEndpointUrl,
-      };
-      info(`Creating DNS-DID record..`);
-      return (await createTemporaryDns(didTemporaryDnsParams)) || "";
     };
 
     const createTokenRegistry = async (): Promise<string> => {
@@ -143,59 +117,110 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
         dryRun: false,
       };
       const { contractAddress } = await deployTokenRegistry(deployTokenRegistryParams);
+      success(`Token registry deployed, address: ${highlight(contractAddress)}`);
       return contractAddress;
     };
 
-    const createTemporaryDnsWithTokenRegistry = async (): Promise<string> => {
-      tokenRegistryAddress = await createTokenRegistry();
-      success(`Token registry deployed, address: ${highlight(tokenRegistryAddress)}`);
-      info(`Creating temporary DNS for transferable records`);
+    const createTemporaryDnsWithDocumentStore = async (documentStoreAddress: string): Promise<string> => {
+      const documentStoreTemporaryDnsParams = {
+        networkId: 3,
+        address: documentStoreAddress,
+        sandboxEndpoint: sandboxEndpointUrl,
+      };
+      info(`Creating temporary DNS for verifiable documents with DNS-TXT`);
+      return (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
+    };
+
+    const createTemporaryDnsWithDid = async (): Promise<string> => {
+      const didTemporaryDnsParams = {
+        networkId: 3,
+        publicKey: `did:ethr:0x${walletObject.address}#controller`,
+        sandboxEndpoint: sandboxEndpointUrl,
+      };
+      info(`Creating Creating temporary DNS for verifiable documents with DNS-DID`);
+      return (await createTemporaryDns(didTemporaryDnsParams)) || "";
+    };
+
+    const createTemporaryDnsWithTokenRegistry = async (tokenRegistryAddress: string): Promise<string> => {
       const tokenRegistryTemporaryDnsParams = {
         networkId: 3,
         address: tokenRegistryAddress,
         sandboxEndpoint: sandboxEndpointUrl,
       };
+      info(`Creating temporary DNS for transferable records`);
       return (await createTemporaryDns(tokenRegistryTemporaryDnsParams)) || "";
     };
 
-    const updatedForms: Form[] = [];
-    for (const form of formsInTemplate) {
-      let updatedIssuers: Promise<Issuer>[] = [];
-      const updatedForm = form;
+    // loop through the form template to check the type of forms
+    const typesOfForms = formsInTemplate.map((form) => {
+      const identityProofTypes = form.defaults.issuers.map((issuer: Issuer) => issuer.identityProof?.type);
+      return {
+        type: form.type,
+        identityProofTypes: identityProofTypes,
+      };
+    });
+
+    // generate doc store or token registry based on the form type in the form template
+    const documentStoreAddress =
+      typesOfForms.filter(
+        (item) =>
+          item.type === "VERIFIABLE_DOCUMENT" && (<any>Object).values(item.identityProofTypes).includes("DNS-TXT")
+      ).length > 0
+        ? await createDocumentStore()
+        : "";
+    const verifiableDocumentDnsTxtName = documentStoreAddress
+      ? await createTemporaryDnsWithDocumentStore(documentStoreAddress)
+      : "";
+    const verifiableDocumentDnsDidName =
+      typesOfForms.filter(
+        (item) =>
+          item.type === "VERIFIABLE_DOCUMENT" && (<any>Object).values(item.identityProofTypes).includes("DNS-DID")
+      ).length > 0
+        ? await createTemporaryDnsWithDid()
+        : "";
+
+    const tokenRegistryAddress =
+      typesOfForms.filter(
+        (item) =>
+          item.type === "TRANSFERABLE_RECORD" && (<any>Object).values(item.identityProofTypes).includes("DNS-TXT")
+      ).length > 0
+        ? await createTokenRegistry()
+        : "";
+    const tokenRegistryDnsName = tokenRegistryAddress
+      ? await createTemporaryDnsWithTokenRegistry(tokenRegistryAddress)
+      : "";
+
+    // replace the values in the forms with the updated value
+    formsInTemplate.forEach((form) => {
       if (form.type === "VERIFIABLE_DOCUMENT") {
-        updatedIssuers = form.defaults.issuers.map(async (issuer) => {
+        const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
           if (issuer.identityProof?.type === "DNS-TXT") {
-            if (!verifiableDocumentDnsTxtName)
-              verifiableDocumentDnsTxtName = await createTemporaryDnsWithDocumentStore();
-            issuer.name = "DEMO STORE";
+            issuer.name = "DEMO DOCUMENT STORE";
             issuer.documentStore = documentStoreAddress;
-            issuer.identityProof.location = verifiableDocumentDnsTxtName;
+            if (issuer.identityProof?.location) issuer.identityProof.location = verifiableDocumentDnsTxtName;
           } else if (issuer.identityProof?.type === "DNS-DID") {
-            if (!verifiableDocumentDnsDidName) verifiableDocumentDnsDidName = await createTemporaryDnsWithDid();
-            issuer.name = "Demo Issuer";
+            issuer.name = "DEMO ISSUER";
             issuer.id = `did:ethr:0x${walletObject.address}`;
             if (issuer.revocation?.type) issuer.revocation.type = "NONE" as RevocationType;
-            issuer.identityProof.location = verifiableDocumentDnsDidName;
-            issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
+            if (issuer.identityProof?.location) issuer.identityProof.location = verifiableDocumentDnsDidName;
+            if (issuer.identityProof?.key) issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
           }
           return issuer;
         });
+        form.defaults.issuers = updatedIssuers;
       }
       if (form.type === "TRANSFERABLE_RECORD") {
-        updatedIssuers = form.defaults.issuers.map(async (issuer: Issuer) => {
-          if (!tokenRegistryDnsName) tokenRegistryDnsName = await createTemporaryDnsWithTokenRegistry();
+        const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
           issuer.name = "DEMO TOKEN REGISTRY";
           issuer.tokenRegistry = tokenRegistryAddress;
           if (issuer.identityProof?.location) issuer.identityProof.location = tokenRegistryDnsName;
           return issuer;
         });
+        form.defaults.issuers = updatedIssuers;
       }
-      const awaitedUpdatedIssuers = await Promise.all(updatedIssuers);
-      updatedForm.defaults.issuers = awaitedUpdatedIssuers;
-      updatedForms.push(updatedForm);
-    }
+    });
 
-    configFile.forms = updatedForms;
+    configFile.forms = formsInTemplate;
     fs.writeFileSync(path.join(args.outputDir, "config.json"), JSON.stringify(configFile, null, 2));
     success(`Config file successfully generated`);
   } catch (e) {
