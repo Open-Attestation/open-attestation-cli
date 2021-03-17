@@ -135,7 +135,7 @@
         },
         "issuers": [
           {
-            "name": "DEMO STORE",
+            "name": "DEMO DOCUMENT STORE",
             "documentStore": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
             "identityProof": {
               "type": "DNS-TXT",
@@ -182,7 +182,7 @@
         "issuers": [
           {
             "id": "did:ethr:0x709731d94d65b078496937655582401157c8a640",
-            "name": "Demo Issuer",
+            "name": "DEMO ISSUER",
             "revocation": {
               "type": "NONE"
             },
