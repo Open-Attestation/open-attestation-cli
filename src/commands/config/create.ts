@@ -1,4 +1,5 @@
 import {
+  IdentityProofType,
   Issuer,
   OpenAttestationDocument,
   RevocationType,
@@ -24,6 +25,11 @@ interface ConfigFile {
 interface Form {
   type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
   defaults: OpenAttestationDocument;
+}
+
+interface TypesOfForms {
+  type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
+  identityProofTypes: (IdentityProofType | undefined)[];
 }
 
 const sandboxEndpointUrl = "https://sandbox.openattestation.com";
@@ -121,38 +127,35 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       return contractAddress;
     };
 
-    const createTemporaryDnsWithDocumentStore = async (documentStoreAddress: string): Promise<string> => {
-      const documentStoreTemporaryDnsParams = {
-        networkId: 3,
-        address: documentStoreAddress,
-        sandboxEndpoint: sandboxEndpointUrl,
-      };
-      info(`Creating temporary DNS for verifiable documents with DNS-TXT`);
-      return (await createTemporaryDns(documentStoreTemporaryDnsParams)) || "";
-    };
+    const generateDocumentStoreOrTokenRegistryOrDid = async (
+      typesOfForms: TypesOfForms[],
+      formType: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD",
+      didOrTxt: "DNS-DID" | "DNS-TXT"
+    ): Promise<string> => {
+      const shouldGenerate =
+        typesOfForms.filter(
+          (item: TypesOfForms) =>
+            item.type === formType && (<any>Object).values(item.identityProofTypes).includes(didOrTxt)
+        ).length > 0;
 
-    const createTemporaryDnsWithDid = async (): Promise<string> => {
-      const didTemporaryDnsParams = {
-        networkId: 3,
-        publicKey: `did:ethr:0x${walletObject.address}#controller`,
-        sandboxEndpoint: sandboxEndpointUrl,
-      };
-      info(`Creating Creating temporary DNS for verifiable documents with DNS-DID`);
-      return (await createTemporaryDns(didTemporaryDnsParams)) || "";
-    };
-
-    const createTemporaryDnsWithTokenRegistry = async (tokenRegistryAddress: string): Promise<string> => {
-      const tokenRegistryTemporaryDnsParams = {
-        networkId: 3,
-        address: tokenRegistryAddress,
-        sandboxEndpoint: sandboxEndpointUrl,
-      };
-      info(`Creating temporary DNS for transferable records`);
-      return (await createTemporaryDns(tokenRegistryTemporaryDnsParams)) || "";
+      if (!shouldGenerate) return "";
+      if (formType === "VERIFIABLE_DOCUMENT" && didOrTxt === "DNS-TXT") return await createDocumentStore();
+      if (formType === "VERIFIABLE_DOCUMENT" && didOrTxt === "DNS-DID") {
+        info(`Creating temporary DNS for DID`);
+        return (
+          (await createTemporaryDns({
+            networkId: 3,
+            publicKey: `did:ethr:0x${walletObject.address}#controller`,
+            sandboxEndpoint: sandboxEndpointUrl,
+          })) || ""
+        );
+      }
+      if (formType === "TRANSFERABLE_RECORD") return await createTokenRegistry();
+      return "";
     };
 
     // loop through the form template to check the type of forms
-    const typesOfForms = formsInTemplate.map((form) => {
+    const typesOfForms: TypesOfForms[] = formsInTemplate.map((form) => {
       const identityProofTypes = form.defaults.issuers.map((issuer: Issuer) => issuer.identityProof?.type);
       return {
         type: form.type,
@@ -160,34 +163,27 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       };
     });
 
-    // generate doc store or token registry based on the form type in the form template
-    const documentStoreAddress =
-      typesOfForms.filter(
-        (item) =>
-          item.type === "VERIFIABLE_DOCUMENT" && (<any>Object).values(item.identityProofTypes).includes("DNS-TXT")
-      ).length > 0
-        ? await createDocumentStore()
-        : "";
+    // generate doc store, token registry and DNS based on the form type in the form template
+    const documentStoreAddress = await generateDocumentStoreOrTokenRegistryOrDid(
+      typesOfForms,
+      "VERIFIABLE_DOCUMENT",
+      "DNS-TXT"
+    );
     const verifiableDocumentDnsTxtName = documentStoreAddress
-      ? await createTemporaryDnsWithDocumentStore(documentStoreAddress)
+      ? await createTemporaryDns({ networkId: 3, address: documentStoreAddress, sandboxEndpoint: sandboxEndpointUrl })
       : "";
-    const verifiableDocumentDnsDidName =
-      typesOfForms.filter(
-        (item) =>
-          item.type === "VERIFIABLE_DOCUMENT" && (<any>Object).values(item.identityProofTypes).includes("DNS-DID")
-      ).length > 0
-        ? await createTemporaryDnsWithDid()
-        : "";
-
-    const tokenRegistryAddress =
-      typesOfForms.filter(
-        (item) =>
-          item.type === "TRANSFERABLE_RECORD" && (<any>Object).values(item.identityProofTypes).includes("DNS-TXT")
-      ).length > 0
-        ? await createTokenRegistry()
-        : "";
+    const verifiableDocumentDnsDidName = await generateDocumentStoreOrTokenRegistryOrDid(
+      typesOfForms,
+      "VERIFIABLE_DOCUMENT",
+      "DNS-DID"
+    );
+    const tokenRegistryAddress = await generateDocumentStoreOrTokenRegistryOrDid(
+      typesOfForms,
+      "TRANSFERABLE_RECORD",
+      "DNS-TXT"
+    );
     const tokenRegistryDnsName = tokenRegistryAddress
-      ? await createTemporaryDnsWithTokenRegistry(tokenRegistryAddress)
+      ? await createTemporaryDns({ networkId: 3, address: tokenRegistryAddress, sandboxEndpoint: sandboxEndpointUrl })
       : "";
 
     // replace the values in the forms with the updated value
