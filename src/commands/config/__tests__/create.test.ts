@@ -6,7 +6,8 @@ import { deployTokenRegistry } from "../../../implementations/deploy/token-regis
 import { handler as createTempDNS } from "../../dns/txt-record/create";
 import { CreateConfigCommand } from "../config.type";
 import { handler as createConfig } from "../create";
-import updatedConfig from "./updated-config.json";
+import configTemplatePathConfigFile from "./config-template-path.json";
+import configTypeConfigFile from "./config-type.json";
 
 jest.mock("inquirer");
 jest.mock("../../../implementations/deploy/document-store/document-store", () => ({
@@ -37,8 +38,8 @@ describe("config-file", () => {
     args = {
       outputDir: folder.name,
       encryptedWalletPath: "src/commands/config/__tests__/wallet.json",
-      configTemplatePath: "src/commands/config/__tests__/initial-config.json",
-      configType: "tradetrust",
+      configTemplatePath: "",
+      configType: "",
     };
   });
 
@@ -46,7 +47,7 @@ describe("config-file", () => {
     promptMock.mockRestore();
   });
 
-  it("should create a config file with correct values for DNS-TXT and DNS-DID", async () => {
+  it("should create a config file with correct values when using configTemplatePath", async () => {
     promptMock.mockReturnValue({
       password: "password",
     });
@@ -54,9 +55,27 @@ describe("config-file", () => {
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
 
+    args.configTemplatePath = "src/commands/config/__tests__/initial-config.json";
+
     await createConfig(args);
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
 
-    expect(JSON.parse(configFileAsString)).toStrictEqual(updatedConfig);
+    expect(JSON.parse(configFileAsString)).toStrictEqual(configTemplatePathConfigFile);
+  });
+
+  it("should create a  config file with correct Values when using configType", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
+    mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd" });
+    mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
+    mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
+
+    args.configType = "tradetrust";
+
+    await createConfig(args);
+    const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
+
+    expect(JSON.parse(configFileAsString)).toStrictEqual(configTypeConfigFile);
   });
 });

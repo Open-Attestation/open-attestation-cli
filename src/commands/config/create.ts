@@ -16,6 +16,7 @@ import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { handler as createTemporaryDns } from "../dns/txt-record/create";
 import { CreateConfigCommand } from "./config.type";
+import tradetrustConfig from "./templates/tradetrust.json";
 
 interface ConfigFile {
   wallet: string;
@@ -93,7 +94,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
 
     info(`Wallet detected at ${walletFilePath}`);
 
-    const configFile: ConfigFile = JSON.parse(await readFile(selectTemplatePath(args)));
+    const configFile: ConfigFile = await selectTemplateFile(args);
     configFile.wallet = wallet;
 
     const formsInTemplate = configFile.forms;
@@ -224,12 +225,12 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
   }
 };
 
-const selectTemplatePath = (args: CreateConfigCommand): string => {
+const selectTemplateFile = async (args: CreateConfigCommand): Promise<ConfigFile> => {
   switch (args.configType) {
     case "tradetrust":
-      return path.join("src", "commands", "config", "__tests__", "initial-config.json");
+      return tradetrustConfig as ConfigFile;
 
     default:
-      return args.configTemplatePath;
+      return JSON.parse(await readFile(args.configTemplatePath));
   }
 };
