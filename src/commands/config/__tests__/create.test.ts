@@ -6,8 +6,8 @@ import { deployTokenRegistry } from "../../../implementations/deploy/token-regis
 import { handler as createTempDNS } from "../../dns/txt-record/create";
 import { CreateConfigCommand } from "../config.type";
 import { handler as createConfig } from "../create";
-import configTemplatePathConfigFile from "./config-template-path.json";
-import configTypeConfigFile from "./config-type.json";
+import expectedConfigTemplateUsingInsertFileOption from "./to-be-expected-config-file-using-insert-file-option.json";
+import expectedConfigTemplateUsingTypeOption from "./to-be-expected-config-file-using-type-option.json";
 
 jest.mock("inquirer");
 jest.mock("../../../implementations/deploy/document-store/document-store", () => ({
@@ -55,15 +55,15 @@ describe("config-file", () => {
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
 
-    args.configTemplatePath = "src/commands/config/__tests__/initial-config.json";
+    args.configTemplatePath = "src/commands/config/__tests__/to-be-inserted-config-file.json";
 
     await createConfig(args);
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
 
-    expect(JSON.parse(configFileAsString)).toStrictEqual(configTemplatePathConfigFile);
+    expect(JSON.parse(configFileAsString)).toStrictEqual(expectedConfigTemplateUsingInsertFileOption);
   });
 
-  it("should create a  config file with correct Values when using configType", async () => {
+  it("should create a  config file with correct values when using configType", async () => {
     promptMock.mockReturnValue({
       password: "password",
     });
@@ -76,6 +76,6 @@ describe("config-file", () => {
     await createConfig(args);
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
 
-    expect(JSON.parse(configFileAsString)).toStrictEqual(configTypeConfigFile);
+    expect(JSON.parse(configFileAsString)).toStrictEqual(expectedConfigTemplateUsingTypeOption);
   });
 });
