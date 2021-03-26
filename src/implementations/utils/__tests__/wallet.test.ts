@@ -1,6 +1,6 @@
-import { getWallet } from "../wallet";
-import path from "path";
 import { prompt } from "inquirer";
+import path from "path";
+import { getWallet } from "../wallet";
 jest.mock("inquirer");
 
 // assigning the mock so that we get correct typing
@@ -12,6 +12,8 @@ const privateKey = "0xcd27dc84c82c5814e7edac518edd5f263e7db7f25adb7a1afe13996a95
 const walletAddress = "0xB26B4941941C51a4885E5B7D3A1B861E54405f90";
 
 describe("wallet", () => {
+  // increase timeout because ethers is throttling
+  jest.setTimeout(30000);
   afterEach(() => {
     delete process.env.OA_PRIVATE_KEY;
     promptMock.mockRestore();

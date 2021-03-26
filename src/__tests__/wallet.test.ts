@@ -1,15 +1,17 @@
-import { handler as decrypt } from "../commands/wallet/decrypt";
-import path from "path";
 import chalk, { Level } from "chalk";
-
 import { prompt } from "inquirer";
+import path from "path";
 import signale from "signale";
 import { mocked } from "ts-jest/utils";
+import { handler as decrypt } from "../commands/wallet/decrypt";
+
 jest.mock("inquirer");
 
 const promptMock = mocked(prompt);
 
 describe("wallet", () => {
+  // increase timeout because ethers is throttling
+  jest.setTimeout(30000);
   let level = 0 as Level;
   beforeAll(() => {
     process.env.DISABLE_PROGRESS_BAR = "disabled";

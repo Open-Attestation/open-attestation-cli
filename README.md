@@ -364,6 +364,27 @@ rm ./examples/sample-key
 open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
+## Config file
+
+This command will generate a config file with sandbox DNS, document store and token registry.
+
+Please note that a template config file and a wallet.json file must be provided in order for this command to work.
+
+Please also note that there must have funds in the Ropsten wallet, as we require to pay some gas fees to generate the config file.
+
+Example:
+
+```
+open-attestation config create --output-dir ./examples/config --encrypted-wallet-path /path/to/wallet.json --config-template-path /path/tp/config.json
+```
+
+You will need:
+
+- `--output-dir` option specify which folder the config file will be created in.
+- `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
+- `--config-template-path` option to provide a path to a config file.
+- `--config-type` option specify which default template to use to create the config file.
+
 ## Help
 
 Run the command with `--help` to get additional information
@@ -376,6 +397,14 @@ open-attestation filter
 open-attestation verify
 open-attestation wrap
 open-attestation sign
+```
+
+## Development
+
+To run on local for development
+
+```
+npm run dev -- <command> <options>
 ```
 
 ## Test
