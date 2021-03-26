@@ -6,8 +6,8 @@ import { deployTokenRegistry } from "../../../implementations/deploy/token-regis
 import { handler as createTempDNS } from "../../dns/txt-record/create";
 import { CreateConfigCommand } from "../config.type";
 import { handler as createConfig } from "../create";
-import expectedConfigTemplateUsingInsertFileOption from "./to-be-expected-config-file-using-insert-file-option.json";
-import expectedConfigTemplateUsingTypeOption from "./to-be-expected-config-file-using-type-option.json";
+import expectedConfigTemplateUsingInsertFileOption from "./expected-config-file-using-insert-file-option.json";
+import expectedConfigTemplateUsingTypeOption from "./expected-config-file-using-type-option.json";
 
 jest.mock("inquirer");
 jest.mock("../../../implementations/deploy/document-store/document-store", () => ({
@@ -55,7 +55,7 @@ describe("config-file", () => {
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
 
-    args.configTemplatePath = "src/commands/config/__tests__/to-be-inserted-config-file.json";
+    args.configTemplatePath = "src/commands/config/__tests__/input-config-file.json";
 
     await createConfig(args);
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
