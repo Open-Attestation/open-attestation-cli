@@ -146,11 +146,11 @@
         "name": "Covering Letter",
         "logo": "https://www.aretese.com/images/govtech-animated-logo.gif",
         "title": "Documents Bundle",
-        "remarks": "Some very important documents in here for some submission",
-        "uiSchema": {
-          "remarks": {
-            "ui:widget": "textarea"
-          }
+        "remarks": "Some very important documents in here for some submission"
+      },
+      "uiSchema": {
+        "remarks": {
+          "ui:widget": "textarea"
         }
       },
       "schema": {
