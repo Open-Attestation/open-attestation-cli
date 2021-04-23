@@ -72,7 +72,7 @@
     "@govtechsg/document-store": "^2.2.0",
     "@govtechsg/oa-encryption": "^1.3.2",
     "@govtechsg/oa-verify": "^7.3.3",
-    "@govtechsg/token-registry": "^2.5.0",
+    "@govtechsg/token-registry": "^2.5.1",
     "@govtechsg/open-attestation": "^5.1.0",
     "ajv": "^6.12.3",
     "chalk": "^4.1.0",
