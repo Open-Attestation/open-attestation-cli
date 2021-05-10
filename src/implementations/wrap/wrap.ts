@@ -242,10 +242,10 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   return Promise.resolve(undefined);
 };
 
-const remoteLoadSchema = async (uri: string) => {
-  const response = await fetch(uri)
-  return response.body
-}
+const remoteLoadSchema = async (uri: string): Promise<boolean | NodeJS.ReadableStream> => {
+  const response = await fetch(uri);
+  return response.body;
+};
 
 interface WrapArguments {
   inputPath: string;
