@@ -45,7 +45,7 @@ export const wrapIndividualDocuments = async (
   const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
   let compile: Ajv.ValidateFunction | undefined;
   if (schema) {
-    compile = new Ajv().compile(schema);
+    compile = await new Ajv({ loadSchema: remoteLoadSchema }).compileAsync(schema);
   }
 
   for (const file of documentFileNames) {
@@ -241,6 +241,11 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   }
   return Promise.resolve(undefined);
 };
+
+const remoteLoadSchema = async (uri: string) => {
+  const response = await fetch(uri)
+  return response.body
+}
 
 interface WrapArguments {
   inputPath: string;
