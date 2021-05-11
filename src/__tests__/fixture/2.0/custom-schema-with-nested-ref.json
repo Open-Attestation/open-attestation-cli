@@ -1,0 +1,40 @@
+{
+  "$id": "https://schemata.openattestation.com/sg/gov/moh/fhir/4.0.1/fhir-open-attestation-schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://schema.openattestation.com/2.0/schema.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "fhirVersion": {
+          "type": "string",
+          "examples": ["4.0.1"]
+        },
+        "fhirDocument": {
+          "$ref": "https://schemata.openattestation.com/sg/gov/moh/fhir/4.0.1/schema.json"
+        },
+        "validFrom": {
+          "type": "string",
+          "format": "date",
+          "description": "Date from which the document is considered valid"
+        },
+        "id": {
+          "type": "string",
+          "examples": ["TEST001"]
+        },
+        "name": {
+          "type": "string",
+          "examples": ["HealthCert"]
+        },
+        "logo": {
+          "type": "string",
+          "description": "base64 encoded image"
+        }
+      },
+      "required": ["fhirVersion", "fhirDocument", "validFrom", "id", "name"]
+    }
+  ]
+}
