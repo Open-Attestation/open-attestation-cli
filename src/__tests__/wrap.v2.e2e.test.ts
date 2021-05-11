@@ -1,4 +1,5 @@
 import { handler } from "../commands/wrap";
+import fs from "fs";
 import path from "path";
 import tmp from "tmp";
 import signale from "signale";
@@ -24,6 +25,13 @@ describe("wrap with file input", () => {
         unwrap: false,
         batched: true,
       });
+      const file = JSON.parse(
+        fs.readFileSync(path.resolve(outputFile.name), {
+          encoding: "utf8",
+        })
+      );
+      expect(file.signature.merkleRoot).toBeTruthy();
+      expect(file.signature.targetHash).toBeTruthy();
       expect(signaleSuccessSpy).toHaveBeenCalledTimes(1);
     });
   });
@@ -38,6 +46,13 @@ describe("wrap with file input", () => {
         unwrap: false,
         batched: true,
       });
+      const file = JSON.parse(
+        fs.readFileSync(path.resolve(outputFile.name), {
+          encoding: "utf8",
+        })
+      );
+      expect(file.signature.merkleRoot).toBeTruthy();
+      expect(file.signature.targetHash).toBeTruthy();
       expect(signaleSuccessSpy).toHaveBeenCalledTimes(1);
     });
     it("should allow output as file if input path is an input file with custom schema that has a reference to an external schema", async () => {
@@ -50,6 +65,13 @@ describe("wrap with file input", () => {
         unwrap: false,
         batched: true,
       });
+      const file = JSON.parse(
+        fs.readFileSync(path.resolve(outputFile.name), {
+          encoding: "utf8",
+        })
+      );
+      expect(file.signature.merkleRoot).toBeTruthy();
+      expect(file.signature.targetHash).toBeTruthy();
       expect(signaleSuccessSpy).toHaveBeenCalledTimes(1);
     });
   });
