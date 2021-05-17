@@ -388,12 +388,29 @@ You will need:
 ## Cancel pending transaction
 This command will cancel pending transaction.
 
-Please note that a this action is irreversible
+Please note that a this action is irreversible.
+
+You will need:
+
+- `--nonce` option specify which transaction to cancel.
+- `--gas-price` option, the gas price is required to be higher than the pending transaction.
+- `--transaction-hash` transaction hash option can be used as an alternative to nonce and gas-price option.
+- options to provide the wallet (https://github.com/Open-Attestation/open-attestation-cli#providing-the-wallet)
+
 
 ```
-open-attestation transaction cancel --nonce <PENDING TRANSACTION NONCE> --gas <GAS FEE> [options]
+open-attestation transaction cancel --nonce <pending transaction nonce> --gas-price <gas price> [option]
 ```
 
+Examples:
+
+```
+open-attestation transaction cancel --nonce 1 --gas-price 300 --network ropsten --encrypted-wallet-path /path/to/wallet
+```
+
+```
+open-attestation transaction cancel --transaction-hash 0x000 --network ropsten --encrypted-wallet-path /path/to/wallet
+```
 
 
 

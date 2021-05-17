@@ -17,22 +17,23 @@ export const builder = (yargs: Argv): Argv =>
       .option("nonce", {
         description: "Pending transaction nonce",
         type: "string",
-        demandOption: true,
+        implies: "gas-price",
       })
-      .option("gas", {
+      .option("gas-price", {
         description: "Require higher gas fee than the pending transaction",
         type: "string",
-        demandOption: true,
+        implies: "nonce",
+      })
+      .option("transaction-hash", {
+        alias: "th",
+        description: "Pending transaction hash",
+        type: "string",
       })
   );
 
 export const handler = async (args: TransactionCancelCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
-    if (!args.encryptedWalletPath) {
-      error(`Wallet file not provided, please provide your wallet path`);
-      return;
-    }
     info(`Wallet detected at ${args.encryptedWalletPath}`);
     await cancelTransaction({
       ...args,
