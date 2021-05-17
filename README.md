@@ -385,6 +385,18 @@ You will need:
 - `--config-template-path` option to provide a path to a config file.
 - `--config-type` option specify which default template to use to create the config file.
 
+## Cancel pending transaction
+This command will cancel pending transaction.
+
+Please note that a this action is irreversible
+
+```
+open-attestation transaction cancel --nonce <PENDING TRANSACTION NONCE> --gas <GAS FEE> [options]
+```
+
+
+
+
 ## Help
 
 Run the command with `--help` to get additional information
