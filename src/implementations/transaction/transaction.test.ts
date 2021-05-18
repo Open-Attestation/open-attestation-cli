@@ -2,8 +2,7 @@ import { cancelTransaction } from "./transaction";
 import { getWallet } from "../utils/wallet";
 import path from "path";
 import signale from "signale";
-import { BigNumber, Wallet } from "ethers/lib/ethers";
-import { Console } from "console";
+import { BigNumber } from "ethers/lib/ethers";
 jest.mock("../utils/wallet");
 
 const mockGetWallet = getWallet as jest.Mock;
