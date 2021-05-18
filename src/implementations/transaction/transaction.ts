@@ -26,11 +26,11 @@ export const cancelTransaction = async ({
 
     if (transactionHash) {
       const currentTransaction = await wallet.provider.getTransaction(transactionHash);
-      signale.info(
-        `Transaction detail retrieved. Nonce: ${currentTransaction.nonce}, Gas-price: ${currentTransaction.gasPrice}`
-      );
-      transactionNonce = currentTransaction.nonce.toString();
-      transactionGasPrice = currentTransaction.gasPrice.mul(2).toString();
+      signale.info(`Transaction detail retrieved. Nonce: ${nonce}, Gas-price: ${gasPrice}`);
+      const currentTransactionNonce = currentTransaction.nonce;
+      const currentTransactionGasPrice = currentTransaction.gasPrice;
+      transactionNonce = currentTransactionNonce.toString();
+      transactionGasPrice = currentTransactionGasPrice.mul(2).toString();
     }
 
     if (transactionNonce && transactionGasPrice) {
