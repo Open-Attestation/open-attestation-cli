@@ -6,7 +6,7 @@ import path from "path";
 import signale from "signale";
 import { CreateWalletCommand } from "../../commands/wallet/wallet.type";
 import { progress as defaultProgress } from "../../implementations/utils/progress";
-import { highlight } from "../../utils";
+import { getEtherscanAddress, highlight } from "../../utils";
 
 export const create = async ({
   fund,
@@ -36,7 +36,8 @@ export const create = async ({
       );
     }
   }
-  signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created. Find more details:`);
+  signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created.`);
+  signale.info(`Find more details at ${getEtherscanAddress({ network: "ropsten" })}/address/${wallet.address}`);
 
   return outputPath;
 };

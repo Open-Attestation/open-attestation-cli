@@ -2,16 +2,16 @@ import { ErrorObject } from "ajv";
 import { highlight } from "../../../utils";
 import { EnumError } from "ajv/dist/vocabularies/validation/enum";
 
-const isRequiredParamsError = (params: any) => {
+const isRequiredParamsError = (params: any): boolean => {
   return params.missingProperty;
 };
-const isAdditionalPropertiesError = (params: any) => {
+const isAdditionalPropertiesError = (params: any): boolean => {
   return params.additionalProperty;
 };
-const isAllowedValuesError = (params: any): params is EnumError => {
-  return params.allowedValues;
+const isAllowedValuesError = (error: any): error is EnumError => {
+  return error?.params?.allowedValues;
 };
-const isFormatUriError = (params: any) => {
+const isFormatUriError = (params: any): boolean => {
   return params.format === "uri";
 };
 
@@ -34,7 +34,7 @@ export const transformAllowedValuesErrors = (errors: ErrorObject[]): string[] =>
   return errors
     .filter((error) => error.keyword === "enum")
     .map((error) => {
-      if (isAllowedValuesError(error.params)) {
+      if (isAllowedValuesError(error)) {
         return `The provided value at path ${highlight(
           `"${error.instancePath}"`
         )} is not one of the allowed values defined by the schema: ${error.params.allowedValues
