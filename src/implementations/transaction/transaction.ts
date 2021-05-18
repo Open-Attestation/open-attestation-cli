@@ -21,19 +21,24 @@ export const cancelTransaction = async ({
 }: TransactionCancelCommand): Promise<void> => {
   try {
     const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+    let transactionNonce = nonce;
+    let transactionGasPrice = gasPrice;
 
     if (transactionHash) {
       const currentTransaction = await wallet.provider.getTransaction(transactionHash);
-      nonce = currentTransaction.nonce.toString();
-      gasPrice = currentTransaction.gasPrice.mul(2).toString();
+      signale.info(
+        `Transaction detail retrieved. Nonce: ${currentTransaction.nonce}, Gas-price: ${currentTransaction.gasPrice}`
+      );
+      transactionNonce = currentTransaction.nonce.toString();
+      transactionGasPrice = currentTransaction.gasPrice.mul(2).toString();
     }
 
-    if (nonce && gasPrice) {
+    if (transactionNonce && transactionGasPrice) {
       await wallet.sendTransaction({
         to: wallet.address,
         from: wallet.address,
-        nonce: BigNumber.from(parseFloat(nonce)),
-        gasPrice: BigNumber.from(parseFloat(gasPrice)),
+        nonce: BigNumber.from(parseFloat(transactionNonce)),
+        gasPrice: BigNumber.from(parseFloat(transactionGasPrice)),
       });
       signale.success(`Transaction has been cancelled`);
     } else {

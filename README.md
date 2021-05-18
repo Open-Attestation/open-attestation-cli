@@ -394,7 +394,7 @@ You will need:
 
 - `--nonce` option specify which transaction to cancel.
 - `--gas-price` option, the gas price is required to be higher than the pending transaction.
-- `--transaction-hash` transaction hash option can be used as an alternative to nonce and gas-price option.
+- `--transaction-hash` transaction hash option can be used as an alternative to nonce and gas-price option. Using this option will automatically increase the transaction gas price by 100%.
 - options to provide the wallet (https://github.com/Open-Attestation/open-attestation-cli#providing-the-wallet)
 
 

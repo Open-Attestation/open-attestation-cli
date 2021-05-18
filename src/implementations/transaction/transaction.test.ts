@@ -2,68 +2,39 @@ import { cancelTransaction } from "./transaction";
 import { getWallet } from "../utils/wallet";
 import path from "path";
 import signale from "signale";
-import { BigNumber } from "ethers";
+import { BigNumber, Wallet } from "ethers/lib/ethers";
+import { Console } from "console";
 jest.mock("../utils/wallet");
 
 const mockGetWallet = getWallet as jest.Mock;
 
 describe("document-store", () => {
   describe("cancelTransaction", () => {
-    const signaleSuccessSpy = jest.spyOn(signale, "success");
-    const signaleErrorSpy = jest.spyOn(signale, "error");
+    const signaleInfoSpy = jest.spyOn(signale, "info");
 
-    it("success in canceling transaction using nonce and gas", async () => {
-      const mockSendTransaction = jest.fn();
-      mockSendTransaction.mockResolvedValue("success");
-      mockGetWallet.mockResolvedValue({
-        sendTransaction: mockSendTransaction,
-        address: "0x00",
-      });
-      await cancelTransaction({
-        nonce: "3",
-        gasPrice: "300",
-        network: "ropsten",
-        keyFile: path.resolve(__dirname, "./key.file"),
-      });
-      expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "Transaction has been cancelled");
-    });
-
-    it("success in canceling transaction using transaction hash", async () => {
+    it("success in retrieving transaction nonce and gas price using --transaction-hash", async () => {
       const mockGetTransaction = jest.fn();
       mockGetTransaction.mockResolvedValue({
-        nonce: 3,
-        gasPrice: BigNumber.from(300),
+        nonce: 10,
+        gasPrice: BigNumber.from(3),
       });
+
       const mockSendTransaction = jest.fn();
-      mockSendTransaction.mockResolvedValue("success");
 
       mockGetWallet.mockResolvedValue({
-        sendTransaction: mockSendTransaction,
         provider: { getTransaction: mockGetTransaction },
-        address: "0x00",
-      });
-      await cancelTransaction({
-        transactionHash: "0x00",
-        network: "ropsten",
-        keyFile: path.resolve(__dirname, "./key.file"),
-      });
-      expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "Transaction has been cancelled");
-    });
-
-    it("error in cancelling transaction due to transaction status completed", async () => {
-      const mockSendTransaction = jest.fn();
-      mockSendTransaction.mockRejectedValue(new Error("nonce has already been used"));
-      mockGetWallet.mockResolvedValue({
         sendTransaction: mockSendTransaction,
-        address: "0x00",
+        address: "0xC84b0719A82626417c40f3168513dFABDB6A9079",
       });
+
       await cancelTransaction({
-        nonce: "3",
-        gasPrice: "300",
+        transactionHash: "0x456bba58226f03e3fb7d72b5143ceecfb6bfb66b00586929f6d60890ec264c2c",
         network: "ropsten",
         keyFile: path.resolve(__dirname, "./key.file"),
       });
-      expect(signaleErrorSpy).toHaveBeenNthCalledWith(1, "nonce has already been used");
+      expect(signaleInfoSpy).toHaveBeenNthCalledWith(1, "Transaction detail retrieved. Nonce: 10, Gas-price: 3");
+      expect(mockSendTransaction.mock.calls[0][0].nonce.toNumber()).toEqual(10);
+      expect(mockSendTransaction.mock.calls[0][0].gasPrice.toNumber()).toEqual(6);
     });
   });
 });

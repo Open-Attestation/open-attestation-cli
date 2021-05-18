@@ -18,11 +18,13 @@ export const builder = (yargs: Argv): Argv =>
         description: "Pending transaction nonce",
         type: "string",
         implies: "gas-price",
+        conflicts: "transaction-hash",
       })
       .option("gas-price", {
         description: "Require higher gas fee than the pending transaction",
         type: "string",
         implies: "nonce",
+        conflicts: "transaction-hash",
       })
       .option("transaction-hash", {
         alias: "th",
