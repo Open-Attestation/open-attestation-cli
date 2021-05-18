@@ -12,10 +12,11 @@ import {
 } from "@govtechsg/open-attestation";
 import path from "path";
 import fetch from "node-fetch";
-import Ajv from "ajv";
+import Ajv, { AnySchemaObject, ErrorObject, ValidateFunction } from "ajv";
+import addFormats from "ajv-formats";
 
 class SchemaValidationError extends Error {
-  constructor(message: string, public validationErrors: Ajv.ErrorObject[], public document: any) {
+  constructor(message: string, public validationErrors: ErrorObject[], public document: any) {
     super(message);
   }
 }
@@ -30,6 +31,18 @@ export enum Output {
   StdOut,
 }
 
+const remoteLoadSchema = async (uri: string): Promise<AnySchemaObject> => {
+  const response = await fetch(uri);
+  console.log({ uri });
+  const r = await response.json();
+  console.log({ uri });
+  return r;
+};
+
+const ajv = new Ajv({ loadSchema: remoteLoadSchema, allowUnionTypes: true });
+addFormats(ajv);
+ajv.addKeyword("deprecationMessage");
+
 export const wrapIndividualDocuments = async (
   undigestedDocumentPath: string,
   digestedDocumentDir: string | undefined,
@@ -43,9 +56,9 @@ export const wrapIndividualDocuments = async (
 ): Promise<Buffer[]> => {
   const hashArray: Buffer[] = [];
   const documentFileNames = await documentsInDirectory(undigestedDocumentPath);
-  let compile: Ajv.ValidateFunction | undefined;
+  let compile: ValidateFunction | undefined;
   if (schema) {
-    compile = await new Ajv({ loadSchema: remoteLoadSchema }).compileAsync(schema);
+    compile = await ajv.compileAsync(schema);
   }
 
   for (const file of documentFileNames) {
@@ -241,12 +254,6 @@ const loadSchema = (schemaPath?: string): Promise<Schema | undefined> => {
   }
   return Promise.resolve(undefined);
 };
-
-const remoteLoadSchema = async (uri: string): Promise<boolean | NodeJS.ReadableStream> => {
-  const response = await fetch(uri);
-  return response.body;
-};
-
 interface WrapArguments {
   inputPath: string;
   outputPath?: string;

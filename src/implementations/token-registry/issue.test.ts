@@ -71,7 +71,6 @@ describe("token-registry", () => {
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
       expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.tokenId);
-      // @ts-expect-error invalid structure
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
 
