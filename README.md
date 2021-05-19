@@ -385,6 +385,35 @@ You will need:
 - `--config-template-path` option to provide a path to a config file.
 - `--config-type` option specify which default template to use to create the config file.
 
+## Cancel pending transaction
+This command will cancel pending transaction.
+
+Please note that a this action is irreversible.
+
+You will need:
+
+- `--nonce` option specify which transaction to cancel.
+- `--gas-price` option, the gas price is required to be higher than the pending transaction.
+- `--transaction-hash` transaction hash option can be used as an alternative to nonce and gas-price option. Using this option will automatically increase the transaction gas price by 100%.
+- options to provide the wallet (https://github.com/Open-Attestation/open-attestation-cli#providing-the-wallet)
+
+
+```
+open-attestation transaction cancel --nonce <pending transaction nonce> --gas-price <gas price> [option]
+```
+
+Examples:
+
+```
+open-attestation transaction cancel --nonce 1 --gas-price 300 --network ropsten --encrypted-wallet-path /path/to/wallet
+```
+
+```
+open-attestation transaction cancel --transaction-hash 0x000 --network ropsten --encrypted-wallet-path /path/to/wallet
+```
+
+
+
 ## Help
 
 Run the command with `--help` to get additional information
