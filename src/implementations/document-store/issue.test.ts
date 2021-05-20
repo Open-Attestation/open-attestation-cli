@@ -77,7 +77,6 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.hash);
-      // @ts-expect-error invalid structure
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
 

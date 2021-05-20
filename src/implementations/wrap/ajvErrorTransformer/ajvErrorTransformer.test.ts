@@ -5,6 +5,15 @@ import {
   transformRequiredErrors,
 } from "./ajvErrorTransformer";
 import chalk, { Level } from "chalk";
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const compileAjvSchema = (schema: any) => {
+  const ajv = new Ajv();
+  addFormats(ajv);
+  return ajv.compile(schema);
+};
 
 describe("errors", () => {
   let level = 0 as Level;
@@ -16,155 +25,147 @@ describe("errors", () => {
   afterAll(() => {
     chalk.level = level;
   });
+
   describe("transformRequiredErrors", () => {
+    const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      type: "object",
+      properties: {
+        key1: { type: "number" },
+        key2: {
+          type: "object",
+          properties: {
+            key21: { type: "number" },
+            key22: { type: "object", properties: { key221: { type: "number" } }, required: ["key221"] },
+          },
+          required: ["key21"],
+        },
+      },
+      required: ["key1"],
+    };
     it("should return nothing when error is not a required error", () => {
-      expect(
-        transformRequiredErrors([{ dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } }])
-      ).toStrictEqual([]);
+      const validate = compileAjvSchema(schema);
+      validate({ key1: "nope" });
+
+      expect(validate.errors).toHaveLength(1);
+      expect(transformRequiredErrors(validate.errors ?? [])).toStrictEqual([]);
     });
     it("should return error when missing property is a top level property", () => {
-      expect(
-        transformRequiredErrors([
-          {
-            keyword: "required",
-            dataPath: "",
-            schemaPath: "#/required",
-            params: {
-              missingProperty: "proof",
-            },
-            message: "should have required property 'proof'",
-          },
-        ])
-      ).toStrictEqual([`The required property "proof" is missing`]);
+      const validate = compileAjvSchema(schema);
+      validate({});
+
+      expect(validate.errors).toHaveLength(1);
+      expect(transformRequiredErrors(validate.errors ?? [])).toStrictEqual([
+        `The required property "/key1" is missing`,
+      ]);
     });
     it("should return error when missing property is a first level deep property", () => {
-      expect(
-        transformRequiredErrors([
-          {
-            keyword: "required",
-            dataPath: ".issuer",
-            schemaPath: "#/definitions/issuer/required",
-            params: {
-              missingProperty: "identityProof",
-            },
-            message: "should have required property 'identityProof'",
-          },
-        ])
-      ).toStrictEqual([`The required property "issuer.identityProof" is missing`]);
+      const validate = compileAjvSchema(schema);
+      validate({ key1: 2, key2: {} });
+
+      expect(validate.errors).toHaveLength(1);
+      expect(transformRequiredErrors(validate.errors ?? [])).toStrictEqual([
+        `The required property "/key2/key21" is missing`,
+      ]);
     });
     it("should return error when missing property is a two levels deep property", () => {
-      expect(
-        transformRequiredErrors([
-          {
-            keyword: "required",
-            dataPath: ".issuer.identityProof",
-            schemaPath: "#/definitions/issuer/properties/identityProof/required",
-            params: {
-              missingProperty: "location",
-            },
-            message: "should have required property 'location'",
-          },
-        ])
-      ).toStrictEqual([`The required property "issuer.identityProof.location" is missing`]);
+      const validate = compileAjvSchema(schema);
+      validate({ key1: 2, key2: { key21: 3, key22: {} } });
+
+      expect(validate.errors).toHaveLength(1);
+      expect(transformRequiredErrors(validate.errors ?? [])).toStrictEqual([
+        `The required property "/key2/key22/key221" is missing`,
+      ]);
     });
   });
   describe("transformAdditionalPropertyErrors", () => {
+    const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      type: "object",
+      properties: {
+        key1: { type: "number" },
+        key2: { type: "object", properties: { key21: { type: "number" } }, additionalProperties: false },
+      },
+      additionalProperties: false,
+    };
     it("should return nothing when error is not a additional property error", () => {
-      expect(
-        transformAdditionalPropertyErrors([
-          { dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } },
-        ])
-      ).toStrictEqual([]);
+      const validate = compileAjvSchema(schema);
+      validate({ key1: "10" });
+      expect(validate.errors).toHaveLength(1);
+      expect(transformAdditionalPropertyErrors(validate.errors ?? [])).toStrictEqual([]);
     });
     it("should return error when additional property is a top level property", () => {
-      expect(
-        transformAdditionalPropertyErrors([
-          {
-            keyword: "additionalProperties",
-            dataPath: "",
-            schemaPath: "#/properties/template/additionalProperties",
-            params: {
-              additionalProperty: "foo",
-            },
-            message: "should NOT have additional properties",
-          },
-        ])
-      ).toStrictEqual([`An unexpected additional property with key "foo" was found at the top level object`]);
+      const validate = compileAjvSchema(schema);
+      validate({ bar: 10 });
+      expect(transformAdditionalPropertyErrors(validate.errors ?? [])).toStrictEqual([
+        `An unexpected additional property with key "bar" was found at the top level object`,
+      ]);
     });
     it("should return error when additional property is in a first level deep property", () => {
-      expect(
-        transformAdditionalPropertyErrors([
-          {
-            keyword: "additionalProperties",
-            dataPath: ".template",
-            schemaPath: "#/properties/template/additionalProperties",
-            params: {
-              additionalProperty: "foo",
-            },
-            message: "should NOT have additional properties",
-          },
-        ])
-      ).toStrictEqual([`An unexpected additional property with key "foo" was found in object template`]);
+      const validate = compileAjvSchema(schema);
+      validate({ key2: { foo: 10 } });
+      expect(transformAdditionalPropertyErrors(validate.errors ?? [])).toStrictEqual([
+        `An unexpected additional property with key "foo" was found in object key2`,
+      ]);
     });
   });
   describe("transformAllowedValuesErrors", () => {
-    it("should return nothing when error is not a allowder values error", () => {
-      expect(
-        transformAllowedValuesErrors([
-          { dataPath: "", keyword: "", schemaPath: "", params: { additionalProperty: "" } },
-        ])
-      ).toStrictEqual([]);
+    const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      type: "object",
+      properties: {
+        key1: {
+          type: "string",
+          enum: ["ABC", "DEF"],
+        },
+        key2: {
+          type: "object",
+          properties: {
+            key21: {
+              type: "string",
+              enum: ["123", "456"],
+            },
+          },
+        },
+      },
+    };
+    it("should return nothing when error is not a allowed values error", () => {
+      const validate = compileAjvSchema(schema);
+      validate({ key1: 10 });
+      expect(validate.errors).toHaveLength(1);
+      expect(transformAllowedValuesErrors(validate.errors ?? [])).toStrictEqual([]);
     });
     it("should return error when allowed values error is in a top level property", () => {
-      expect(
-        transformAllowedValuesErrors([
-          {
-            keyword: "enum",
-            dataPath: ".foo",
-            schemaPath: "#/properties/template/properties/type/enum",
-            params: {
-              allowedValues: ["ABC", "DEF"],
-            },
-            message: "should be equal to one of the allowed values",
-          },
-        ])
-      ).toStrictEqual([
-        `The provided value at path "foo" is not one of the allowed values defined by the schema: ABC, DEF`,
+      const validate = compileAjvSchema(schema);
+      validate({ key1: "XYZ" });
+      expect(transformAllowedValuesErrors(validate.errors ?? [])).toStrictEqual([
+        `The provided value at path "/key1" is not one of the allowed values defined by the schema: ABC, DEF`,
       ]);
     });
     it("should return error when allowed values error is in first level deep property", () => {
-      expect(
-        transformAllowedValuesErrors([
-          {
-            keyword: "enum",
-            dataPath: ".template.type",
-            schemaPath: "#/properties/template/properties/type/enum",
-            params: {
-              allowedValues: ["EMBEDDED_RENDERER"],
-            },
-            message: "should be equal to one of the allowed values",
-          },
-        ])
-      ).toStrictEqual([
-        `The provided value at path "template.type" is not one of the allowed values defined by the schema: EMBEDDED_RENDERER`,
+      const validate = compileAjvSchema(schema);
+      validate({ key2: { key21: "ABC" } });
+
+      expect(transformAllowedValuesErrors(validate.errors ?? [])).toStrictEqual([
+        `The provided value at path "/key2/key21" is not one of the allowed values defined by the schema: 123, 456`,
       ]);
     });
   });
   describe("transformFormatErrors", () => {
+    const schema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      type: "object",
+      properties: {
+        key1: {
+          type: "string",
+          format: "uri",
+        },
+      },
+    };
     it("should return error when property URI format is invalid", () => {
-      expect(
-        transformFormatErrors([
-          {
-            keyword: "format",
-            dataPath: ".id",
-            schemaPath: "#/properties/id/format",
-            params: {
-              format: "uri",
-            },
-            message: 'should match format "uri"',
-          },
-        ])
-      ).toStrictEqual([`The property "id" is not a valid URI`]);
+      const validate = compileAjvSchema(schema);
+      validate({ key1: "XYZ" });
+      expect(transformFormatErrors(validate.errors ?? [])).toStrictEqual([`The property "/key1" is not a valid URI`]);
     });
   });
 });
