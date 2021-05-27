@@ -68,7 +68,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@govtechsg/dnsprove": "^2.1.2",
+    "@govtechsg/dnsprove": "^2.1.3",
     "@govtechsg/document-store": "^2.2.1",
     "@govtechsg/oa-encryption": "^1.3.3",
     "@govtechsg/oa-verify": "^7.4.3",
