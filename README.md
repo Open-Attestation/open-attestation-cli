@@ -18,8 +18,7 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 
 ## Wrapping Documents
 
-This command process all documents in the input directory and issue all of them in a single
-batch. It will then add the issuance proofs to the individual documents.
+This command process all documents in the input directory. It will add the issuance proofs to the individual documents. Additionally, you'll get the Batch Document Root (merkleRoot) value. Thereafter, you can issue all the documents in a single batch with the merkleRoot later.
 
 Example:
 
@@ -386,6 +385,7 @@ You will need:
 - `--config-type` option specify which default template to use to create the config file.
 
 ## Cancel pending transaction
+
 This command will cancel pending transaction.
 
 Please note that a this action is irreversible.
@@ -396,7 +396,6 @@ You will need:
 - `--gas-price` option, the gas price is required to be higher than the pending transaction.
 - `--transaction-hash` transaction hash option can be used as an alternative to nonce and gas-price option. Using this option will automatically increase the transaction gas price by 100%.
 - options to provide the wallet (https://github.com/Open-Attestation/open-attestation-cli#providing-the-wallet)
-
 
 ```
 open-attestation transaction cancel --nonce <pending transaction nonce> --gas-price <gas price> [option]
@@ -411,8 +410,6 @@ open-attestation transaction cancel --nonce 1 --gas-price 300 --network ropsten 
 ```
 open-attestation transaction cancel --transaction-hash 0x000 --network ropsten --encrypted-wallet-path /path/to/wallet
 ```
-
-
 
 ## Help
 
