@@ -37,7 +37,7 @@ export const dryRunMode = async ({
   );
   const gasPrice = await ethers.getDefaultProvider().getGasPrice();
   const gasPriceAsGwei = Number(utils.formatUnits(gasPrice, "gwei"));
-  const convertGasApiToGwei = (value: number): number => value / 10;
+  const convertGasApiToGwei = (value: number): number => Math.round(value / 10);
   const convertGweiToEthereum = (value: BigNumber): number =>
     Number(utils.formatUnits(utils.parseUnits(`${value.toNumber()}`, "gwei"), "ether"));
 
@@ -68,9 +68,9 @@ Get more information about gas: https://ethereum.stackexchange.com/questions/3/w
   console.log(green("Information about the transaction:"));
   console.log(
     `Estimated gas required: ${highlight(
-      _estimatedGas.toNumber().toString(10)
+      _estimatedGas.mul(gasPriceAsGwei * gasPriceScale).toNumber()
     )} gas, which will cost approximately ${highlight(
-      convertGweiToEthereum(_estimatedGas.mul(gasPriceAsGwei)).toString(10)
+      convertGweiToEthereum(_estimatedGas.mul(gasPriceAsGwei))
     )} eth based on the selected gas price`
   );
   console.table({
@@ -86,28 +86,28 @@ Get more information about gas: https://ethereum.stackexchange.com/questions/3/w
       "gas price (gwei)": convertGasApiToGwei(fastest),
       "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(fastest)).toNumber(),
       "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(fastest))),
-      "gas price scale": Number((fastest / 10 / gasPriceAsGwei).toFixed(2)),
+      "gas price scale": Number((convertGasApiToGwei(fastest) / gasPriceAsGwei).toFixed(2)),
     },
     fast: {
       time: "< 2 mins",
       "gas price (gwei)": convertGasApiToGwei(fast),
       "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(fast)).toNumber(),
       "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(fast))),
-      "gas price scale": Number((fast / 10 / gasPriceAsGwei).toFixed(2)),
+      "gas price scale": Number((convertGasApiToGwei(fast) / gasPriceAsGwei).toFixed(2)),
     },
     average: {
       time: "< 5 mins",
       "gas price (gwei)": convertGasApiToGwei(average),
       "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(average)).toNumber(),
       "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(average))),
-      "gas price scale": Number((average / 10 / gasPriceAsGwei).toFixed(2)),
+      "gas price scale": Number((convertGasApiToGwei(average) / gasPriceAsGwei).toFixed(2)),
     },
     safe: {
       time: "< 30 mins",
       "gas price (gwei)": convertGasApiToGwei(safeLow),
       "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(safeLow)).toNumber(),
       "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(safeLow))),
-      "gas price scale": Number((safeLow / 10 / gasPriceAsGwei).toFixed(2)),
+      "gas price scale": Number((convertGasApiToGwei(safeLow) / gasPriceAsGwei).toFixed(2)),
     },
   });
   console.log(red("Please read the information above to understand the table"));
