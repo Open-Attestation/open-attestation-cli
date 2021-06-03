@@ -37,6 +37,9 @@ export const dryRunMode = async ({
   );
   const gasPrice = await ethers.getDefaultProvider().getGasPrice();
   const gasPriceAsGwei = Number(utils.formatUnits(gasPrice, "gwei"));
+  // the return value will be used in BigNumber operations subsequently
+  // but BigNumbers can only have integer values, hence rounding off here
+  // https://github.com/ethers-io/ethers.js/issues/488
   const convertGasApiToGwei = (value: number): number => Math.round(value / 10);
   const convertGweiToEthereum = (value: BigNumber): number =>
     Number(utils.formatUnits(utils.parseUnits(`${value.toNumber()}`, "gwei"), "ether"));
@@ -67,9 +70,7 @@ Get more information about gas: https://ethereum.stackexchange.com/questions/3/w
 
   console.log(green("Information about the transaction:"));
   console.log(
-    `Estimated gas required: ${highlight(
-      _estimatedGas.mul(gasPriceAsGwei * gasPriceScale).toNumber()
-    )} gas, which will cost approximately ${highlight(
+    `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
       convertGweiToEthereum(_estimatedGas.mul(gasPriceAsGwei))
     )} eth based on the selected gas price`
   );
