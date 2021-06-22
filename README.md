@@ -438,3 +438,18 @@ npm run dev -- <command> <options>
 ```
 npm run test
 ```
+
+## Performance testing 
+
+To run performance testing for batched wrapping functionality
+
+Default configuration (5 files, 1 iteration) can be executed using 
+this command.
+```
+npm run benchmark
+```
+
+Custom configuration can be executed using this command.
+```
+NUMBER_OF_FILE=10 ITERATION=5 node performance_test/script.mjs;
+```
