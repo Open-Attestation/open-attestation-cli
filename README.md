@@ -449,7 +449,7 @@ Monitor the response time for batched documents wrapping.
 
 The Default command will test with 2 batched documents in 1 iteration.
 ```
-npm run benchmark 4 1
+npm run benchmark
 ```
 
 The number of documents and iteration can be modified using these options.
