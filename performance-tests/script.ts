@@ -43,8 +43,9 @@ const destroy = (): void => {
 const monitorWrapFeature = async (): Promise<void> => {
   try {
     // Retrieve User Input
-    const numberOfFiles: number = process.argv[2].match("-?\\d+") ? parseInt(process.argv[2]) : DEFAULT_NUMBER_OF_FILE;
-    const iteration: number = process.argv[3].match("-?\\d+") ? parseInt(process.argv[3]) : DEFAULT_ITERATION;
+    const numberOfFiles: number = parseInt(process.argv[2]) || DEFAULT_NUMBER_OF_FILE;
+    const iteration: number = parseInt(process.argv[3]) || DEFAULT_ITERATION;
+
     // Setup Mocked Files
     await setup(DEFAULT_FILE_PATH, numberOfFiles);
 
