@@ -449,14 +449,14 @@ Monitor the response time for batched documents wrapping.
 
 The Default command will test with 2 batched documents in 1 iteration.
 ```
-npm run benchmark wrap
+npm run benchmark 4 1
 ```
 
 The number of documents and iteration can be modified using these options.
-- numberOfFiles : Number of document for batched wrapping
-- iteration : Number of iteration.
+- First number : Number of document for batched wrapping
+- Second number : Number of iteration.
 
 Example:
 ```
-npm run benchmark wrap -- --numberOfFiles=3 --iteration=3
+npm run benchmark 4 1
 ```

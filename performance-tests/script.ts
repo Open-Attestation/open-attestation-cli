@@ -1,9 +1,7 @@
-import { copyFile } from "fs/promises";
 import { Output, wrap } from "../src/implementations/wrap";
 import { performance } from "perf_hooks";
-import { existsSync, mkdirSync, rmdirSync } from "fs";
+import { existsSync, mkdirSync, rmdirSync, promises } from "fs";
 import { SchemaId } from "@govtechsg/open-attestation";
-import yargs from "yargs";
 import { join } from "path";
 
 const DEFAULT_NUMBER_OF_FILE = 2;
@@ -23,7 +21,10 @@ const setup = async (filePath: string, numberOfFiles: number): Promise<void> => 
     try {
       existsSync(INPUT_UNWRAPPED_FILE_FOLDER) || mkdirSync(INPUT_UNWRAPPED_FILE_FOLDER);
       for (let index = 0; index < numberOfFiles; index++) {
-        await copyFile(filePath, `${INPUT_UNWRAPPED_FILE_FOLDER}/${mockFileName + (index + 1)}.${mockFileExtension}`);
+        await promises.copyFile(
+          filePath,
+          `${INPUT_UNWRAPPED_FILE_FOLDER}/${mockFileName + (index + 1)}.${mockFileExtension}`
+        );
       }
     } catch (e) {
       console.error(e);
@@ -39,8 +40,11 @@ const destroy = (): void => {
 };
 
 // Monitor batched wrap feature for the response time
-const monitorWrapFeature = async (numberOfFiles: number, iteration: number): Promise<void> => {
+const monitorWrapFeature = async (): Promise<void> => {
   try {
+    // Retrieve User Input
+    const numberOfFiles: number = process.argv[2].match("-?\\d+") ? parseInt(process.argv[2]) : DEFAULT_NUMBER_OF_FILE;
+    const iteration: number = process.argv[3].match("-?\\d+") ? parseInt(process.argv[3]) : DEFAULT_ITERATION;
     // Setup Mocked Files
     await setup(DEFAULT_FILE_PATH, numberOfFiles);
 
@@ -96,28 +100,4 @@ const monitorWrapFeature = async (numberOfFiles: number, iteration: number): Pro
     console.error(e.message);
   }
 };
-
-yargs
-  .command(
-    "wrap",
-    "performance test for oa wrap feature",
-    function (yargs) {
-      return yargs
-        .option("numberOfFiles", {
-          describe: "Number of file batched",
-          type: "number",
-          default: DEFAULT_NUMBER_OF_FILE,
-        })
-        .option("iteration", {
-          describe: "Number of iteration",
-          type: "number",
-          default: DEFAULT_ITERATION,
-        });
-    },
-    function (argv) {
-      const numberOfFiles = argv.numberOfFiles;
-      const iteration = argv.iteration;
-      monitorWrapFeature(numberOfFiles, iteration);
-    }
-  )
-  .help().argv;
+monitorWrapFeature();
