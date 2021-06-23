@@ -25,7 +25,7 @@
     "benchmark:full": "npm run benchmark:make-certs && npm run benchmark:run && npm run benchmark:clean",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "benchmark": "node performance_test/script.mjs"
+    "benchmark": "ts-node performance-tests/script.ts "
   },
   "author": "",
   "devDependencies": {

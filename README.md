@@ -441,15 +441,22 @@ npm run test
 
 ## Performance testing 
 
-To run performance testing for batched wrapping functionality
+To run performance testing for OA functionality
 
-Default configuration (5 files, 1 iteration) can be executed using 
-this command.
+### Wrap
+
+Monitor the response time for batched documents wrapping. 
+
+The Default command will test with 2 batched documents in 1 iteration.
 ```
-npm run benchmark
+npm run benchmark wrap
 ```
 
-Custom configuration can be executed using this command.
+The number of documents and iteration can be modified using these options.
+- numberOfFiles : Number of document for batched wrapping
+- iteration : Number of iteration.
+
+Example:
 ```
-NUMBER_OF_FILE=10 ITERATION=5 node performance_test/script.mjs;
+npm run benchmark wrap -- --numberOfFiles=3 --iteration=3
 ```
