@@ -6,25 +6,23 @@ import { join } from "path";
 
 const DEFAULT_NUMBER_OF_FILE = 2;
 const DEFAULT_ITERATION = 1;
-const DEFAULT_FILE_PATH = join(__dirname, "/unwrapped_doc.json");
-const INPUT_UNWRAPPED_FILE_FOLDER = join(__dirname, "/raw-documents");
-const OUTPUT_WRAPPED_FILE_FOLDER = join(__dirname, "/wrapped-documents");
+const DEFAULT_FILE_PATH = join(__dirname, "unwrapped_doc.json");
+const INPUT_UNWRAPPED_FILE_FOLDER = join(__dirname, "raw-documents");
+const OUTPUT_WRAPPED_FILE_FOLDER = join(__dirname, "wrapped-documents");
 
-// Setup number of files using mocked json
+// Setup number of files
 const setup = async (filePath: string, numberOfFiles: number): Promise<void> => {
   console.info("Setup up files for testing");
   const fileNameArray = filePath.split("/").pop();
   if (fileNameArray != undefined) {
-    const mockFileName = fileNameArray.split(".")[0];
-    const mockFileExtension = fileNameArray.split(".")[1];
+    const fileName = fileNameArray.split(".")[0];
+    const fileExtension = fileNameArray.split(".")[1];
 
     try {
       existsSync(INPUT_UNWRAPPED_FILE_FOLDER) || mkdirSync(INPUT_UNWRAPPED_FILE_FOLDER);
       for (let index = 0; index < numberOfFiles; index++) {
-        await promises.copyFile(
-          filePath,
-          `${INPUT_UNWRAPPED_FILE_FOLDER}/${mockFileName + (index + 1)}.${mockFileExtension}`
-        );
+        const outputPath = join(INPUT_UNWRAPPED_FILE_FOLDER, `${fileName + (index + 1)}.${fileExtension}`);
+        await promises.copyFile(filePath, outputPath);
       }
     } catch (e) {
       console.error(e);
@@ -46,7 +44,7 @@ const monitorWrapFeature = async (): Promise<void> => {
     const numberOfFiles: number = parseInt(process.argv[2]) || DEFAULT_NUMBER_OF_FILE;
     const iteration: number = parseInt(process.argv[3]) || DEFAULT_ITERATION;
 
-    // Setup Mocked Files
+    // Setup Number of Files
     await setup(DEFAULT_FILE_PATH, numberOfFiles);
 
     const responseTime: Array<number> = [];
@@ -72,7 +70,7 @@ const monitorWrapFeature = async (): Promise<void> => {
       responseTime.push(endTime - startTime);
     }
 
-    // Destroy Mocked Files
+    // Destroy Generated Files
     destroy();
 
     // Print time to execute
@@ -80,23 +78,16 @@ const monitorWrapFeature = async (): Promise<void> => {
     const sumResponseTime: number = responseTime.reduce((a: number, b: number) => a + b, 0);
     const avgResponseTime: number = sumResponseTime / responseTime.length || 0;
     if (iteration > 1) {
-      responseTime.map((time: any, index: number) => {
-        console.info(`Iteration ${index + 1} : ${time} ms. (${time / 1000} s)`);
-
-        if (responseTime.length - 1 == index) {
-          const fastestTime = Math.min(...responseTime);
-          const slowestTime = Math.max(...responseTime);
-          console.info(`Slowest Response Time : ${fastestTime} ms. (${fastestTime / 1000} s)`);
-          console.info(`Fastest Response Time : ${slowestTime} ms. (${slowestTime / 1000} s)`);
-          console.info(`Average Response Time : ${avgResponseTime} ms. (${avgResponseTime / 1000} s)`);
-        }
-        return undefined;
-      });
+      const fastestTime = Math.min(...responseTime);
+      const slowestTime = Math.max(...responseTime);
+      console.info(`Slowest Response Time : ${fastestTime} ms. (${fastestTime / 1000} s)`);
+      console.info(`Fastest Response Time : ${slowestTime} ms. (${slowestTime / 1000} s)`);
+      console.info(`Average Response Time : ${avgResponseTime} ms. (${avgResponseTime / 1000} s)`);
     } else {
       console.info(`OA Wrap took ${avgResponseTime} ms. (${avgResponseTime / 1000} s)`);
     }
   } catch (e) {
-    // Destroy Mocked Files
+    // Destroy Generated Files
     destroy();
     console.error(e.message);
   }
