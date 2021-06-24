@@ -453,8 +453,8 @@ npm run benchmark
 ```
 
 The number of documents and iteration can be modified using these options.
-- First number : Number of document for batched wrapping
-- Second number : Number of iteration.
+- First argument : Number of document for batched wrapping
+- Second argument : Number of performance test iteration to achieve higher accuracy
 
 Example:
 ```

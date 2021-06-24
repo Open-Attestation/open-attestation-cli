@@ -19,7 +19,7 @@ jobs:
           command: npm run test
       - run:
           name: benchmark wrap functionality
-          command: npm run benchmark wrap
+          command: npm run benchmark
       - run:
           name: build
           command: npm run build
