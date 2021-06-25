@@ -6,9 +6,9 @@ import { join } from "path";
 
 const DEFAULT_NUMBER_OF_FILE = 2;
 const DEFAULT_ITERATION = 1;
-const DEFAULT_FILE_PATH = join(__dirname, "unwrapped_doc.json");
-const INPUT_UNWRAPPED_FILE_FOLDER = join(__dirname, "raw-documents");
-const OUTPUT_WRAPPED_FILE_FOLDER = join(__dirname, "wrapped-documents");
+const DEFAULT_FILE_PATH = join(__dirname, "unwrapped_document.json");
+const INPUT_UNWRAPPED_FILE_FOLDER = join(__dirname, "setup", "raw-documents");
+const OUTPUT_WRAPPED_FILE_FOLDER = join(__dirname, "setup", "wrapped-documents");
 
 // Setup number of files
 const setup = async (filePath: string, numberOfFiles: number): Promise<void> => {
@@ -19,7 +19,7 @@ const setup = async (filePath: string, numberOfFiles: number): Promise<void> => 
     const fileExtension = fileNameArray.split(".")[1];
 
     try {
-      existsSync(INPUT_UNWRAPPED_FILE_FOLDER) || mkdirSync(INPUT_UNWRAPPED_FILE_FOLDER);
+      existsSync(INPUT_UNWRAPPED_FILE_FOLDER) || mkdirSync(INPUT_UNWRAPPED_FILE_FOLDER, { recursive: true });
       for (let index = 0; index < numberOfFiles; index++) {
         const outputPath = join(INPUT_UNWRAPPED_FILE_FOLDER, `${fileName + (index + 1)}.${fileExtension}`);
         await promises.copyFile(filePath, outputPath);
@@ -41,11 +41,12 @@ const destroy = (): void => {
 const monitorWrapFeature = async (): Promise<void> => {
   try {
     // Retrieve User Input
-    const numberOfFiles: number = parseInt(process.argv[2]) || DEFAULT_NUMBER_OF_FILE;
-    const iteration: number = parseInt(process.argv[3]) || DEFAULT_ITERATION;
+    const numberOfFiles: number = parseInt(process.argv[2], 10) || DEFAULT_NUMBER_OF_FILE;
+    const iteration: number = parseInt(process.argv[3], 10) || DEFAULT_ITERATION;
+    const filePath: string = process.argv[4] || DEFAULT_FILE_PATH;
 
     // Setup Number of Files
-    await setup(DEFAULT_FILE_PATH, numberOfFiles);
+    await setup(filePath, numberOfFiles);
 
     const responseTime: Array<number> = [];
     for (let index = 0; index < iteration; index++) {
@@ -80,8 +81,8 @@ const monitorWrapFeature = async (): Promise<void> => {
     if (iteration > 1) {
       const fastestTime = Math.min(...responseTime);
       const slowestTime = Math.max(...responseTime);
-      console.info(`Slowest Response Time : ${fastestTime} ms. (${fastestTime / 1000} s)`);
-      console.info(`Fastest Response Time : ${slowestTime} ms. (${slowestTime / 1000} s)`);
+      console.info(`Fastest Response Time : ${fastestTime} ms. (${fastestTime / 1000} s)`);
+      console.info(`Slowest Response Time : ${slowestTime} ms. (${slowestTime / 1000} s)`);
       console.info(`Average Response Time : ${avgResponseTime} ms. (${avgResponseTime / 1000} s)`);
     } else {
       console.info(`OA Wrap took ${avgResponseTime} ms. (${avgResponseTime / 1000} s)`);
