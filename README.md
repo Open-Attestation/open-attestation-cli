@@ -447,7 +447,7 @@ To run performance testing for OA functionality
 
 Monitor the response time for batched documents wrapping. 
 
-The Default command will test with 2 batched documents in 1 iteration.
+The Default command will testing: 2 documents without base64 image in 1 iteration.
 ```
 npm run benchmark
 ```
@@ -455,8 +455,9 @@ npm run benchmark
 The number of documents and iteration can be modified using these options.
 - First argument : Number of document for batched wrapping
 - Second argument : Number of performance test iteration to achieve higher accuracy
+- Third argument : File path for testing
 
 Example:
 ```
-npm run benchmark 4 1
+npm run benchmark 4 1 performance-tests/unwrapped_document_wImage.json
 ```
