@@ -455,7 +455,7 @@ npm run benchmark
 The number of documents and iteration can be modified using these options.
 - First argument : Number of document for batched wrapping
 - Second argument : Number of performance test iteration to achieve higher accuracy
-- Third argument : File path for testing
+- Third argument : File path for testing ( For window user, please encase the path in " " quotation marks )
 
 Example:
 ```

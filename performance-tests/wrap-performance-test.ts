@@ -41,9 +41,8 @@ const monitorWrapFeature = async (): Promise<void> => {
     const numberOfFiles: number = parseInt(process.argv[2], 10) || DEFAULT_NUMBER_OF_FILE;
     const iteration: number = parseInt(process.argv[3], 10) || DEFAULT_ITERATION;
     const filePath: string = process.argv[4] || DEFAULT_FILE_PATH;
-    const resolveFilePath = resolve(filePath);
     // Setup Number of Files
-    await setup(resolveFilePath, numberOfFiles);
+    await setup(filePath, numberOfFiles);
 
     const responseTime: Array<number> = [];
     for (let index = 0; index < iteration; index++) {
