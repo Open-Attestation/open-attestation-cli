@@ -2,7 +2,7 @@ import { Output, wrap } from "../src/implementations/wrap";
 import { performance } from "perf_hooks";
 import { existsSync, mkdirSync, rmdirSync, promises } from "fs";
 import { SchemaId } from "@govtechsg/open-attestation";
-import { join } from "path";
+import { join, resolve, parse } from "path";
 
 const DEFAULT_NUMBER_OF_FILE = 2;
 const DEFAULT_ITERATION = 1;
@@ -13,20 +13,17 @@ const OUTPUT_WRAPPED_FILE_FOLDER = join(__dirname, "setup", "wrapped-documents")
 // Setup number of files
 const setup = async (filePath: string, numberOfFiles: number): Promise<void> => {
   console.info("Setup up files for testing");
-  const fileNameArray = filePath.split("/").pop();
-  if (fileNameArray != undefined) {
-    const fileName = fileNameArray.split(".")[0];
-    const fileExtension = fileNameArray.split(".")[1];
+  const fileName = parse(filePath).name;
+  const fileExtension = parse(filePath).ext;
 
-    try {
-      existsSync(INPUT_UNWRAPPED_FILE_FOLDER) || mkdirSync(INPUT_UNWRAPPED_FILE_FOLDER, { recursive: true });
-      for (let index = 0; index < numberOfFiles; index++) {
-        const outputPath = join(INPUT_UNWRAPPED_FILE_FOLDER, `${fileName + (index + 1)}.${fileExtension}`);
-        await promises.copyFile(filePath, outputPath);
-      }
-    } catch (e) {
-      console.error(e);
+  try {
+    existsSync(INPUT_UNWRAPPED_FILE_FOLDER) || mkdirSync(INPUT_UNWRAPPED_FILE_FOLDER, { recursive: true });
+    for (let index = 0; index < numberOfFiles; index++) {
+      const outputPath = join(INPUT_UNWRAPPED_FILE_FOLDER, `${fileName + (index + 1)}${fileExtension}`);
+      await promises.copyFile(filePath, outputPath);
     }
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -44,9 +41,9 @@ const monitorWrapFeature = async (): Promise<void> => {
     const numberOfFiles: number = parseInt(process.argv[2], 10) || DEFAULT_NUMBER_OF_FILE;
     const iteration: number = parseInt(process.argv[3], 10) || DEFAULT_ITERATION;
     const filePath: string = process.argv[4] || DEFAULT_FILE_PATH;
-
+    const resolveFilePath = resolve(filePath);
     // Setup Number of Files
-    await setup(filePath, numberOfFiles);
+    await setup(resolveFilePath, numberOfFiles);
 
     const responseTime: Array<number> = [];
     for (let index = 0; index < iteration; index++) {
