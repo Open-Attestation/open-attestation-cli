@@ -438,3 +438,26 @@ npm run dev -- <command> <options>
 ```
 npm run test
 ```
+
+## Performance testing 
+
+To run performance testing for OA functionality
+
+### Wrap
+
+Monitor the response time for batched documents wrapping. 
+
+The Default command will testing: 2 documents without base64 image in 1 iteration.
+```
+npm run benchmark
+```
+
+The number of documents and iteration can be modified using these options.
+- First argument : Number of document for batched wrapping
+- Second argument : Number of performance test iteration to achieve higher accuracy
+- Third argument : File path for testing ( For window user, please encase the path in " " quotation marks )
+
+Example:
+```
+npm run benchmark 4 1 performance-tests/unwrapped_document_wImage.json
+```
