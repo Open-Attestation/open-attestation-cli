@@ -30,8 +30,7 @@
           "description": "Issuer's name"
         }
       },
-      "required": ["id", "name"],
-      "additionalProperties": false
+      "required": ["id", "name"]
     }
   },
   "properties": {
