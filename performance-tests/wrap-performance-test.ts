@@ -2,7 +2,7 @@ import { Output, wrap } from "../src/implementations/wrap";
 import { performance } from "perf_hooks";
 import { existsSync, mkdirSync, rmdirSync, promises } from "fs";
 import { SchemaId } from "@govtechsg/open-attestation";
-import { join, resolve, parse } from "path";
+import { join, parse } from "path";
 
 const DEFAULT_NUMBER_OF_FILE = 2;
 const DEFAULT_ITERATION = 1;
