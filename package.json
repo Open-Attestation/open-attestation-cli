@@ -13,6 +13,7 @@
     "build": "npm run clean && npm run build:cjs && npm run build:type",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --project ./tsconfig.prod.json",
     "build:type": "tsc -d --emitDeclarationOnly --outDir dist/types",
+    "build:binary": "npm run build && pkg ./package.json --out-path dist/@govtechsg",
     "clean": "rm -rf dist/",
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",
