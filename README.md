@@ -434,6 +434,23 @@ open-attestation transaction cancel --nonce 1 --gas-price 300 --network ropsten 
 open-attestation transaction cancel --transaction-hash 0x000 --network ropsten --encrypted-wallet-path /path/to/wallet
 ```
 
+## Title Escrow
+
+### Change Holder
+
+This command will allow the owner of a transferable record to change its holder.
+
+```bash
+open-attestation title-escrow change-holder --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+```
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow change-holder --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully changed to holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
 ## Help
 
 Run the command with `--help` to get additional information
