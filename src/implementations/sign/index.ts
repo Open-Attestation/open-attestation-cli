@@ -5,22 +5,21 @@ import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attes
 import path from "path";
 import mkdirp from "mkdirp";
 
-export interface SignCommand extends PrivateKeyOption {
+export type SignCommand = PrivateKeyOption & {
   rawDocumentsPath: string;
   outputDir: string;
   publicKey: string;
   algorithm: SUPPORTED_SIGNING_ALGORITHM;
-}
+};
 
 export const sign = async ({
   rawDocumentsPath,
   outputDir,
   publicKey,
   algorithm,
-  key,
-  keyFile,
+  ...rest
 }: SignCommand): Promise<void> => {
-  const privateKey = await getPrivateKey({ key, keyFile });
+  const privateKey = await getPrivateKey(rest);
   if (!privateKey) throw new Error("Private key is not specified (use -k, -f or OA_PRIVATE_KEY to specify key)");
 
   // Create output dir

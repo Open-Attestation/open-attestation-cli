@@ -1,9 +1,9 @@
 import { Argv } from "yargs";
-import { error, success, info } from "signale";
+import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress, highlight } from "../../utils";
 
 const { trace } = getLogger("deploy:document-store");
@@ -14,7 +14,7 @@ export const describe = "Deploys a document store contract on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs.positional("store-name", {
         description: "Name of the store",
         normalize: true,

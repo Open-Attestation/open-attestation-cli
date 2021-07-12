@@ -3,7 +3,7 @@ import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { revokeToDocumentStore } from "../../implementations/document-store/revoke";
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("document-store:revoke");
@@ -14,7 +14,7 @@ export const describe = "Revoke a hash to a document store deployed on the block
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("address", {
           alias: "a",
