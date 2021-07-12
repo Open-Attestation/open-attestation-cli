@@ -1,5 +1,5 @@
 import { TitleEscrowCreatorFactory } from "@govtechsg/token-registry";
-import { getWallet } from "../../utils/wallet";
+import { getWalletOrSigner } from "../../utils/wallet";
 import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "@ethersproject/providers";
@@ -10,11 +10,9 @@ const { trace } = getLogger("deploy:title-escrow-creator");
 
 export const deployTitleEscrowCreator = async ({
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: DeployTitleEscrowCreatorCommand): Promise<TransactionReceipt> => {
   if (dryRun) {
     const factory = new TitleEscrowCreatorFactory();
@@ -25,7 +23,7 @@ export const deployTitleEscrowCreator = async ({
     });
     process.exit(0);
   }
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new TitleEscrowCreatorFactory(wallet);
   signale.await(`Sending transaction to pool`);

@@ -1,5 +1,5 @@
 import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
-import { getWallet } from "../../utils/wallet";
+import { getWalletOrSigner } from "../../utils/wallet";
 import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "@ethersproject/providers";
@@ -12,11 +12,9 @@ export const deployTokenRegistry = async ({
   registryName,
   registrySymbol,
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
   if (dryRun) {
     // TODO this does not work ?
@@ -28,7 +26,7 @@ export const deployTokenRegistry = async ({
     });
     process.exit(0);
   }
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new TradeTrustErc721Factory(wallet);
   signale.await(`Sending transaction to pool`);

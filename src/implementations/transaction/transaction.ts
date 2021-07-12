@@ -1,26 +1,24 @@
 import signale from "signale";
 import { TransactionCancelCommand } from "../../commands/transaction/transaction-command.type";
-import { getWallet } from "../utils/wallet";
+import { getWalletOrSigner } from "../utils/wallet";
 import { BigNumber } from "ethers";
 
 /*
-  The trick to “cancel” your pending transaction is by replacing the transaction with 
-  another 0 ETH transaction with a higher gas fee sending to yourself with the same nonce as the 
-  pending transaction. By having increasing the gas fee, it allow the miner to prioritize transactions 
+  The trick to “cancel” your pending transaction is by replacing the transaction with
+  another 0 ETH transaction with a higher gas fee sending to yourself with the same nonce as the
+  pending transaction. By having increasing the gas fee, it allow the miner to prioritize transactions
   that pay a higher gas fee.
   (https://info.etherscan.com/how-to-cancel-ethereum-pending-transactions/)
 */
 export const cancelTransaction = async ({
   network,
-  key,
-  keyFile,
-  encryptedWalletPath,
   nonce,
   gasPrice,
   transactionHash,
+  ...rest
 }: TransactionCancelCommand): Promise<void> => {
   try {
-    const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+    const wallet = await getWalletOrSigner({ network, ...rest });
     let transactionNonce = nonce;
     let transactionGasPrice = gasPrice;
 
@@ -30,13 +28,13 @@ export const cancelTransaction = async ({
         `Transaction detail retrieved. Nonce: ${currentTransaction.nonce}, Gas-price: ${currentTransaction.gasPrice}`
       );
       transactionNonce = currentTransaction.nonce.toString();
-      transactionGasPrice = currentTransaction.gasPrice.mul(2).toString();
+      transactionGasPrice = currentTransaction.gasPrice?.mul(2).toString();
     }
 
     if (transactionNonce && transactionGasPrice) {
       await wallet.sendTransaction({
-        to: wallet.address,
-        from: wallet.address,
+        to: wallet.getAddress(),
+        from: wallet.getAddress(),
         nonce: BigNumber.from(parseFloat(transactionNonce)),
         gasPrice: BigNumber.from(parseFloat(transactionGasPrice)),
       });

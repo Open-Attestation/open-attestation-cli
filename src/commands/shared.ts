@@ -4,21 +4,53 @@ export interface NetworkOption {
   network: string;
 }
 
-export interface PrivateKeyOption {
-  key?: string;
-  keyFile?: string;
-}
+// it should be a union, because we expect one or the other key. However I couldn't find a clean way to handle this, with the rest of the code
+export type PrivateKeyOption =
+  | {
+      key?: string;
+      keyFile?: never;
+    }
+  | {
+      key?: never;
+      keyFile?: string;
+    };
 
-export interface WalletOption extends PrivateKeyOption {
-  encryptedWalletPath?: string;
-}
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const isPrivateKeyOption = (option: any): option is PrivateKeyOption => {
+  return typeof option?.key === "string" || typeof option?.keyFile === "string";
+};
+
+export type AwsKmwSignerOption = {
+  accessKeyId: string;
+  region: string;
+  kmsKeyId: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const isAwsKmsSignerOption = (option: any): option is AwsKmwSignerOption => {
+  return (
+    typeof option?.accessKeyId === "string" &&
+    typeof option?.region === "string" &&
+    typeof option?.kmsKeyId === "string"
+  );
+};
+
+export type WalletOption = {
+  encryptedWalletPath: string;
+};
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const isWalletOption = (option: any): option is WalletOption => {
+  return typeof option?.encryptedWalletPath === "string";
+};
+
+export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmwSignerOption> | Partial<WalletOption>;
 
 export interface GasOption {
   gasPriceScale: number;
   dryRun: boolean;
 }
 
-export interface NetworkAndKeyOption extends NetworkOption, WalletOption {}
+export type NetworkAndWalletSignerOption = NetworkOption & (Partial<WalletOption> | Partial<PrivateKeyOption>);
 
 export const withNetworkOption = (yargs: Argv): Argv =>
   yargs.option("network", {
@@ -56,11 +88,27 @@ export const withPrivateKeyOption = (yargs: Argv): Argv =>
     });
 
 export const withWalletOption = (yargs: Argv): Argv =>
-  withPrivateKeyOption(
-    yargs.option("encrypted-wallet-path", {
+  yargs.option("encrypted-wallet-path", {
+    type: "string",
+    description: "Path to file containing private key of owner account",
+    normalize: true,
+  });
+
+export const withAwsKmsSignerOption = (yargs: Argv): Argv =>
+  yargs
+    .option("access-key-id", {
       type: "string",
-      description: "Path to file containing private key of owner account",
-      normalize: true,
+      description: "AWS access key id. Example: AKIAIOSFODNN7EXAMPLE",
     })
-  );
-export const withNetworkAndKeyOption = (yargs: Argv): Argv => withNetworkOption(withWalletOption(yargs));
+    .option("region", {
+      type: "string",
+      description: "AWS region. Example: us-east-2",
+    })
+    .option("kms-key-id", {
+      type: "string",
+      description:
+        "AWS KMS key id. Example: arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+    });
+
+export const withNetworkAndWalletSignerOption = (yargs: Argv): Argv =>
+  withNetworkOption(withAwsKmsSignerOption(withWalletOption(withPrivateKeyOption(yargs))));

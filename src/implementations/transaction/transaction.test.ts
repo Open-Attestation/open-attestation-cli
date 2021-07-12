@@ -1,11 +1,11 @@
 import { cancelTransaction } from "./transaction";
-import { getWallet } from "../utils/wallet";
+import { getWalletOrSigner } from "../utils/wallet";
 import path from "path";
 import signale from "signale";
 import { BigNumber } from "ethers/lib/ethers";
 jest.mock("../utils/wallet");
 
-const mockGetWallet = getWallet as jest.Mock;
+const mockGetWallet = getWalletOrSigner as jest.Mock;
 
 describe("document-store", () => {
   describe("cancelTransaction", () => {
@@ -23,7 +23,7 @@ describe("document-store", () => {
       mockGetWallet.mockResolvedValue({
         provider: { getTransaction: mockGetTransaction },
         sendTransaction: mockSendTransaction,
-        address: "0xC84b0719A82626417c40f3168513dFABDB6A9079",
+        getAddress: () => "0xC84b0719A82626417c40f3168513dFABDB6A9079",
       });
 
       await cancelTransaction({

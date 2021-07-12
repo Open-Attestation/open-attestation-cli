@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
-import { success, error, info } from "signale";
+import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 import { DeployTokenRegistryCommand } from "./deploy.types";
 
@@ -14,7 +14,7 @@ export const describe = "Deploys a token registry contract on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .positional("registry-name", {
           description: "Name of the token",

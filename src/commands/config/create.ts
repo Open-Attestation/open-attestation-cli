@@ -17,6 +17,7 @@ import { highlight } from "../../utils";
 import { handler as createTemporaryDns } from "../dns/txt-record/create";
 import { CreateConfigCommand } from "./config.type";
 import tradetrustConfig from "./templates/tradetrust.json";
+import { withWalletOption } from "../shared";
 
 interface ConfigFile {
   wallet: string;
@@ -42,34 +43,31 @@ export const command = "create [options]";
 export const describe = "Create a config file";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs
-    .option("output-dir", {
-      alias: "od",
-      description: "Write output to a directory",
-      type: "string",
-      demandOption: true,
-    })
-    .option("encrypted-wallet-path", {
-      type: "string",
-      description: "Path to file containing wallet.json",
-      normalize: true,
-    })
-    .option("config-template-path", {
-      type: "string",
-      description: "Path to file containing config template",
-      normalize: true,
-    })
-    .option("config-type", {
-      type: "string",
-      description: "type of config to create (i.e. tradetrust)",
-      normalize: true,
-      choices: ["tradetrust"],
-    })
-    .conflicts("config-type", "config-template-path")
-    .check((argv) => {
-      if (argv["config-type"] || argv["config-template-path"]) return true;
-      throw new Error("Please provide either a config-type or a config template path");
-    });
+  withWalletOption(
+    yargs
+      .option("output-dir", {
+        alias: "od",
+        description: "Write output to a directory",
+        type: "string",
+        demandOption: true,
+      })
+      .option("config-template-path", {
+        type: "string",
+        description: "Path to file containing config template",
+        normalize: true,
+      })
+      .option("config-type", {
+        type: "string",
+        description: "type of config to create (i.e. tradetrust)",
+        normalize: true,
+        choices: ["tradetrust"],
+      })
+      .conflicts("config-type", "config-template-path")
+      .check((argv) => {
+        if (argv["config-type"] || argv["config-template-path"]) return true;
+        throw new Error("Please provide either a config-type or a config template path");
+      })
+  );
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);

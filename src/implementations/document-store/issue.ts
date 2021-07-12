@@ -2,7 +2,7 @@ import { DocumentStoreFactory } from "@govtechsg/document-store";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { DocumentStoreIssueCommand } from "../../commands/document-store/document-store-command.type";
-import { getWallet } from "../utils/wallet";
+import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
@@ -12,13 +12,11 @@ export const issueToDocumentStore = async ({
   address,
   hash,
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: DocumentStoreIssueCommand): Promise<TransactionReceipt> => {
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   if (dryRun) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({

@@ -1,16 +1,31 @@
 import { readFileSync } from "fs";
 import signale from "signale";
-import { ethers, getDefaultProvider, Wallet, providers } from "ethers";
-import { NetworkOption, WalletOption } from "../../commands/shared";
+import { ethers, getDefaultProvider, providers, Signer, Wallet } from "ethers";
+import { Provider } from "@ethersproject/abstract-provider";
+
+import {
+  isAwsKmsSignerOption,
+  isWalletOption,
+  NetworkOption,
+  PrivateKeyOption,
+  WalletOrSignerOption,
+} from "../../commands/shared";
 import { readFile } from "./disk";
 import inquirer from "inquirer";
 import { progress as defaultProgress } from "./progress";
+import { AwsKmsSigner } from "ethers-aws-kms-signer";
 
 const getKeyFromFile = (file?: string): undefined | string => {
   return file ? readFileSync(file).toString().trim() : undefined;
 };
 
-export const getPrivateKey = ({ keyFile, key }: WalletOption): string | undefined => {
+type ConnectedSigner = Signer & {
+  readonly provider: Provider;
+  readonly publicKey?: never;
+  readonly privateKey?: never;
+};
+
+export const getPrivateKey = ({ keyFile, key }: PrivateKeyOption): string | undefined => {
   if (key) {
     signale.warn(
       "Be aware that by using the `key` parameter, the private key may be stored in your machine's sh history"
@@ -21,33 +36,51 @@ export const getPrivateKey = ({ keyFile, key }: WalletOption): string | undefine
   }
   return key || getKeyFromFile(keyFile) || process.env["OA_PRIVATE_KEY"];
 };
-export const getWallet = async ({
-  keyFile,
-  key,
+
+export const getWalletOrSigner = async ({
   network,
-  encryptedWalletPath,
   progress = defaultProgress("Decrypting Wallet"),
-}: WalletOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<Wallet> => {
+  ...options
+}: WalletOrSignerOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<
+  Wallet | ConnectedSigner
+> => {
   const provider =
     network === "local"
       ? new providers.JsonRpcProvider()
       : getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
-  if (encryptedWalletPath) {
+  if (isWalletOption(options)) {
     const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
 
-    const file = await readFile(encryptedWalletPath);
+    const file = await readFile(options.encryptedWalletPath);
     const wallet = await ethers.Wallet.fromEncryptedJson(file, password, progress);
     signale.info("Wallet successfully decrypted");
     return wallet.connect(provider);
+  } else if (isAwsKmsSignerOption(options)) {
+    const { secretAccessKey } = await inquirer.prompt({
+      type: "password",
+      name: "secretAccessKey",
+      message: "Secret access key",
+    });
+    const kmsCredentials = {
+      accessKeyId: options.accessKeyId, // credentials for your IAM user with KMS access
+      secretAccessKey, // credentials for your IAM user with KMS access
+      region: options.region,
+      keyId: options.kmsKeyId,
+    };
+
+    const provider = ethers.providers.getDefaultProvider("ropsten");
+    const signer = new AwsKmsSigner(kmsCredentials).connect(provider);
+    if (signer.provider) return signer as ConnectedSigner;
+    throw new Error("Unable to attach the provider to the kms signer");
   } else {
-    const privateKey = getPrivateKey({ key, keyFile });
+    const privateKey = getPrivateKey(options as any);
 
-    if (!privateKey)
-      throw new Error(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
-      );
-
-    const hexlifiedPrivateKey = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
-    return new Wallet(hexlifiedPrivateKey, provider);
+    if (privateKey) {
+      const hexlifiedPrivateKey = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
+      return new Wallet(hexlifiedPrivateKey, provider);
+    }
   }
+  throw new Error(
+    "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
+  );
 };

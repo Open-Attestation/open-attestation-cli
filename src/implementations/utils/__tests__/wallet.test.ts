@@ -1,6 +1,6 @@
 import { prompt } from "inquirer";
 import path from "path";
-import { getWallet } from "../wallet";
+import { getWalletOrSigner } from "../wallet";
 jest.mock("inquirer");
 
 // assigning the mock so that we get correct typing
@@ -20,36 +20,46 @@ describe("wallet", () => {
   });
   it("should return the wallet when providing the key using environment variable", async () => {
     process.env.OA_PRIVATE_KEY = privateKey;
-    const wallet = await getWallet({ network: "ropsten" });
-    expect(wallet.address).toStrictEqual(walletAddress);
+    const wallet = await getWalletOrSigner({ network: "ropsten" });
+    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing the key using key option", async () => {
-    const wallet = await getWallet({ network: "ropsten", key: privateKey });
-    expect(wallet.address).toStrictEqual(walletAddress);
+    const wallet = await getWalletOrSigner({ network: "ropsten", key: privateKey });
+    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing the key using key-file option", async () => {
-    const wallet = await getWallet({ network: "ropsten", keyFile: path.resolve(__dirname, "./key.file") });
-    expect(wallet.address).toStrictEqual(walletAddress);
+    const wallet = await getWalletOrSigner({ network: "ropsten", keyFile: path.resolve(__dirname, "./key.file") });
+    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
+  });
+  it("should return the signer when providing aws kms information", async () => {
+    promptMock.mockReturnValue({ secretAccessKey: "5TQto/r7ebS7rZRwavyi9qhxdWdDEoNVYTduFtEA" });
+    const wallet = await getWalletOrSigner({
+      network: "ropsten",
+      accessKeyId: "AKIA2VR2E5NDC5GVCCG5",
+      region: "ap-southeast-1",
+      kmsKeyId: "arn:aws:kms:ap-southeast-1:733487622982:key/1de6b2af-6229-4ab1-88aa-c42bcb2bb312",
+    });
+    expect(await wallet.getAddress()).toStrictEqual("0x83a07367b666b7c99b59fa62a3f360f667601cf9");
   });
   it("should return the wallet when providing an encrypted wallet", async () => {
     promptMock.mockReturnValue({ password: "password123" });
 
-    const wallet = await getWallet({
+    const wallet = await getWalletOrSigner({
       network: "ropsten",
       encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
       progress: () => void 0, // shut up progress bar
     });
-    expect(wallet.address).toStrictEqual(walletAddress);
+    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should throw an error when the wallet password is invalid", async () => {
     promptMock.mockReturnValue({ password: "invalid" });
 
     await expect(
-      getWallet({
+      getWalletOrSigner({
         network: "ropsten",
         encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
         progress: () => void 0, // shut up progress bar
@@ -57,9 +67,9 @@ describe("wallet", () => {
     ).rejects.toStrictEqual(new Error("invalid password"));
   });
   it("should throw an error when no option is provided", async () => {
-    await expect(getWallet({ network: "ropsten" })).rejects.toStrictEqual(
+    await expect(getWalletOrSigner({ network: "ropsten" })).rejects.toStrictEqual(
       new Error(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
+        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       )
     );
   });
