@@ -1,7 +1,7 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
-import { TitleEscrowSurrenderDocumentCommand } from "../../../commands/title-escrow-2/title-escrow-command.type";
+import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { surrenderDocument } from "./surrender-document";
 
 jest.mock("@govtechsg/token-registry");
@@ -63,7 +63,7 @@ describe("title-escrow", () => {
     it("should take in the key from key file", async () => {
       await surrenderDocument({
         ...surrenderDocumentParams,
-        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
+        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
       });
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];

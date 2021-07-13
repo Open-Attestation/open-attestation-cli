@@ -1,10 +1,10 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
-import { getLogger } from "../../../logger";
-import { getWallet } from "../../utils/wallet";
-import { TitleEscrowSurrenderDocumentCommand } from "../../../commands/title-escrow-2/title-escrow-command.type";
+import { getLogger } from "../../logger";
+import { getWallet } from "../utils/wallet";
+import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
-import { dryRunMode } from "../../utils/dryRun";
+import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
 const { trace } = getLogger("token-registry:surrenderDocument");

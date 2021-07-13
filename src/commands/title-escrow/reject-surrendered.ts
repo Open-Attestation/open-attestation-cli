@@ -3,7 +3,7 @@ import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
-import { rejectSurrendered } from "../../implementations/title-escrow-2";
+import { rejectSurrendered } from "../../implementations/title-escrow/reject-surrendered";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("surrender:title-escrow");
