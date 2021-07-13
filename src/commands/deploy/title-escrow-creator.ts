@@ -1,9 +1,9 @@
 import { Argv } from "yargs";
-import { error, success, info } from "signale";
+import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { deployTitleEscrowCreator } from "../../implementations/deploy/title-escrow-creator";
 import { DeployTitleEscrowCreatorCommand } from "./deploy.types";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:title-escrow-creator");
@@ -12,7 +12,7 @@ export const command = "title-escrow-creator [options]";
 
 export const describe = "Deploys a (global) title escrow creator on the blockchain";
 
-export const builder = (yargs: Argv): Argv => withGasPriceOption(withNetworkAndKeyOption(yargs));
+export const builder = (yargs: Argv): Argv => withGasPriceOption(withNetworkAndWalletSignerOption(yargs));
 
 export const handler = async (args: DeployTitleEscrowCreatorCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);

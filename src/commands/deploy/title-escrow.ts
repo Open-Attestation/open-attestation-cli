@@ -1,9 +1,9 @@
 import { Argv } from "yargs";
-import { error, success, info } from "signale";
+import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { deployTitleEscrow } from "../../implementations/deploy/title-escrow";
 import { DeployTitleEscrowCommand } from "./deploy.types";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:title-escrow");
@@ -14,7 +14,7 @@ export const describe = "Deploys a title escrow on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("token-registry", {
           alias: "r",

@@ -1,7 +1,7 @@
 import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
-import { getWallet } from "../utils/wallet";
+import { getWalletOrSigner } from "../utils/wallet";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
@@ -13,13 +13,11 @@ export const issueToTokenRegistry = async ({
   to,
   tokenId,
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: TokenRegistryIssueCommand): Promise<TransactionReceipt> => {
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   if (dryRun) {
     const tokenRegistry = await TradeTrustErc721Factory.connect(address, wallet);
     await dryRunMode({

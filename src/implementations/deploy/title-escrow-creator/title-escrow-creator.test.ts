@@ -79,7 +79,7 @@ describe("token-registry", () => {
           dryRun: false,
         })
       ).rejects.toThrow(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
+        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
     });
   });

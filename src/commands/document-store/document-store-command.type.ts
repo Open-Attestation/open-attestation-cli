@@ -1,11 +1,13 @@
-import { GasOption, NetworkAndKeyOption } from "../shared";
+import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 
-export interface DocumentStoreIssueCommand extends NetworkAndKeyOption, GasOption {
-  address: string;
-  hash: string;
-}
+export type DocumentStoreIssueCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    hash: string;
+  };
 
-export interface DocumentStoreRevokeCommand extends NetworkAndKeyOption, GasOption {
-  address: string;
-  hash: string;
-}
+export type DocumentStoreRevokeCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    hash: string;
+  };

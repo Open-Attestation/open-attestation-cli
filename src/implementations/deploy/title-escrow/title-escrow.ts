@@ -1,5 +1,5 @@
 import { TitleEscrowFactory } from "@govtechsg/token-registry";
-import { getWallet } from "../../utils/wallet";
+import { getWalletOrSigner } from "../../utils/wallet";
 import signale from "signale";
 import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "@ethersproject/providers";
@@ -30,11 +30,9 @@ export const deployTitleEscrow = async ({
   holder,
   titleEscrowFactory,
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: DeployTitleEscrowCommand): Promise<TransactionReceipt> => {
   const titleEscrowFactoryAddress = titleEscrowFactory || getDefaultEscrowFactory(network);
   validateAddress(tokenRegistry);
@@ -52,7 +50,7 @@ export const deployTitleEscrow = async ({
     process.exit(0);
   }
 
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   const gasPrice = await wallet.provider.getGasPrice();
 
   const factory = new TitleEscrowFactory(wallet);

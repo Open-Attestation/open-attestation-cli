@@ -1,7 +1,8 @@
-import { GasOption, NetworkAndKeyOption } from "../shared";
+import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 
-export interface TokenRegistryIssueCommand extends NetworkAndKeyOption, GasOption {
-  address: string;
-  to: string;
-  tokenId: string;
-}
+export type TokenRegistryIssueCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    to: string;
+    tokenId: string;
+  };

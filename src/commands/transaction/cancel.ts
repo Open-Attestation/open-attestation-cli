@@ -1,9 +1,9 @@
 import { Argv } from "yargs";
-import { error, info } from "signale";
+import { error } from "signale";
 import { getLogger } from "../../logger";
 import { cancelTransaction } from "../../implementations/transaction/transaction";
 import { TransactionCancelCommand } from "./transaction-command.type";
-import { withNetworkAndKeyOption } from "../shared";
+import { withNetworkAndWalletSignerOption } from "../shared";
 
 const { trace } = getLogger("transaction:cancel");
 
@@ -12,7 +12,7 @@ export const command = "cancel [options]";
 export const describe = "Cancel pending transaction on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndKeyOption(
+  withNetworkAndWalletSignerOption(
     yargs
       .option("nonce", {
         description: "Pending transaction nonce",
@@ -36,10 +36,7 @@ export const builder = (yargs: Argv): Argv =>
 export const handler = async (args: TransactionCancelCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
-    info(`Wallet detected at ${args.encryptedWalletPath}`);
-    await cancelTransaction({
-      ...args,
-    });
+    await cancelTransaction(args);
   } catch (e) {
     error(e.message);
   }

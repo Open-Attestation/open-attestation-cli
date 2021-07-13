@@ -1,8 +1,8 @@
 import { PrivateKeyOption } from "../shared";
 
-export interface EncryptWalletCommand extends PrivateKeyOption {
+export type EncryptWalletCommand = PrivateKeyOption & {
   outputFile: string;
-}
+};
 
 export interface CreateWalletCommand {
   outputFile: string;

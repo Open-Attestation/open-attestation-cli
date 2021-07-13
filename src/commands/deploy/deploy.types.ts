@@ -1,19 +1,22 @@
-import { GasOption, NetworkAndKeyOption } from "../shared";
+import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 
-export interface DeployDocumentStoreCommand extends NetworkAndKeyOption, GasOption {
-  storeName: string;
-}
+export type DeployDocumentStoreCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    storeName: string;
+  };
 
-export interface DeployTokenRegistryCommand extends NetworkAndKeyOption, GasOption {
-  registryName: string;
-  registrySymbol: string;
-}
+export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    registryName: string;
+    registrySymbol: string;
+  };
 
-export interface DeployTitleEscrowCreatorCommand extends NetworkAndKeyOption, GasOption {}
+export type DeployTitleEscrowCreatorCommand = NetworkAndWalletSignerOption & GasOption;
 
-export interface DeployTitleEscrowCommand extends NetworkAndKeyOption, GasOption {
-  tokenRegistry: string;
-  beneficiary: string;
-  holder: string;
-  titleEscrowFactory?: string;
-}
+export type DeployTitleEscrowCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    tokenRegistry: string;
+    beneficiary: string;
+    holder: string;
+    titleEscrowFactory?: string;
+  };

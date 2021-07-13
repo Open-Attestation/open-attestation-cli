@@ -339,7 +339,7 @@ When interacting with blockchain you will likely need to provide a way to access
 1. Using `encrypted-wallet-path` option where you provide a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt) (recommended).
 1. Using `OA_PRIVATE_KEY` environment variable holding the private key.
 1. Using `--key-file` option where you provide a path to a file containing the private key.
-1. Using `--key` option where you provide the private key directly to the command (**Note that for this method, the private key may be stored in the machine's bash history**).
+1. Using `--key` option where you provide the private key directly to the command (**Note that in this case, the private key may be stored in the machine's bash history**).
 
 Example:
 
@@ -362,6 +362,29 @@ rm ./examples/sample-key
 # Providing the key to the command
 open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
+
+### List of features with the options available
+
+|                             | Private Key | Wallet | Aws Kms |
+| --------------------------- | ----------- | ------ | ------- |
+| Create config               | ❎          | ✔️     | ❎      |
+| Deploy document store       | ✔           | ✔      | ✔      |
+| Deploy title escrow         | ✔           | ✔      | ✔      |
+| Deploy title escrow creator | ✔           | ✔      | ✔      |
+| Deploy token registry       | ✔           | ✔      | ✔      |
+| Dns txt create              | ❎          | ❎     | ❎      |
+| Dns txt get                 | ❎          | ❎     | ❎      |
+| Document store issue        | ✔           | ✔      | ✔      |
+| Document store revoke       | ✔           | ✔      | ✔      |
+| Token registry issue        | ✔           | ✔      | ✔      |
+| Token registry mint         | ✔           | ✔      | ✔      |
+| Transaction cancel          | ✔           | ✔      | ✔      |
+| Wallet create               | ❎          | ❎     | ❎      |
+| Wallet decrypt              | ❎          | ❎     | ❎      |
+| Wallet encrypt              | ✔           | ❎     | ❎      |
+| Filter (obfuscate) document | ❎          | ❎     | ❎      |
+| Sign document               | ✔           | ❎     | ❎      |
+| Verify document             | ❎          | ❎     | ❎      |
 
 ## Config file
 
@@ -439,25 +462,28 @@ npm run dev -- <command> <options>
 npm run test
 ```
 
-## Performance testing 
+## Performance testing
 
 To run performance testing for OA functionality
 
 ### Wrap
 
-Monitor the response time for batched documents wrapping. 
+Monitor the response time for batched documents wrapping.
 
 The Default command will testing: 2 documents without base64 image in 1 iteration.
+
 ```
 npm run benchmark
 ```
 
 The number of documents and iteration can be modified using these options.
+
 - First argument : Number of document for batched wrapping
 - Second argument : Number of performance test iteration to achieve higher accuracy
 - Third argument : File path for testing ( For window user, please encase the path in " " quotation marks )
 
 Example:
+
 ```
 npm run benchmark 4 1 performance-tests/unwrapped_document_wImage.json
 ```

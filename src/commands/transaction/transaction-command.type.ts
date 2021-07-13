@@ -1,7 +1,7 @@
-import { NetworkAndKeyOption } from "../shared";
+import { NetworkAndWalletSignerOption } from "../shared";
 
-export interface TransactionCancelCommand extends NetworkAndKeyOption {
+export type TransactionCancelCommand = NetworkAndWalletSignerOption & {
   nonce?: string;
   gasPrice?: string;
   transactionHash?: string;
-}
+};

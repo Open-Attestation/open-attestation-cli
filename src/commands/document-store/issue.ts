@@ -3,7 +3,7 @@ import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { issueToDocumentStore } from "../../implementations/document-store/issue";
 import { DocumentStoreIssueCommand } from "./document-store-command.type";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("document-store:issue");
@@ -14,7 +14,7 @@ export const describe = "Issue a hash to a document store deployed on the blockc
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("address", {
           alias: "a",
