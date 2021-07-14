@@ -68,7 +68,6 @@ export const getWalletOrSigner = async ({
       keyId: options.kmsKeyId,
     };
 
-    const provider = ethers.providers.getDefaultProvider("ropsten");
     const signer = new AwsKmsSigner(kmsCredentials).connect(provider);
     if (signer.provider) return signer as ConnectedSigner;
     throw new Error("Unable to attach the provider to the kms signer");
