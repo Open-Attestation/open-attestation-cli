@@ -3,23 +3,25 @@ import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWallet } from "../utils/wallet";
 import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
-
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { TradeTrustERC721 } from "@govtechsg/token-registry/dist/ts/contracts";
+import { Wallet } from "ethers";
 
 const { trace } = getLogger("token-registry:acceptSurrendered");
 
-export const retrieveLastBeneficiaryAndHolder = async (tokenRegistryInstance: any, tokenId: any, wallet: any) => {
+export const retrieveLastBeneficiaryAndHolder = async (
+  tokenRegistryInstance: TradeTrustERC721,
+  tokenId: string,
+  wallet: Wallet
+): Promise<{ lastBeneficiary: string; lastHolder: string }> => {
   // Fetch transfer logs from token registry
   const transferLogFilter = tokenRegistryInstance.filters.Transfer(null, null, tokenId);
   const logs = await tokenRegistryInstance.queryFilter(transferLogFilter, 0);
-  console.log(logs);
-  const lastTitleEscrowAddress = logs[logs.length - 1].args?.["from"];
-  console.log("TEST1: " + lastTitleEscrowAddress);
+  const lastTitleEscrowAddress = logs[logs.length - 1].args?.[0];
   const lastTitleEscrowInstance = await TitleEscrowFactory.connect(lastTitleEscrowAddress, wallet);
   const lastBeneficiary = await lastTitleEscrowInstance.beneficiary();
   const lastHolder = await lastTitleEscrowInstance.holder();
-  console.log("TEST2: " + lastBeneficiary + " AND " + lastHolder);
   return { lastBeneficiary, lastHolder };
 };
 
@@ -34,15 +36,13 @@ export const rejectSurrendered = async ({
   dryRun,
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
   if (dryRun) {
-    const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
-    const transferLogFilter = tokenRegistryInstance.filters.Transfer(null, null, tokenId);
-
-    const logs = await tokenRegistryInstance.queryFilter(transferLogFilter, 0);
-    const lastTitleEscrowAddress = logs[logs.length - 1].args?.["to"];
-    const lastTitleEscrowInstance = await TitleEscrowFactory.connect(lastTitleEscrowAddress, wallet);
-    const lastBeneficiary = await lastTitleEscrowInstance.beneficiary();
-    const lastHolder = await lastTitleEscrowInstance.holder();
+    const { lastBeneficiary, lastHolder } = await retrieveLastBeneficiaryAndHolder(
+      tokenRegistryInstance,
+      tokenId,
+      wallet
+    );
     await dryRunMode({
       gasPriceScale: gasPriceScale,
       estimatedGas: await tokenRegistryInstance.estimateGas.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId),
@@ -52,23 +52,11 @@ export const rejectSurrendered = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
-  // // Fetch transfer logs from token registry
-  // const transferLogFilter = tokenRegistryInstance.filters.Transfer(null, null, tokenId);
-  // const logs = await tokenRegistryInstance.queryFilter(transferLogFilter, 0);
-  // console.log(logs);
-  // const lastTitleEscrowAddress = logs[logs.length - 1].args?.["from"];
-  // console.log("TEST1: " + lastTitleEscrowAddress);
-  // const lastTitleEscrowInstance = await TitleEscrowFactory.connect(lastTitleEscrowAddress, wallet);
-  // const lastBeneficiary = await lastTitleEscrowInstance.beneficiary();
-  // const lastHolder = await lastTitleEscrowInstance.holder();
-  // console.log("TEST2: " + lastBeneficiary + " AND " + lastHolder);
   const { lastBeneficiary, lastHolder } = await retrieveLastBeneficiaryAndHolder(
     tokenRegistryInstance,
     tokenId,
     wallet
   );
-
   const transaction = await tokenRegistryInstance.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });

@@ -1,4 +1,4 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
@@ -22,18 +22,18 @@ describe("title-escrow", () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnectERC721: jest.Mock = mockedTradeTrustErc721Factory.connect;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore mock static method
     const mockDestroyToken = jest.fn();
-    mockDestroyToken.mockReturnValue({
-      hash: "hash",
-      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
-    });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedTradeTrustErc721Factory.mockReset();
       mockedConnectERC721.mockReset();
+
+      mockDestroyToken.mockReturnValue({
+        hash: "hash",
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
+      });
+
       mockedConnectERC721.mockReturnValue({
         destroyToken: mockDestroyToken,
       });

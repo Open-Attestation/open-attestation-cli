@@ -20,8 +20,8 @@ export const surrenderDocument = async ({
   dryRun,
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
   if (dryRun) {
-    const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
     const titleEscrowAddress = await tokenRegistryInstance.ownerOf(tokenId);
     const titleEscrow = await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
     await dryRunMode({
@@ -33,7 +33,6 @@ export const surrenderDocument = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
   const titleEscrowAddress = await tokenRegistryInstance.ownerOf(tokenId);
   const titleEscrow = await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
   const transaction = await titleEscrow.transferTo(tokenRegistry, { gasPrice: gasPrice.mul(gasPriceScale) });

@@ -29,11 +29,6 @@ describe("title-escrow", () => {
     const mockedOwnerOf = jest.fn();
     const mockTransferTo = jest.fn();
     const mockedTitleEscrowAddress = "0x2133";
-    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockTransferTo.mockReturnValue({
-      hash: "hash",
-      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
-    });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -41,12 +36,19 @@ describe("title-escrow", () => {
       mockedConnectERC721.mockReset();
       mockedTitleEscrowFactory.mockReset();
       mockedConnectTitleEscrowFactory.mockReset();
+
+      mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
+      mockTransferTo.mockReturnValue({
+        hash: "hash",
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
+      });
       mockedConnectERC721.mockReturnValue({
         ownerOf: mockedOwnerOf,
       });
       mockedConnectTitleEscrowFactory.mockReturnValue({
         transferTo: mockTransferTo,
       });
+
       mockedOwnerOf.mockClear();
       mockTransferTo.mockClear();
     });

@@ -1,4 +1,4 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWallet } from "../utils/wallet";
@@ -20,8 +20,8 @@ export const acceptSurrendered = async ({
   dryRun,
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
   if (dryRun) {
-    const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
     await dryRunMode({
       gasPriceScale: gasPriceScale,
       estimatedGas: await tokenRegistryInstance.estimateGas.destroyToken(tokenId),
@@ -31,10 +31,6 @@ export const acceptSurrendered = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
-  // const transferLogFilter = tokenRegistryInstance.filters.Transfer(null, null, tokenId);
-  // const logs = await tokenRegistryInstance.queryFilter(transferLogFilter, 0);
-  // console.log(logs);
   const transaction = await tokenRegistryInstance.destroyToken(tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
