@@ -1,12 +1,12 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { surrenderDocument } from "./surrender-document";
+import { acceptSurrendered } from "./acceptSurrendered";
 
 jest.mock("@govtechsg/token-registry");
 
-const surrenderDocumentParams: TitleEscrowSurrenderDocumentCommand = {
+const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
   tokenId: "0x12345",
   network: "ropsten",
@@ -17,54 +17,41 @@ const surrenderDocumentParams: TitleEscrowSurrenderDocumentCommand = {
 // TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
 // ideally must setup ganache, and run the function over it
 describe("title-escrow", () => {
-  describe("surrender transferable record", () => {
+  describe("accepts surrendered transferable record", () => {
     const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnectERC721: jest.Mock = mockedTradeTrustErc721Factory.connect;
-    const mockedTitleEscrowFactory: jest.Mock<TitleEscrowFactory> = TitleEscrowFactory as any;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore mock static method
-    const mockedConnectTitleEscrowFactory: jest.Mock = mockedTitleEscrowFactory.connect;
-    const mockedOwnerOf = jest.fn();
-    const mockTransferTo = jest.fn();
-    const mockedTitleEscrowAddress = "0x2133";
+    const mockDestroyToken = jest.fn();
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedTradeTrustErc721Factory.mockReset();
       mockedConnectERC721.mockReset();
-      mockedTitleEscrowFactory.mockReset();
-      mockedConnectTitleEscrowFactory.mockReset();
 
-      mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-      mockTransferTo.mockReturnValue({
+      mockDestroyToken.mockReturnValue({
         hash: "hash",
         wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
-      mockedConnectERC721.mockReturnValue({
-        ownerOf: mockedOwnerOf,
-      });
-      mockedConnectTitleEscrowFactory.mockReturnValue({
-        transferTo: mockTransferTo,
-      });
 
-      mockedOwnerOf.mockClear();
-      mockTransferTo.mockClear();
+      mockedConnectERC721.mockReturnValue({
+        destroyToken: mockDestroyToken,
+      });
+      mockDestroyToken.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
-      await surrenderDocument(surrenderDocumentParams);
+      await acceptSurrendered(acceptSurrenderedDocumentParams);
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
       expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
     });
 
     it("should take in the key from key file", async () => {
-      await surrenderDocument({
-        ...surrenderDocumentParams,
+      await acceptSurrendered({
+        ...acceptSurrenderedDocumentParams,
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
       });
 
@@ -72,20 +59,18 @@ describe("title-escrow", () => {
       expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
     });
 
-    it("should pass in the correct params and successfully surrender a transferable record", async () => {
+    it("should pass in the correct params and successfully accepts a surrendered transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await surrenderDocument({
-        ...surrenderDocumentParams,
+      await acceptSurrendered({
+        ...acceptSurrenderedDocumentParams,
         key: privateKey,
       });
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721).toHaveBeenCalledWith(surrenderDocumentParams.tokenRegistry, passedSigner);
-      expect(mockedOwnerOf).toHaveBeenCalledWith(surrenderDocumentParams.tokenId);
-      expect(mockedConnectTitleEscrowFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
-      expect(mockTransferTo).toHaveBeenCalledTimes(1);
+      expect(mockedConnectERC721).toHaveBeenCalledWith(acceptSurrenderedDocumentParams.tokenRegistry, passedSigner);
+      expect(mockDestroyToken).toHaveBeenCalledTimes(1);
     });
 
     it("should allow errors to bubble up", async () => {
@@ -93,11 +78,11 @@ describe("title-escrow", () => {
       mockedConnectERC721.mockImplementation(() => {
         throw new Error("An Error");
       });
-      await expect(surrenderDocument(surrenderDocumentParams)).rejects.toThrow("An Error");
+      await expect(acceptSurrendered(acceptSurrenderedDocumentParams)).rejects.toThrow("An Error");
     });
 
     it("should throw when keys are not found anywhere", async () => {
-      await expect(surrenderDocument(surrenderDocumentParams)).rejects.toThrow(
+      await expect(acceptSurrendered(acceptSurrenderedDocumentParams)).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
       );
     });

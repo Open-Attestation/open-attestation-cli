@@ -1,4 +1,4 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWallet } from "../utils/wallet";
@@ -7,9 +7,9 @@ import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("token-registry:surrenderDocument");
+const { trace } = getLogger("title-escrow:acceptSurrendered");
 
-export const surrenderDocument = async ({
+export const acceptSurrendered = async ({
   tokenRegistry,
   tokenId,
   network,
@@ -22,20 +22,16 @@ export const surrenderDocument = async ({
   const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
   const tokenRegistryInstance = await TradeTrustErc721Factory.connect(tokenRegistry, wallet);
   if (dryRun) {
-    const titleEscrowAddress = await tokenRegistryInstance.ownerOf(tokenId);
-    const titleEscrow = await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await titleEscrow.estimateGas.transferTo(tokenRegistry),
+      estimatedGas: await tokenRegistryInstance.estimateGas.destroyToken(tokenId),
       network,
     });
     process.exit(0);
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const titleEscrowAddress = await tokenRegistryInstance.ownerOf(tokenId);
-  const titleEscrow = await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
-  const transaction = await titleEscrow.transferTo(tokenRegistry, { gasPrice: gasPrice.mul(gasPriceScale) });
+  const transaction = await tokenRegistryInstance.destroyToken(tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

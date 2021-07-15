@@ -2,7 +2,7 @@ import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-re
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { rejectSurrendered } from "./reject-surrendered";
+import { rejectSurrendered } from "./rejectSurrendered";
 
 jest.mock("@govtechsg/token-registry");
 

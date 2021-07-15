@@ -3,10 +3,10 @@ import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
 import { TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
-import { acceptSurrendered } from "../../implementations/title-escrow/accept-surrendered";
+import { acceptSurrendered } from "../../implementations/title-escrow/acceptSurrendered";
 import { getEtherscanAddress } from "../../utils";
 
-const { trace } = getLogger("surrender:title-escrow");
+const { trace } = getLogger("title-escrow:accept-surrendered");
 
 export const command = "accept-surrendered [options]";
 
@@ -20,7 +20,6 @@ export const builder = (yargs: Argv): Argv =>
           alias: "r",
           description: "Address of the token registry that the transferable record was issued from",
           type: "string",
-          normalize: true,
           required: true,
         })
         .option("tokenId", {
@@ -31,16 +30,13 @@ export const builder = (yargs: Argv): Argv =>
     )
   );
 
-export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promise<string | undefined> => {
+export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Accepting surrendered document`);
     const transaction = await acceptSurrendered(args);
     success(`Surrendered transferable record with hash ${args.tokenId} has been accepted.`);
-    info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${transaction.contractAddress}`
-    );
-    return transaction.contractAddress;
+    info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transaction.transactionHash}`);
   } catch (e) {
     error(e.message);
   }

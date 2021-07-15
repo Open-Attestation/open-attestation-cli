@@ -8,9 +8,9 @@ import { TransactionReceipt } from "@ethersproject/providers";
 import { TradeTrustERC721 } from "@govtechsg/token-registry/dist/ts/contracts";
 import { Wallet } from "ethers";
 
-const { trace } = getLogger("token-registry:acceptSurrendered");
+const { trace } = getLogger("title-escrow:acceptSurrendered");
 
-export const retrieveLastBeneficiaryAndHolder = async (
+const retrieveLastBeneficiaryAndHolder = async (
   tokenRegistryInstance: TradeTrustERC721,
   tokenId: string,
   wallet: Wallet
