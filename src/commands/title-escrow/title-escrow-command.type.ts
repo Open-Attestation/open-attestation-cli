@@ -5,3 +5,7 @@ export interface TitleEscrowChangeHolderCommand extends NetworkAndKeyOption, Gas
   to: string;
   tokenId: string;
 }
+export interface TitleEscrowSurrenderDocumentCommand extends NetworkAndKeyOption, GasOption {
+  tokenRegistry: string;
+  tokenId: string;
+}
