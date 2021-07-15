@@ -443,12 +443,112 @@ This command will allow the owner of a transferable record to change its holder.
 ```bash
 open-attestation title-escrow change-holder --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
 ```
+
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
 open-attestation title-escrow change-holder --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully changed to holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
+### Nominate Change of Owner
+
+This command will allow the owner of the transferable record to nominate a new owner of the transferable record.
+**This command will fail if you are not the owner of the transferable record.**
+
+```bash
+open-attestation title-escrow nominate-change-owner --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow nominate-change-owner --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newOwner 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully nominated to new owner with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
+### Endorse Transfer of Owner
+
+This command will allow the holder of the transferable record to endorse the transfer to an approved owner and approved holder of the transferable record.
+**This command will fail if there is no approved owner or holder record on the transferable record.**
+
+```bash
+open-attestation title-escrow endorse-transfer-owner --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow endorse-transfer-owner --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to approved owner at 0x2f60375e8144e16Adf1979936301D8341D58C36C and approved holder at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
+### Endorse Change of Owner
+
+This command will allow the owner of the transferable record to endorse the change of owner to a new owner and new holder of the transferable record.
+**This command will fail if the provided holder and owner's addresses are the same as the current owner and current holder's addresses.**
+
+```bash
+open-attestation title-escrow endorse-change-owner --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> --newHolder <NEW_HOLDER_ADDRESS> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow endorse-change-owner --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newOwner 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 --newHolder 0x2f60375e8144e16Adf1979936301D8341D58C36C
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to new owner with address 0x2f60375e8144e16Adf1979936301D8341D58C36C and new holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
+### Surrender Document
+
+This command will allow the entity (who is both an owner and holder) to surrender it's transferable record to the token registry.
+
+```bash
+open-attestation title-escrow surrender --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow reject-surrendered --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network ropsten
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been surrendered.
+```
+
+### Reject Surrendered Document
+
+This command will allow the token registry to reject a surrendered transferable record.
+
+```bash
+open-attestation title-escrow reject-surrendered --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow reject-surrendered --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network ropsten
+
+✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
+```
+
+### Accept Surrendered Document
+
+This command will allow the token registry to accept a surrendered transferable record.
+
+```bash
+open-attestation title-escrow accept-surrendered --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation title-escrow accept-surrendered --address 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network ropsten
+
+✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
 ```
 
 ## Help

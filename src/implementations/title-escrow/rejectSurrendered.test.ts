@@ -1,13 +1,13 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
-import { TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { rejectSurrendered } from "./rejectSurrendered";
 
 jest.mock("@govtechsg/token-registry");
 
 const rejectSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
-  tokenRegistry: "0x1122",
+  address: "0x1122",
   tokenId: "0x12345",
   network: "ropsten",
   gasPriceScale: 1,
@@ -106,10 +106,7 @@ describe("title-escrow", () => {
       const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721Factory).toHaveBeenCalledWith(
-        rejectSurrenderedDocumentParams.tokenRegistry,
-        passedSigner
-      );
+      expect(mockedConnectERC721Factory).toHaveBeenCalledWith(rejectSurrenderedDocumentParams.address, passedSigner);
       expect(mockedConnectTitleEscrowFactory).toHaveBeenCalledWith(mockedLastTitleEscrowAddress, passedSigner);
       expect(mockedBeneficiary).toHaveBeenCalledTimes(1);
       expect(mockedHolder).toHaveBeenCalledTimes(1);

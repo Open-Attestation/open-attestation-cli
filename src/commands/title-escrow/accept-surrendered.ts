@@ -2,7 +2,7 @@ import { Argv } from "yargs";
 import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
-import { TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
+import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
 import { acceptSurrendered } from "../../implementations/title-escrow/acceptSurrendered";
 import { getEtherscanAddress } from "../../utils";
 
@@ -16,11 +16,11 @@ export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndKeyOption(
       yargs
-        .option("token-registry", {
-          alias: "r",
+        .option("address", {
+          alias: "a",
           description: "Address of the token registry that the transferable record was issued from",
           type: "string",
-          required: true,
+          demandOption: true,
         })
         .option("tokenId", {
           description: "Hash of document to surrender",
