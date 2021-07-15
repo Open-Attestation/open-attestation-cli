@@ -3,7 +3,7 @@ import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
 import { endorseChangeOfOwner } from "../../implementations/title-escrow/endorseChangeOfOwner";
 import { TitleEscrowEndorseChangeOfOwnerCommand } from "./title-escrow-command.type";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:endorse-change-of-owner");
@@ -14,7 +14,7 @@ export const describe = "Endorses the change of owner of transferable record to 
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("address", {
           alias: "a",

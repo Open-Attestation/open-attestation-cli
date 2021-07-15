@@ -19,7 +19,7 @@ const getKeyFromFile = (file?: string): undefined | string => {
   return file ? readFileSync(file).toString().trim() : undefined;
 };
 
-type ConnectedSigner = Signer & {
+export type ConnectedSigner = Signer & {
   readonly provider: Provider;
   readonly publicKey?: never;
   readonly privateKey?: never;

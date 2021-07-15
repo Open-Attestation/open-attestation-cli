@@ -1,11 +1,12 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import signale from "signale";
+import { ConnectedSigner } from "../utils/wallet";
 
 interface ConnectToTitleEscrowArgs {
   tokenId: string;
   address: string;
-  wallet: Wallet;
+  wallet: Wallet | ConnectedSigner;
 }
 
 type TitleEscrowInstanceType = ReturnType<typeof TitleEscrowFactory.connect>;

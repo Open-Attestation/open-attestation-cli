@@ -1,6 +1,6 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
-import { getWallet } from "../utils/wallet";
+import { getWalletOrSigner } from "../utils/wallet";
 import { connectToTitleEscrow, validateNominateOwner } from "./helpers";
 import { TitleEscrowNominateChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
@@ -14,13 +14,11 @@ export const nominateChangeOfOwner = async ({
   tokenId,
   newOwner,
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: TitleEscrowNominateChangeOfOwnerCommand): Promise<TransactionReceipt> => {
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   if (dryRun) {
     const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
     const holder = await titleEscrow.holder();

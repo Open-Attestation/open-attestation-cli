@@ -3,7 +3,7 @@ import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
 import { endorseTransferOfOwner } from "../../implementations/title-escrow/endorseTransferOfOwner";
 import { BaseTitleEscrowCommand as TitleEscrowEndorseTransferOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:endorse-transfer-of-owner");
@@ -15,7 +15,7 @@ export const describe =
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("address", {
           alias: "a",

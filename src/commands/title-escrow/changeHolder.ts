@@ -3,7 +3,7 @@ import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
 import { changeHolderOfTitleEscrow } from "../../implementations/title-escrow/changeHolder";
 import { TitleEscrowChangeHolderCommand } from "./title-escrow-command.type";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:change-holder");
@@ -14,7 +14,7 @@ export const describe = "Changes the holder of the transferable record to anothe
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("address", {
           alias: "a",

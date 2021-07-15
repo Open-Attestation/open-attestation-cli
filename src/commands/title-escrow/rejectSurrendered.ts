@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
-import { withGasPriceOption, withNetworkAndKeyOption } from "../shared";
-import { TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
+import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
+import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
 import { rejectSurrendered } from "../../implementations/title-escrow/rejectSurrendered";
 import { getEtherscanAddress } from "../../utils";
 
@@ -14,7 +14,7 @@ export const describe = "Rejects a surrendered transferable record on the blockc
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
-    withNetworkAndKeyOption(
+    withNetworkAndWalletSignerOption(
       yargs
         .option("address", {
           alias: "a",

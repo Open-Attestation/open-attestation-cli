@@ -1,7 +1,7 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
-import { getWallet } from "../utils/wallet";
+import { ConnectedSigner, getWalletOrSigner } from "../utils/wallet";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
@@ -13,7 +13,7 @@ const { trace } = getLogger("title-escrow:acceptSurrendered");
 const retrieveLastBeneficiaryAndHolder = async (
   tokenRegistryInstance: TradeTrustERC721,
   tokenId: string,
-  wallet: Wallet
+  wallet: Wallet | ConnectedSigner
 ): Promise<{ lastBeneficiary: string; lastHolder: string }> => {
   // Fetch transfer logs from token registry
   const transferLogFilter = tokenRegistryInstance.filters.Transfer(null, null, tokenId);
@@ -29,13 +29,11 @@ export const rejectSurrendered = async ({
   address,
   tokenId,
   network,
-  key,
-  keyFile,
   gasPriceScale,
-  encryptedWalletPath,
   dryRun,
+  ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
-  const wallet = await getWallet({ key, keyFile, network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistryInstance = await TradeTrustErc721Factory.connect(address, wallet);
   if (dryRun) {
     const { lastBeneficiary, lastHolder } = await retrieveLastBeneficiaryAndHolder(
