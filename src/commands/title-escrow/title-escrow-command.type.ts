@@ -1,11 +1,22 @@
 import { GasOption, NetworkAndKeyOption } from "../shared";
 
-export interface TitleEscrowChangeHolderCommand extends NetworkAndKeyOption, GasOption {
+export interface BaseTitleEscrowCommand extends NetworkAndKeyOption, GasOption {
   address: string;
-  to: string;
   tokenId: string;
 }
 export interface TitleEscrowSurrenderDocumentCommand extends NetworkAndKeyOption, GasOption {
   tokenRegistry: string;
   tokenId: string;
+}
+export interface TitleEscrowChangeHolderCommand extends BaseTitleEscrowCommand {
+  to: string;
+}
+
+export interface TitleEscrowEndorseChangeOfOwnerCommand extends BaseTitleEscrowCommand {
+  newHolder: string;
+  newOwner: string;
+}
+
+export interface TitleEscrowNominateChangeOfOwnerCommand extends BaseTitleEscrowCommand {
+  newOwner: string;
 }

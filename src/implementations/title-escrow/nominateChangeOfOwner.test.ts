@@ -1,13 +1,13 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
-import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { changeHolderOfTitleEscrow } from "./changeHolder";
+import { TitleEscrowNominateChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { nominateChangeOfOwner } from "./nominateChangeOfOwner";
 
 jest.mock("@govtechsg/token-registry");
 
-const changeHolderParams: TitleEscrowChangeHolderCommand = {
-  to: "0xabcd",
+const nominateChangeOfOwnerParams: TitleEscrowNominateChangeOfOwnerCommand = {
+  newOwner: "0fosui",
   tokenId: "0xzyxw",
   address: "0x1234",
   network: "ropsten",
@@ -18,7 +18,7 @@ const changeHolderParams: TitleEscrowChangeHolderCommand = {
 // TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
 // ideally must setup ganache, and run the function over it
 describe("title-escrow", () => {
-  describe("change holder of transferable record", () => {
+  describe("nominate change of owner of transferable record", () => {
     const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -28,18 +28,26 @@ describe("title-escrow", () => {
     // @ts-ignore mock static method
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
     const mockedOwnerOf = jest.fn();
-    const mockChangeHolder = jest.fn();
+    const mockApproveNewTransferTargets = jest.fn();
     const mockedTitleEscrowAddress = "0x2133";
-    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockChangeHolder.mockReturnValue({
-      hash: "hash",
-      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
-    });
+    const mockedBeneficiary = "0xdssfs";
+    const mockedHolder = "0xdsfls";
+    const mockGetBeneficiary = jest.fn();
+    const mockGetHolder = jest.fn();
+    mockGetBeneficiary.mockResolvedValue(mockedBeneficiary);
+    mockGetHolder.mockResolvedValue(mockedHolder);
     mockedConnectERC721.mockReturnValue({
       ownerOf: mockedOwnerOf,
     });
     mockedConnectTokenFactory.mockReturnValue({
-      changeHolder: mockChangeHolder,
+      approveNewTransferTargets: mockApproveNewTransferTargets,
+      beneficiary: mockGetBeneficiary,
+      holder: mockGetHolder,
+    });
+    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
+    mockApproveNewTransferTargets.mockReturnValue({
+      hash: "hash",
+      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
 
     beforeEach(() => {
@@ -49,21 +57,23 @@ describe("title-escrow", () => {
       mockedTokenFactory.mockClear();
       mockedConnectTokenFactory.mockClear();
       mockedOwnerOf.mockClear();
-      mockChangeHolder.mockClear();
+      mockApproveNewTransferTargets.mockClear();
+      mockGetBeneficiary.mockClear();
+      mockGetHolder.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
-      await changeHolderOfTitleEscrow(changeHolderParams);
+      await nominateChangeOfOwner(nominateChangeOfOwnerParams);
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
       expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
     });
 
     it("should take in the key from key file", async () => {
-      await changeHolderOfTitleEscrow({
-        ...changeHolderParams,
+      await nominateChangeOfOwner({
+        ...nominateChangeOfOwnerParams,
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
       });
 
@@ -71,20 +81,33 @@ describe("title-escrow", () => {
       expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
     });
 
-    it("should pass in the correct params and call the following procedures to invoke a change in holder of a transferable record", async () => {
+    it("should pass in the correct params and call the following procedures to invoke an nomination of change of owner of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await changeHolderOfTitleEscrow({
-        ...changeHolderParams,
+      await nominateChangeOfOwner({
+        ...nominateChangeOfOwnerParams,
         key: privateKey,
       });
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721).toHaveBeenCalledWith(changeHolderParams.address, passedSigner);
-      expect(mockedOwnerOf).toHaveBeenCalledWith(changeHolderParams.tokenId);
+      expect(mockedConnectERC721).toHaveBeenCalledWith(nominateChangeOfOwnerParams.address, passedSigner);
+      expect(mockedOwnerOf).toHaveBeenCalledWith(nominateChangeOfOwnerParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
-      expect(mockChangeHolder).toHaveBeenCalledTimes(1);
+      expect(mockGetHolder).toHaveBeenCalledTimes(1);
+      expect(mockGetBeneficiary).toHaveBeenCalledTimes(1);
+      expect(mockApproveNewTransferTargets).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw an error if new owner addresses is the same as current owner", async () => {
+      mockGetBeneficiary.mockReturnValue(nominateChangeOfOwnerParams.newOwner);
+      const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
+      await expect(
+        nominateChangeOfOwner({
+          ...nominateChangeOfOwnerParams,
+          key: privateKey,
+        })
+      ).rejects.toThrow("new owner address is the same as the current owner address");
     });
 
     it("should allow errors to bubble up", async () => {
@@ -92,11 +115,11 @@ describe("title-escrow", () => {
       mockedConnectERC721.mockImplementation(() => {
         throw new Error("An Error");
       });
-      await expect(changeHolderOfTitleEscrow(changeHolderParams)).rejects.toThrow("An Error");
+      await expect(nominateChangeOfOwner(nominateChangeOfOwnerParams)).rejects.toThrow("An Error");
     });
 
     it("should throw when keys are not found anywhere", async () => {
-      await expect(changeHolderOfTitleEscrow(changeHolderParams)).rejects.toThrow(
+      await expect(nominateChangeOfOwner(nominateChangeOfOwnerParams)).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
       );
     });
