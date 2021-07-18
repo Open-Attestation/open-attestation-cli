@@ -13,6 +13,8 @@
     "build": "npm run clean && npm run build:cjs && npm run build:type",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --project ./tsconfig.prod.json",
     "build:type": "tsc -d --emitDeclarationOnly --outDir dist/types",
+    "webpack": "rm -rf build/ && webpack",
+    "pkg": "pkg ./package.json --out-path dist/@govtechsg",
     "clean": "rm -rf dist/",
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",
@@ -25,8 +27,7 @@
     "benchmark:full": "npm run benchmark:make-certs && npm run benchmark:run && npm run benchmark:clean",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
-    "webpack": "webpack"
+    "benchmark": "ts-node performance-tests/wrap-performance-test.ts"
   },
   "author": "",
   "devDependencies": {

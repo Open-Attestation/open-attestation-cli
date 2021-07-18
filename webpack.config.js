@@ -23,7 +23,7 @@ const walk = (root) => {
       walk(abspath);
     }
   }
-  
+
 }
 
 walk('./src/commands');
@@ -31,7 +31,7 @@ walk('./src/commands');
 const entryObj = {};
 
 for (let file of filepaths) {
-  let key = file.replace('ts', '');
+  let key = file.replace('.ts', '');
   key = key.replace('/src', '');
   entryObj[key] = file;
 }
