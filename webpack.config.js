@@ -2,6 +2,7 @@
 
 const path = require("path");
 var fs = require('fs');
+const webpack = require('webpack');
 
 let filepaths = [];
 
@@ -28,6 +29,8 @@ const walk = (root) => {
 
 walk('./src/commands');
 
+filepaths.push("./src/index.ts")
+
 const entryObj = {};
 
 for (let file of filepaths) {
@@ -47,14 +50,13 @@ const config = {
     path: path.resolve(__dirname, "build"),
   },
   plugins: [
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+    new webpack.BannerPlugin({banner: '#!/usr/bin/env node', raw: true, test: /index.(js|ts)/})
   ],
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/i,
-        loader: "ts-loader",
+        use: ["ts-loader", "shebang-loader"],
         exclude: ["/node_modules/"],
       },
       {
@@ -85,7 +87,7 @@ const config = {
       "child_process": false,
       "readline": false,
     }
-  },
+  }
 };
 
 module.exports = () => {
