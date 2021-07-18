@@ -8,24 +8,31 @@ let filepaths = [];
 const walk = (root) => {
   let currentPaths = fs.readdirSync(root);
   for (let path of currentPaths) {
+    const abspath = `${root}/${path}`;
     const isFile = /.*\.(ts|js|json)$/.test(path);
-    const abspath = `${root}/${path}`
-    if (isFile) {
+    // ignore type files, e.g. foo.type(s).ts
+    const isTypeFile = /\.type/.test(path);
+
+    if (isFile && !isTypeFile) {
       filepaths.push(abspath);
-    } else {
-      // if not isFile, then isDirectory
+      continue;
+    }
+
+    const isDirectory = !isFile;
+    if (isDirectory) {
       walk(abspath);
     }
   }
+  
 }
 
 walk('./src/commands');
-console.log(filepaths);
 
-var entryObj = {};
+const entryObj = {};
 
-for (var file of filepaths) {
-  var key = file.replace('ts', '');
+for (let file of filepaths) {
+  let key = file.replace('ts', '');
+  key = key.replace('/src', '');
   entryObj[key] = file;
 }
 
