@@ -5,16 +5,17 @@
   "main": "index.ts",
   "types": "dist/types/index.d.ts",
   "bin": {
-    "open-attestation": "dist/cjs/index.js",
-    "oa": "dist/cjs/index.js"
+    "open-attestation": "experiment/cjs/index.js",
+    "oa": "experiment/cjs/index.js"
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "npm run clean && npm run build:cjs && npm run build:type",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --project ./tsconfig.prod.json",
     "build:type": "tsc -d --emitDeclarationOnly --outDir dist/types",
-    "webpack": "rm -rf build/ && webpack",
     "pkg": "pkg ./package.json --out-path dist/@govtechsg",
+    "experiment:webpack": "rm -rf experiment/ && webpack",
+    "experiment:pkg": "pkg ./package.json --out-path experiment/@govtechsg",
     "clean": "rm -rf dist/",
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",

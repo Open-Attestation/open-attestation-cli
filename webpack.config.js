@@ -35,7 +35,7 @@ const entryObj = {};
 
 for (let file of filepaths) {
   let key = file.replace('.ts', '');
-  key = key.replace('/src', '');
+  key = key.replace('/src', '/cjs');
   entryObj[key] = file;
 }
 
@@ -47,7 +47,7 @@ const config = {
   entry: entryObj,
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, "experiment"),
   },
   plugins: [
     new webpack.BannerPlugin({banner: '#!/usr/bin/env node', raw: true, test: /index.(js|ts)/})
