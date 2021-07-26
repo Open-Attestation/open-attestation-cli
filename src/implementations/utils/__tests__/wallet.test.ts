@@ -34,16 +34,6 @@ describe("wallet", () => {
     expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
-  it("should return the signer when providing aws kms information", async () => {
-    promptMock.mockReturnValue({ secretAccessKey: "5TQto/r7ebS7rZRwavyi9qhxdWdDEoNVYTduFtEA" });
-    const wallet = await getWalletOrSigner({
-      network: "ropsten",
-      accessKeyId: "AKIA2VR2E5NDC5GVCCG5",
-      region: "ap-southeast-1",
-      kmsKeyId: "arn:aws:kms:ap-southeast-1:733487622982:key/1de6b2af-6229-4ab1-88aa-c42bcb2bb312",
-    });
-    expect(await wallet.getAddress()).toStrictEqual("0x83a07367b666b7c99b59fa62a3f360f667601cf9");
-  });
   it("should return the wallet when providing an encrypted wallet", async () => {
     promptMock.mockReturnValue({ password: "password123" });
 
