@@ -48,4 +48,4 @@ For each test we will only note the average duration.
 | --------- | ------ | ------ | ------- | ------- | --------- | --------- |
 | Machine 1 | 5.17s  | 32.14s | 170.59s | 338.51s | 2 239.80s | NA        |
 | Machine 2 | 2.48s  | 22.77s | 119.81s | 239.15s | 1 511.12s | NA        |
-| Machine 3 | 2.82s  | 28.80s | 150.77s | 412.93s | 1 250.59s | NA        |
+| Machine 3 | 2.82s  | 28.80s | 150.77s | 412.93s | 2 781.98s | NA        |
