@@ -14,6 +14,11 @@ We ran the performance tests on the following machines:
   - Intel© Core™ i7-8750H CPU @ 2.20GHz × 6
   - 32GB RAM
   - NVIDIA Corporation GP107M (GeForce GTX 1050 Ti Mobile)
+- Machine 3:
+  - Microsoft Window 10 Pro
+  - Intel© Core™ i5-8400 CPU @ 2.80GHz × 6
+  - 16GB RAM
+  - NVIDIA Corporation GeForce GTX 1050 Ti
 
 ## Parameters
 
@@ -31,10 +36,11 @@ For each test we will only note the average duration.
 
 ### Document without an image (`unwrapped_document.json`)
 
-|           | 1 000 | 10 000 | 50 000 | 100 000 | 500 000 | 1 000 000 |
-| --------- | ----- | ------ | ------ | ------- | ------- | --------- |
-| Machine 1 | 2.24s | 14.45s | 67.84s | 184.26s | 898.89s | NA        |
-| Machine 2 | 0.56s | 5.20s  | 25.69s | 57.35s  | 320.14s | 681.89s   |
+|           | 1 000 | 10 000 | 50 000 | 100 000 | 500 000   | 1 000 000  |
+| --------- | ----- | ------ | ------ | ------- | --------- | ---------- |
+| Machine 1 | 2.24s | 14.45s | 67.84s | 184.26s |   898.89s | NA         |
+| Machine 2 | 0.56s | 5.20s  | 25.69s | 57.35s  |   320.14s | 681.89s    |
+| Machine 3 | 1.46s | 15.82s | 77.54s | 151.24s | 1 250.59s | 3 671.40s  |
 
 ### Document with an image (`unwrapped_document_wImage.json`)
 
@@ -42,3 +48,4 @@ For each test we will only note the average duration.
 | --------- | ------ | ------ | ------- | ------- | --------- | --------- |
 | Machine 1 | 5.17s  | 32.14s | 170.59s | 338.51s | 2 239.80s | NA        |
 | Machine 2 | 2.48s  | 22.77s | 119.81s | 239.15s | 1 511.12s | NA        |
+| Machine 3 | 2.82s  | 28.80s | 150.77s | 412.93s | 2 781.98s | NA        |
