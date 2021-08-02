@@ -11,3 +11,9 @@ export type DocumentStoreRevokeCommand = NetworkAndWalletSignerOption &
     address: string;
     hash: string;
   };
+
+export type DocumentStoreTransferOwnershipCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    newOwner: string;
+  };
