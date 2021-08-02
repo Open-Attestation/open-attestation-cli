@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 import signale from "signale";
-import { VerifyCommand } from "./command-types";
+import { VerifyCommand } from "./command.types";
 import {
   isValid,
   openAttestationVerifiers,
