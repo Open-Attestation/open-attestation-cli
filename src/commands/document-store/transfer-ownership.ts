@@ -2,7 +2,7 @@ import { Argv } from "yargs";
 import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { DocumentStoreTransferOwnershipCommand } from "./document-store-command.type";
-import { transferOwnershipToDocumentStore } from "../../implementations/document-store/transfer-ownership";
+import { transferDocumentStoreOwnershipToWallet } from "../../implementations/document-store/transfer-ownership";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getEtherscanAddress } from "../../utils";
 
@@ -35,7 +35,7 @@ export const handler = async (args: DocumentStoreTransferOwnershipCommand): Prom
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Transferring ownership to wallet ${args.newOwner}`);
-    const { transactionHash } = await transferOwnershipToDocumentStore({
+    const { transactionHash } = await transferDocumentStoreOwnershipToWallet({
       ...args,
       // add 0x automatically in front of the hash if it's not provided
       newOwner: args.newOwner.startsWith("0x") ? args.newOwner : `0x${args.newOwner}`,

@@ -8,7 +8,7 @@ import { TransactionReceipt } from "@ethersproject/providers";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
-export const transferOwnershipToDocumentStore = async ({
+export const transferDocumentStoreOwnershipToWallet = async ({
   address,
   newOwner,
   network,
