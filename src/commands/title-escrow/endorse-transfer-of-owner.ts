@@ -35,7 +35,7 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): P
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
-      `Connecting to the registry ${args.address} and attempting to endorse the change of owner of the transferable record ${args.tokenId} to approved owner and approved holder`
+      `Connecting to the registry ${args.tokenRegistry} and attempting to endorse the change of owner of the transferable record ${args.tokenId} to approved owner and approved holder`
     );
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`

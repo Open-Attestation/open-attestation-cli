@@ -2,7 +2,7 @@ import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 
 export type BaseTitleEscrowCommand = NetworkAndWalletSignerOption &
   GasOption & {
-    address: string;
+    tokenRegistry: string;
     tokenId: string;
   };
 export type TitleEscrowChangeHolderCommand = BaseTitleEscrowCommand & {

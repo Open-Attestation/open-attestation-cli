@@ -10,7 +10,7 @@ const endorseChangeOwnerParams: TitleEscrowEndorseChangeOfOwnerCommand = {
   newHolder: "0xabcd",
   newOwner: "0fosui",
   tokenId: "0xzyxw",
-  address: "0x1234",
+  tokenRegistry: "0x1234",
   network: "ropsten",
   gasPriceScale: 1,
   dryRun: false,
@@ -92,7 +92,7 @@ describe("title-escrow", () => {
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721).toHaveBeenCalledWith(endorseChangeOwnerParams.address, passedSigner);
+      expect(mockedConnectERC721).toHaveBeenCalledWith(endorseChangeOwnerParams.tokenRegistry, passedSigner);
       expect(mockedOwnerOf).toHaveBeenCalledWith(endorseChangeOwnerParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockGetBeneficiary).toHaveBeenCalledTimes(1);

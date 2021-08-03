@@ -10,7 +10,7 @@ import { TransactionReceipt } from "@ethersproject/providers";
 const { trace } = getLogger("title-escrow:surrenderDocument");
 
 export const surrenderDocument = async ({
-  address,
+  tokenRegistry: address,
   tokenId,
   network,
   gasPriceScale,

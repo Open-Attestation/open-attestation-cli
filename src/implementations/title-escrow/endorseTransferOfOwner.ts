@@ -10,7 +10,7 @@ import { TransactionReceipt } from "@ethersproject/providers";
 const { trace } = getLogger("title-escrow:endorseTransferOfOwner");
 
 export const endorseTransferOfOwner = async ({
-  address,
+  tokenRegistry: address,
   tokenId,
   network,
   gasPriceScale,

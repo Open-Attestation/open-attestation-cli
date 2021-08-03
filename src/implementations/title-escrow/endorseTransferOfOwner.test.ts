@@ -8,7 +8,7 @@ jest.mock("@govtechsg/token-registry");
 
 const endorseTransferOfOwnerParams: TitleEscrowEndorseTransferOfOwnerCommand = {
   tokenId: "0xzyxw",
-  address: "0x1234",
+  tokenRegistry: "0x1234",
   network: "ropsten",
   gasPriceScale: 1,
   dryRun: false,
@@ -91,7 +91,7 @@ describe("title-escrow", () => {
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721).toHaveBeenCalledWith(endorseTransferOfOwnerParams.address, passedSigner);
+      expect(mockedConnectERC721).toHaveBeenCalledWith(endorseTransferOfOwnerParams.tokenRegistry, passedSigner);
       expect(mockedOwnerOf).toHaveBeenCalledWith(endorseTransferOfOwnerParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockGetApprovedBeneficiary).toHaveBeenCalledTimes(1);

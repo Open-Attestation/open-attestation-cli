@@ -44,7 +44,7 @@ export const handler = async (args: TitleEscrowEndorseChangeOfOwnerCommand): Pro
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
-      `Connecting to the registry ${args.address} and attempting to endorse the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newOwner} and new holder at ${args.newHolder}`
+      `Connecting to the registry ${args.tokenRegistry} and attempting to endorse the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newOwner} and new holder at ${args.newHolder}`
     );
     warn(
       `Please note that you have to be both the holder and owner of the transferable record, otherwise this command will fail.`

@@ -10,7 +10,7 @@ import { TransactionReceipt } from "@ethersproject/providers";
 const { trace } = getLogger("title-escrow:nominateChangeOfOwner");
 
 export const nominateChangeOfOwner = async ({
-  address,
+  tokenRegistry: address,
   tokenId,
   newOwner,
   network,

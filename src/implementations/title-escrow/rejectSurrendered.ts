@@ -26,7 +26,7 @@ const retrieveLastBeneficiaryAndHolder = async (
 };
 
 export const rejectSurrendered = async ({
-  address,
+  tokenRegistry: address,
   tokenId,
   network,
   gasPriceScale,

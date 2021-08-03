@@ -10,7 +10,7 @@ import { TransactionReceipt } from "@ethersproject/providers";
 const { trace } = getLogger("title-escrow:changeHolder");
 
 export const changeHolderOfTitleEscrow = async ({
-  address,
+  tokenRegistry: address,
   to,
   tokenId,
   network,

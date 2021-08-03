@@ -39,7 +39,7 @@ export const handler = async (args: TitleEscrowChangeHolderCommand): Promise<voi
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
-      `Connecting to the registry ${args.address} and attempting to change the holder of the transferable record ${args.tokenId} to ${args.to}`
+      `Connecting to the registry ${args.tokenRegistry} and attempting to change the holder of the transferable record ${args.tokenId} to ${args.to}`
     );
     warn(
       `Please note that only current holders can change the holder of the transferable record, otherwise this command will fail.`
