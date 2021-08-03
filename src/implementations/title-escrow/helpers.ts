@@ -1,5 +1,5 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
-import { Wallet } from "ethers";
+import { Wallet, constants } from "ethers";
 import signale from "signale";
 import { ConnectedSigner } from "../utils/wallet";
 
@@ -22,16 +22,16 @@ export const connectToTitleEscrow = async ({
   return titleEscrow;
 };
 
-interface validateEndorseOwnerArgs {
+interface validateEndorseChangeOwnerArgs {
   newHolder: string;
   newOwner: string;
   titleEscrow: TitleEscrowInstanceType;
 }
-export const validateEndorseOwner = async ({
+export const validateEndorseChangeOwner = async ({
   newHolder,
   newOwner,
   titleEscrow,
-}: validateEndorseOwnerArgs): Promise<void> => {
+}: validateEndorseChangeOwnerArgs): Promise<void> => {
   const beneficiary = await titleEscrow.beneficiary();
   const holder = await titleEscrow.holder();
   if (newOwner === beneficiary && newHolder === holder) {
@@ -41,11 +41,14 @@ export const validateEndorseOwner = async ({
   }
 };
 
-interface validateNominateOwnerArgs {
+interface validateNominateChangeOwnerArgs {
   newOwner: string;
   titleEscrow: TitleEscrowInstanceType;
 }
-export const validateNominateOwner = async ({ newOwner, titleEscrow }: validateNominateOwnerArgs): Promise<void> => {
+export const validateNominateChangeOwner = async ({
+  newOwner,
+  titleEscrow,
+}: validateNominateChangeOwnerArgs): Promise<void> => {
   const beneficiary = await titleEscrow.beneficiary();
   if (newOwner === beneficiary) {
     const error = "new owner address is the same as the current owner address";
@@ -58,8 +61,8 @@ interface validateEndorseTransferOwnerArgs {
   approvedOwner: string | undefined;
   approvedHolder: string | undefined;
 }
-const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000";
-export const validateEndorseTranserOwner = ({
+const GENESIS_ADDRESS = constants.AddressZero;
+export const validateEndorseTransferOwner = ({
   approvedOwner,
   approvedHolder,
 }: validateEndorseTransferOwnerArgs): void => {

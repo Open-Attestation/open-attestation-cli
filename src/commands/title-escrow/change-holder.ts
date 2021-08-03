@@ -16,14 +16,14 @@ export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndWalletSignerOption(
       yargs
-        .option("address", {
-          alias: "a",
+        .option("token-registry", {
+          alias: "tr",
           description: "Address of the token registry that the transferable record was issued from",
           type: "string",
           demandOption: true,
         })
         .option("tokenId", {
-          description: "Hash of the transferable record",
+          description: "Merkle root (document hash) of the transferable record",
           type: "string",
           demandOption: true,
         })
@@ -42,11 +42,9 @@ export const handler = async (args: TitleEscrowChangeHolderCommand): Promise<voi
       `Connecting to the registry ${args.address} and attempting to change the holder of the transferable record ${args.tokenId} to ${args.to}`
     );
     warn(
-      `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
+      `Please note that only current holders can change the holder of the transferable record, otherwise this command will fail.`
     );
-    const { transactionHash } = await changeHolderOfTitleEscrow({
-      ...args,
-    });
+    const { transactionHash } = await changeHolderOfTitleEscrow(args);
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully changed to holder with address: ${args.to}`
     );

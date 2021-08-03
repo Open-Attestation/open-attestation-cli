@@ -17,14 +17,14 @@ export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndWalletSignerOption(
       yargs
-        .option("address", {
-          alias: "a",
+        .option("token-registry", {
+          alias: "tr",
           description: "Address of the token registry that the transferable record was issued from",
           type: "string",
           demandOption: true,
         })
         .option("tokenId", {
-          description: "Hash of the transferable record",
+          description: "Merkle root (document hash) of the transferable record",
           type: "string",
           demandOption: true,
         })
@@ -40,9 +40,7 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): P
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const { transactionReceipt, approvedHolder, approvedOwner } = await endorseTransferOfOwner({
-      ...args,
-    });
+    const { transactionReceipt, approvedHolder, approvedOwner } = await endorseTransferOfOwner(args);
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to approved owner at ${approvedOwner}  and approved holder at ${approvedHolder}`
     );

@@ -1,13 +1,13 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateEndorseOwner } from "./helpers";
+import { connectToTitleEscrow, validateEndorseChangeOwner } from "./helpers";
 import { TitleEscrowEndorseChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("token-registry:endorseChangeOfOwner");
+const { trace } = getLogger("title-escrow:endorseChangeOfOwner");
 
 export const endorseChangeOfOwner = async ({
   address,
@@ -22,7 +22,7 @@ export const endorseChangeOfOwner = async ({
   const wallet = await getWalletOrSigner({ network, ...rest });
   if (dryRun) {
     const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-    await validateEndorseOwner({ newHolder, newOwner, titleEscrow });
+    await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
     await dryRunMode({
       gasPriceScale: gasPriceScale,
       estimatedGas: await titleEscrow.estimateGas.transferToNewEscrow(newOwner, newHolder),
@@ -33,7 +33,7 @@ export const endorseChangeOfOwner = async ({
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-  await validateEndorseOwner({ newHolder, newOwner, titleEscrow });
+  await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
   const transaction = await titleEscrow.transferToNewEscrow(newOwner, newHolder, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });

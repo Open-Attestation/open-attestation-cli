@@ -7,7 +7,7 @@ import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/titl
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("token-registry:changeHolder");
+const { trace } = getLogger("title-escrow:changeHolder");
 
 export const changeHolderOfTitleEscrow = async ({
   address,

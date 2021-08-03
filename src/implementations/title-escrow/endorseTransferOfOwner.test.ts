@@ -1,5 +1,5 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
-import { Wallet } from "ethers";
+import { Wallet, constants } from "ethers";
 import { join } from "path";
 import { BaseTitleEscrowCommand as TitleEscrowEndorseTransferOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { endorseTransferOfOwner } from "./endorseTransferOfOwner";
@@ -13,7 +13,7 @@ const endorseTransferOfOwnerParams: TitleEscrowEndorseTransferOfOwnerCommand = {
   gasPriceScale: 1,
   dryRun: false,
 };
-const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000";
+const GENESIS_ADDRESS = constants.AddressZero;
 
 // TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
 // ideally must setup ganache, and run the function over it

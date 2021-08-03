@@ -1,13 +1,13 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateEndorseTranserOwner } from "./helpers";
+import { connectToTitleEscrow, validateEndorseTransferOwner } from "./helpers";
 import { BaseTitleEscrowCommand as TitleEscrowEndorseTransferOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("token-registry:endorseTransferOfOwner");
+const { trace } = getLogger("title-escrow:endorseTransferOfOwner");
 
 export const endorseTransferOfOwner = async ({
   address,
@@ -26,7 +26,7 @@ export const endorseTransferOfOwner = async ({
     const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
     const approvedBeneficiary = await titleEscrow.approvedBeneficiary();
     const approvedHolder = await titleEscrow.approvedHolder();
-    await validateEndorseTranserOwner({ approvedOwner: approvedBeneficiary, approvedHolder });
+    await validateEndorseTransferOwner({ approvedOwner: approvedBeneficiary, approvedHolder });
     await dryRunMode({
       gasPriceScale: gasPriceScale,
       estimatedGas: await titleEscrow.estimateGas.transferToNewEscrow(approvedBeneficiary, approvedHolder),
@@ -39,7 +39,7 @@ export const endorseTransferOfOwner = async ({
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const approvedBeneficiary = await titleEscrow.approvedBeneficiary();
   const approvedHolder = await titleEscrow.approvedHolder();
-  await validateEndorseTranserOwner({ approvedOwner: approvedBeneficiary, approvedHolder });
+  await validateEndorseTransferOwner({ approvedOwner: approvedBeneficiary, approvedHolder });
   const transaction = await titleEscrow.transferToNewEscrow(approvedBeneficiary, approvedHolder, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
