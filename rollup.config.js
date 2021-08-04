@@ -39,12 +39,13 @@ console.log(filepaths);
 export default {
   input: filepaths,
   output: {
-    dir: 'dist',
-    format: 'es'
+    dir: 'dist/cjs',
+    format: 'cjs'
 
   },
   external: [],
   plugins: [
+      resolve(),
       autoExternal(),
       typescript(),
       commonjs(),
