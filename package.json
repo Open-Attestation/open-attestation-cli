@@ -2,7 +2,7 @@
   "name": "@govtechsg/open-attestation-cli",
   "version": "0.0.0-development",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "types": "dist/types/index.d.ts",
   "bin": {
     "open-attestation": "build/cjs/index.js",
@@ -28,8 +28,8 @@
     "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
     "rollup": "rm -rf build/ && rollup --config rollup.config.js --sourcemap",
     "pkg": "pkg  --debug ./package.json --out-path build/@govtechsg",
-    "pkg:inspect-win": "cross-env DEBUG_PKG=1 build/@govtechsg/open-attestation-cli-win.exe",
-    "pkg:inspect-linux": "cross-env DEBUG_PKG=1 build/@govtechsg/open-attestation-cli-linux"
+    "pkg:inspect-win": "cross-env DEBUG_PKG=1 build/@govtechsg/open-attestation-cli-win.exe > report.txt",
+    "pkg:inspect-linux": "cross-env DEBUG_PKG=1 build/@govtechsg/open-attestation-cli-linux > report.txt"
   },
   "author": "",
   "devDependencies": {

@@ -4,7 +4,6 @@ import shebang from '@walrus/rollup-plugin-shebang';
 import multiInput from 'rollup-plugin-multi-input';
 import fs from "fs";
 import commonjs from '@rollup/plugin-commonjs';
-import autoExternal from 'rollup-plugin-auto-external';
 import resolve from '@rollup/plugin-node-resolve';
 import pkge from './package.json'
 
@@ -53,7 +52,6 @@ export default {
   plugins: [
       resolve(),
       commonjs(),
-      // autoExternal(),
       typescript(),
       json(),
       shebang({
