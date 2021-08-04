@@ -4,6 +4,8 @@ import shebang from '@walrus/rollup-plugin-shebang';
 import multiInput from 'rollup-plugin-multi-input';
 import fs from "fs";
 import commonjs from '@rollup/plugin-commonjs';
+import autoExternal from 'rollup-plugin-auto-external';
+import resolve from '@rollup/plugin-node-resolve';
 
 let filepaths = [];
 
@@ -12,24 +14,26 @@ const walk = (root) => {
   for (let path of currentPaths) {
     const abspath = `${root}/${path}`;
     const isFile = /.*\.(ts|js|json)$/.test(path);
-    // ignore type files, e.g. foo.type(s).ts
-    const isTypeFile = /\.type/.test(path);
 
-    if (isFile && !isTypeFile) {
+    if (isFile) {
       filepaths.push(abspath);
-      continue;
-    }
-
-    const isDirectory = !isFile;
-    if (isDirectory) {
+    } else {
+      // isDirectory
       walk(abspath);
     }
+
   }
 
 }
 
 walk('./src/commands');
 filepaths.push("./src/index.ts");
+
+// exclude type and test files
+filepaths = filepaths
+  .filter(path => !path.includes("test"))
+  .filter(path => !path.includes("type"));
+
 console.log(filepaths);
 
 export default {
@@ -39,13 +43,15 @@ export default {
     format: 'es'
 
   },
+  external: [],
   plugins: [
+      autoExternal(),
       typescript(),
       commonjs(),
       json(),
       shebang({
         include: './src/index.ts'
       }),
-      multiInput({ relative: 'src/' })
+      multiInput()
   ],
 };
