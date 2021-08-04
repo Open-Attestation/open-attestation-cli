@@ -39,7 +39,7 @@ console.log(filepaths);
 export default {
   input: filepaths,
   output: {
-    dir: 'dist/cjs',
+    dir: 'build/cjs',
     format: 'cjs'
 
   },
