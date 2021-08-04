@@ -6,6 +6,7 @@ import fs from "fs";
 import commonjs from '@rollup/plugin-commonjs';
 import autoExternal from 'rollup-plugin-auto-external';
 import resolve from '@rollup/plugin-node-resolve';
+import pkge from './package.json'
 
 let filepaths = [];
 
@@ -21,7 +22,6 @@ const walk = (root) => {
       // isDirectory
       walk(abspath);
     }
-
   }
 
 }
@@ -36,19 +36,25 @@ filepaths = filepaths
 
 console.log(filepaths);
 
+// exclude all dependencies from being bundled together, except for the problematic jsonLd, used by @govtechsg/open-attestation
+let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)]
+deps = deps.filter(dep => dep !== "@govtechsg/open-attestation")
+console.log(deps);
+
 export default {
   input: filepaths,
   output: {
     dir: 'build/cjs',
-    format: 'cjs'
+    format: 'cjs',
+    exports: 'named'
 
   },
-  external: [],
+  external: [...deps],
   plugins: [
       resolve(),
-      autoExternal(),
-      typescript(),
       commonjs(),
+      // autoExternal(),
+      typescript(),
       json(),
       shebang({
         include: './src/index.ts'
