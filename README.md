@@ -235,6 +235,22 @@ open-attestation document-store revoke --network ropsten --address 0x19f89607b52
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
 
+### Transfer ownership
+
+Transfer ownership of a document store deployed on the blockchain to another wallet
+
+```bash
+open-attestation document-store transfer-ownership --address <DOCUMENT_STORE_ADDRESS> --new-owner <HASH> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network ropsten
+
+✔  success   Ownership of document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 has been transferred to new wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
+```
+
 ## Verify
 
 Verify if a document is valid.
@@ -365,26 +381,27 @@ open-attestation deploy document-store "My Name" --network ropsten --key 0000000
 
 ### List of features with the options available
 
-|                             | Private Key | Wallet | Aws Kms |
-| --------------------------- | ----------- | ------ | ------- |
-| Create config               | ❎          | ✔️     | ❎      |
-| Deploy document store       | ✔           | ✔      | ✔      |
-| Deploy title escrow         | ✔           | ✔      | ✔      |
-| Deploy title escrow creator | ✔           | ✔      | ✔      |
-| Deploy token registry       | ✔           | ✔      | ✔      |
-| Dns txt create              | ❎          | ❎     | ❎      |
-| Dns txt get                 | ❎          | ❎     | ❎      |
-| Document store issue        | ✔           | ✔      | ✔      |
-| Document store revoke       | ✔           | ✔      | ✔      |
-| Token registry issue        | ✔           | ✔      | ✔      |
-| Token registry mint         | ✔           | ✔      | ✔      |
-| Transaction cancel          | ✔           | ✔      | ✔      |
-| Wallet create               | ❎          | ❎     | ❎      |
-| Wallet decrypt              | ❎          | ❎     | ❎      |
-| Wallet encrypt              | ✔           | ❎     | ❎      |
-| Filter (obfuscate) document | ❎          | ❎     | ❎      |
-| Sign document               | ✔           | ❎     | ❎      |
-| Verify document             | ❎          | ❎     | ❎      |
+|                                   | Private Key | Wallet | Aws Kms |
+| --------------------------------- | ----------- | ------ | ------- |
+| Create config                     | ❎          | ✔️     | ❎      |
+| Deploy document store             | ✔           | ✔      | ✔       |
+| Deploy title escrow               | ✔           | ✔      | ✔       |
+| Deploy title escrow creator       | ✔           | ✔      | ✔       |
+| Deploy token registry             | ✔           | ✔      | ✔       |
+| Dns txt create                    | ❎          | ❎     | ❎      |
+| Dns txt get                       | ❎          | ❎     | ❎      |
+| Document store issue              | ✔           | ✔      | ✔       |
+| Document store revoke             | ✔           | ✔      | ✔       |
+| Document store transfer ownership | ✔           | ✔      | ✔       |
+| Token registry issue              | ✔           | ✔      | ✔       |
+| Token registry mint               | ✔           | ✔      | ✔       |
+| Transaction cancel                | ✔           | ✔      | ✔       |
+| Wallet create                     | ❎          | ❎     | ❎      |
+| Wallet decrypt                    | ❎          | ❎     | ❎      |
+| Wallet encrypt                    | ✔           | ❎     | ❎      |
+| Filter (obfuscate) document       | ❎          | ❎     | ❎      |
+| Sign document                     | ✔           | ❎     | ❎      |
+| Verify document                   | ❎          | ❎     | ❎      |
 
 ## Config file
 
