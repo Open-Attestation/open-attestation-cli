@@ -27,9 +27,7 @@
     "prepare": "npm run snyk-protect",
     "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
     "rollup": "rm -rf build/ && rollup --config rollup.config.js --sourcemap",
-    "pkg": "pkg  --debug ./package.json --out-path build/@govtechsg",
-    "pkg:inspect-win": "cross-env DEBUG_PKG=1 build/@govtechsg/open-attestation-cli-win.exe > report.txt",
-    "pkg:inspect-linux": "cross-env DEBUG_PKG=1 build/@govtechsg/open-attestation-cli-linux > report.txt"
+    "pkg": "pkg ./package.json --out-path build/@govtechsg"
   },
   "author": "",
   "devDependencies": {

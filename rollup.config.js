@@ -35,11 +35,9 @@ filepaths = filepaths
 
 console.log(filepaths);
 
-// exclude all dependencies from being bundled together, except for the problematic jsonLd, used by @govtechsg/open-attestation
+// exclude all dependencies from being bundled together, except for the problematic jsonLd, used by "open-attestation", "oa-verify" dependencies
 let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)]
-deps = deps
-  .filter(dep => dep !== "@govtechsg/open-attestation")
-  .filter(dep => dep !== "@govtechsg/oa-verify")
+deps = deps.filter( (dep) => !(/oa\-|open-attestation/.test(dep)) )
 
 console.log(deps);
 
