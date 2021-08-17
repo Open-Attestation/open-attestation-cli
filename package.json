@@ -5,8 +5,8 @@
   "main": "src/index.ts",
   "types": "dist/types/index.d.ts",
   "bin": {
-    "open-attestation": "build/cjs/index.js",
-    "oa": "build/cjs/index.js"
+    "open-attestation": "rollup-build/cjs/index.js",
+    "oa": "rollup-build/cjs/index.js"
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
@@ -26,8 +26,8 @@
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
     "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
-    "rollup": "rm -rf build/ && rollup --config rollup.config.js --sourcemap",
-    "pkg": "pkg ./package.json --out-path build/@govtechsg"
+    "rollup": "rm -rf rollup-build/ && rollup --config rollup.config.js --sourcemap",
+    "pkg": "pkg ./package.json --out-path rollup-build/@govtechsg"
   },
   "author": "",
   "devDependencies": {
@@ -190,7 +190,7 @@
     "url": "https://github.com/Open-Attestation/open-attestation-cli.git"
   },
   "pkg": {
-    "scripts": "build/**/*.js"
+    "scripts": "rollup-build/**/*.js"
   },
   "snyk": true
 }

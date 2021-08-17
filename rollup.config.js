@@ -44,7 +44,7 @@ deps = deps.filter( (dep) => !(/oa\-|open-attestation/.test(dep)) )
 export default {
   input: filepaths,
   output: {
-    dir: 'build/cjs',
+    dir: 'rollup-build/cjs',
     format: 'cjs',
     exports: 'named'
 
