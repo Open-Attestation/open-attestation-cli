@@ -37,7 +37,10 @@ console.log(filepaths);
 
 // exclude all dependencies from being bundled together, except for the problematic jsonLd, used by @govtechsg/open-attestation
 let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)]
-deps = deps.filter(dep => dep !== "@govtechsg/open-attestation")
+deps = deps
+  .filter(dep => dep !== "@govtechsg/open-attestation")
+  .filter(dep => dep !== "@govtechsg/oa-verify")
+
 console.log(deps);
 
 export default {
