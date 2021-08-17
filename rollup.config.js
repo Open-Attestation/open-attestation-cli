@@ -33,13 +33,13 @@ filepaths = filepaths
   .filter(path => !path.includes("test"))
   .filter(path => !path.includes("type"));
 
-console.log(filepaths);
+// console.log(filepaths);
 
 // exclude all dependencies from being bundled together, except for the problematic jsonLd, used by "open-attestation", "oa-verify" dependencies
 let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)]
 deps = deps.filter( (dep) => !(/oa\-|open-attestation/.test(dep)) )
 
-console.log(deps);
+// console.log(deps);
 
 export default {
   input: filepaths,
