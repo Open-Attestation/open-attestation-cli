@@ -1,11 +1,11 @@
-import typescript from '@rollup/plugin-typescript';
-import json from '@rollup/plugin-json';
-import shebang from '@walrus/rollup-plugin-shebang';
-import multiInput from 'rollup-plugin-multi-input';
+import typescript from "@rollup/plugin-typescript";
+import json from "@rollup/plugin-json";
+import shebang from "@walrus/rollup-plugin-shebang";
+import multiInput from "rollup-plugin-multi-input";
 import fs from "fs";
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
-import pkge from './package.json'
+import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import pkge from "./package.json";
 
 // Right now,  vercel/pkg  does not support ESM libraries (https://github.com/vercel/pkg/issues/782)
 // For example, some files rely on @govtechsg/open-attestation, @govtechsg/oa-XX. These libraries in turn rely on jsonLd library, which is an ESM library
@@ -33,40 +33,39 @@ const traverseAndGetFilePaths = (root, filepaths = []) => {
     }
   }
   return filepaths;
-}
+};
 
-const filepaths = traverseAndGetFilePaths('./src/commands');
+const filepaths = traverseAndGetFilePaths("./src/commands");
 filepaths.push("./src/index.ts");
 
-console.log({filepaths});
+console.log({ filepaths });
 
 // exclude all external dependencies from being bundled together, except for the problematic jsonLd, used by "@govtechsg/open-attestation", "@govtechsg/oa-XX" dependencies
 // helpful guide on externals: https://www.mixmax.com/engineering/rollup-externals
 let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)];
 deps = deps
   .filter((dep) => !dep.startsWith("@govtechsg/oa-"))
-  .filter((dep) => !dep.startsWith("@govtechsg/open-attestation"))
+  .filter((dep) => !dep.startsWith("@govtechsg/open-attestation"));
 
-console.log({deps});
+console.log({ deps });
 
 export default {
   input: filepaths,
   output: {
-    dir: 'rollup-build/cjs',
-    format: 'cjs',
-    exports: 'named'
-
+    dir: "rollup-build/cjs",
+    format: "cjs",
+    exports: "named",
   },
   external: [...deps],
   plugins: [
-      resolve(),
-      commonjs(),
-      typescript({ "module": "esnext" }),
-      json(),
-      shebang({
-        include: './src/index.ts'
-      }),
-      multiInput()
+    resolve(),
+    commonjs(),
+    typescript({ module: "esnext" }),
+    json(),
+    shebang({
+      include: "./src/index.ts",
+    }),
+    multiInput(),
   ],
 };
 
