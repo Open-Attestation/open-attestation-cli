@@ -56,14 +56,9 @@ export const getWalletOrSigner = async ({
     signale.info("Wallet successfully decrypted");
     return wallet.connect(provider);
   } else if (isAwsKmsSignerOption(options)) {
-    const { secretAccessKey } = await inquirer.prompt({
-      type: "password",
-      name: "secretAccessKey",
-      message: "Secret access key",
-    });
     const kmsCredentials = {
       accessKeyId: options.accessKeyId, // credentials for your IAM user with KMS access
-      secretAccessKey, // credentials for your IAM user with KMS access
+      secretAccessKey: options.secretAccessKey, // credentials for your IAM user with KMS access
       region: options.region,
       keyId: options.kmsKeyId,
     };

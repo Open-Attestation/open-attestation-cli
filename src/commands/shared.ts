@@ -20,19 +20,16 @@ export const isPrivateKeyOption = (option: any): option is PrivateKeyOption => {
   return typeof option?.key === "string" || typeof option?.keyFile === "string";
 };
 
-export type AwsKmwSignerOption = {
+export type AwsKmsSignerOption = {
   accessKeyId: string;
+  secretAccessKey: string;
   region: string;
   kmsKeyId: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const isAwsKmsSignerOption = (option: any): option is AwsKmwSignerOption => {
-  return (
-    typeof option?.accessKeyId === "string" &&
-    typeof option?.region === "string" &&
-    typeof option?.kmsKeyId === "string"
-  );
+export const isAwsKmsSignerOption = (option: any): option is AwsKmsSignerOption => {
+  return typeof option?.region === "string" && typeof option?.kmsKeyId === "string";
 };
 
 export type WalletOption = {
@@ -43,7 +40,7 @@ export const isWalletOption = (option: any): option is WalletOption => {
   return typeof option?.encryptedWalletPath === "string";
 };
 
-export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmwSignerOption> | Partial<WalletOption>;
+export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmsSignerOption> | Partial<WalletOption>;
 
 export interface GasOption {
   gasPriceScale: number;
@@ -99,6 +96,10 @@ export const withAwsKmsSignerOption = (yargs: Argv): Argv =>
     .option("access-key-id", {
       type: "string",
       description: "AWS access key id. Example: AKIAIOSFODNN7EXAMPLE",
+    })
+    .option("secret-access-key", {
+      type: "string",
+      description: "AWS secret access key. Example: Z8ll+k0CBew8bqqily568Dukv4yaWYOFSOnfui/T",
     })
     .option("region", {
       type: "string",
