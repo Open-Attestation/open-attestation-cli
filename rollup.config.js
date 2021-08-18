@@ -22,11 +22,11 @@ const traverseAndGetFilePaths = (root, filepaths = []) => {
     const isDirectory = !isFile;
 
     // exclude type and test files
-    // const isTestFile = path.includes("test");
-    // const isTypeFile = path.includes("type");
-    // const isRegularFile = isFile && !(isTestFile);
+    const isTestFile = path.includes("test");
+    const isTypeFile = path.includes("type");
+    const isRegularFile = isFile && !(isTestFile || isTypeFile);
 
-    if (isFile) {
+    if (isRegularFile) {
       filepaths.push(absPath);
     } else if (isDirectory) {
       traverseAndGetFilePaths(absPath, filepaths);
