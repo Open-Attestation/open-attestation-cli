@@ -19,6 +19,7 @@
     "test:watch": "npm run test -- --watch",
     "lint": "eslint . --ext .ts --max-warnings 0",
     "lint:fix": "eslint . --ext .ts --fix",
+    "lint:rollup": "eslint rollup.config.js",
     "benchmark:make-certs": "./scripts/makeCerts.sh 20000",
     "benchmark:run": "./scripts/benchmark.sh",
     "benchmark:clean": "rm -rf ./benchmark",

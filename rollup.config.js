@@ -41,6 +41,7 @@ filepaths.push("./src/index.ts");
 console.log({filepaths});
 
 // exclude all external dependencies from being bundled together, except for the problematic jsonLd, used by "@govtechsg/open-attestation", "@govtechsg/oa-XX" dependencies
+// helpful guide on externals: https://www.mixmax.com/engineering/rollup-externals
 let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)];
 deps = deps
   .filter((dep) => !dep.startsWith("@govtechsg/oa-"))
