@@ -7,8 +7,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import pkge from "./package.json";
 
-// Right now,  vercel/pkg  does not support ESM libraries (https://github.com/vercel/pkg/issues/782)
-// For example, some files rely on @govtechsg/open-attestation, @govtechsg/oa-XX. These libraries in turn rely on jsonLd library, which is an ESM library
+// oa-cli depends on some transitive dependencies uses ESM and uses https://github.com/standard-things/esm,
+// which is not compatible with vercel/pkg (https://github.com/vercel/pkg/issues/782)
 // To bypass this issue, files that rely on the ESM libraries can be bundled into a single JS file,
 // thereby removing the problematic import / export statements.
 
@@ -57,7 +57,9 @@ export default {
   },
   external: [...deps],
   plugins: [
-    resolve({preferBuiltins: true}),
+    resolve({
+      preferBuiltins: true
+    }),
     commonjs({ignoreTryCatch: true}),
     typescript({ module: "esnext" }),
     json(),
