@@ -164,7 +164,13 @@
       "jest/prefer-expect-assertions": "off",
       "jest/no-hooks": "off",
       "jest/prefer-strict-equal": "off",
-      "array-callback-return": "error"
+      "array-callback-return": "error",
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
     }
   },
   "jest": {

@@ -13,6 +13,7 @@ import pkge from "./package.json";
 // thereby removing the problematic import / export statements.
 
 // traverse through the directory recursively to get all file paths relative to root directory
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const traverseAndGetFilePaths = (root, filepaths = []) => {
   let currentPaths = fs.readdirSync(root);
   for (let path of currentPaths) {
@@ -43,9 +44,7 @@ console.log({ filepaths });
 // exclude all external dependencies from being bundled together, except for the problematic jsonLd, used by "@govtechsg/open-attestation", "@govtechsg/oa-XX" dependencies
 // helpful guide on externals: https://www.mixmax.com/engineering/rollup-externals
 let deps = [...Object.keys(pkge.dependencies), ...Object.keys(pkge.devDependencies)];
-deps = deps
-  .filter((dep) => !dep.startsWith("@govtechsg/oa-"))
-  .filter((dep) => !dep.startsWith("@govtechsg/open-attestation"));
+deps = deps.filter((dep) => !dep.startsWith("@govtechsg"));
 
 console.log({ deps });
 
