@@ -58,9 +58,9 @@ export default {
   external: [...deps],
   plugins: [
     resolve({
-      preferBuiltins: true
+      preferBuiltins: true,
     }),
-    commonjs({ignoreTryCatch: true}),
+    commonjs({ ignoreTryCatch: true }),
     typescript({ module: "esnext" }),
     json(),
     shebang(),
