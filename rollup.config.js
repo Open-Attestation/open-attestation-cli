@@ -57,13 +57,11 @@ export default {
   },
   external: [...deps],
   plugins: [
-    resolve(),
-    commonjs(),
+    resolve({preferBuiltins: true}),
+    commonjs({ignoreTryCatch: true}),
     typescript({ module: "esnext" }),
     json(),
-    shebang({
-      include: "./src/index.ts",
-    }),
+    shebang(),
     multiInput(),
   ],
 };
