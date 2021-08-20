@@ -504,3 +504,10 @@ Example:
 ```
 npm run benchmark 4 1 performance-tests/unwrapped_document_wImage.json
 ```
+
+## Running oa-cli as an executable package
+```
+npm run rollup
+npm run pkg
+cd rollup-build/@govtechsg
+```
