@@ -11,7 +11,7 @@ describe("get", () => {
     expect(consoleSpy).toHaveBeenNthCalledWith(1, [
       {
         addr: "0x2f60375e8144e16Adf1979936301D8341D58C36C",
-        dnssec: false,
+        dnssec: true,
         net: "ethereum",
         netId: "3",
         type: "openatts",
@@ -21,7 +21,7 @@ describe("get", () => {
     expect(consoleSpy).toHaveBeenNthCalledWith(2, [
       {
         algorithm: "dns-did",
-        dnssec: false,
+        dnssec: true,
         publicKey: "did:ethr:0xE712878f6E8d5d4F9e87E10DA604F9cB564C9a89#controller",
         type: "openatts",
         version: "1.0",
