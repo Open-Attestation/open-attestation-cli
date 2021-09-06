@@ -63,7 +63,7 @@ describe("config-file", () => {
     expect(JSON.parse(configFileAsString)).toStrictEqual(expectedConfigTemplateUsingInsertFileOption);
   });
 
-  it("should create a  config file with correct values when using configType", async () => {
+  it("should create a config file with correct values when using configType", async () => {
     promptMock.mockReturnValue({
       password: "password",
     });
