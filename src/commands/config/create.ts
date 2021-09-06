@@ -20,7 +20,13 @@ import tradetrustConfig from "./templates/tradetrust.json";
 import { withWalletOption } from "../shared";
 
 interface ConfigFile {
-  wallet: string;
+  wallet: {
+    type: "AWS_KMS" | "ENCRYPTED_JSON";
+    encryptedJson?: string;
+    accessKeyId?: string;
+    region?: string;
+    kmsKeyId?: string;
+  };
   forms: Form[];
 }
 
@@ -93,7 +99,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     info(`Wallet detected at ${walletFilePath}`);
 
     const configFile: ConfigFile = await selectTemplateFile(args);
-    configFile.wallet = wallet;
+    configFile.wallet.encryptedJson = wallet;
 
     const formsInTemplate = configFile.forms;
 
