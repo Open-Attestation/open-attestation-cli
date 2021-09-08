@@ -2,11 +2,11 @@
   "name": "@govtechsg/open-attestation-cli",
   "version": "0.0.0-development",
   "description": "",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "types": "dist/types/index.d.ts",
   "bin": {
-    "open-attestation": "dist/cjs/index.js",
-    "oa": "dist/cjs/index.js"
+    "open-attestation": "rollup-build/cjs/index.js",
+    "oa": "rollup-build/cjs/index.js"
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
@@ -17,15 +17,17 @@
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "lint": "eslint . --ext .ts --max-warnings 0",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint": "eslint rollup.config.js . --ext .ts --max-warnings 0",
+    "lint:fix": "eslint rollup.config.js . --ext .ts --fix",
     "benchmark:make-certs": "./scripts/makeCerts.sh 20000",
     "benchmark:run": "./scripts/benchmark.sh",
     "benchmark:clean": "rm -rf ./benchmark",
     "benchmark:full": "npm run benchmark:make-certs && npm run benchmark:run && npm run benchmark:clean",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
-    "benchmark": "ts-node performance-tests/wrap-performance-test.ts"
+    "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
+    "rollup": "rm -rf rollup-build/ && rollup --config rollup.config.js --sourcemap",
+    "pkg": "pkg ./package.json --out-path rollup-build/@govtechsg"
   },
   "author": "",
   "devDependencies": {
@@ -38,6 +40,12 @@
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/prompt": "^12.1.4",
     "@ls-age/commitlint-circle": "1.0.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "rollup-plugin-multi-input": "^1.3.1",
+    "@walrus/rollup-plugin-shebang": "^1.0.1",
     "@semantic-release/exec": "^5.0.0",
     "@types/debug": "4.1.5",
     "@types/inquirer": "^7.3.1",
@@ -48,12 +56,13 @@
     "@types/rimraf": "^3.0.0",
     "@types/signale": "^1.4.1",
     "@types/tmp": "^0.2.0",
-    "@typescript-eslint/eslint-plugin": "^4.24.0",
-    "@typescript-eslint/parser": "^4.24.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
     "commitizen": "^4.2.4",
-    "eslint": "^7.26.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-prettier": "^3.4.0",
     "git-cz": "^4.7.6",
     "jest": "^26.1.0",
@@ -66,7 +75,8 @@
     "tmp": "^0.2.1",
     "ts-jest": "^26.5.6",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "tslib": "^2.3.0"
   },
   "dependencies": {
     "@govtechsg/dnsprove": "^2.1.3",
@@ -146,7 +156,13 @@
       "jest/prefer-expect-assertions": "off",
       "jest/no-hooks": "off",
       "jest/prefer-strict-equal": "off",
-      "array-callback-return": "error"
+      "array-callback-return": "error",
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
     }
   },
   "jest": {
@@ -172,7 +188,7 @@
     "url": "https://github.com/Open-Attestation/open-attestation-cli.git"
   },
   "pkg": {
-    "scripts": "dist/**/*.js"
+    "scripts": "rollup-build/**/*.js"
   },
   "snyk": true
 }

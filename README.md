@@ -621,3 +621,10 @@ Example:
 ```
 npm run benchmark 4 1 performance-tests/unwrapped_document_wImage.json
 ```
+
+## To package oa-cli into an executable
+```
+npm run rollup
+npm run pkg
+cd rollup-build/@govtechsg
+```

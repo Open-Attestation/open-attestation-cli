@@ -7,13 +7,14 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react",
     "sourceMap": true,
     "types": ["jest", "node"],
-    "allowJs": true
+    "allowJs": true,
+    "rootDir": "src"
   },
   "include": ["src"]
 }

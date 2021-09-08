@@ -8,6 +8,7 @@ yarn.lock
 /benchmark/
 /performance-tests/setup/
 /dist
+/rollup-build
 /.idea
 *.iml
 /tmp
