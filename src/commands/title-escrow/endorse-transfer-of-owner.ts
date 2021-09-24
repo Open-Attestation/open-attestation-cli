@@ -49,6 +49,8 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): P
     );
   } catch (e) {
     error(e);
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };

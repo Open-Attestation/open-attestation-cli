@@ -28,6 +28,8 @@ export const handler = async (args: EncryptWalletCommand): Promise<void> => {
     const outputPath = await encrypt(args);
     signale.success(`Wallet successfully saved into ${highlight(outputPath)}`);
   } catch (e) {
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };
