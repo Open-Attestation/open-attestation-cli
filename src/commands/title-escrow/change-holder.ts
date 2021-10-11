@@ -51,6 +51,8 @@ export const handler = async (args: TitleEscrowChangeHolderCommand): Promise<voi
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
     error(e);
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };

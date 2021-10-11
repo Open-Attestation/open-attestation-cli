@@ -43,6 +43,8 @@ export const cancelTransaction = async ({
       signale.error(`Please indicate the transaction hash or the pending transaction's nonce and gas price`);
     }
   } catch (e) {
-    signale.error(e.message);
+    if (e instanceof TypeError) {
+      signale.error(e.message);
+    }
   }
 };

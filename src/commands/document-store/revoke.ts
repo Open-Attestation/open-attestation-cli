@@ -44,6 +44,8 @@ export const handler = async (args: DocumentStoreRevokeCommand): Promise<string 
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };

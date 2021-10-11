@@ -33,6 +33,8 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
     );
     return documentStore.contractAddress;
   } catch (e) {
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };

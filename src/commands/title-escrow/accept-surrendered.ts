@@ -38,6 +38,8 @@ export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promis
     success(`Surrendered transferable record with hash ${args.tokenId} has been accepted.`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transaction.transactionHash}`);
   } catch (e) {
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };

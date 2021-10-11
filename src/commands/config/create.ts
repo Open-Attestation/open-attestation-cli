@@ -46,7 +46,7 @@ interface TypesOfForms {
   identityProofTypes: (IdentityProofType | undefined)[];
 }
 
-const sandboxEndpointUrl = "https://sandbox.openattestation.com";
+const sandboxEndpointUrl = "https://sandbox.fyntech.io";
 
 const { trace } = getLogger("config:create");
 
@@ -230,10 +230,13 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     });
 
     configFile.forms = formsInTemplate;
-    fs.writeFileSync(path.join(args.outputDir, "config.json"), JSON.stringify(configFile, null, 2));
-    success(`Config file successfully generated`);
+    const configFileName = "config.json";
+    fs.writeFileSync(path.join(args.outputDir, configFileName), JSON.stringify(configFile, null, 2));
+    success(`Config file successfully generated at ${highlight(`${args.outputDir}/${configFileName}`)}`);
   } catch (e) {
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
 };
 

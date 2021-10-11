@@ -55,7 +55,9 @@ export const handler = async (
     }
     return allRecords;
   } catch (e) {
-    error(e.message);
+    if (e instanceof TypeError) {
+      error(e.message);
+    }
   }
   return [];
 };
