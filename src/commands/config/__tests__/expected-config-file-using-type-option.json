@@ -122,6 +122,8 @@
           }
         }
       },
+      "extension": "tt",
+      "fileName": "bill-of-lading-<%= blNumber %>",
       "attachments": {
         "allow": true,
         "accept": ".pdf, .json"
@@ -169,6 +171,7 @@
           }
         }
       },
+      "extension": "tt",
       "attachments": {
         "allow": true
       }
@@ -325,7 +328,8 @@
             "title": "Total"
           }
         }
-      }
+      },
+      "extension": "tt"
     }
   ],
   "documentStorage": {
