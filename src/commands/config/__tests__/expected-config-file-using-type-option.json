@@ -23,9 +23,7 @@
             "name": "DEMO TOKEN REGISTRY",
             "tokenRegistry": "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D"
           }
-        ],
-        "name": "Maersk Bill of Lading",
-        "scac": "SGPU"
+        ]
       },
       "schema": {
         "type": "object",
@@ -123,14 +121,14 @@
         }
       },
       "extension": "tt",
-      "fileName": "bill-of-lading-<%= blNumber %>",
+      "fileName": "bill-<%= blNumber %>",
       "attachments": {
         "allow": true,
         "accept": ".pdf, .json"
       }
     },
     {
-      "name": "Covering Letter (GT)",
+      "name": "Covering Letter",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
         "$template": {
@@ -148,10 +146,7 @@
             }
           }
         ],
-        "name": "Covering Letter",
-        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif",
-        "title": "Documents Bundle",
-        "remarks": "Some very important documents in here for some submission"
+        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif"
       },
       "uiSchema": {
         "remarks": {
@@ -177,7 +172,7 @@
       }
     },
     {
-      "name": "Invoice (IMDA)",
+      "name": "Invoice",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
         "$template": {
@@ -198,8 +193,7 @@
               "key": "did:ethr:0x709731d94d65b078496937655582401157c8a640#controller"
             }
           }
-        ],
-        "name": "Invoice (IMDA)"
+        ]
       },
       "schema": {
         "type": "object",

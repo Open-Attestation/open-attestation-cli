@@ -182,11 +182,15 @@
         },
         "issuers": [
           {
-            "name": "Demo Issuer",
-            "documentStore": "0x8bA63EAB43342AAc3AdBB4B827b68Cf4aAE5Caca",
+            "id": "did:ethr:0xaCc51f664D647C9928196c4e33D46fd98FDaA91D",
+            "name": "DEMO ISSUER",
+            "revocation": {
+              "type": "NONE"
+            },
             "identityProof": {
-              "type": "DNS-TXT",
-              "location": "demo-tradetrust.openattestation.com"
+              "type": "DNS-DID",
+              "location": "intermediate-sapphire-catfish.sandbox.openattestation.com",
+              "key": "did:ethr:0xaCc51f664D647C9928196c4e33D46fd98FDaA91D#controller"
             }
           }
         ]
