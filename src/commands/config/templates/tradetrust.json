@@ -21,11 +21,9 @@
               "location": "demo-tradetrust.openattestation.com"
             },
             "name": "DEMO TOKEN REGISTRY",
-            "tokenRegistry": "0x13249BA1Ec6B957Eb35D34D7b9fE5D91dF225B5B"
+            "tokenRegistry": "0x72d9a82203Ef9177239A5E3cB7A8FB9a78D04f17"
           }
-        ],
-        "name": "Maersk Bill of Lading",
-        "scac": "SGPU"
+        ]
       },
       "schema": {
         "type": "object",
@@ -127,10 +125,10 @@
         "accept": ".pdf, .json"
       },
       "extension": "tt",
-      "fileName": "bill-of-lading-<%= blNumber %>"
+      "fileName": "bill-<%= blNumber %>"
     },
     {
-      "name": "Covering Letter (GT)",
+      "name": "Covering Letter",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
         "$template": {
@@ -148,15 +146,7 @@
             }
           }
         ],
-        "name": "Covering Letter",
-        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif",
-        "title": "Documents Bundle",
-        "remarks": "Some very important documents in here for some submission"
-      },
-      "uiSchema": {
-        "remarks": {
-          "ui:widget": "textarea"
-        }
+        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif"
       },
       "schema": {
         "type": "object",
@@ -174,10 +164,15 @@
       "attachments": {
         "allow": true
       },
+      "uiSchema": {
+        "remarks": {
+          "ui:widget": "textarea"
+        }
+      },
       "extension": "tt"
     },
     {
-      "name": "Invoice (IMDA)",
+      "name": "Invoice",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
         "$template": {
@@ -187,19 +182,14 @@
         },
         "issuers": [
           {
-            "id": "did:ethr:0xaCc51f664D647C9928196c4e33D46fd98FDaA91D",
             "name": "Demo Issuer",
-            "revocation": {
-              "type": "NONE"
-            },
+            "documentStore": "0x8bA63EAB43342AAc3AdBB4B827b68Cf4aAE5Caca",
             "identityProof": {
-              "type": "DNS-DID",
-              "location": "intermediate-sapphire-catfish.sandbox.openattestation.com",
-              "key": "did:ethr:0xaCc51f664D647C9928196c4e33D46fd98FDaA91D#controller"
+              "type": "DNS-TXT",
+              "location": "demo-tradetrust.openattestation.com"
             }
           }
-        ],
-        "name": "Invoice (IMDA)"
+        ]
       },
       "schema": {
         "type": "object",

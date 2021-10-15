@@ -407,22 +407,43 @@ open-attestation deploy document-store "My Name" --network ropsten --key 0000000
 
 This command will generate a config file with sandbox DNS, document store and token registry.
 
-Please note that a template config file and a wallet.json file must be provided in order for this command to work.
+Please note that a wallet.json file in ropsten network must be provided in order for this command to work.
 
 Please also note that there must have funds in the Ropsten wallet, as we require to pay some gas fees to generate the config file.
-
-Example:
-
-```
-open-attestation config create --output-dir ./examples/config --encrypted-wallet-path /path/to/wallet.json --config-template-path /path/tp/config.json
-```
 
 You will need:
 
 - `--output-dir` option specify which folder the config file will be created in.
 - `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
 - `--config-template-path` option to provide a path to a config file.
-- `--config-type` option specify which default template to use to create the config file.
+- `--config-type` option specify which default template to use to create the config file, i.e. `tradetrust`.
+
+There are 2 ways of using this command to generate a config file, both in which, will return a new config file with sandbox DNS, updated document store and updated token registry.
+
+### Method 1: Using config-type option
+
+This method will generate the most basic config file with a sandbox DNS, document store and token registry.
+
+Step 1: Generate a wallet.json file
+
+```
+// If you already have a wallet.json that is in ropsten network and it does have some funds in it, you can skip this step.
+open-attestation wallet create --output-file wallet.json --fund ropsten
+```
+
+Step 2: Generate config file by passing in the generated wallet.json file
+
+```
+open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-type tradetrust
+```
+
+### Method 2: Using config-template-path option
+
+This method will generate a copy of your existing config file with the updated sandbox DNS, document store and token registry.
+
+```
+open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-path </path/to>/config.json
+```
 
 ## Cancel pending transaction
 
