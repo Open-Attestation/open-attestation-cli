@@ -232,7 +232,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     configFile.forms = formsInTemplate;
     const configFileName = "config.json";
     fs.writeFileSync(path.join(args.outputDir, configFileName), JSON.stringify(configFile, null, 2));
-    success(`Config file successfully generated at ${highlight(`${args.outputDir}/${configFileName}`)}`);
+    success(`Config file successfully generated at ${highlight(`${args.outputDir}${configFileName}`)}`);
   } catch (e) {
     if (e instanceof TypeError) {
       error(e.message);
