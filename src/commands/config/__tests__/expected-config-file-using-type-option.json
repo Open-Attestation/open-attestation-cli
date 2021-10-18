@@ -145,8 +145,7 @@
               "location": "alert-cyan-stoat.sandbox.openattestation.com"
             }
           }
-        ],
-        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif"
+        ]
       },
       "uiSchema": {
         "remarks": {

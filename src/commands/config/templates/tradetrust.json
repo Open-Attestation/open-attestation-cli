@@ -145,8 +145,7 @@
               "location": "demo-tradetrust.openattestation.com"
             }
           }
-        ],
-        "logo": "https://www.aretese.com/images/govtech-animated-logo.gif"
+        ]
       },
       "schema": {
         "type": "object",
