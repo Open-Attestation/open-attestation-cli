@@ -210,9 +210,11 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
           } else if (issuer.identityProof?.type === "DNS-DID") {
             issuer.name = "DEMO ISSUER";
             issuer.id = `did:ethr:0x${walletObject.address}`;
-            if (issuer.revocation?.type) issuer.revocation.type = "NONE" as RevocationType;
-            if (issuer.identityProof?.location) issuer.identityProof.location = verifiableDocumentDnsDidName;
-            if (issuer.identityProof?.key) issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
+            if (issuer.revocation?.type !== undefined) issuer.revocation.type = "NONE" as RevocationType;
+            if (issuer.identityProof?.location !== undefined)
+              issuer.identityProof.location = verifiableDocumentDnsDidName;
+            if (issuer.identityProof?.key !== undefined)
+              issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
           }
           return issuer;
         });
