@@ -256,7 +256,7 @@ open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e5
 Verify if a document is valid.
 
 ```bash
-open-attestation document-store verify --document ./examples/wrapped-documents/example.0.json --network ropsten
+open-attestation verify --document ./examples/wrapped-documents/example.0.json --network ropsten
 
 …  awaiting  Verifying examples/wrapped-documents/example.0.json
 ✔  success   The document is valid
