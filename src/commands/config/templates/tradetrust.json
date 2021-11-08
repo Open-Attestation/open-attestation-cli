@@ -2,7 +2,7 @@
   "network": "ropsten",
   "wallet": {
     "type": "ENCRYPTED_JSON",
-    "encryptedJson": ""
+    "encryptedJson": "<Wallet Json>"
   },
   "forms": [
     {
@@ -21,7 +21,7 @@
               "location": "demo-tradetrust.openattestation.com"
             },
             "name": "DEMO TOKEN REGISTRY",
-            "tokenRegistry": ""
+            "tokenRegistry": "<Token Registry Address>"
           }
         ]
       },
@@ -139,7 +139,7 @@
         "issuers": [
           {
             "name": "Demo Issuer",
-            "documentStore": "",
+            "documentStore": "<Document Store Address>",
             "identityProof": {
               "type": "DNS-TXT",
               "location": "demo-tradetrust.openattestation.com"
@@ -181,7 +181,7 @@
         },
         "issuers": [
           {
-            "id": "",
+            "id": "<Issuer Id>",
             "name": "DEMO ISSUER",
             "revocation": {
               "type": "NONE"
@@ -189,7 +189,7 @@
             "identityProof": {
               "type": "DNS-DID",
               "location": "demo-tradetrust.openattestation.com",
-              "key": ""
+              "key": "<Identity Proof Key>"
             }
           }
         ]
@@ -326,7 +326,7 @@
     }
   ],
   "documentStorage": {
-    "apiKey": "",
+    "apiKey": "<Documnent Storage Api Key>",
     "url": "https://api-ropsten.tradetrust.io/storage"
   }
 }
