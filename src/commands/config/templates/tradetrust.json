@@ -18,7 +18,7 @@
           {
             "identityProof": {
               "type": "DNS-TXT",
-              "location": "demo-tradetrust.openattestation.com"
+              "location": "<DNS Location>"
             },
             "name": "DEMO TOKEN REGISTRY",
             "tokenRegistry": "<Token Registry Address>"
@@ -142,7 +142,7 @@
             "documentStore": "<Document Store Address>",
             "identityProof": {
               "type": "DNS-TXT",
-              "location": "demo-tradetrust.openattestation.com"
+              "location": "<DNS Location>"
             }
           }
         ]
@@ -188,7 +188,7 @@
             },
             "identityProof": {
               "type": "DNS-DID",
-              "location": "demo-tradetrust.openattestation.com",
+              "location": "<DNS Location>",
               "key": "<Identity Proof Key>"
             }
           }
