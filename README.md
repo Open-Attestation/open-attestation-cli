@@ -32,7 +32,7 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 
 ## Usage
 
-#### List of features with the options available
+#### List of features with the required options
 
 |                                            | Private Key | Wallet | Aws Kms |
 | ------------------------------------------ | ----------- | ------ | ------- |
