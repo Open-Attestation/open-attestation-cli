@@ -1,8 +1,18 @@
-# Document CLI tool
+# Open Attestation (CLI)
 
-This CLI tool turns .json documents into any open-attestation verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the json document and then creates a file with the data and proof of integrity.
+This CLI tool in the [Open Attestation CLI](https://github.com/Open-Attestation/open-attestation-cli) repository turns .json documents into any open-attestation verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the json document and then creates a file with the data and proof of integrity.
 
-## Setup
+## Installation
+
+### Binary
+
+To install the binary, simply download the binary from the [CLI release page](https://github.com/Open-Attestation/open-attestation-cli/releases) for your OS.
+
+> We are aware that the size of the binaries must be reduced and we have tracked the issue in [Github](https://github.com/Open-Attestation/open-attestation-cli/issues/68). We hope to find a solution in a near future and any help is welcomed.
+
+### NPM
+
+Alternatively for Linux or MacOS users, if you have `npm` installed on your machine, you may install the cli using the following command:
 
 ```bash
 npm install -g @govtechsg/open-attestation-cli
@@ -16,7 +26,47 @@ You can also opt to use npx:
 npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 ```
 
-## Wrapping Documents
+> In all the guides, we will refer to the CLI as `open-attestation` when running a command. That means we will assume the CLI is available in your execution path. If it's not the case, you will to change `open-attestation` by the full path to the executable.
+
+---
+
+## Usage
+
+#### List of features with the options available
+
+|                                            | Private Key | Wallet | Aws Kms |
+| ------------------------------------------ | ----------- | ------ | ------- |
+| Create config                              | ❎          | ✔️     | ❎      |
+| Deploy document store                      | ✔           | ✔      | ✔       |
+| Deploy title escrow                        | ✔           | ✔      | ✔       |
+| Deploy title escrow creator                | ✔           | ✔      | ✔       |
+| Deploy token registry                      | ✔           | ✔      | ✔       |
+| Dns txt create                             | ❎          | ❎     | ❎      |
+| Dns txt get                                | ❎          | ❎     | ❎      |
+| Document store issue                       | ✔           | ✔      | ✔       |
+| Document store revoke                      | ✔           | ✔      | ✔       |
+| Document store transfer ownership          | ✔           | ✔      | ✔       |
+| Token registry issue                       | ✔           | ✔      | ✔       |
+| Token registry mint                        | ✔           | ✔      | ✔       |
+| Transaction cancel                         | ✔           | ✔      | ✔       |
+| Wallet create                              | ❎          | ❎     | ❎      |
+| Wallet decrypt                             | ❎          | ❎     | ❎      |
+| Wallet encrypt                             | ✔           | ❎     | ❎      |
+| Filter (obfuscate) document                | ❎          | ❎     | ❎      |
+| Sign document                              | ✔           | ❎     | ❎      |
+| Encrypt document                           | ❎          | ❎     | ❎      |
+| Decrypt document                           | ❎          | ❎     | ❎      |
+| Wrap document                              | ❎          | ❎     | ❎      |
+| Verify document                            | ❎          | ❎     | ❎      |
+| Change holder (Title Escrow)               | ✔           | ✔      | ✔       |
+| Nominate change of owner (Title Escrow)    | ✔           | ✔      | ✔       |
+| Endorse transfer to owner (Title Escrow)   | ✔           | ✔      | ✔       |
+| Endorse change of owner (Title Escrow)     | ✔           | ✔      | ✔       |
+| Surrender document (Title Escrow)          | ✔           | ✔      | ✔       |
+| Reject surrendered document (Title Escrow) | ✔           | ✔      | ✔       |
+| Accept surrendered document (Title Escrow) | ✔           | ✔      | ✔       |
+
+### Wrapping documents
 
 This command process all documents in the input directory. It will add the issuance proofs to the individual documents. Additionally, you'll get the Batch Document Root (merkleRoot) value. Thereafter, you can issue all the documents in a single batch with the merkleRoot later.
 
@@ -99,9 +149,13 @@ open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --
 open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
-## Document privacy filter
+:::note
+For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](/docs/integrator-section/transferable-record/title-escrow).
+:::
 
-This allows document holders to generate valid documents which hides certain evidences. Useful for hiding grades lol.
+### Document privacy filter
+
+This allows document holders to generate valid documents which obfuscates certain fields. For example, sensitive information that you wish not to disclose.
 
 ```bash
 open-attestation filter <inputDocumentPath> <outputDocumentPath> [filters...]
@@ -115,7 +169,7 @@ open-attestation filter examples/wrapped-documents/example.0.json tmp/example.0.
 ✔  success  Obfuscated document saved to: tmp/example.0.out.json
 ```
 
-## Encrypting document
+### Encrypting document
 
 This allows you to encrypt document in order to share and store them safely.
 
@@ -132,7 +186,7 @@ open-attestation encrypt ./examples/wrapped-documents/example.0.json ./tmp/encry
 ⚠  warning   Here is the key to decrypt the document: don't lose it: 9bac5be27bac31d852fc1e48eb9d5249ec6ad7978da23377b5879f7a24994cb2
 ```
 
-## Decrypting document
+### Decrypting document
 
 This allows you to decrypt document encrypted using the method above.
 
@@ -148,7 +202,9 @@ open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypte
 ✔  success   Decrypted document saved to: decrypted.json
 ```
 
-## Deploying Token Registry
+### Token registry
+
+#### Deploy new token registry
 
 Deploys a token registry contract on the blockchain
 
@@ -164,25 +220,7 @@ open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
-## Deploying Document Store
-
-Deploys a document store contract on the blockchain
-
-```bash
-open-attestation deploy document-store <store-name> [options]
-```
-
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
-
-```bash
-open-attestation deploy document-store "My Name" --network ropsten
-
-✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
-```
-
-## Token registry
-
-### Issue
+#### Issue document to token registry
 
 Issue a hash to a token registry deployed on the blockchain
 
@@ -201,9 +239,25 @@ open-attestation token-registry mint --network ropsten --address 6133f580aE903b8
 
 `mint` can be used instead of issue and will be strictly equivalent.
 
-## Document Store
+### Document Store
 
-### Issue
+#### Deploy new document store
+
+Deploys a document store contract on the blockchain
+
+```bash
+open-attestation deploy document-store <store-name> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation deploy document-store "My Name" --network ropsten
+
+✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
+```
+
+#### Issue document to document store
 
 Issue a hash to a document store deployed on the blockchain
 
@@ -219,7 +273,7 @@ open-attestation document-store issue --network ropsten --address 0x19f89607b522
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
 
-### Revoke
+#### Revoke document in document store
 
 Revoke a hash to a document store deployed on the blockchain
 
@@ -235,7 +289,7 @@ open-attestation document-store revoke --network ropsten --address 0x19f89607b52
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
 
-### Transfer ownership
+#### Transfer ownership of document store
 
 Transfer ownership of a document store deployed on the blockchain to another wallet
 
@@ -251,18 +305,18 @@ open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e5
 ✔  success   Ownership of document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 has been transferred to new wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
 ```
 
-## Verify
+### Verify
 
 Verify if a document is valid.
 
 ```bash
-open-attestation verify --document ./examples/wrapped-documents/example.0.json --network ropsten
+open-attestation document-store verify --document ./examples/wrapped-documents/example.0.json --network ropsten
 
 …  awaiting  Verifying examples/wrapped-documents/example.0.json
 ✔  success   The document is valid
 ```
 
-## DID Direct Signing
+### DID Direct Signing
 
 Sign on an OA document directly with a private key.
 
@@ -270,7 +324,7 @@ Sign on an OA document directly with a private key.
 open-attestation sign ./examples/unsigned-documents -f ./examples/sample-key -p did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller --output-dir ./examples/signed-documents
 ```
 
-## DNS TXT record
+### DNS TXT Record
 
 Create a temporary DNS TXT record in OpenAttestation sandbox
 
@@ -305,7 +359,7 @@ open-attestation dns txt-record get --location example.openattestation.com --net
 └─────────┴────────────┴────────────┴───────┴──────────────────────────────────────────────┴────────┘
 ```
 
-## Wallet
+### Wallet
 
 Creating a wallet
 
@@ -348,7 +402,7 @@ open-attestation wallet decrypt wallet.json
 - private key ....
 ```
 
-## Providing the wallet
+### Providing the wallet
 
 When interacting with blockchain you will likely need to provide a way to access your wallet. All functions - when the wallet is required - will provide multiples ways for you to pass it in:
 
@@ -379,31 +433,7 @@ rm ./examples/sample-key
 open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
-### List of features with the options available
-
-|                                   | Private Key | Wallet | Aws Kms |
-| --------------------------------- | ----------- | ------ | ------- |
-| Create config                     | ❎          | ✔️     | ❎      |
-| Deploy document store             | ✔           | ✔      | ✔       |
-| Deploy title escrow               | ✔           | ✔      | ✔       |
-| Deploy title escrow creator       | ✔           | ✔      | ✔       |
-| Deploy token registry             | ✔           | ✔      | ✔       |
-| Dns txt create                    | ❎          | ❎     | ❎      |
-| Dns txt get                       | ❎          | ❎     | ❎      |
-| Document store issue              | ✔           | ✔      | ✔       |
-| Document store revoke             | ✔           | ✔      | ✔       |
-| Document store transfer ownership | ✔           | ✔      | ✔       |
-| Token registry issue              | ✔           | ✔      | ✔       |
-| Token registry mint               | ✔           | ✔      | ✔       |
-| Transaction cancel                | ✔           | ✔      | ✔       |
-| Wallet create                     | ❎          | ❎     | ❎      |
-| Wallet decrypt                    | ❎          | ❎     | ❎      |
-| Wallet encrypt                    | ✔           | ❎     | ❎      |
-| Filter (obfuscate) document       | ❎          | ❎     | ❎      |
-| Sign document                     | ✔           | ❎     | ❎      |
-| Verify document                   | ❎          | ❎     | ❎      |
-
-## Config file
+### Configuration file
 
 This command will generate a config file with sandbox DNS, document store and token registry.
 
@@ -420,10 +450,9 @@ You will need:
 
 There are 2 ways of using this command to generate a config file, both in which, will return a new config file with sandbox DNS, updated document store and updated token registry.
 
-### Method 1: Using config-type option
+#### Method 1: Using config-type option
 
 This method will generate the most basic config file with a sandbox DNS, document store and token registry.
-
 Step 1: Generate a wallet.json file
 
 ```
@@ -437,7 +466,7 @@ Step 2: Generate config file by passing in the generated wallet.json file
 open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-type tradetrust
 ```
 
-### Method 2: Using config-template-path option
+#### Method 2: Using config-template-path option
 
 This method will generate a copy of your existing config file with the updated sandbox DNS, document store and token registry.
 
@@ -445,7 +474,7 @@ This method will generate a copy of your existing config file with the updated s
 open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-path </path/to>/config.json
 ```
 
-## Cancel pending transaction
+### Cancel pending transaction
 
 This command will cancel pending transaction.
 
@@ -472,9 +501,9 @@ open-attestation transaction cancel --nonce 1 --gas-price 300 --network ropsten 
 open-attestation transaction cancel --transaction-hash 0x000 --network ropsten --encrypted-wallet-path /path/to/wallet
 ```
 
-## Title Escrow
+### Title Escrow
 
-### Change Holder
+#### Change Holder
 
 This command will allow the owner of a transferable record to change its holder.
 
@@ -490,7 +519,7 @@ open-attestation title-escrow change-holder --token-registry 0x4933e30eF8A083f49
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully changed to holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
-### Nominate Change of Owner
+#### Nominate Change of Owner
 
 This command will allow the owner of the transferable record to nominate a new owner of the transferable record.
 **This command will fail if you are not the owner of the transferable record.**
@@ -507,7 +536,7 @@ open-attestation title-escrow nominate-change-owner --token-registry 0x4933e30eF
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully nominated to new owner with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
-### Endorse Transfer of Owner
+#### Endorse Transfer of Owner
 
 This command will allow the holder of the transferable record to endorse the transfer to an approved owner and approved holder of the transferable record.
 **This command will fail if there is no approved owner or holder record on the transferable record.**
@@ -524,7 +553,7 @@ open-attestation title-escrow endorse-transfer-owner --token-registry 0x4933e30e
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to approved owner at 0x2f60375e8144e16Adf1979936301D8341D58C36C and approved holder at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
-### Endorse Change of Owner
+#### Endorse Change of Owner
 
 This command will allow the owner of the transferable record to endorse the change of owner to a new owner and new holder of the transferable record.
 **This command will fail if the provided holder and owner's addresses are the same as the current owner and current holder's addresses.**
@@ -541,7 +570,7 @@ open-attestation title-escrow endorse-change-owner --token-registry 0x4933e30eF8
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to new owner with address 0x2f60375e8144e16Adf1979936301D8341D58C36C and new holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
-### Surrender Document
+#### Surrender Document
 
 This command will allow the entity (who is both an owner and holder) to surrender it's transferable record to the token registry.
 
@@ -557,7 +586,7 @@ open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A0
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been surrendered.
 ```
 
-### Reject Surrendered Document
+#### Reject Surrendered Document
 
 This command will allow the token registry to reject a surrendered transferable record.
 
@@ -573,7 +602,7 @@ open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A0
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
 ```
 
-### Accept Surrendered Document
+#### Accept Surrendered Document
 
 This command will allow the token registry to accept a surrendered transferable record.
 
@@ -605,13 +634,13 @@ open-attestation sign
 
 ## Development
 
-To run on local for development
+To run on local
 
 ```
 npm run dev -- <command> <options>
 ```
 
-## Test
+To run tests
 
 ```
 npm run test
