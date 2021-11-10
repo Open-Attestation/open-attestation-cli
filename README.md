@@ -149,9 +149,7 @@ open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --
 open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
-:::note
-For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](/docs/integrator-section/transferable-record/title-escrow).
-:::
+> **_NOTE:_** For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](/docs/integrator-section/transferable-record/title-escrow).
 
 ### Document privacy filter
 
