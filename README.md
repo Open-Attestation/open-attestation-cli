@@ -218,12 +218,13 @@ open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
-#### Deploy new 
+#### Deploy new title escrow
 
 Deploys a title escrow contract on the blockchain
 
 ```bash
 open-attestation deploy title-escrow --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --beneficiary <BENEFICIARY_ADDRESS> --holder <HOLDER_ADDRESS>
+```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
