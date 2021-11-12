@@ -2,6 +2,7 @@ import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
+import { addAddressPrefix } from "../../utils";
 import { issueToTokenRegistry } from "./issue";
 
 jest.mock("@govtechsg/token-registry");
@@ -63,6 +64,23 @@ describe("token-registry", () => {
       const instance = await issueToTokenRegistry({
         ...deployParams,
         key: privateKey,
+      });
+
+      const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
+
+      expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
+      expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
+      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.tokenId);
+      expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
+    });
+
+    it("should accept tokenId without 0x prefix and return deployed instance", async () => {
+      const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
+      const instance = await issueToTokenRegistry({
+        ...deployParams,
+        key: privateKey,
+        tokenId: addAddressPrefix("zyxw"),
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
