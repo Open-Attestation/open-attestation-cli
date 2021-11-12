@@ -3,6 +3,7 @@ import { join } from "path";
 import { Wallet } from "ethers";
 import { DocumentStoreFactory } from "@govtechsg/document-store";
 import { DocumentStoreIssueCommand } from "../../commands/document-store/document-store-command.type";
+import { addAddressPrefix } from "../../utils";
 
 jest.mock("@govtechsg/document-store");
 
@@ -71,6 +72,17 @@ describe("document-store", () => {
 
     it("should pass in the correct params and return the deployed instance", async () => {
       const instance = await issueToDocumentStore(deployParams);
+
+      const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
+
+      expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
+      expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.hash);
+      expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
+    });
+
+    it("should accept hash without 0x prefix and return deployed instance", async () => {
+      const instance = await issueToDocumentStore({ ...deployParams, hash: addAddressPrefix("abcd") });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
 

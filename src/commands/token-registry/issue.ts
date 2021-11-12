@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { issueToTokenRegistry } from "../../implementations/token-registry/issue";
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -41,6 +41,7 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
     info(`Issuing ${args.tokenId} to the initial recipient ${args.to} in the registry ${args.address}`);
     const { transactionHash } = await issueToTokenRegistry({
       ...args,
+      tokenId: addAddressPrefix(args.tokenId),
     });
     success(
       `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.to}`

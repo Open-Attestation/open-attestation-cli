@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { DocumentStoreTransferOwnershipCommand } from "./document-store-command.type";
 import { transferDocumentStoreOwnershipToWallet } from "../../implementations/document-store/transfer-ownership";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -38,7 +38,7 @@ export const handler = async (args: DocumentStoreTransferOwnershipCommand): Prom
     const { transactionHash } = await transferDocumentStoreOwnershipToWallet({
       ...args,
       // add 0x automatically in front of the hash if it's not provided
-      newOwner: args.newOwner.startsWith("0x") ? args.newOwner : `0x${args.newOwner}`,
+      newOwner: addAddressPrefix(args.newOwner),
     });
     success(`Ownership of document store ${args.address} has been transferred to new wallet ${args.newOwner}`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);

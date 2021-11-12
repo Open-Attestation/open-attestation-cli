@@ -218,21 +218,37 @@ open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
-#### Issue document to token registry
+#### Deploy new title escrow
 
-Issue a hash to a token registry deployed on the blockchain
+Deploys a title escrow contract on the blockchain
 
 ```bash
-open-attestation token-registry issue --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+open-attestation deploy title-escrow --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --beneficiary <BENEFICIARY_ADDRESS> --holder <HOLDER_ADDRESS>
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation token-registry mint --network ropsten --address 6133f580aE903b8e79845340375cCfd78a45FF35 --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c
+open-attestation deploy title-escrow --network ropsten --address 0x4B127b8d5e53872d403ce43414afeb1db67B1842 --beneficiary 0x6FFeD6E6591b808130a9b248fEA32101b5220eca --holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca
+
+✔  success   Title escrow deployed at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+```
+
+#### Issue document to token registry
+
+`Issue` a hash to a token registry deployed on the blockchain. The `tokenId` option would be used to indicate the document hash, and the `to` option to indicate the title escrow address the document is mapped to.
+
+```bash
+open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation token-registry mint --network ropsten --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 
-✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 0x6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
 `mint` can be used instead of issue and will be strictly equivalent.
@@ -266,7 +282,7 @@ open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store issue --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+open-attestation document-store issue --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -282,7 +298,7 @@ open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store revoke --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+open-attestation document-store revoke --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
