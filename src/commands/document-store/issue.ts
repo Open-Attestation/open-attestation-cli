@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { issueToDocumentStore } from "../../implementations/document-store/issue";
 import { DocumentStoreIssueCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, validateAddressPrefix } from "../../utils";
+import { getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -38,7 +38,7 @@ export const handler = async (args: DocumentStoreIssueCommand): Promise<string |
     const { transactionHash } = await issueToDocumentStore({
       ...args,
       // add 0x automatically in front of the hash if it's not provided
-      hash: validateAddressPrefix(args.hash),
+      hash: addAddressPrefix(args.hash),
     });
     success(`Document/Document Batch with hash ${args.hash} has been issued on ${args.address}`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);

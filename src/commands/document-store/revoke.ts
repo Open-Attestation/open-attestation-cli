@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { revokeToDocumentStore } from "../../implementations/document-store/revoke";
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, validateAddressPrefix } from "../../utils";
+import { getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -38,7 +38,7 @@ export const handler = async (args: DocumentStoreRevokeCommand): Promise<string 
     const { transactionHash } = await revokeToDocumentStore({
       ...args,
       // add 0x automatically in front of the hash if it's not provided
-      hash: validateAddressPrefix(args.hash),
+      hash: addAddressPrefix(args.hash),
     });
     success(`Document/Document Batch with hash ${args.hash} has been revoked on ${args.address}`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);

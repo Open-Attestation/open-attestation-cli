@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import signale from "signale";
 import { ethers, getDefaultProvider, providers, Signer, Wallet } from "ethers";
 import { Provider } from "@ethersproject/abstract-provider";
-import { validateAddressPrefix } from "../../utils";
+import { addAddressPrefix } from "../../utils";
 
 import {
   isAwsKmsSignerOption,
@@ -71,7 +71,7 @@ export const getWalletOrSigner = async ({
     const privateKey = getPrivateKey(options as any);
 
     if (privateKey) {
-      const hexlifiedPrivateKey = validateAddressPrefix(privateKey);
+      const hexlifiedPrivateKey = addAddressPrefix(privateKey);
       return new Wallet(hexlifiedPrivateKey, provider);
     }
   }
