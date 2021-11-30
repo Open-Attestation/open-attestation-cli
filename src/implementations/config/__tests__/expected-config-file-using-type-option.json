@@ -6,7 +6,7 @@
   },
   "forms": [
     {
-      "name": "Bill of Lading",
+      "name": "TradeTrust Bill of Lading v2",
       "type": "TRANSFERABLE_RECORD",
       "defaults": {
         "$template": {
@@ -120,15 +120,442 @@
           }
         }
       },
-      "extension": "tt",
-      "fileName": "bill-<%= blNumber %>",
       "attachments": {
         "allow": true,
         "accept": ".pdf, .json"
-      }
+      },
+      "extension": "tt",
+      "fileName": "bill-<%= blNumber %>"
     },
     {
-      "name": "Covering Letter",
+      "name": "TradeTrust CHAFTA Certificate of Origin v2",
+      "type": "VERIFIABLE_DOCUMENT",
+      "defaults": {
+        "$template": {
+          "type": "EMBEDDED_RENDERER",
+          "name": "CHAFTA_COO",
+          "url": "https://generic-templates.tradetrust.io"
+        },
+        "issuers": [
+          {
+            "identityProof": {
+              "type": "DNS-TXT",
+              "location": "alert-cyan-stoat.sandbox.openattestation.com"
+            },
+            "name": "DEMO DOCUMENT STORE",
+            "documentStore": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd"
+          }
+        ]
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "iD": {
+            "type": "string",
+            "title": "COO ID"
+          },
+          "issueDateTime": {
+            "type": "string",
+            "title": "Issued Date & Time"
+          },
+          "firstSignatoryAuthentication": {
+            "title": "Signatory Authentication",
+            "type": "object",
+            "properties": {
+              "signature": {
+                "type": "string",
+                "title": "First Signatory"
+              }
+            }
+          },
+          "supplyChainConsignment": {
+            "title": "Supply Chain Consignment",
+            "type": "object",
+            "properties": {
+              "iD": {
+                "type": "string",
+                "title": "ID"
+              },
+              "information": {
+                "type": "string",
+                "title": "Consignment Information"
+              },
+              "exportCountry": {
+                "title": "Export Country",
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "title": "Country Code"
+                  }
+                }
+              },
+              "exporter": {
+                "title": "Exporter",
+                "type": "object",
+                "properties": {
+                  "iD": {
+                    "title": "ID",
+                    "type": "string"
+                  },
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "postalAddress": {
+                    "title": "",
+                    "type": "object",
+                    "properties": {
+                      "line1": {
+                        "type": "string",
+                        "title": "Address Line 1"
+                      },
+                      "line2": {
+                        "type": "string",
+                        "title": "Address Line 2"
+                      },
+                      "cityName": {
+                        "type": "string",
+                        "title": "City"
+                      },
+                      "postcode": {
+                        "type": "string",
+                        "title": "Postal Code"
+                      },
+                      "countrySubDivisionName": {
+                        "type": "string",
+                        "title": "Country Sub Division Name"
+                      },
+                      "countryCode": {
+                        "type": "string",
+                        "title": "Country Code"
+                      }
+                    }
+                  }
+                }
+              },
+              "importCountry": {
+                "type": "object",
+                "title": "Import Country",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "title": "Country Code"
+                  }
+                }
+              },
+              "importer": {
+                "title": "Importer's Details (if known)",
+                "type": "object",
+                "properties": {
+                  "iD": {
+                    "title": "Importer ID",
+                    "type": "string"
+                  },
+                  "name": {
+                    "title": "Name",
+                    "type": "string"
+                  },
+                  "postalAddress": {
+                    "title": "",
+                    "type": "object",
+                    "properties": {
+                      "line1": {
+                        "type": "string",
+                        "title": "Address Line 1"
+                      },
+                      "line2": {
+                        "type": "string",
+                        "title": "Address Line 2"
+                      },
+                      "cityName": {
+                        "type": "string",
+                        "title": "City"
+                      },
+                      "postcode": {
+                        "type": "string",
+                        "title": "Postal Code"
+                      },
+                      "countrySubDivisionName": {
+                        "type": "string",
+                        "title": "Country Sub Division Name"
+                      },
+                      "countryCode": {
+                        "type": "string",
+                        "title": "Country Code"
+                      }
+                    }
+                  }
+                }
+              },
+              "includedConsignmentItems": {
+                "type": "array",
+                "title": "Included Consignment Items",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "iD": {
+                      "type": "string",
+                      "title": "ID"
+                    },
+                    "information": {
+                      "type": "string",
+                      "title": "Information"
+                    },
+                    "crossBorderRegulatoryProcedure": {
+                      "type": "object",
+                      "title": "",
+                      "properties": {
+                        "originCriteriaText": {
+                          "type": "string",
+                          "title": "Origin Criteria Text"
+                        }
+                      }
+                    },
+                    "manufacturer": {
+                      "type": "object",
+                      "title": "Manufacturer",
+                      "properties": {
+                        "iD": {
+                          "type": "string",
+                          "title": "ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "title": "Name"
+                        },
+                        "postalAddress": {
+                          "title": "",
+                          "type": "object",
+                          "properties": {
+                            "line1": {
+                              "type": "string",
+                              "title": "Address Line 1"
+                            },
+                            "line2": {
+                              "type": "string",
+                              "title": "Address Line 2"
+                            },
+                            "cityName": {
+                              "type": "string",
+                              "title": "City"
+                            },
+                            "postcode": {
+                              "type": "string",
+                              "title": "Postal Code"
+                            },
+                            "countrySubDivisionName": {
+                              "type": "string",
+                              "title": "Country Sub Division Name"
+                            },
+                            "countryCode": {
+                              "type": "string",
+                              "title": "Country Code"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "tradeLineItems": {
+                      "type": "array",
+                      "title": "Trade line Items",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sequenceNumber": {
+                            "type": "integer",
+                            "title": "Sequence Number"
+                          },
+                          "invoiceReference": {
+                            "type": "object",
+                            "title": "Invoice Reference",
+                            "properties": {
+                              "iD": {
+                                "type": "string",
+                                "title": "ID"
+                              },
+                              "formattedIssueDateTime": {
+                                "type": "string",
+                                "title": "Formatted Issue Date & Time"
+                              },
+                              "attachedBinaryFile": {
+                                "type": "object",
+                                "title": "",
+                                "properties": {
+                                  "uRI": {
+                                    "type": "string",
+                                    "title": "Attached Binary File URI"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "tradeProduct": {
+                            "type": "object",
+                            "title": "Trade Product",
+                            "properties": {
+                              "iD": {
+                                "type": "string",
+                                "title": "ID"
+                              },
+                              "description": {
+                                "type": "string",
+                                "title": "Description"
+                              },
+                              "harmonisedTariffCode": {
+                                "type": "object",
+                                "title": "",
+                                "properties": {
+                                  "classCode": {
+                                    "type": "string",
+                                    "title": "Harmonised Tariff Class Code"
+                                  },
+                                  "className": {
+                                    "type": "string",
+                                    "title": "Harmonised Tariff Class Name"
+                                  }
+                                }
+                              },
+                              "originCountry": {
+                                "type": "object",
+                                "title": "Origin Country",
+                                "properties": {
+                                  "code": {
+                                    "type": "string",
+                                    "title": "Code"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "transportPackages": {
+                            "type": "array",
+                            "title": "Transport Packages",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "iD": {
+                                  "type": "string",
+                                  "title": "ID"
+                                },
+                                "grossVolume": {
+                                  "type": "string",
+                                  "title": "Gross Volume"
+                                },
+                                "grossWeight": {
+                                  "type": "string",
+                                  "title": "Gross Weight"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "loadingBaseportLocation": {
+                "type": "object",
+                "title": "Loading Baseport Location",
+                "properties": {
+                  "iD": {
+                    "type": "string",
+                    "title": "ID"
+                  },
+                  "name": {
+                    "type": "string",
+                    "title": "Name"
+                  }
+                }
+              },
+              "mainCarriageTransportMovement": {
+                "title": "Main Carriage Transport Movement",
+                "type": "object",
+                "properties": {
+                  "iD": {
+                    "type": "string",
+                    "title": "ID"
+                  },
+                  "information": {
+                    "type": "string",
+                    "title": "Information"
+                  },
+                  "usedTransportMeans": {
+                    "title": "",
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "title": "Used Transport"
+                      },
+                      "iD": {
+                        "type": "string",
+                        "title": "Used Transport ID"
+                      }
+                    }
+                  },
+                  "departureEvent": {
+                    "title": "",
+                    "type": "object",
+                    "properties": {
+                      "departureDateTime": {
+                        "type": "string",
+                        "title": "Departure Date and Time"
+                      }
+                    }
+                  }
+                }
+              },
+              "unloadingBaseportLocation": {
+                "type": "object",
+                "title": "Unloading Baseport Location",
+                "properties": {
+                  "iD": {
+                    "type": "string",
+                    "title": "ID"
+                  },
+                  "name": {
+                    "type": "string",
+                    "title": "Name"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "uiSchema": {
+        "firstSignatoryAuthentication": {
+          "signature": {
+            "ui:widget": "file",
+            "ui:options": {
+              "text": "Upload Signature",
+              "accept": ".png, .jpeg, .jpg"
+            }
+          }
+        },
+        "issueDateTime": {
+          "ui:widget": "datetime"
+        },
+        "supplyChainConsignment": {
+          "mainCarriageTransportMovement": {
+            "departureEvent": {
+              "departureDateTime": {
+                "ui:widget": "datetime"
+              }
+            }
+          }
+        }
+      },
+      "attachments": {
+        "allow": true,
+        "accept": ".pdf"
+      },
+      "extension": "tt"
+    },
+    {
+      "name": "TradeTrust Covering Letter v2",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
         "$template": {
@@ -138,23 +565,22 @@
         },
         "issuers": [
           {
-            "name": "DEMO DOCUMENT STORE",
-            "documentStore": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
             "identityProof": {
               "type": "DNS-TXT",
               "location": "alert-cyan-stoat.sandbox.openattestation.com"
-            }
+            },
+            "name": "DEMO DOCUMENT STORE",
+            "documentStore": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd"
           }
         ]
-      },
-      "uiSchema": {
-        "remarks": {
-          "ui:widget": "textarea"
-        }
       },
       "schema": {
         "type": "object",
         "properties": {
+          "logo": {
+            "type": "string",
+            "title": "Document Title"
+          },
           "title": {
             "type": "string",
             "title": "Document Title"
@@ -162,16 +588,58 @@
           "remarks": {
             "type": "string",
             "title": "Remarks"
+          },
+          "backgroundColor": {
+            "type": "string",
+            "title": "Background Color"
+          },
+          "titleColor": {
+            "type": "string",
+            "title": "Title Color"
+          },
+          "remarksColor": {
+            "type": "string",
+            "title": "Remarks Color"
           }
         }
       },
-      "extension": "tt",
       "attachments": {
         "allow": true
-      }
+      },
+      "uiSchema": {
+        "logo": {
+          "ui:widget": "file",
+          "ui:options": {
+            "text": "Upload Cover Letter Logo",
+            "accept": ".png, .jpeg, .jpg"
+          }
+        },
+        "remarks": {
+          "ui:widget": "textarea"
+        },
+        "backgroundColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#ffffff"
+          }
+        },
+        "titleColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#4e4e50"
+          }
+        },
+        "remarksColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#4e4e50"
+          }
+        }
+      },
+      "extension": "tt"
     },
     {
-      "name": "Invoice",
+      "name": "TradeTrust Invoice v2",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
         "$template": {
@@ -322,11 +790,16 @@
           }
         }
       },
+      "uiSchema": {
+        "date": {
+          "ui:widget": "date"
+        }
+      },
       "extension": "tt"
     }
   ],
   "documentStorage": {
-    "apiKey": "<Document Storage Api Key>",
+    "apiKey": "<API_KEY>",
     "url": "https://api-ropsten.tradetrust.io/storage"
   }
 }

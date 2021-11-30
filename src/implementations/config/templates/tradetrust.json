@@ -649,12 +649,16 @@
         },
         "issuers": [
           {
-            "identityProof": {
-              "type": "DNS-TXT",
-              "location": "<IDENTITY_PROOF>"
+            "id": "<ISSUER_ID>",
+            "name": "DEMO ISSUER",
+            "revocation": {
+              "type": "NONE"
             },
-            "name": "DEMO DOCUMENT STORE",
-            "documentStore": "<DOCUMENT_STORE>"
+            "identityProof": {
+              "type": "DNS-DID",
+              "location": "<DNS_LOCATION>",
+              "key": "<IDENTITY_PROOF_KEY>"
+            }
           }
         ]
       },
