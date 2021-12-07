@@ -8,7 +8,6 @@ import fs from "fs";
 import path from "path";
 import { info } from "signale";
 import { readFile } from "../../implementations/utils/disk";
-import { create as createWallet } from "../../implementations/wallet/create";
 import tradetrustConfig from "./templates/tradetrust.json";
 import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
 import { CreateConfigCommand } from "../../commands/config/config.type";
@@ -16,20 +15,13 @@ import { getDocumentStoreAddress } from "./documentStore";
 import { getTokenRegistryAddress } from "./tokenRegistry";
 
 interface ConfigFile {
-  wallet: EncryptedWallet | AwsKmsWallet;
+  wallet: EncryptedWallet;
   forms: Form[];
 }
 
 interface EncryptedWallet {
   type: "ENCRYPTED_JSON";
   encryptedJson: string;
-}
-
-interface AwsKmsWallet {
-  type: "AWS_KMS";
-  accessKeyId: string;
-  region: string;
-  kmsKeyId: string;
 }
 
 interface Form {
@@ -49,86 +41,94 @@ export const create = async ({
   outputDir,
   configType,
   configTemplatePath,
-}: CreateConfigCommand): Promise<string> => {
-  const walletFilePath = await getWalletPath(encryptedWalletPath, outputDir);
-  const wallet = await readFile(walletFilePath);
-  const walletObject = JSON.parse(wallet);
+}: CreateConfigCommand): Promise<string | undefined> => {
+  try {
+    const wallet = await readFile(encryptedWalletPath);
+    const walletObject = JSON.parse(wallet);
 
-  info(`Wallet detected at ${walletFilePath}`);
+    info(`Wallet detected at ${encryptedWalletPath}`);
 
-  const configFile: ConfigFile = await getConfigFile(configType, configTemplatePath);
+    const configFile: ConfigFile = await getConfigFile(configType, configTemplatePath);
 
-  const { forms } = configFile;
+    const { forms } = configFile;
 
-  const getContractAddress = async (
-    typesOfForms: TypesOfForms[],
-    formType: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD",
-    identityProofType: "DNS-DID" | "DNS-TXT"
-  ): Promise<string> => {
-    const isValidForm = typesOfForms.some(
-      (item: TypesOfForms) =>
-        item.type === formType && (<any>Object).values(item.identityProofTypes).includes(identityProofType)
+    const getContractAddress = async (
+      typesOfForms: TypesOfForms[],
+      formType: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD",
+      identityProofType: "DNS-DID" | "DNS-TXT"
+    ): Promise<string> => {
+      const isValidForm = typesOfForms.some(
+        (item: TypesOfForms) =>
+          item.type === formType && (<any>Object).values(item.identityProofTypes).includes(identityProofType)
+      );
+
+      if (isValidForm) {
+        switch (true) {
+          case formType === "VERIFIABLE_DOCUMENT" && identityProofType === "DNS-TXT":
+            return await getDocumentStoreAddress(encryptedWalletPath);
+
+          case formType === "VERIFIABLE_DOCUMENT" && identityProofType === "DNS-DID":
+            info(`Creating temporary DNS for DID`);
+            return (
+              (await createTemporaryDns({
+                networkId: 3,
+                publicKey: `did:ethr:0x${walletObject.address}#controller`,
+                sandboxEndpoint: sandboxEndpointUrl,
+              })) || ""
+            );
+
+          case formType === "TRANSFERABLE_RECORD":
+            return await getTokenRegistryAddress(encryptedWalletPath);
+
+          default:
+            throw new Error("Invalid form detected in config file, please update the form before proceeding.");
+        }
+      } else {
+        throw new Error("Invalid form detected in config file, please update the form before proceeding.");
+      }
+    };
+
+    // loop through the form template to check the type of forms
+    const typesOfForms: TypesOfForms[] = forms.map((form) => {
+      const identityProofTypes = form.defaults.issuers.map((issuer: Issuer) => issuer.identityProof?.type);
+      return {
+        type: form.type,
+        identityProofTypes: identityProofTypes,
+      };
+    });
+
+    // generate doc store, token registry and DNS based on the form type in the form template
+    const documentStoreAddress = await getContractAddress(typesOfForms, "VERIFIABLE_DOCUMENT", "DNS-TXT");
+    const verifiableDocumentDnsTxtName = documentStoreAddress
+      ? await createTemporaryDns({ networkId: 3, address: documentStoreAddress, sandboxEndpoint: sandboxEndpointUrl })
+      : "";
+    const verifiableDocumentDnsDidName = await getContractAddress(typesOfForms, "VERIFIABLE_DOCUMENT", "DNS-DID");
+    const tokenRegistryAddress = await getContractAddress(typesOfForms, "TRANSFERABLE_RECORD", "DNS-TXT");
+    const tokenRegistryDnsName = tokenRegistryAddress
+      ? await createTemporaryDns({ networkId: 3, address: tokenRegistryAddress, sandboxEndpoint: sandboxEndpointUrl })
+      : "";
+
+    const updatedForms = updateForms(
+      forms,
+      documentStoreAddress,
+      tokenRegistryAddress,
+      walletObject,
+      verifiableDocumentDnsTxtName || "",
+      verifiableDocumentDnsDidName,
+      tokenRegistryDnsName || ""
     );
 
-    switch (true) {
-      case formType === "VERIFIABLE_DOCUMENT" && identityProofType === "DNS-TXT":
-        return await getDocumentStoreAddress(walletFilePath);
+    const updatedConfigFile = updateConfigFile(configFile, wallet, updatedForms);
 
-      case formType === "VERIFIABLE_DOCUMENT" && identityProofType === "DNS-DID":
-        info(`Creating temporary DNS for DID`);
-        return (
-          (await createTemporaryDns({
-            networkId: 3,
-            publicKey: `did:ethr:0x${walletObject.address}#controller`,
-            sandboxEndpoint: sandboxEndpointUrl,
-          })) || ""
-        );
-
-      case formType === "TRANSFERABLE_RECORD":
-        return await getTokenRegistryAddress(walletFilePath);
-
-      case !isValidForm:
-      default:
-        return "";
+    const configFileName = "config.json";
+    const outputPath = path.join(outputDir, configFileName);
+    fs.writeFileSync(outputPath, JSON.stringify(updatedConfigFile, null, 2));
+    return outputPath;
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new Error(e.message);
     }
-  };
-
-  // loop through the form template to check the type of forms
-  const typesOfForms: TypesOfForms[] = forms.map((form) => {
-    const identityProofTypes = form.defaults.issuers.map((issuer: Issuer) => issuer.identityProof?.type);
-    return {
-      type: form.type,
-      identityProofTypes: identityProofTypes,
-    };
-  });
-
-  // generate doc store, token registry and DNS based on the form type in the form template
-  const documentStoreAddress = await getContractAddress(typesOfForms, "VERIFIABLE_DOCUMENT", "DNS-TXT");
-  const verifiableDocumentDnsTxtName = documentStoreAddress
-    ? await createTemporaryDns({ networkId: 3, address: documentStoreAddress, sandboxEndpoint: sandboxEndpointUrl })
-    : "";
-  const verifiableDocumentDnsDidName = await getContractAddress(typesOfForms, "VERIFIABLE_DOCUMENT", "DNS-DID");
-  const tokenRegistryAddress = await getContractAddress(typesOfForms, "TRANSFERABLE_RECORD", "DNS-TXT");
-  const tokenRegistryDnsName = tokenRegistryAddress
-    ? await createTemporaryDns({ networkId: 3, address: tokenRegistryAddress, sandboxEndpoint: sandboxEndpointUrl })
-    : "";
-
-  const updatedForms = updateForms(
-    forms,
-    documentStoreAddress,
-    tokenRegistryAddress,
-    walletObject,
-    verifiableDocumentDnsTxtName || "",
-    verifiableDocumentDnsDidName,
-    tokenRegistryDnsName || ""
-  );
-
-  const updatedConfigFile = updateConfigFile(configFile, wallet, updatedForms);
-
-  const configFileName = "config.json";
-  const outputPath = path.join(outputDir, configFileName);
-  fs.writeFileSync(outputPath, JSON.stringify(updatedConfigFile, null, 2));
-  return outputPath;
+  }
 };
 
 const getConfigFile = async (configType: string, configTemplatePath: string): Promise<ConfigFile> => {
@@ -139,20 +139,6 @@ const getConfigFile = async (configType: string, configTemplatePath: string): Pr
     default:
       return JSON.parse(await readFile(configTemplatePath));
   }
-};
-
-const getWalletPath = async (encryptedWalletPath: string, outputDir: string): Promise<string> => {
-  if (encryptedWalletPath) {
-    return encryptedWalletPath;
-  }
-  info(`Wallet file not provided, please enter password to create a new wallet`);
-  const createWalletParams = {
-    outputFile: path.join(outputDir, "wallet.json"),
-    fund: "ropsten",
-  };
-  const walletPath = await createWallet(createWalletParams);
-  info(`Wallet created at ${walletPath}`);
-  return walletPath;
 };
 
 const updateForms = (
@@ -199,9 +185,8 @@ const updateForms = (
 
 const updateConfigFile = (configFile: ConfigFile, wallet: string, updatedForms: Form[]): ConfigFile => {
   const updatedConfigFile = configFile;
-  if (updatedConfigFile.wallet.type === "ENCRYPTED_JSON") {
-    updatedConfigFile.wallet.encryptedJson = wallet;
-  }
+  updatedConfigFile.wallet.encryptedJson = wallet;
+
   updatedConfigFile.forms = updatedForms;
   return updatedConfigFile;
 };

@@ -4,7 +4,7 @@ import { Argv } from "yargs";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { CreateConfigCommand } from "./config.type";
-import { withWalletOption } from "../shared";
+import { withWalletOption, isWalletOption } from "../shared";
 import { create } from "../../implementations/config/create";
 
 const { trace } = getLogger("config:create");
@@ -35,8 +35,14 @@ export const builder = (yargs: Argv): Argv =>
       })
       .conflicts("config-type", "config-template-path")
       .check((argv) => {
+        if (!isWalletOption(argv))
+          throw new Error(
+            "Please provide a encrypted wallet path, you can run the wallet creation command to obtain the wallet.json before proceeding."
+          );
         if (argv["config-type"] || argv["config-template-path"]) return true;
-        throw new Error("Please provide either a config-type or a config template path");
+        else {
+          throw new Error("Please provide either a config-type or a config template path");
+        }
       })
   );
 
@@ -51,7 +57,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const outputPath = await create(args);
     success(`Config file successfully created and saved in ${highlight(outputPath)}`);
   } catch (e) {
-    if (e instanceof TypeError) {
+    if (e instanceof Error) {
       error(e.message);
     }
   }
