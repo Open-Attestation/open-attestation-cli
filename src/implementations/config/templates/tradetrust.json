@@ -796,6 +796,193 @@
         }
       },
       "extension": "tt"
+    },
+    {
+      "name": "TradeTrust Simple Certificate of Origin v2 (DID)",
+      "type": "VERIFIABLE_DOCUMENT",
+      "defaults": {
+        "$template": {
+          "type": "EMBEDDED_RENDERER",
+          "name": "SIMPLE_COO",
+          "url": "https://generic-templates.tradetrust.io"
+        },
+        "issuers": [
+          {
+            "id": "<ISSUER_ID>",
+            "name": "DEMO DID",
+            "revocation": {
+              "type": "NONE"
+            },
+            "identityProof": {
+              "type": "DNS-DID",
+              "location": "<DNS_LOCATION>",
+              "key": "<IDENTITY_PROOF_KEY>"
+            }
+          }
+        ]
+      },
+      "schema": {
+        "type": "object",
+        "required": ["documentName"],
+        "properties": {
+          "documentName": {
+            "type": "string",
+            "title": "Document Name"
+          },
+          "cooId": {
+            "type": "string",
+            "title": "COO ID"
+          },
+          "issueIn": {
+            "type": "string",
+            "title": "Issued In"
+          },
+          "issueDateAndTime": {
+            "type": "string",
+            "title": "Issued Date & Time"
+          },
+          "exporterDetails": {
+            "title": "Exporter Details",
+            "type": "object",
+            "properties": {
+              "exportCountry": {
+                "type": "string",
+                "title": "Export Country"
+              },
+              "exporterName": {
+                "type": "string",
+                "title": "Exporter Name"
+              },
+              "exporterAddress": {
+                "title": "Exporter Address",
+                "type": "object",
+                "properties": {
+                  "line1": {
+                    "type": "string",
+                    "title": "Address Line 1"
+                  },
+                  "line2": {
+                    "type": "string",
+                    "title": "Address Line 2"
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "title": "Postal Code"
+                  }
+                }
+              }
+            }
+          },
+          "importerDetails": {
+            "title": "Importer Details",
+            "type": "object",
+            "properties": {
+              "importCountry": {
+                "type": "string",
+                "title": "Import Country"
+              },
+              "importerName": {
+                "type": "string",
+                "title": "Importer Name"
+              },
+              "importerAddress": {
+                "title": "Importer Address",
+                "type": "object",
+                "properties": {
+                  "line1": {
+                    "type": "string",
+                    "title": "Address Line 1"
+                  },
+                  "line2": {
+                    "type": "string",
+                    "title": "Address Line 2"
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "title": "Postal Code"
+                  }
+                }
+              }
+            }
+          },
+          "descriptionOfGoods": {
+            "type": "object",
+            "title": "Description of Goods",
+            "properties": {
+              "includedConsignments": {
+                "type": "string",
+                "title": "Included Consignments"
+              },
+              "importerNameMarksAndNumber": {
+                "type": "string",
+                "title": "Importer Name, Marks & Number"
+              },
+              "numberAndKindOfPackage": {
+                "type": "string",
+                "title": "Number & Kind of Package"
+              },
+              "hsCode": {
+                "type": "string",
+                "title": "Harmonised System (HS) Code"
+              },
+              "invoiceNumber": {
+                "type": "string",
+                "title": "Invoice Number"
+              },
+              "dateOfInvoice": {
+                "type": "string",
+                "title": "Date of Invoice"
+              },
+              "loadingBaseportLocationName": {
+                "type": "string",
+                "title": "Loading Baseport Location Name"
+              },
+              "mainCarriageTransportMovementId": {
+                "type": "string",
+                "title": "Main Carriage Transport Movement ID"
+              }
+            }
+          },
+          "firstSignatoryAuthentication": {
+            "title": "Signatory Authentication",
+            "type": "object",
+            "properties": {
+              "signature": {
+                "type": "string",
+                "title": "First Signatory"
+              },
+              "actualDate": {
+                "type": "string",
+                "title": "Date"
+              },
+              "statement": {
+                "type": "string",
+                "title": "Statement"
+              }
+            }
+          }
+        }
+      },
+      "uiSchema": {
+        "firstSignatoryAuthentication": {
+          "signature": {
+            "ui:widget": "file",
+            "ui:options": {
+              "text": "Upload Signature",
+              "accept": ".png, .jpeg, .jpg"
+            }
+          },
+          "actualDate": {
+            "ui:widget": "date"
+          }
+        },
+        "descriptionOfGoods": {
+          "dateOfInvoice": {
+            "ui:widget": "date"
+          }
+        }
+      },
+      "extension": "tt"
     }
   ],
   "documentStorage": {
