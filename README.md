@@ -464,7 +464,7 @@ You will need:
 
 There are 2 ways of using this command to generate a config file, both in which, will return a new config file with sandbox DNS, updated document store and updated token registry.
 
-#### Method 1: Using config-type option
+#### Method 1: Using config-type option (recommended)
 
 This method will generate the most basic config file with a sandbox DNS, document store and token registry.
 Step 1: Generate a wallet.json file
@@ -483,6 +483,15 @@ open-attestation config create --output-dir ./example-configs --encrypted-wallet
 #### Method 2: Using config-template-path option
 
 This method will generate a copy of your existing config file with the updated sandbox DNS, document store and token registry.
+
+Step 1: Generate a wallet.json file
+
+```
+// If you already have a wallet.json that is in ropsten network and it does have some funds in it, you can skip this step.
+open-attestation wallet create --output-file wallet.json --fund ropsten
+```
+
+Step 2: Generate config file by passing in the generated wallet.json file and a existing config file
 
 ```
 open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-path </path/to>/config.json

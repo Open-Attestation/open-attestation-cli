@@ -1,11 +1,11 @@
 import fs from "fs";
 import { prompt } from "inquirer";
 import tmp from "tmp";
-import { deployDocumentStore } from "../../../implementations/deploy/document-store/document-store";
-import { deployTokenRegistry } from "../../../implementations/deploy/token-registry/token-registry";
-import { handler as createTempDNS } from "../../dns/txt-record/create";
-import { CreateConfigCommand } from "../config.type";
-import { handler as createConfig } from "../create";
+import { deployDocumentStore } from "../../deploy/document-store/document-store";
+import { deployTokenRegistry } from "../../deploy/token-registry/token-registry";
+import { handler as createTempDNS } from "../../../commands/dns/txt-record/create";
+import { CreateConfigCommand } from "../../../commands/config/config.type";
+import { create as createConfig } from "../create";
 import expectedConfigTemplateUsingInsertFileOption from "./expected-config-file-using-insert-file-option.json";
 import expectedConfigTemplateUsingTypeOption from "./expected-config-file-using-type-option.json";
 
@@ -16,7 +16,7 @@ jest.mock("../../../implementations/deploy/document-store/document-store", () =>
 jest.mock("../../../implementations/deploy/token-registry/token-registry", () => ({
   deployTokenRegistry: jest.fn(),
 }));
-jest.mock("../../dns/txt-record/create", () => ({
+jest.mock("../../../commands/dns/txt-record/create", () => ({
   handler: jest.fn(),
 }));
 
@@ -32,12 +32,12 @@ const promptMock = prompt as jest.Mock;
 let folder: any;
 let args: CreateConfigCommand;
 
-describe("config-file", () => {
+describe("create config file", () => {
   beforeEach(() => {
     folder = tmp.dirSync();
     args = {
       outputDir: folder.name,
-      encryptedWalletPath: "src/commands/config/__tests__/wallet.json",
+      encryptedWalletPath: "src/implementations/config/__tests__/wallet.json",
       configTemplatePath: "",
       configType: "",
     };
@@ -55,7 +55,7 @@ describe("config-file", () => {
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
 
-    args.configTemplatePath = "src/commands/config/__tests__/input-config-file.json";
+    args.configTemplatePath = "src/implementations/config/__tests__/input-config-file.json";
 
     await createConfig(args);
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
@@ -77,5 +77,14 @@ describe("config-file", () => {
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
 
     expect(JSON.parse(configFileAsString)).toStrictEqual(expectedConfigTemplateUsingTypeOption);
+  });
+
+  it("should throw an error when detected config file with wrong form type", async () => {
+    args.configTemplatePath = "src/implementations/config/__tests__/error-config-file.json";
+
+    await expect(createConfig(args)).rejects.toHaveProperty(
+      "message",
+      "Invalid form detected in config file, please update the form before proceeding."
+    );
   });
 });
