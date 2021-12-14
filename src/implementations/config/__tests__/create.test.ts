@@ -78,13 +78,4 @@ describe("create config file", () => {
 
     expect(JSON.parse(configFileAsString)).toStrictEqual(expectedConfigTemplateUsingTypeOption);
   });
-
-  it("should throw an error when detected config file with wrong form type", async () => {
-    args.configTemplatePath = "src/implementations/config/__tests__/error-config-file.json";
-
-    await expect(createConfig(args)).rejects.toHaveProperty(
-      "message",
-      "Invalid form detected in config file, please update the form before proceeding."
-    );
-  });
 });

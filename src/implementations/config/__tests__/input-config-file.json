@@ -15,7 +15,7 @@
               "type": "DNS-TXT",
               "location": "demo-tradetrust.openattestation.com"
             },
-            "name": "DEMO STORE",
+            "name": "DEMO TOKEN REGISTRY",
             "tokenRegistry": "0x13249BA1Ec6B957Eb35D34D7b9fE5D91dF225B5B"
           }
         ]
@@ -27,7 +27,7 @@
       "defaults": {
         "issuers": [
           {
-            "name": "Demo Issuer",
+            "name": "DEMO DOCUMENT STORE",
             "documentStore": "0x8bA63EAB43342AAc3AdBB4B827b68Cf4aAE5Caca",
             "identityProof": {
               "type": "DNS-TXT",
@@ -44,7 +44,7 @@
         "issuers": [
           {
             "id": "did:ethr:0xaCc51f664D647C9928196c4e33D46fd98FDaA91D",
-            "name": "Demo Issuer",
+            "name": "DEMO ISSUER",
             "revocation": {
               "type": "NONE"
             },

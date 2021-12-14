@@ -22,3 +22,6 @@ export interface TypesOfForms {
   type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
   identityProofTypes: (IdentityProofType | undefined)[];
 }
+
+export type formType = "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
+export type identityProofType = "DNS-DID" | "DNS-TXT" | "DID";
