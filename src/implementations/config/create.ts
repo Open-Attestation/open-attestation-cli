@@ -6,7 +6,7 @@ import { highlight } from "../../utils";
 import { readFile } from "../../implementations/utils/disk";
 import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
 import { CreateConfigCommand } from "../../commands/config/config.type";
-import { ConfigFile } from "./types";
+import { ConfigFile, Form } from "./types";
 import { Wallet } from "ethers";
 import tradetrustConfig from "./templates/tradetrust.json";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
@@ -52,6 +52,19 @@ const getDocumentStoreAddress = async (encryptedWalletPath: string): Promise<str
   return contractAddress;
 };
 
+const validate = (forms: Form[]): boolean => {
+  const isValidForm = forms.some((form: Form) => {
+    const isValidFormType = form.type === "TRANSFERABLE_RECORD" && "VERIFIABLE_DOCUMENT";
+    const isValidIdentityProofType = form.defaults.issuers.some(
+      (issuer: any) => issuer.identityProof?.type === "DNS-TXT" && "DNS-DID" && "DID"
+    );
+
+    return isValidFormType && isValidIdentityProofType;
+  });
+
+  return isValidForm;
+};
+
 export const create = async ({
   encryptedWalletPath,
   outputDir,
@@ -62,8 +75,12 @@ export const create = async ({
   const walletObject = JSON.parse(wallet) as Wallet;
   info(`Wallet detected at ${encryptedWalletPath}`);
 
-  const configFile: ConfigFile = await getConfigFile(configType, configTemplatePath);
+  const configFile = await getConfigFile(configType, configTemplatePath);
   const { forms } = configFile;
+
+  if (!validate(forms)) {
+    throw new Error("Invalid form detected in config file, please update the form before proceeding.");
+  }
 
   const hasTransferableRecord = forms.some((form) => form.type === "TRANSFERABLE_RECORD");
   const hasDocumentStore = forms.some((form) => form.type === "VERIFIABLE_DOCUMENT");
@@ -73,13 +90,13 @@ export const create = async ({
 
   let tokenRegistryAddress = "";
   let documentStoreAddress = "";
-  let dnsNameTokenRegistry: string | undefined = "";
+  let dnsNameTransferableRecord: string | undefined = "";
   let dnsNameVerifiable: string | undefined = "";
   let dnsNameDid: string | undefined = "";
 
   if (hasTransferableRecord) {
     tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath);
-    dnsNameTokenRegistry = await createTemporaryDns({
+    dnsNameTransferableRecord = await createTemporaryDns({
       networkId: 3,
       address: tokenRegistryAddress,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
@@ -123,7 +140,7 @@ export const create = async ({
     if (form.type === "TRANSFERABLE_RECORD") {
       const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
         issuer.tokenRegistry = tokenRegistryAddress;
-        if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameTokenRegistry;
+        if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameTransferableRecord;
         return issuer;
       });
       form.defaults.issuers = updatedIssuers;
