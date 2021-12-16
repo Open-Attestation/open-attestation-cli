@@ -1,6 +1,7 @@
 import { Issuer, RevocationType } from "@govtechsg/open-attestation/dist/types/__generated__/schema.2.0";
 import fs from "fs";
 import path from "path";
+import fetch from "node-fetch";
 import { info, success } from "signale";
 import { highlight } from "../../utils";
 import { readFile } from "../../implementations/utils/disk";
@@ -8,19 +9,24 @@ import { handler as createTemporaryDns } from "../../commands/dns/txt-record/cre
 import { CreateConfigCommand } from "../../commands/config/config.type";
 import { ConfigFile, Form } from "./types";
 import { Wallet } from "ethers";
-import tradetrustConfig from "./templates/tradetrust.json";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
-const getConfigFile = async (configType: string, configTemplatePath: string): Promise<ConfigFile> => {
-  switch (configType) {
-    case "tradetrust":
-      return tradetrustConfig as ConfigFile;
-    default:
-      return JSON.parse(await readFile(configTemplatePath));
+const getConfigFile = async (configTemplatePath: string, configTemplateUrl: string): Promise<ConfigFile> => {
+  if (configTemplatePath) {
+    return JSON.parse(await readFile(configTemplatePath));
   }
+
+  if (configTemplateUrl) {
+    const url = new URL(configTemplateUrl);
+    const response = await fetch(url);
+    const json = await response.json();
+    return json;
+  }
+
+  throw new Error("Config template reference not provided.");
 };
 
 const getTokenRegistryAddress = async (encryptedWalletPath: string): Promise<string> => {
@@ -68,14 +74,14 @@ const validate = (forms: Form[]): boolean => {
 export const create = async ({
   encryptedWalletPath,
   outputDir,
-  configType,
   configTemplatePath,
+  configTemplateUrl,
 }: CreateConfigCommand): Promise<string> => {
   const wallet = await readFile(encryptedWalletPath);
   const walletObject = JSON.parse(wallet) as Wallet;
   info(`Wallet detected at ${encryptedWalletPath}`);
 
-  const configFile = await getConfigFile(configType, configTemplatePath);
+  const configFile = await getConfigFile(configTemplatePath, configTemplateUrl);
   const { forms } = configFile;
 
   if (!validate(forms)) {
@@ -84,8 +90,8 @@ export const create = async ({
 
   const hasTransferableRecord = forms.some((form) => form.type === "TRANSFERABLE_RECORD");
   const hasDocumentStore = forms.some((form) => form.type === "VERIFIABLE_DOCUMENT");
-  const hasDid = forms.some((form) =>
-    form.defaults.issuers.some((issuer) => issuer.identityProof?.type.includes("DID"))
+  const hasDid = forms.some(
+    (form) => form.defaults.issuers.some((issuer) => issuer.identityProof?.type.includes("DID")) // TODO: v3 does not have `issuers` but `issuer` instead
   );
 
   let tokenRegistryAddress = "";
