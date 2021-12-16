@@ -5,15 +5,6 @@ type WalletEncrypted = {
   encryptedJson: string;
 };
 
-type WalletAwsKms = {
-  type: string;
-  accessKeyId: string;
-  region: string;
-  kmsKeyId: string;
-};
-
-type Wallet = WalletEncrypted | WalletAwsKms;
-
 export type Form = {
   name: string;
   type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
@@ -28,7 +19,7 @@ export type Form = {
 
 export interface ConfigFile {
   network: string;
-  wallet: Wallet;
+  wallet: WalletEncrypted;
   forms: Form[];
   documentStorage?: {
     apiKey?: string;

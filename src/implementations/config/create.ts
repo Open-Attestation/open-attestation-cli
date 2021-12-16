@@ -152,7 +152,7 @@ export const create = async ({
     ...configFile,
     wallet: { ...configFile.wallet, encryptedJson: wallet },
     forms: updatedForms,
-  }; // TODO: if type is AWS_KMS, should handle
+  };
   const outputPath = path.join(outputDir, "config.json");
   fs.writeFileSync(outputPath, JSON.stringify(updatedConfigFile, null, 2));
 

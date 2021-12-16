@@ -4,7 +4,7 @@ import { Argv } from "yargs";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { CreateConfigCommand } from "./config.type";
-import { withNetworkAndWalletSignerOption, isWalletOption } from "../shared";
+import { withWalletOption, isWalletOption } from "../shared";
 import { create } from "../../implementations/config/create";
 
 const { trace } = getLogger("config:create");
@@ -14,7 +14,7 @@ export const command = "create [options]";
 export const describe = "Create a config file";
 
 export const builder = (yargs: Argv): Argv =>
-  withNetworkAndWalletSignerOption(
+  withWalletOption(
     yargs
       .option("output-dir", {
         alias: "od",
