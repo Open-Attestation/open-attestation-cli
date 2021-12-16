@@ -1,24 +1,28 @@
-import {
-  IdentityProofType,
-  OpenAttestationDocument,
-} from "@govtechsg/open-attestation/dist/types/__generated__/schema.2.0";
+import { v2 } from "@govtechsg/open-attestation";
+
+type WalletEncrypted = {
+  type: string;
+  encryptedJson: string;
+};
+
+export type Form = {
+  name: string;
+  type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
+  defaults: v2.OpenAttestationDocument;
+  schema: any;
+  uiSchema?: any;
+  attachments?: {
+    allow: boolean;
+    accept: string;
+  };
+};
 
 export interface ConfigFile {
-  wallet: EncryptedWallet;
+  network: string;
+  wallet: WalletEncrypted;
   forms: Form[];
-}
-
-export interface EncryptedWallet {
-  type: "ENCRYPTED_JSON";
-  encryptedJson: string;
-}
-
-export interface Form {
-  type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
-  defaults: OpenAttestationDocument;
-}
-
-export interface TypesOfForms {
-  type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
-  identityProofTypes: (IdentityProofType | undefined)[];
+  documentStorage?: {
+    apiKey?: string;
+    url: string;
+  };
 }

@@ -447,30 +447,29 @@ rm ./examples/sample-key
 open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
-### Configuration file
+### Config (Create configuration file)
 
 This command will generate a config file with sandbox DNS, document store and token registry.
 
-Please note that a wallet.json file in ropsten network must be provided in order for this command to work.
-
-Please also note that there must have funds in the Ropsten wallet, as we require to pay some gas fees to generate the config file.
+> Please note that a wallet.json file in ropsten network with sufficient **funds** must be provided in order for this command to work.
 
 You will need:
 
 - `--output-dir` option specify which folder the config file will be created in.
 - `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
-- `--config-template-path` option to provide a path to a config file.
-- `--config-type` option specify which default template to use to create the config file, i.e. `tradetrust`.
+- `--config-template-path` option to provide a path to reference a config template file.
+- `--config-type` option to specify which config template to reference to create the config file, i.e. `tradetrust`.
 
 There are 2 ways of using this command to generate a config file, both in which, will return a new config file with sandbox DNS, updated document store and updated token registry.
 
 #### Method 1: Using config-type option (recommended)
 
-This method will generate the most basic config file with a sandbox DNS, document store and token registry.
+This method will generate the most basic config file with a sandbox DNS, document store and token registry. The reference config templates are [here](https://github.com/Open-Attestation/open-attestation-cli/tree/master/src/implementations/config/templates).
+
 Step 1: Generate a wallet.json file
 
 ```
-// If you already have a wallet.json that is in ropsten network and it does have some funds in it, you can skip this step.
+// If you already have a wallet.json that is in ropsten network with sufficient funds, you can skip this step.
 open-attestation wallet create --output-file wallet.json --fund ropsten
 ```
 
@@ -487,7 +486,7 @@ This method will generate a copy of your existing config file with the updated s
 Step 1: Generate a wallet.json file
 
 ```
-// If you already have a wallet.json that is in ropsten network and it does have some funds in it, you can skip this step.
+// If you already have a wallet.json that is in ropsten network with sufficient funds, you can skip this step.
 open-attestation wallet create --output-file wallet.json --fund ropsten
 ```
 
