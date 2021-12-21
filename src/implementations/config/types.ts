@@ -3,10 +3,8 @@ import { Wallet } from "ethers";
 
 type WalletEncryptedJson = {
   type: "ENCRYPTED_JSON";
-  encryptedJson: string;
+  encryptedJson: Wallet;
 };
-
-type WalletOptions = Wallet | WalletEncryptedJson;
 
 export type Dns = string | undefined;
 
@@ -26,7 +24,7 @@ export type Form = {
 
 export interface ConfigFile {
   network: "ropsten" | "rinkeby" | "homestead" | "local";
-  wallet: WalletOptions;
+  wallet: WalletEncryptedJson;
   forms: Form[];
   documentStorage?: {
     apiKey?: string;
