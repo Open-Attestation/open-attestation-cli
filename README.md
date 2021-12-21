@@ -457,14 +457,14 @@ You will need:
 
 - `--output-dir` option specify which folder the config file will be created in.
 - `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
-- `--config-template-path` option to provide a path to reference a config template file.
-- `--config-type` option to specify which config template to reference to create the config file, i.e. `tradetrust`.
+- `--config-template-url` option to provide a path to reference a config template file hosted on a public url.
+- `--config-template-path` option to provide a path to reference a config template file locally.
 
 There are 2 ways of using this command to generate a config file, both in which, will return a new config file with sandbox DNS, updated document store and updated token registry.
 
-#### Method 1: Using config-type option (recommended)
+#### Method 1: Using config-template-url option (recommended)
 
-This method will generate the most basic config file with a sandbox DNS, document store and token registry. The reference config templates are [here](https://github.com/Open-Attestation/open-attestation-cli/tree/master/src/implementations/config/templates).
+This method will generate the most basic config file with a sandbox DNS, document store and token registry. The reference config templates are [here](https://github.com/TradeTrust/document-creator-website/tree/master/src/test/fixtures/config/_generated-config-files/v2).
 
 Step 1: Generate a wallet.json file
 
@@ -476,7 +476,7 @@ open-attestation wallet create --output-file wallet.json --fund ropsten
 Step 2: Generate config file by passing in the generated wallet.json file
 
 ```
-open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-type tradetrust
+open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-url <remote url>
 ```
 
 #### Method 2: Using config-template-path option

@@ -27,21 +27,20 @@ export const builder = (yargs: Argv): Argv =>
         description: "Path to file containing config template",
         normalize: true,
       })
-      .option("config-type", {
+      .option("config-template-url", {
         type: "string",
-        description: "type of config to create (i.e. tradetrust)",
+        description: "URL of config template json",
         normalize: true,
-        choices: ["tradetrust"],
       })
-      .conflicts("config-type", "config-template-path")
+      .conflicts("config-template-path", "config-template-url")
       .check((argv) => {
         if (!isWalletOption(argv))
           throw new Error(
             "Please provide a encrypted wallet path, you can run the wallet creation command to obtain the wallet.json before proceeding."
           );
-        if (argv["config-type"] || argv["config-template-path"]) return true;
+        if (argv["config-template-path"] || argv["config-template-url"]) return true;
         else {
-          throw new Error("Please provide either a config-type or a config template path");
+          throw new Error("Please provide either a config-template-path or a config-template-url");
         }
       })
   );
