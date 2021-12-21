@@ -1,75 +1,14 @@
-import { Issuer, RevocationType } from "@govtechsg/open-attestation/dist/types/__generated__/schema.2.0";
 import fs from "fs";
 import path from "path";
-import fetch from "node-fetch";
-import { info, success } from "signale";
-import { highlight } from "../../utils";
+import { info } from "signale";
 import { readFile } from "../../implementations/utils/disk";
 import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
 import { CreateConfigCommand } from "../../commands/config/config.type";
-import { ConfigFile, Form } from "./types";
+import { DnsName } from "./types";
 import { Wallet } from "ethers";
-import { deployDocumentStore } from "../../implementations/deploy/document-store";
-import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
+import { getUpdateForms, getConfigFile, validate, getTokenRegistryAddress, getDocumentStoreAddress } from "./helpers";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
-
-const getConfigFile = async (configTemplatePath: string, configTemplateUrl: string): Promise<ConfigFile> => {
-  if (configTemplatePath) {
-    return JSON.parse(await readFile(configTemplatePath));
-  }
-
-  if (configTemplateUrl) {
-    const url = new URL(configTemplateUrl);
-    const response = await fetch(url);
-    const json = await response.json();
-    return json;
-  }
-
-  throw new Error("Config template reference not provided.");
-};
-
-const getTokenRegistryAddress = async (encryptedWalletPath: string): Promise<string> => {
-  info(`Enter password to continue deployment of Token Registry`);
-  const tokenRegistry = await deployTokenRegistry({
-    encryptedWalletPath,
-    network: "ropsten",
-    gasPriceScale: 1,
-    dryRun: false,
-    registryName: "Token Registry",
-    registrySymbol: "TR",
-  });
-  const { contractAddress } = tokenRegistry;
-  success(`Token registry deployed, address: ${highlight(contractAddress)}`);
-  return contractAddress;
-};
-
-const getDocumentStoreAddress = async (encryptedWalletPath: string): Promise<string> => {
-  info(`Enter password to continue deployment of Document Store`);
-  const documentStore = await deployDocumentStore({
-    encryptedWalletPath,
-    network: "ropsten",
-    gasPriceScale: 1,
-    dryRun: false,
-    storeName: "Document Store",
-  });
-  const { contractAddress } = documentStore;
-  success(`Document store deployed, address: ${highlight(contractAddress)}`);
-  return contractAddress;
-};
-
-const validate = (forms: Form[]): boolean => {
-  const isValidForm = forms.some((form: Form) => {
-    const isValidFormType = form.type === "TRANSFERABLE_RECORD" && "VERIFIABLE_DOCUMENT";
-    const isValidIdentityProofType = form.defaults.issuers.some(
-      (issuer: any) => issuer.identityProof?.type === "DNS-TXT" && "DNS-DID" && "DID"
-    );
-
-    return isValidFormType && isValidIdentityProofType;
-  });
-
-  return isValidForm;
-};
 
 export const create = async ({
   encryptedWalletPath,
@@ -96,9 +35,9 @@ export const create = async ({
 
   let tokenRegistryAddress = "";
   let documentStoreAddress = "";
-  let dnsNameTransferableRecord: string | undefined = "";
-  let dnsNameVerifiable: string | undefined = "";
-  let dnsNameDid: string | undefined = "";
+  let dnsNameTransferableRecord: DnsName = "";
+  let dnsNameVerifiable: DnsName = "";
+  let dnsNameDid: DnsName = "";
 
   if (hasTransferableRecord) {
     tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath);
@@ -127,31 +66,14 @@ export const create = async ({
     });
   }
 
-  const updatedForms = forms.map((form) => {
-    if (form.type === "VERIFIABLE_DOCUMENT") {
-      const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
-        if (issuer.identityProof?.type === "DNS-TXT") {
-          issuer.documentStore = documentStoreAddress;
-          if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameVerifiable;
-        } else if (issuer.identityProof?.type.includes("DID")) {
-          issuer.id = `did:ethr:0x${walletObject.address}`;
-          if (issuer.revocation?.type) issuer.revocation.type = "NONE" as RevocationType;
-          if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameDid;
-          if (issuer.identityProof?.key) issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
-        }
-        return issuer;
-      });
-      form.defaults.issuers = updatedIssuers;
-    }
-    if (form.type === "TRANSFERABLE_RECORD") {
-      const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
-        issuer.tokenRegistry = tokenRegistryAddress;
-        if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameTransferableRecord;
-        return issuer;
-      });
-      form.defaults.issuers = updatedIssuers;
-    }
-    return form;
+  const updatedForms = getUpdateForms({
+    forms,
+    walletObject,
+    documentStoreAddress,
+    tokenRegistryAddress,
+    dnsNameVerifiable,
+    dnsNameDid,
+    dnsNameTransferableRecord,
   });
 
   const updatedConfigFile = {

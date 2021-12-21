@@ -1,9 +1,14 @@
 import { v2 } from "@govtechsg/open-attestation";
+import { Wallet } from "ethers";
 
-type WalletEncrypted = {
-  type: string;
+type WalletEncryptedJson = {
+  type: "ENCRYPTED_JSON";
   encryptedJson: string;
 };
+
+type WalletOptions = Wallet | WalletEncryptedJson;
+
+export type DnsName = string | undefined;
 
 export type Form = {
   name: string;
@@ -15,11 +20,13 @@ export type Form = {
     allow: boolean;
     accept: string;
   };
+  extension?: string;
+  fileName?: string;
 };
 
 export interface ConfigFile {
-  network: string;
-  wallet: WalletEncrypted;
+  network: "ropsten" | "rinkeby" | "homestead" | "local";
+  wallet: WalletOptions;
   forms: Form[];
   documentStorage?: {
     apiKey?: string;
