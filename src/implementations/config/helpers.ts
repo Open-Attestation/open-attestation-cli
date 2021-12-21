@@ -1,43 +1,43 @@
 import { Issuer, RevocationType } from "@govtechsg/open-attestation/dist/types/2.0/types";
-import { Wallet } from "ethers";
 import fetch from "node-fetch";
 import { info, success } from "signale";
 import { highlight } from "../../utils";
-import { ConfigFile, Form, DnsName } from "./types";
+import { ConfigFile, Form, Dns } from "./types";
 import { readFile } from "../../implementations/utils/disk";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 
 interface UpdatedForms {
   forms: Form[];
-  walletObject: Wallet;
+  walletAddress: string;
   documentStoreAddress: string;
   tokenRegistryAddress: string;
-  dnsNameVerifiable: DnsName;
-  dnsNameDid: DnsName;
-  dnsNameTransferableRecord: DnsName;
+  dnsVerifiable: Dns;
+  dnsDid: Dns;
+  dnsTransferableRecord: Dns;
 }
 
+// TODO: can do as another cli feature? return config file with updated forms (validate issuer dns meanwhile)
 export const getUpdateForms = ({
+  walletAddress,
   forms,
-  walletObject,
   documentStoreAddress,
   tokenRegistryAddress,
-  dnsNameVerifiable,
-  dnsNameDid,
-  dnsNameTransferableRecord,
+  dnsVerifiable,
+  dnsDid,
+  dnsTransferableRecord,
 }: UpdatedForms): Form[] => {
   forms.map((form: Form) => {
     if (form.type === "VERIFIABLE_DOCUMENT") {
       const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
         if (issuer.identityProof?.type === "DNS-TXT") {
           issuer.documentStore = documentStoreAddress;
-          if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameVerifiable;
+          if (issuer.identityProof?.location) issuer.identityProof.location = dnsVerifiable;
         } else if (issuer.identityProof?.type.includes("DID")) {
-          issuer.id = `did:ethr:0x${walletObject.address}`;
+          issuer.id = `did:ethr:0x${walletAddress}`;
           if (issuer.revocation?.type) issuer.revocation.type = "NONE" as RevocationType;
-          if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameDid;
-          if (issuer.identityProof?.key) issuer.identityProof.key = `did:ethr:0x${walletObject.address}#controller`;
+          if (issuer.identityProof?.location) issuer.identityProof.location = dnsDid;
+          if (issuer.identityProof?.key) issuer.identityProof.key = `did:ethr:0x${walletAddress}#controller`;
         }
         return issuer;
       });
@@ -46,7 +46,7 @@ export const getUpdateForms = ({
     if (form.type === "TRANSFERABLE_RECORD") {
       const updatedIssuers = form.defaults.issuers.map((issuer: Issuer) => {
         issuer.tokenRegistry = tokenRegistryAddress;
-        if (issuer.identityProof?.location) issuer.identityProof.location = dnsNameTransferableRecord;
+        if (issuer.identityProof?.location) issuer.identityProof.location = dnsTransferableRecord;
         return issuer;
       });
       form.defaults.issuers = updatedIssuers;

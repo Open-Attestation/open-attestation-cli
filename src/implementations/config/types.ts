@@ -8,7 +8,7 @@ type WalletEncryptedJson = {
 
 type WalletOptions = Wallet | WalletEncryptedJson;
 
-export type DnsName = string | undefined;
+export type Dns = string | undefined;
 
 export type Form = {
   name: string;
