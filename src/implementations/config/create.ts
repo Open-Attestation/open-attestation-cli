@@ -5,7 +5,14 @@ import { readFile } from "../../implementations/utils/disk";
 import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
 import { CreateConfigCommand } from "../../commands/config/config.type";
 import { Dns } from "./types";
-import { getUpdateForms, getConfigFile, validate, getTokenRegistryAddress, getDocumentStoreAddress } from "./helpers";
+import {
+  getConfigWithUpdatedWallet,
+  getConfigWithUpdatedForms,
+  getConfigFile,
+  validate,
+  getTokenRegistryAddress,
+  getDocumentStoreAddress,
+} from "./helpers";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -15,9 +22,8 @@ export const create = async ({
   configTemplatePath,
   configTemplateUrl,
 }: CreateConfigCommand): Promise<string> => {
-  const wallet = await readFile(encryptedWalletPath);
-  const walletObject = JSON.parse(wallet);
-  const walletAddress = walletObject.address;
+  const walletStr = await readFile(encryptedWalletPath);
+  const { address } = JSON.parse(walletStr);
   info(`Wallet detected at ${encryptedWalletPath}`);
 
   const configFile = await getConfigFile(configTemplatePath, configTemplateUrl);
@@ -61,14 +67,14 @@ export const create = async ({
     // DID no need deploy any
     dnsDid = await createTemporaryDns({
       networkId: 3,
-      publicKey: `did:ethr:0x${walletAddress}#controller`,
+      publicKey: `did:ethr:0x${address}#controller`,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
   }
 
-  const updatedForms = getUpdateForms({
-    walletAddress,
-    forms,
+  const updatedConfigFileWithWallet = getConfigWithUpdatedWallet({ configFile, walletStr });
+  const updatedConfigFileWithForms = getConfigWithUpdatedForms({
+    configFile: updatedConfigFileWithWallet,
     documentStoreAddress,
     tokenRegistryAddress,
     dnsVerifiable,
@@ -76,13 +82,8 @@ export const create = async ({
     dnsTransferableRecord,
   });
 
-  const updatedConfigFile = {
-    ...configFile,
-    wallet: { ...configFile.wallet, encryptedJson: wallet },
-    forms: updatedForms,
-  };
   const outputPath = path.join(outputDir, "config.json");
-  fs.writeFileSync(outputPath, JSON.stringify(updatedConfigFile, null, 2));
+  fs.writeFileSync(outputPath, JSON.stringify(updatedConfigFileWithForms, null, 2));
 
   return outputPath;
 };

@@ -1,9 +1,8 @@
 import { v2 } from "@govtechsg/open-attestation";
-import { Wallet } from "ethers";
 
 type WalletEncryptedJson = {
   type: "ENCRYPTED_JSON";
-  encryptedJson: Wallet;
+  encryptedJson: string;
 };
 
 export type Dns = string | undefined;
