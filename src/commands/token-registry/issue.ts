@@ -49,8 +49,10 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
-    if (e instanceof TypeError) {
+    if (e instanceof Error) {
       error(e.message);
+    } else {
+      error(e);
     }
   }
 };

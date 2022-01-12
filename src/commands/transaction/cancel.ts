@@ -38,8 +38,10 @@ export const handler = async (args: TransactionCancelCommand): Promise<void> => 
   try {
     await cancelTransaction(args);
   } catch (e) {
-    if (e instanceof TypeError) {
+    if (e instanceof Error) {
       error(e.message);
+    } else {
+      error(e);
     }
   }
 };

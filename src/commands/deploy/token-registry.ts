@@ -38,8 +38,10 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
     );
     return tokenRegistry.contractAddress;
   } catch (e) {
-    if (e instanceof TypeError) {
+    if (e instanceof Error) {
       error(e.message);
+    } else {
+      error(e);
     }
   }
 };

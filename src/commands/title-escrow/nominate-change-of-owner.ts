@@ -51,8 +51,10 @@ export const handler = async (args: TitleEscrowNominateChangeOfOwnerCommand): Pr
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
     error(e);
-    if (e instanceof TypeError) {
+    if (e instanceof Error) {
       error(e.message);
+    } else {
+      error(e);
     }
   }
 };

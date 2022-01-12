@@ -71,8 +71,10 @@ export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string |
     );
     return name;
   } catch (e) {
-    if (e instanceof TypeError) {
+    if (e instanceof Error) {
       error(e.message);
+    } else {
+      error(e);
     }
   }
 };
