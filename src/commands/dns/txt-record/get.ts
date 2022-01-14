@@ -8,6 +8,7 @@ import {
   OpenAttestationDnsDidRecord,
   OpenAttestationDNSTextRecord,
 } from "@govtechsg/dnsprove";
+import { getErrorMessage } from "../../../utils";
 
 const { trace } = getLogger("dns:txt-record");
 
@@ -55,9 +56,7 @@ export const handler = async (
     }
     return allRecords;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
   return [];
 };

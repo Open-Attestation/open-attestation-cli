@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { revokeToDocumentStore } from "../../implementations/document-store/revoke";
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, addAddressPrefix } from "../../utils";
+import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -44,8 +44,6 @@ export const handler = async (args: DocumentStoreRevokeCommand): Promise<string 
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

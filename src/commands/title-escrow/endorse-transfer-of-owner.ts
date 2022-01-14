@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { endorseTransferOfOwner } from "../../implementations/title-escrow/endorseTransferOfOwner";
 import { BaseTitleEscrowCommand as TitleEscrowEndorseTransferOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:endorse-transfer-of-owner");
 
@@ -48,9 +48,6 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): P
       `Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionReceipt.transactionHash}`
     );
   } catch (e) {
-    error(e);
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
 import { rejectSurrendered } from "../../implementations/title-escrow/rejectSurrendered";
-import { getEtherscanAddress } from "../../utils";
+import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:reject-surrendered");
 
@@ -38,8 +38,6 @@ export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promis
     success(`Surrendered transferable record with hash ${args.tokenId} has been rejected.`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transaction.transactionHash}`);
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };
