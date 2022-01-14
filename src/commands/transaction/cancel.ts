@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { cancelTransaction } from "../../implementations/transaction/transaction";
 import { TransactionCancelCommand } from "./transaction-command.type";
 import { withNetworkAndWalletSignerOption } from "../shared";
+import { getErrorMessage } from "../../utils";
 
 const { trace } = getLogger("transaction:cancel");
 
@@ -38,10 +39,6 @@ export const handler = async (args: TransactionCancelCommand): Promise<void> => 
   try {
     await cancelTransaction(args);
   } catch (e) {
-    if (e instanceof Error) {
-      error(e.message);
-    } else {
-      error(e);
-    }
+    error(getErrorMessage(e));
   }
 };

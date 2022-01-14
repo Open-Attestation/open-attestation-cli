@@ -3,7 +3,7 @@ import signale, { error, success } from "signale";
 import { getLogger } from "../../../logger";
 import { DnsCreateTxtRecordCommand } from "./dns-command.type";
 import fetch, { RequestInit } from "node-fetch";
-import { highlight } from "../../../utils";
+import { getErrorMessage, highlight } from "../../../utils";
 
 const { trace } = getLogger("dns:txt-record");
 
@@ -71,10 +71,6 @@ export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string |
     );
     return name;
   } catch (e) {
-    if (e instanceof Error) {
-      error(e.message);
-    } else {
-      error(e);
-    }
+    error(getErrorMessage(e));
   }
 };

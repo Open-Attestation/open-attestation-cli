@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { issueToDocumentStore } from "../../implementations/document-store/issue";
 import { DocumentStoreIssueCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, addAddressPrefix } from "../../utils";
+import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -44,10 +44,6 @@ export const handler = async (args: DocumentStoreIssueCommand): Promise<string |
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
-    if (e instanceof Error) {
-      error(e.message);
-    } else {
-      error(e);
-    }
+    error(getErrorMessage(e));
   }
 };

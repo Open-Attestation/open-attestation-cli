@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { changeHolderOfTitleEscrow } from "../../implementations/title-escrow/changeHolder";
 import { TitleEscrowChangeHolderCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:change-holder");
 
@@ -50,11 +50,6 @@ export const handler = async (args: TitleEscrowChangeHolderCommand): Promise<voi
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
-    error(e);
-    if (e instanceof Error) {
-      error(e.message);
-    } else {
-      error(e);
-    }
+    error(getErrorMessage(e));
   }
 };

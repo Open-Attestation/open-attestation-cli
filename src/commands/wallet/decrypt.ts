@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import signale, { error } from "signale";
 import { getLogger } from "../../logger";
-import { highlight } from "../../utils";
+import { getErrorMessage, highlight } from "../../utils";
 import { DecryptWalletCommand } from "./wallet.type";
 import { getWalletOrSigner } from "../../implementations/utils/wallet";
 import inquirer from "inquirer";
@@ -49,10 +49,6 @@ export const handler = async (args: DecryptWalletCommand): Promise<void> => {
 - private key ${highlight(wallet.privateKey)}
 `);
   } catch (e) {
-    if (e instanceof Error) {
-      error(e.message);
-    } else {
-      error(e);
-    }
+    error(getErrorMessage(e));
   }
 };
