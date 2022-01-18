@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { deployTitleEscrow } from "../../implementations/deploy/title-escrow";
 import { DeployTitleEscrowCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("deploy:title-escrow");
 
@@ -57,8 +57,6 @@ export const handler = async (args: DeployTitleEscrowCommand): Promise<string | 
     );
     return titleEscrow.contractAddress;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

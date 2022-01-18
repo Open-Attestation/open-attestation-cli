@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { DocumentStoreTransferOwnershipCommand } from "./document-store-command.type";
 import { transferDocumentStoreOwnershipToWallet } from "../../implementations/document-store/transfer-ownership";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, addAddressPrefix } from "../../utils";
+import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -44,8 +44,6 @@ export const handler = async (args: DocumentStoreTransferOwnershipCommand): Prom
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

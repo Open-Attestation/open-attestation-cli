@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { issueToTokenRegistry } from "../../implementations/token-registry/issue";
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, addAddressPrefix } from "../../utils";
+import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -49,8 +49,6 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

@@ -2,6 +2,7 @@ import signale from "signale";
 import { TransactionCancelCommand } from "../../commands/transaction/transaction-command.type";
 import { getWalletOrSigner } from "../utils/wallet";
 import { BigNumber } from "ethers";
+import { getErrorMessage } from "../../utils";
 
 /*
   The trick to “cancel” your pending transaction is by replacing the transaction with
@@ -43,8 +44,6 @@ export const cancelTransaction = async ({
       signale.error(`Please indicate the transaction hash or the pending transaction's nonce and gas price`);
     }
   } catch (e) {
-    if (e instanceof TypeError) {
-      signale.error(e.message);
-    }
+    signale.error(getErrorMessage(e));
   }
 };
