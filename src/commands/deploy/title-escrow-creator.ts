@@ -27,6 +27,6 @@ export const handler = async (args: DeployTitleEscrowCreatorCommand): Promise<st
     );
     return titleEscrowCreator.contractAddress;
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e, args.network));
   }
 };

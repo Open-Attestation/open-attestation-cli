@@ -32,6 +32,6 @@ export const handler = async (args: CreateWalletCommand): Promise<void> => {
     const outputPath = await create(args);
     signale.success(`Wallet successfully saved into ${highlight(outputPath)}`);
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e, args.network));
   }
 };

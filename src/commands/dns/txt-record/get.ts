@@ -56,7 +56,7 @@ export const handler = async (
     }
     return allRecords;
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e));
   }
   return [];
 };

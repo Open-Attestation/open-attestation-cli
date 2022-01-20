@@ -71,6 +71,6 @@ export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string |
     );
     return name;
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e));
   }
 };

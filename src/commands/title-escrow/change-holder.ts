@@ -49,7 +49,9 @@ export const handler = async (args: TitleEscrowChangeHolderCommand): Promise<voi
       `Transferable record with hash ${args.tokenId}'s holder has been successfully changed to holder with address: ${args.to}`
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
-  } catch (e) {
-    error(getErrorMessage(e));
+  } catch (err) {
+    // console.log(error)
+    const errorMessage = await getErrorMessage(err, args.network);
+    error(errorMessage);
   }
 };

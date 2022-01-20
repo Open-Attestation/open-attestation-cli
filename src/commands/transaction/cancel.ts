@@ -39,6 +39,6 @@ export const handler = async (args: TransactionCancelCommand): Promise<void> => 
   try {
     await cancelTransaction(args);
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e, args.network));
   }
 };

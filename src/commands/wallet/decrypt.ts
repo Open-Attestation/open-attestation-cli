@@ -49,6 +49,6 @@ export const handler = async (args: DecryptWalletCommand): Promise<void> => {
 - private key ${highlight(wallet.privateKey)}
 `);
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e, args.network));
   }
 };

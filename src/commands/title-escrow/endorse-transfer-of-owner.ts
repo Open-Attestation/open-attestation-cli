@@ -48,6 +48,6 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): P
       `Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionReceipt.transactionHash}`
     );
   } catch (e) {
-    error(getErrorMessage(e));
+    error(await getErrorMessage(e, args.network));
   }
 };

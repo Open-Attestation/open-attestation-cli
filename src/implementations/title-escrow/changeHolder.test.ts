@@ -1,4 +1,6 @@
 import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+// import { TitleEscrow } from "@govtechsg/token-registry/dist/ts/contracts/";
+
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
@@ -20,6 +22,10 @@ const changeHolderParams: TitleEscrowChangeHolderCommand = {
 describe("title-escrow", () => {
   describe("change holder of transferable record", () => {
     const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
+
+    // const mockedTitleEscrowContract: jest.Mock<TitleEscrow> = TitleEscrow as any;
+    // const mockedCallStaticTitleEscrowContract: jest.Mock = mockedTitleEscrowContract;
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnectERC721: jest.Mock = mockedTradeTrustErc721Factory.connect;
@@ -29,6 +35,7 @@ describe("title-escrow", () => {
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
     const mockedOwnerOf = jest.fn();
     const mockChangeHolder = jest.fn();
+    const mockCallStaticChangeHolder = jest.fn((to: string) => Promise.resolve(to));
     const mockedTitleEscrowAddress = "0x2133";
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
     mockChangeHolder.mockReturnValue({
@@ -40,6 +47,9 @@ describe("title-escrow", () => {
     });
     mockedConnectTokenFactory.mockReturnValue({
       changeHolder: mockChangeHolder,
+      callStatic: {
+        changeHolder: mockCallStaticChangeHolder,
+      },
     });
 
     beforeEach(() => {
