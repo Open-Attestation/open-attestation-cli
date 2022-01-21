@@ -29,7 +29,7 @@ describe("title-escrow", () => {
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
     const mockedOwnerOf = jest.fn();
     const mockChangeHolder = jest.fn();
-    const mockCallStaticChangeHolder = jest.fn((to: string) => Promise.resolve(to));
+    const mockCallStaticChangeHolder = jest.fn().mockResolvedValue(undefined);
     const mockedTitleEscrowAddress = "0x2133";
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
     mockChangeHolder.mockReturnValue({
