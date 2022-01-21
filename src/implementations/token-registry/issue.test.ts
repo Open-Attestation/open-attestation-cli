@@ -26,13 +26,17 @@ describe("token-registry", () => {
     // @ts-ignore mock static method
     const mockedConnect: jest.Mock = mockedTradeTrustErc721Factory.connect;
     const mockedIssue = jest.fn();
-
+    const mockCallStaticSafeMint = jest.fn().mockResolvedValue(undefined);
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedTradeTrustErc721Factory.mockReset();
       mockedConnect.mockReset();
+      mockCallStaticSafeMint.mockClear();
       mockedConnect.mockReturnValue({
         "safeMint(address,uint256)": mockedIssue,
+        callStatic: {
+          "safeMint(address,uint256)": mockCallStaticSafeMint,
+        },
       });
       mockedIssue.mockReturnValue({
         hash: "hash",
@@ -72,6 +76,7 @@ describe("token-registry", () => {
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
       expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.tokenId);
+      expect(mockCallStaticSafeMint).toHaveBeenCalledTimes(1);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
 
@@ -89,6 +94,7 @@ describe("token-registry", () => {
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
       expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.tokenId);
+      expect(mockCallStaticSafeMint).toHaveBeenCalledTimes(1);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
 

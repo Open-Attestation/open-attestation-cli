@@ -40,6 +40,9 @@ export const endorseTransferOfOwner = async ({
   const approvedBeneficiary = await titleEscrow.approvedBeneficiary();
   const approvedHolder = await titleEscrow.approvedHolder();
   await validateEndorseTransferOwner({ approvedOwner: approvedBeneficiary, approvedHolder });
+  await titleEscrow.callStatic.transferToNewEscrow(approvedBeneficiary, approvedHolder, {
+    gasPrice: gasPrice.mul(gasPriceScale),
+  });
   const transaction = await titleEscrow.transferToNewEscrow(approvedBeneficiary, approvedHolder, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });

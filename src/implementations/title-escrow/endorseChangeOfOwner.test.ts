@@ -30,6 +30,7 @@ describe("title-escrow", () => {
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
     const mockedOwnerOf = jest.fn();
     const mockTransferToNewEscrow = jest.fn();
+    const mockCallStaticTransferToNewEscrow = jest.fn().mockResolvedValue(undefined);
     const mockedTitleEscrowAddress = "0x2133";
     const mockedBeneficiary = "0xdssfs";
     const mockedHolder = "0xdsfls";
@@ -44,6 +45,9 @@ describe("title-escrow", () => {
       transferToNewEscrow: mockTransferToNewEscrow,
       beneficiary: mockGetBeneficiary,
       holder: mockGetHolder,
+      callStatic: {
+        transferToNewEscrow: mockCallStaticTransferToNewEscrow,
+      },
     });
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
     mockTransferToNewEscrow.mockReturnValue({
@@ -61,6 +65,7 @@ describe("title-escrow", () => {
       mockTransferToNewEscrow.mockClear();
       mockGetBeneficiary.mockClear();
       mockGetHolder.mockClear();
+      mockCallStaticTransferToNewEscrow.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -97,6 +102,7 @@ describe("title-escrow", () => {
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockGetBeneficiary).toHaveBeenCalledTimes(1);
       expect(mockGetHolder).toHaveBeenCalledTimes(1);
+      expect(mockCallStaticTransferToNewEscrow).toHaveBeenCalledTimes(1);
       expect(mockTransferToNewEscrow).toHaveBeenCalledTimes(1);
     });
 

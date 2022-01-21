@@ -29,6 +29,7 @@ export const acceptSurrendered = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
+  await tokenRegistryInstance.callStatic.destroyToken(tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   const transaction = await tokenRegistryInstance.destroyToken(tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

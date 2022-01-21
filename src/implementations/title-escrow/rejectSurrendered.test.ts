@@ -32,6 +32,7 @@ describe("title-escrow", () => {
     const mockSendToNewTitleEscrow = jest.fn();
     const mockTransferEvent = jest.fn();
     const mockQueryFilter = jest.fn();
+    const mockCallStaticSendToNewTitleEscrow = jest.fn().mockResolvedValue(undefined);
 
     const mockedLastTitleEscrowAddress = "0xMockedLastTitleEscrowAddress";
     const mockedLastBeneficiary = "0xMockedLastBeneficiaryAddress";
@@ -68,6 +69,9 @@ describe("title-escrow", () => {
         sendToNewTitleEscrow: mockSendToNewTitleEscrow,
         filters: { Transfer: mockTransferEvent },
         queryFilter: mockQueryFilter,
+        callStatic: {
+          sendToNewTitleEscrow: mockCallStaticSendToNewTitleEscrow,
+        },
       });
 
       mockedBeneficiary.mockClear();
@@ -75,6 +79,7 @@ describe("title-escrow", () => {
       mockSendToNewTitleEscrow.mockClear();
       mockTransferEvent.mockClear();
       mockQueryFilter.mockClear();
+      mockCallStaticSendToNewTitleEscrow.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -113,6 +118,7 @@ describe("title-escrow", () => {
       expect(mockedConnectTitleEscrowFactory).toHaveBeenCalledWith(mockedLastTitleEscrowAddress, passedSigner);
       expect(mockedBeneficiary).toHaveBeenCalledTimes(1);
       expect(mockedHolder).toHaveBeenCalledTimes(1);
+      expect(mockCallStaticSendToNewTitleEscrow).toHaveBeenCalledTimes(1);
       expect(mockSendToNewTitleEscrow).toHaveBeenCalledTimes(1);
     });
 

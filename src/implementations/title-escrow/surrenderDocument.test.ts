@@ -28,6 +28,7 @@ describe("title-escrow", () => {
     const mockedConnectTitleEscrowFactory: jest.Mock = mockedTitleEscrowFactory.connect;
     const mockedOwnerOf = jest.fn();
     const mockTransferTo = jest.fn();
+    const mockCallStaticTransferTo = jest.fn().mockResolvedValue(undefined);
     const mockedTitleEscrowAddress = "0x2133";
 
     beforeEach(() => {
@@ -47,10 +48,14 @@ describe("title-escrow", () => {
       });
       mockedConnectTitleEscrowFactory.mockReturnValue({
         transferTo: mockTransferTo,
+        callStatic: {
+          transferTo: mockCallStaticTransferTo,
+        },
       });
 
       mockedOwnerOf.mockClear();
       mockTransferTo.mockClear();
+      mockCallStaticTransferTo.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -85,6 +90,7 @@ describe("title-escrow", () => {
       expect(mockedConnectERC721).toHaveBeenCalledWith(surrenderDocumentParams.tokenRegistry, passedSigner);
       expect(mockedOwnerOf).toHaveBeenCalledWith(surrenderDocumentParams.tokenId);
       expect(mockedConnectTitleEscrowFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
+      expect(mockCallStaticTransferTo).toHaveBeenCalledTimes(1);
       expect(mockTransferTo).toHaveBeenCalledTimes(1);
     });
 
