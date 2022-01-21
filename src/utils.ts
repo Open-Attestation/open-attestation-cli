@@ -32,4 +32,12 @@ const toErrorWithMessage = function (maybeError: unknown): ErrorWithMessage {
   }
 };
 
-export const getErrorMessage = (error: unknown): string => toErrorWithMessage(error).message;
+export const extractErrorMessage = (error: unknown): string => toErrorWithMessage(error).message;
+
+export const getErrorMessage = function (error: unknown): string {
+  if (error instanceof Error) {
+    return "reason" in error ? error["reason"] : error.message;
+  } else {
+    return extractErrorMessage(error);
+  }
+};
