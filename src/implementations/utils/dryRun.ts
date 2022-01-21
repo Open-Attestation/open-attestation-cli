@@ -41,8 +41,8 @@ export const dryRunMode = async ({
   // but BigNumbers can only have integer values, hence rounding off here
   // https://github.com/ethers-io/ethers.js/issues/488
   const convertGasApiToGwei = (value: number): number => Math.round(value / 10);
-  const convertGweiToEthereum = (value: BigNumber): number =>
-    Number(utils.formatUnits(utils.parseUnits(`${value.toNumber()}`, "gwei"), "ether"));
+  const convertGasApiToWei = (value: number): BigNumber => utils.parseUnits(Math.round(value / 10).toString(), "gwei");
+  const formatGwei = (value: BigNumber): string => utils.formatUnits(value, "gwei");
 
   console.log(red("\n\n/!\\ Welcome to the dry run mode. Please read the information below to understand the table"));
   console.log(
@@ -71,43 +71,44 @@ Get more information about gas: https://ethereum.stackexchange.com/questions/3/w
   console.log(green("Information about the transaction:"));
   console.log(
     `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
-      convertGweiToEthereum(_estimatedGas.mul(gasPriceAsGwei))
+      utils.formatEther(_estimatedGas.mul(gasPrice))
     )} eth based on the selected gas price`
   );
+  const scaledGasPrice = utils.parseUnits(Math.round(gasPriceAsGwei * gasPriceScale).toString(), "gwei");
   console.table({
     current: {
       time: "N/A",
-      "gas price (gwei)": gasPriceAsGwei * gasPriceScale,
-      "tx price (gwei)": _estimatedGas.mul(gasPriceAsGwei * gasPriceScale).toNumber(),
-      "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(gasPriceAsGwei * gasPriceScale)),
-      "gas price scale": gasPriceScale,
+      "gas price (gwei)": Number(formatGwei(scaledGasPrice)),
+      "tx price (gwei)": formatGwei(_estimatedGas.mul(scaledGasPrice)),
+      "tx price (eth)": utils.formatEther(_estimatedGas.mul(scaledGasPrice)),
+      "gas price scale": Number(gasPriceScale),
     },
     fastest: {
       time: "< 30 s",
       "gas price (gwei)": convertGasApiToGwei(fastest),
-      "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(fastest)).toNumber(),
-      "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(fastest))),
+      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(fastest))),
+      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(fastest))),
       "gas price scale": Number((convertGasApiToGwei(fastest) / gasPriceAsGwei).toFixed(2)),
     },
     fast: {
       time: "< 2 mins",
       "gas price (gwei)": convertGasApiToGwei(fast),
-      "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(fast)).toNumber(),
-      "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(fast))),
+      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(fast))),
+      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(fast))),
       "gas price scale": Number((convertGasApiToGwei(fast) / gasPriceAsGwei).toFixed(2)),
     },
     average: {
       time: "< 5 mins",
       "gas price (gwei)": convertGasApiToGwei(average),
-      "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(average)).toNumber(),
-      "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(average))),
+      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(average))),
+      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(average))),
       "gas price scale": Number((convertGasApiToGwei(average) / gasPriceAsGwei).toFixed(2)),
     },
     safe: {
       time: "< 30 mins",
       "gas price (gwei)": convertGasApiToGwei(safeLow),
-      "tx price (gwei)": _estimatedGas.mul(convertGasApiToGwei(safeLow)).toNumber(),
-      "tx price (eth)": convertGweiToEthereum(_estimatedGas.mul(convertGasApiToGwei(safeLow))),
+      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(safeLow))),
+      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(safeLow))),
       "gas price scale": Number((convertGasApiToGwei(safeLow) / gasPriceAsGwei).toFixed(2)),
     },
   });

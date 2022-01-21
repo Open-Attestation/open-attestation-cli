@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import signale, { error } from "signale";
 import { getLogger } from "../../logger";
-import { highlight } from "../../utils";
+import { getErrorMessage, highlight } from "../../utils";
 import { withPrivateKeyOption } from "../shared";
 import { EncryptWalletCommand } from "./wallet.type";
 import { encrypt } from "../../implementations/wallet/encrypt";
@@ -28,8 +28,6 @@ export const handler = async (args: EncryptWalletCommand): Promise<void> => {
     const outputPath = await encrypt(args);
     signale.success(`Wallet successfully saved into ${highlight(outputPath)}`);
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

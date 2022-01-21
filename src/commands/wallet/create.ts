@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import signale, { error, info } from "signale";
 import { getLogger } from "../../logger";
-import { highlight } from "../../utils";
+import { getErrorMessage, highlight } from "../../utils";
 import { CreateWalletCommand } from "./wallet.type";
 import { create } from "../../implementations/wallet/create";
 
@@ -32,8 +32,6 @@ export const handler = async (args: CreateWalletCommand): Promise<void> => {
     const outputPath = await create(args);
     signale.success(`Wallet successfully saved into ${highlight(outputPath)}`);
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

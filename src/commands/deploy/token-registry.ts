@@ -3,7 +3,7 @@ import { deployTokenRegistry } from "../../implementations/deploy/token-registry
 import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getErrorMessage, getEtherscanAddress } from "../../utils";
 import { DeployTokenRegistryCommand } from "./deploy.types";
 
 const { trace } = getLogger("deploy:token-registry");
@@ -38,8 +38,6 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
     );
     return tokenRegistry.contractAddress;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress, highlight } from "../../utils";
+import { getErrorMessage, getEtherscanAddress, highlight } from "../../utils";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -33,8 +33,6 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
     );
     return documentStore.contractAddress;
   } catch (e) {
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };

@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { nominateChangeOfOwner } from "../../implementations/title-escrow/nominateChangeOfOwner";
 import { TitleEscrowNominateChangeOfOwnerCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getEtherscanAddress } from "../../utils";
+import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:nominate-change-of-owner");
 
@@ -50,9 +50,6 @@ export const handler = async (args: TitleEscrowNominateChangeOfOwnerCommand): Pr
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
-    error(e);
-    if (e instanceof TypeError) {
-      error(e.message);
-    }
+    error(getErrorMessage(e));
   }
 };
