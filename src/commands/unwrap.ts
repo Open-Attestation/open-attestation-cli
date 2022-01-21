@@ -3,17 +3,11 @@ import signale from "signale";
 import { Output, unwrap } from "../implementations/unwrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir } from "../implementations/utils/disk";
-import { SchemaId } from "@govtechsg/open-attestation";
-
 interface UnwrapCommand {
   wrappedDocumentsPath: string;
   outputDir?: string;
   outputFile?: string;
-  schema?: string;
-  openAttestationV3: boolean;
-  unwrap: boolean;
   silent?: boolean;
-  batched: boolean;
 }
 
 export const command = "unwrap <wrapped-documents-path> [options]";
@@ -23,22 +17,9 @@ export const describe = "Unwrap a document";
 export const builder = (yargs: Argv): Argv =>
   yargs
     .positional("wrapped-documents-path", {
-      description: "Directory containing the single issued wrapped document file",
+      description: "Directory containing the issued wrapped document or a single wrapped document file",
       normalize: true,
       type: "string",
-    })
-    .option("schema", {
-      alias: "s",
-      description: "Path or URL to custom schema",
-      type: "string",
-    })
-    .option("open-attestation-v2", {
-      alias: "oav2",
-      conflicts: "open-attestation-v3",
-    })
-    .option("open-attestation-v3", {
-      alias: "oav3",
-      conflicts: "open-attestation-v2",
     })
     .option("output-file", {
       alias: "of",
@@ -56,11 +37,6 @@ export const builder = (yargs: Argv): Argv =>
       alias: "silent",
       description: "Disable console outputs when outputting to stdout",
       type: "boolean",
-    })
-    .option("batched", {
-      description: "Indicate whether documents must be wrap together or individually",
-      type: "boolean",
-      default: true,
     });
 
 export const handler = async (args: UnwrapCommand): Promise<void | undefined> => {
@@ -81,20 +57,10 @@ export const handler = async (args: UnwrapCommand): Promise<void | undefined> =>
       signale.disable();
     }
 
-    // if output to a file or stdout, we handle only one file. In that case we disable the batch mode
-    const batched = outputPathType !== Output.Directory ? false : args.batched;
-    if (!batched && args.batched) {
-      signale.warn("Detected single file: batch mode disabled.");
-    }
-
     const rawDocs = await unwrap({
       inputPath: args.wrappedDocumentsPath,
       outputPath,
-      schemaPath: args.schema,
-      version: args.openAttestationV3 ? SchemaId.v3 : SchemaId.v2,
-      unwrap: args.unwrap,
       outputPathType,
-      batched,
     });
 
     if (rawDocs) {
