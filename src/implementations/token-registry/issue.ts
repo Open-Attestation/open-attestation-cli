@@ -30,6 +30,7 @@ export const issueToTokenRegistry = async ({
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const erc721 = await TradeTrustErc721Factory.connect(address, wallet);
+  await erc721.callStatic["safeMint(address,uint256)"](to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   // must invoke the function manually, the lib doesn't handle overload functions
   // https://github.com/ethereum-ts/TypeChain/issues/150
   const transaction = await erc721["safeMint(address,uint256)"](to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });

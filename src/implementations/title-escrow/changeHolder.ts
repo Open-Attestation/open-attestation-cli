@@ -31,6 +31,7 @@ export const changeHolderOfTitleEscrow = async ({
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  await titleEscrow.callStatic.changeHolder(to);
   const transaction = await titleEscrow.changeHolder(to, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

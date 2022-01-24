@@ -29,6 +29,7 @@ describe("title-escrow", () => {
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
     const mockedOwnerOf = jest.fn();
     const mockChangeHolder = jest.fn();
+    const mockCallStaticChangeHolder = jest.fn().mockResolvedValue(undefined);
     const mockedTitleEscrowAddress = "0x2133";
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
     mockChangeHolder.mockReturnValue({
@@ -40,6 +41,9 @@ describe("title-escrow", () => {
     });
     mockedConnectTokenFactory.mockReturnValue({
       changeHolder: mockChangeHolder,
+      callStatic: {
+        changeHolder: mockCallStaticChangeHolder,
+      },
     });
 
     beforeEach(() => {
@@ -50,6 +54,7 @@ describe("title-escrow", () => {
       mockedConnectTokenFactory.mockClear();
       mockedOwnerOf.mockClear();
       mockChangeHolder.mockClear();
+      mockCallStaticChangeHolder.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -84,6 +89,7 @@ describe("title-escrow", () => {
       expect(mockedConnectERC721).toHaveBeenCalledWith(changeHolderParams.tokenRegistry, passedSigner);
       expect(mockedOwnerOf).toHaveBeenCalledWith(changeHolderParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
+      expect(mockCallStaticChangeHolder).toHaveBeenCalledTimes(1);
       expect(mockChangeHolder).toHaveBeenCalledTimes(1);
     });
 

@@ -27,7 +27,11 @@ export const revokeToDocumentStore = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const transaction = await DocumentStoreFactory.connect(address, wallet).revoke(hash, {
+  const documentStore = await DocumentStoreFactory.connect(address, wallet);
+  await documentStore.callStatic.revoke(hash, {
+    gasPrice: gasPrice.mul(gasPriceScale),
+  });
+  const transaction = await documentStore.revoke(hash, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
   trace(`Tx hash: ${transaction.hash}`);

@@ -29,7 +29,11 @@ export const issueToDocumentStore = async ({
 
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const transaction = await DocumentStoreFactory.connect(address, wallet).issue(hash, {
+  const documentStore = await DocumentStoreFactory.connect(address, wallet);
+  await documentStore.callStatic.issue(hash, {
+    gasPrice: gasPrice.mul(gasPriceScale),
+  });
+  const transaction = await documentStore.issue(hash, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
   trace(`Tx hash: ${transaction.hash}`);

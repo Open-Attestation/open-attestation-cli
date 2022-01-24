@@ -34,6 +34,9 @@ export const endorseChangeOfOwner = async ({
   signale.await(`Sending transaction to pool`);
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
+  await titleEscrow.callStatic.transferToNewEscrow(newOwner, newHolder, {
+    gasPrice: gasPrice.mul(gasPriceScale),
+  });
   const transaction = await titleEscrow.transferToNewEscrow(newOwner, newHolder, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });

@@ -27,13 +27,18 @@ describe("document-store", () => {
     // @ts-ignore mock static method
     const mockedConnect: jest.Mock = mockedDocumentStoreFactory.connect;
     const mockedIssue = jest.fn();
+    const mockCallStaticIssue = jest.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedDocumentStoreFactory.mockReset();
       mockedConnect.mockReset();
+      mockCallStaticIssue.mockClear();
       mockedConnect.mockReturnValue({
         issue: mockedIssue,
+        callStatic: {
+          issue: mockCallStaticIssue,
+        },
       });
       mockedIssue.mockReturnValue({
         hash: "hash",
@@ -77,6 +82,7 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockCallStaticIssue).toHaveBeenCalledTimes(1);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.hash);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
@@ -88,6 +94,7 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockCallStaticIssue).toHaveBeenCalledTimes(1);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.hash);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });

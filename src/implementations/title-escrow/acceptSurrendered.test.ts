@@ -23,6 +23,7 @@ describe("title-escrow", () => {
     // @ts-ignore mock static method
     const mockedConnectERC721: jest.Mock = mockedTradeTrustErc721Factory.connect;
     const mockDestroyToken = jest.fn();
+    const mockCallStaticDestroyToken = jest.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -36,8 +37,12 @@ describe("title-escrow", () => {
 
       mockedConnectERC721.mockReturnValue({
         destroyToken: mockDestroyToken,
+        callStatic: {
+          destroyToken: mockCallStaticDestroyToken,
+        },
       });
       mockDestroyToken.mockClear();
+      mockCallStaticDestroyToken.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -70,6 +75,7 @@ describe("title-escrow", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnectERC721).toHaveBeenCalledWith(acceptSurrenderedDocumentParams.tokenRegistry, passedSigner);
+      expect(mockCallStaticDestroyToken).toHaveBeenCalledTimes(1);
       expect(mockDestroyToken).toHaveBeenCalledTimes(1);
     });
 

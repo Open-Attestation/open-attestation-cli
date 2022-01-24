@@ -27,13 +27,18 @@ describe("document-store", () => {
     // @ts-ignore mock static method
     const mockedConnect: jest.Mock = mockedDocumentStoreFactory.connect;
     const mockedTransfer = jest.fn();
+    const mockCallStaticTransferOwnership = jest.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedDocumentStoreFactory.mockReset();
       mockedConnect.mockReset();
+      mockCallStaticTransferOwnership.mockClear();
       mockedConnect.mockReturnValue({
         transferOwnership: mockedTransfer,
+        callStatic: {
+          transferOwnership: mockCallStaticTransferOwnership,
+        },
       });
       mockedTransfer.mockReturnValue({
         hash: "hash",
@@ -77,6 +82,7 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockCallStaticTransferOwnership).toHaveBeenCalledTimes(1);
       expect(mockedTransfer.mock.calls[0][0]).toEqual(deployParams.newOwner);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
@@ -91,6 +97,7 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
+      expect(mockCallStaticTransferOwnership).toHaveBeenCalledTimes(1);
       expect(mockedTransfer.mock.calls[0][0]).toEqual(deployParams.newOwner);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
