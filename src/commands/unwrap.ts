@@ -64,7 +64,11 @@ export const handler = async (args: UnwrapCommand): Promise<void | undefined> =>
     });
 
     if (rawDocs) {
-      signale.success(`The document have been unwrapped`);
+      if (rawDocs.length > 1) {
+        signale.success(`The documents have been unwrapped into folder ${outputPath}`);
+      } else {
+        signale.success(`The document have been unwrapped`);
+      }
     }
   } catch (err) {
     signale.error(err.message);
