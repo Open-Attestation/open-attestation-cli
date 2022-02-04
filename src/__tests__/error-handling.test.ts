@@ -15,9 +15,7 @@ describe("error-handling", () => {
     const ethersErrorType = ethers.errors.INSUFFICIENT_FUNDS;
     const ethersError = ethers.logger.makeError("Insufficient funds to send transaction", ethersErrorType);
     const ethersErrorMessage: string = getErrorMessage(ethersError);
-    expect(ethersErrorMessage).toContain(
-      "Insufficient funds to send transaction (code=INSUFFICIENT_FUNDS, version=ethers/"
-    );
+    expect(ethersErrorMessage).toBe("Insufficient funds to send transaction");
   }),
     it("should handle primitive types", async () => {
       // Primitive Types
