@@ -1,0 +1,22 @@
+{
+  "id": "53b75bbe",
+  "name": "Govtech Demo Certificate",
+  "$template": {
+    "name": "GOVTECH_DEMO",
+    "type": "EMBEDDED_RENDERER",
+    "url": "https://demo-renderer.opencerts.io"
+  },
+  "issuers": [
+    {
+      "name": "Govtech",
+      "documentStore": "0x718B518565B81097b185661EBba3966Ff32A0039",
+      "identityProof": {
+        "type": "DNS-TXT",
+        "location": "example.openattestation.com"
+      }
+    }
+  ],
+  "recipient": {
+    "name": "Your Name"
+  }
+}
