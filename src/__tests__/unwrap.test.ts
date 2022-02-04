@@ -27,9 +27,8 @@ describe("unwrap", () => {
       jest.spyOn(fs, "writeFileSync").mockImplementation((path, document) => {
         if (typeof path !== "string") throw new Error("path is not string");
         if (path.includes("wrapped-example.1.json")) {
-          // sorry lint I did my best to avoid that
+          const documentForCompare = JSON.parse(JSON.parse(JSON.stringify(document)));
           // eslint-disable-next-line jest/no-conditional-expect
-          let documentForCompare = JSON.parse(JSON.parse(JSON.stringify(document)));
           expect(documentForCompare).toMatchObject(unwrappedFileFixture1);
           return;
         }
@@ -65,15 +64,13 @@ describe("unwrap", () => {
       jest.spyOn(fs, "writeFileSync").mockImplementation((path, document) => {
         if (typeof path !== "string") throw new Error("path is not string");
         if (path.includes("wrapped-example.1.json")) {
-          // sorry lint I did my best to avoid that
+          const documentForCompare = JSON.parse(JSON.parse(JSON.stringify(document)));
           // eslint-disable-next-line jest/no-conditional-expect
-          let documentForCompare = JSON.parse(JSON.parse(JSON.stringify(document)));
           expect(documentForCompare).toMatchObject(unwrappedFileFixture1);
           return;
         } else if (path.includes("wrapped-example.2.json")) {
-          // sorry lint I did my best to avoid that
+          const documentForCompare = JSON.parse(JSON.parse(JSON.stringify(document)));
           // eslint-disable-next-line jest/no-conditional-expect
-          let documentForCompare = JSON.parse(JSON.parse(JSON.stringify(document)));
           expect(documentForCompare).toMatchObject(unwrappedFileFixture2);
           return;
         }
