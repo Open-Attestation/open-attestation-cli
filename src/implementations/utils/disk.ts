@@ -38,3 +38,7 @@ export const documentsInDirectory = async (documentPath: string): Promise<string
 export const writeDocumentToDisk = (destinationDir: string, filename: string, document: any): void => {
   fs.writeFileSync(path.join(path.resolve(destinationDir), filename), JSON.stringify(document, null, 2));
 };
+
+export const printDocumentToConsole = (document: any): void => {
+  console.log(JSON.stringify(document, undefined, 2));
+};

@@ -57,17 +57,17 @@ export const handler = async (args: UnwrapCommand): Promise<void | undefined> =>
       signale.disable();
     }
 
-    const rawDocs = await unwrap({
+    const rawDocsCount = await unwrap({
       inputPath: args.wrappedDocumentsPath,
       outputPath,
       outputPathType,
     });
 
-    if (rawDocs) {
-      if (rawDocs.length > 1) {
-        signale.success(`The documents have been unwrapped into folder ${outputPath}`);
+    if (rawDocsCount) {
+      if (rawDocsCount > 1) {
+        signale.success(`The documents have been individually unwrapped into folder ${outputPath}`);
       } else {
-        signale.success(`The document have been unwrapped`);
+        signale.success(`The document has been unwrapped`);
       }
     }
   } catch (err) {

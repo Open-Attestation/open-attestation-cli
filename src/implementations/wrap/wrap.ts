@@ -1,4 +1,9 @@
-import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
+import {
+  documentsInDirectory,
+  readOpenAttestationFile,
+  writeDocumentToDisk,
+  printDocumentToConsole,
+} from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import {
@@ -158,7 +163,7 @@ const writeOutput = ({
   } else if (outputPathType === Output.Directory && digestedDocumentPath) {
     writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
   } else {
-    console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
+    printDocumentToConsole(document); // print to console, no file created
   }
 };
 

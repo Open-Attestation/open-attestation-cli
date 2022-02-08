@@ -1,4 +1,9 @@
-import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
+import {
+  documentsInDirectory,
+  readOpenAttestationFile,
+  writeDocumentToDisk,
+  printDocumentToConsole,
+} from "../utils/disk";
 import mkdirp from "mkdirp";
 import { getData, OpenAttestationDocument } from "@govtechsg/open-attestation";
 import path from "path";
@@ -13,7 +18,7 @@ export const unwrapIndividualDocuments = async (
   wrappedDocumentPath: string,
   unwrappedDocumentDir: string | undefined,
   outputPathType: Output
-): Promise<OpenAttestationDocument[]> => {
+): Promise<number> => {
   const oaArray: OpenAttestationDocument[] = [];
   const documentFileNames = await documentsInDirectory(wrappedDocumentPath);
 
@@ -33,7 +38,7 @@ export const unwrapIndividualDocuments = async (
       throw e;
     }
   }
-  return oaArray;
+  return oaArray.length;
 };
 
 const writeOutput = ({
@@ -52,7 +57,7 @@ const writeOutput = ({
   } else if (outputPathType === Output.Directory && unwrappedDocumentPath) {
     writeDocumentToDisk(unwrappedDocumentPath, path.parse(file).base, document);
   } else {
-    console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
+    printDocumentToConsole(document); // print to console, no file created
   }
 };
 
@@ -66,13 +71,11 @@ export const unwrap = async ({
   inputPath,
   outputPath,
   outputPathType,
-}: UnwrapArguments): Promise<OpenAttestationDocument[] | undefined> => {
+}: UnwrapArguments): Promise<number | undefined> => {
   // Create output dir
   if (outputPath) {
     mkdirp.sync(outputPathType === Output.File ? path.parse(outputPath).dir : outputPath);
   }
 
-  const unwrappedDocumentsArray = await unwrapIndividualDocuments(inputPath, outputPath, outputPathType);
-
-  return unwrappedDocumentsArray;
+  return await unwrapIndividualDocuments(inputPath, outputPath, outputPathType);
 };
