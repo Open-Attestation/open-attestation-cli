@@ -35,10 +35,9 @@ describe("unwrap", () => {
         throw new Error(`unhandled ${path} in spy`);
       });
 
-      const oaDocuments = await unwrapIndividualDocuments("./fixture/2.0", "./fixture/2.0", Output.Directory);
-      const unwrappedDocument = oaDocuments[0];
+      const unwrappedDocumentCount = await unwrapIndividualDocuments("./fixture/2.0", "./fixture/2.0", Output.Directory);
 
-      expect(unwrappedDocument).toEqual(unwrappedFileFixture1);
+      expect(unwrappedDocumentCount).toEqual(1);
     });
   });
 
@@ -77,11 +76,9 @@ describe("unwrap", () => {
         throw new Error(`unhandled ${path} in spy`);
       });
 
-      const oaDocuments = await unwrapIndividualDocuments("./fixture/2.0", "./fixture/2.0", Output.Directory);
+      const unwrappedDocumentCount = await unwrapIndividualDocuments("./fixture/2.0", "./fixture/2.0", Output.Directory);
 
-      const expectedDocuments = [unwrappedFileFixture1, unwrappedFileFixture2];
-
-      expect(oaDocuments).toEqual(expectedDocuments);
+      expect(unwrappedDocumentCount).toEqual(2);
     });
   });
 });
