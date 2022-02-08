@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import signale from "signale";
-import { Output, unwrap } from "../implementations/unwrap";
-import { isDir } from "../implementations/utils/disk";
+import { unwrap } from "../implementations/unwrap";
+import { isDir, Output } from "../implementations/utils/disk";
 interface UnwrapCommand {
   wrappedDocumentsPath: string;
   outputDir?: string;
