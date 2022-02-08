@@ -39,7 +39,28 @@ export const writeDocumentToDisk = (destinationDir: string, filename: string, do
   fs.writeFileSync(path.join(path.resolve(destinationDir), filename), JSON.stringify(document, null, 2));
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const printDocumentToConsole = (document: any): void => {
-  console.log(JSON.stringify(document, undefined, 2));
+enum Output {
+  File,
+  Directory,
+  StdOut,
+}
+
+export const writeOutput = ({
+  outputPathType,
+  documentPath,
+  file,
+  document,
+}: {
+  outputPathType: Output;
+  documentPath?: string;
+  file: string;
+  document: any;
+}): void => {
+  if (outputPathType === Output.File && documentPath) {
+    writeDocumentToDisk(path.parse(documentPath).dir, path.parse(documentPath).base, document);
+  } else if (outputPathType === Output.Directory && documentPath) {
+    writeDocumentToDisk(documentPath, path.parse(file).base, document);
+  } else {
+    console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
+  }
 };

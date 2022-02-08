@@ -1,9 +1,4 @@
-import {
-  documentsInDirectory,
-  readOpenAttestationFile,
-  writeDocumentToDisk,
-  printDocumentToConsole,
-} from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeOutput } from "../utils/disk";
 import mkdirp from "mkdirp";
 import { getData, OpenAttestationDocument } from "@govtechsg/open-attestation";
 import path from "path";
@@ -30,7 +25,7 @@ export const unwrapIndividualDocuments = async (
       // Write unwrapped document to new directory
       writeOutput({
         outputPathType,
-        unwrappedDocumentPath: unwrappedDocumentDir,
+        documentPath: unwrappedDocumentDir,
         file,
         document: unwrappedDocument,
       });
@@ -39,26 +34,6 @@ export const unwrapIndividualDocuments = async (
     }
   }
   return oaArray.length;
-};
-
-const writeOutput = ({
-  outputPathType,
-  unwrappedDocumentPath,
-  file,
-  document,
-}: {
-  outputPathType: Output;
-  unwrappedDocumentPath?: string;
-  file: string;
-  document: any;
-}): void => {
-  if (outputPathType === Output.File && unwrappedDocumentPath) {
-    writeDocumentToDisk(path.parse(unwrappedDocumentPath).dir, path.parse(unwrappedDocumentPath).base, document);
-  } else if (outputPathType === Output.Directory && unwrappedDocumentPath) {
-    writeDocumentToDisk(unwrappedDocumentPath, path.parse(file).base, document);
-  } else {
-    printDocumentToConsole(document); // print to console, no file created
-  }
 };
 
 interface UnwrapArguments {
