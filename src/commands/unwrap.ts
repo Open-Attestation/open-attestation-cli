@@ -1,7 +1,6 @@
 import { Argv } from "yargs";
 import signale from "signale";
 import { Output, unwrap } from "../implementations/unwrap";
-import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir } from "../implementations/utils/disk";
 interface UnwrapCommand {
   wrappedDocumentsPath: string;
@@ -72,11 +71,6 @@ export const handler = async (args: UnwrapCommand): Promise<void | undefined> =>
     }
   } catch (err) {
     signale.error(err.message);
-    if (err.validationErrors) {
-      for (const error of transformValidationErrors(err.validationErrors)) {
-        signale.error(error);
-      }
-    }
     process.exit(1);
   }
 };
