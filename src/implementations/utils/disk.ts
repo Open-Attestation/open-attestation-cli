@@ -39,7 +39,7 @@ export const writeDocumentToDisk = (destinationDir: string, filename: string, do
   fs.writeFileSync(path.join(path.resolve(destinationDir), filename), JSON.stringify(document, null, 2));
 };
 
-enum Output {
+export enum Output {
   File,
   Directory,
   StdOut,

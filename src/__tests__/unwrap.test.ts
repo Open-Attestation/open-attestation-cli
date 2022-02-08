@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { unwrapIndividualDocuments, Output } from "../implementations/unwrap";
+import { unwrapIndividualDocuments } from "../implementations/unwrap";
+import { Output } from "../implementations/utils/disk";
 import fs from "fs";
 import wrappedFileFixture1 from "./fixture/2.0/wrapped-example.1.json";
 import unwrappedFileFixture1 from "./fixture/2.0/unwrapped-example.1.json";

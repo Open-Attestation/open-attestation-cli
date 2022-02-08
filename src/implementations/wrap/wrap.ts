@@ -1,4 +1,4 @@
-import { documentsInDirectory, readOpenAttestationFile, writeOutput } from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeOutput, Output } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import {
@@ -23,12 +23,6 @@ class SchemaValidationError extends Error {
 
 interface Schema {
   $id: string;
-}
-
-export enum Output {
-  File,
-  Directory,
-  StdOut,
 }
 
 const remoteLoadSchema = async (uri: string): Promise<AnySchemaObject> => {

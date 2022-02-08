@@ -1,13 +1,7 @@
-import { documentsInDirectory, readOpenAttestationFile, writeOutput } from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeOutput, Output } from "../utils/disk";
 import mkdirp from "mkdirp";
 import { getData, OpenAttestationDocument } from "@govtechsg/open-attestation";
 import path from "path";
-
-export enum Output {
-  File,
-  Directory,
-  StdOut,
-}
 
 export const unwrapIndividualDocuments = async (
   wrappedDocumentPath: string,
