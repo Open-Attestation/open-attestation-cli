@@ -1,0 +1,45 @@
+{
+  "version": "https://schema.openattestation.com/2.0/schema.json",
+  "data": {
+    "$template": {
+      "name": "f25e1526-2b29-4c86-a037-5432aad11160:string:main",
+      "type": "b6776f4f-eb98-4bb0-a4d3-53cb028e57df:string:EMBEDDED_RENDERER",
+      "url": "72db66a4-d9c4-4914-8082-8989e35c5575:string:https://tutorial-renderer.openattestation.com"
+    },
+    "recipient": {
+      "name": "d8c26d1e-8b90-49c1-a181-e8526a9912da:string:John Doe"
+    },
+    "issuers": [
+      {
+        "name": "ee379bb3-e5a6-466b-acec-4bc84c1cf128:string:Demo Issuer",
+        "documentStore": "fe02631a-88af-404c-a35c-b4eb7c983b39:string:0xBBb55Bd1D709955241CAaCb327A765e2b6D69c8b",
+        "identityProof": {
+          "type": "cfa8ec95-714c-4a61-9ab3-6dfa4b7f408f:string:DNS-TXT",
+          "location": "33448be7-0746-4cd2-a741-659774799393:string:few-green-cat.sandbox.openattestation.com"
+        }
+      }
+    ],
+    "signatoryAuthentication": {
+      "signature": "7eb0a2bd-5250-4ec0-a660-02d7d0ec7ce2:string:-",
+      "actualDateTime": "3d7bc93b-1e68-404a-81c4-24f063c1c35c:string:2020-05-29T09:46:34Z",
+      "statement": "fd72e086-343f-45b9-95bd-e471717777ed:string:The undersigned hereby declares that the above-stated information is correct and that the goods exported to [importer] comply with the origin requirements",
+      "description": "b24f5a7f-80f3-4a55-9a1b-5304af4b16fb:string:The undersigned hereby declares that the above-stated information"
+    },
+    "name": "a460e8b2-7269-4ead-aec0-66be57f75d5f:string:Test Certificate",
+    "issueLocation": {
+      "iD": "5d7fb90a-b579-475e-b899-a035be95022d:string:None",
+      "name": "e4b9083b-4c02-4855-9dd2-cb0670080ec9:string:Adelaide"
+    },
+    "status": "a03a3377-a34c-42b9-9a70-f9f74a50e7d4:string:issued",
+    "isPreferential": "e3e18fc5-c100-4f3b-8c13-7632fcb388ab:boolean:true",
+    "freeTradeAgreement": "ee7b9c4d-217e-4dd0-b7fa-dd47053c2f5f:string:Test",
+    "iD": "e855cb01-6688-46d8-b7e0-b9a89293262a:string:Test",
+    "issueDateTime": "8281cecd-4433-4202-953e-eac3ac887e1c:string:IssueDate"
+  },
+  "signature": {
+    "type": "SHA3MerkleProof",
+    "targetHash": "cea06d5bcb7650527308f74a4bffe13272989a2c33c8a7513f38b0c0c9527a52",
+    "proof": [],
+    "merkleRoot": "cea06d5bcb7650527308f74a4bffe13272989a2c33c8a7513f38b0c0c9527a52"
+  }
+}
