@@ -162,7 +162,7 @@ export const getDocumentStoreAddress = async (encryptedWalletPath: string): Prom
 };
 
 export const validate = (forms: Form[]): boolean => {
-  const isValidForm = forms.some((form: Form) => {
+  const isValidForm = forms.map((form: Form) => {
     const formTypeCheckList = ["TRANSFERABLE_RECORD", "VERIFIABLE_DOCUMENT"];
     const isValidFormType = formTypeCheckList.includes(form.type);
     let isValidIdentityProofType: boolean;
@@ -184,9 +184,8 @@ export const validate = (forms: Form[]): boolean => {
         return false;
       });
     }
-
     return isValidFormType && isValidIdentityProofType;
   });
-
-  return isValidForm;
+  const anyInvalidForm = !isValidForm.some((validForm: boolean) => validForm === false);
+  return anyInvalidForm;
 };
