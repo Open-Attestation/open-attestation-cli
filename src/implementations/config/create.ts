@@ -12,7 +12,9 @@ import {
   validate,
   getTokenRegistryAddress,
   getDocumentStoreAddress,
+  isV3Form,
 } from "./helpers";
+import { v2, v3 } from "@govtechsg/open-attestation";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -35,9 +37,17 @@ export const create = async ({
 
   const hasTransferableRecord = forms.some((form) => form.type === "TRANSFERABLE_RECORD");
   const hasDocumentStore = forms.some((form) => form.type === "VERIFIABLE_DOCUMENT");
-  const hasDid = forms.some(
-    (form) => form.defaults.issuers.some((issuer) => issuer.identityProof?.type.includes("DID")) // TODO: v3 does not have `issuers` but `issuer` instead
-  );
+  const hasDid = forms.some((form) => {
+    //check form for v2/v3
+    if (isV3Form(form.defaults)) {
+      const v3Defaults = form.defaults as v3.OpenAttestationDocument;
+      const didCheckList = ["DID", "DNS-DID"];
+      return didCheckList.includes(v3Defaults.openAttestationMetadata.proof.method);
+    } else {
+      const v2Defaults = form.defaults as v2.OpenAttestationDocument;
+      return v2Defaults.issuers.some((issuer) => issuer.identityProof?.type.includes("DID"));
+    }
+  });
 
   let tokenRegistryAddress = "";
   let documentStoreAddress = "";

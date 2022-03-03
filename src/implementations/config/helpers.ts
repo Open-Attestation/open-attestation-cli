@@ -1,4 +1,4 @@
-import { v2 } from "@govtechsg/open-attestation";
+import { OpenAttestationDocument, v2, v3 } from "@govtechsg/open-attestation";
 import fetch from "node-fetch";
 import { info, success } from "signale";
 import { highlight } from "../../utils";
@@ -28,6 +28,10 @@ interface UpdatedForms {
   dnsTransferableRecord: Dns;
 }
 
+export const isV3Form = (formDefaults: OpenAttestationDocument): boolean => {
+  return "@context" in formDefaults && "openAttestationMetadata" in formDefaults;
+};
+
 export const getConfigWithUpdatedForms = ({
   configFile,
   documentStoreAddress,
@@ -42,32 +46,66 @@ export const getConfigWithUpdatedForms = ({
 
   const updatedForms = forms.map((form: Form) => {
     if (form.type === "VERIFIABLE_DOCUMENT") {
-      const updatedIssuers = form.defaults.issuers.map((issuer) => {
-        if (issuer.identityProof) {
-          if (issuer.identityProof.type === "DNS-TXT") {
-            issuer.documentStore = documentStoreAddress;
-            issuer.identityProof.location = dnsVerifiable;
-          } else if (issuer.identityProof.type === "DID" || issuer.identityProof.type === "DNS-DID") {
-            issuer.id = `did:ethr:0x${address}`;
-            issuer.identityProof.location = dnsDid;
-            issuer.identityProof.key = `did:ethr:0x${address}#controller`;
-            if (issuer.revocation) {
-              issuer.revocation.type = "NONE" as v2.RevocationType;
+      // check form for v2 or v3
+      if (isV3Form(form.defaults)) {
+        const v3Defaults = form.defaults as v3.OpenAttestationDocument;
+
+        if (
+          v3Defaults.openAttestationMetadata.identityProof.type === "DNS-DID" ||
+          v3Defaults.openAttestationMetadata.identityProof.type === "DID"
+        ) {
+          v3Defaults.openAttestationMetadata.proof.type = "OpenAttestationProofMethod" as v3.ProofType;
+          v3Defaults.openAttestationMetadata.proof.method = "DID" as v3.Method;
+          v3Defaults.openAttestationMetadata.proof.value = `did:ethr:0x${address}`;
+          v3Defaults.openAttestationMetadata.identityProof.identifier = dnsDid || "";
+        } else if (v3Defaults.openAttestationMetadata.identityProof.type === "DNS-TXT") {
+          v3Defaults.openAttestationMetadata.proof.value = documentStoreAddress;
+          v3Defaults.openAttestationMetadata.identityProof.identifier = dnsVerifiable || "";
+        }
+        if (v3Defaults.openAttestationMetadata.proof.revocation) {
+          v3Defaults.openAttestationMetadata.proof.revocation = {
+            type: "NONE" as v3.RevocationType,
+          };
+        }
+      } else {
+        const v2Defaults = form.defaults as v2.OpenAttestationDocument;
+
+        const updatedIssuers = v2Defaults.issuers.map((issuer) => {
+          if (issuer.identityProof) {
+            if (issuer.identityProof.type === "DNS-TXT") {
+              issuer.documentStore = documentStoreAddress;
+              issuer.identityProof.location = dnsVerifiable;
+            } else if (issuer.identityProof.type === "DID" || issuer.identityProof.type === "DNS-DID") {
+              issuer.id = `did:ethr:0x${address}`;
+              issuer.identityProof.location = dnsDid;
+              issuer.identityProof.key = `did:ethr:0x${address}#controller`;
+              if (issuer.revocation) {
+                issuer.revocation.type = "NONE" as v2.RevocationType;
+              }
             }
           }
-        }
-        return issuer;
-      });
-      form.defaults.issuers = updatedIssuers;
+          return issuer;
+        });
+        v2Defaults.issuers = updatedIssuers;
+      }
     }
 
     if (form.type === "TRANSFERABLE_RECORD") {
-      const updatedIssuers = form.defaults.issuers.map((issuer) => {
-        issuer.tokenRegistry = tokenRegistryAddress;
-        if (issuer.identityProof?.location) issuer.identityProof.location = dnsTransferableRecord;
-        return issuer;
-      });
-      form.defaults.issuers = updatedIssuers;
+      if (isV3Form(form.defaults)) {
+        const v3Defaults = form.defaults as v3.OpenAttestationDocument;
+
+        v3Defaults.openAttestationMetadata.proof.value = tokenRegistryAddress;
+        v3Defaults.openAttestationMetadata.identityProof.identifier = dnsTransferableRecord || "";
+      } else {
+        const v2Defaults = form.defaults as v2.OpenAttestationDocument;
+
+        const updatedIssuers = v2Defaults.issuers.map((issuer) => {
+          issuer.tokenRegistry = tokenRegistryAddress;
+          if (issuer.identityProof?.location) issuer.identityProof.location = dnsTransferableRecord;
+          return issuer;
+        });
+        v2Defaults.issuers = updatedIssuers;
+      }
     }
 
     return form;
@@ -125,10 +163,27 @@ export const getDocumentStoreAddress = async (encryptedWalletPath: string): Prom
 
 export const validate = (forms: Form[]): boolean => {
   const isValidForm = forms.some((form: Form) => {
-    const isValidFormType = form.type === "TRANSFERABLE_RECORD" && "VERIFIABLE_DOCUMENT";
-    const isValidIdentityProofType = form.defaults.issuers.some(
-      (issuer) => issuer.identityProof?.type === "DNS-TXT" && "DNS-DID" && "DID"
-    );
+    const formTypeCheckList = ["TRANSFERABLE_RECORD", "VERIFIABLE_DOCUMENT"];
+    const isValidFormType = formTypeCheckList.includes(form.type);
+    let isValidIdentityProofType: boolean;
+
+    const identityProofTypeCheckList = ["DNS-TXT", "DNS-DID", "DID"];
+    // test for v2/v3 form defaults
+    if (isV3Form(form.defaults)) {
+      const v3Defaults = form.defaults as v3.OpenAttestationDocument;
+      isValidIdentityProofType = identityProofTypeCheckList.includes(
+        v3Defaults.openAttestationMetadata.identityProof.type
+      );
+    } else {
+      const v2Defaults = form.defaults as v2.OpenAttestationDocument;
+      isValidIdentityProofType = v2Defaults.issuers.some((issuer) => {
+        const identityProofType = issuer.identityProof?.type;
+        if (identityProofType) {
+          return identityProofTypeCheckList.includes(identityProofType);
+        }
+        return false;
+      });
+    }
 
     return isValidFormType && isValidIdentityProofType;
   });
