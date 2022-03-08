@@ -12,9 +12,8 @@ import {
   validate,
   getTokenRegistryAddress,
   getDocumentStoreAddress,
-  isV3Form,
 } from "./helpers";
-import { v2, v3 } from "@govtechsg/open-attestation";
+import { utils, v2, v3 } from "@govtechsg/open-attestation";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -39,13 +38,17 @@ export const create = async ({
   const hasDocumentStore = forms.some((form) => form.type === "VERIFIABLE_DOCUMENT");
   const hasDid = forms.some((form) => {
     //check form for v2/v3
-    if (isV3Form(form.defaults)) {
+    const didCheckList = ["DID", "DNS-DID"];
+    if (utils.isRawV3Document(form.defaults)) {
       const v3Defaults = form.defaults as v3.OpenAttestationDocument;
-      const didCheckList = ["DID", "DNS-DID"];
       return didCheckList.includes(v3Defaults.openAttestationMetadata.proof.method);
     } else {
       const v2Defaults = form.defaults as v2.OpenAttestationDocument;
-      return v2Defaults.issuers.some((issuer) => issuer.identityProof?.type.includes("DID"));
+      return v2Defaults.issuers.some((issuer) => {
+        const identityProof = issuer.identityProof;
+        if (!identityProof) return false;
+        return didCheckList.includes(identityProof.type);
+      });
     }
   });
 
