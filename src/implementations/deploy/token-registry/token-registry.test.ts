@@ -1,6 +1,6 @@
 import { deployTokenRegistry } from "./token-registry";
 import { join } from "path";
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 
@@ -17,8 +17,8 @@ const deployParams: DeployTokenRegistryCommand = {
 
 describe("token-registry", () => {
   describe("deployTokenRegistry", () => {
-    const tokenFactory: any = TradeTrustErc721Factory;
-    const mockedTokenFactory: jest.Mock<TradeTrustErc721Factory> = tokenFactory;
+    const tokenFactory: any = TradeTrustERC721Factory;
+    const mockedTokenFactory: jest.Mock<TradeTrustERC721Factory> = tokenFactory;
     const mockedDeploy: jest.Mock = mockedTokenFactory.prototype.deploy;
     // increase timeout because ethers is throttling
     jest.setTimeout(30000);

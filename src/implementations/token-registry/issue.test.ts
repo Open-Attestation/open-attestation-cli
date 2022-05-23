@@ -1,4 +1,4 @@
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
@@ -16,26 +16,26 @@ const deployParams: TokenRegistryIssueCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
+// TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
 // ideally must setup ganache, and run the function over it
 describe("token-registry", () => {
   describe("issue", () => {
     jest.setTimeout(30000);
-    const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
+    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721Factory> = TradeTrustERC721Factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnect: jest.Mock = mockedTradeTrustErc721Factory.connect;
+    const mockedConnect: jest.Mock = mockedTradeTrustERC721Factory.connect;
     const mockedIssue = jest.fn();
     const mockCallStaticSafeMint = jest.fn().mockResolvedValue(undefined);
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustErc721Factory.mockReset();
+      mockedTradeTrustERC721Factory.mockReset();
       mockedConnect.mockReset();
       mockCallStaticSafeMint.mockClear();
       mockedConnect.mockReturnValue({
-        "safeMint(address,uint256)": mockedIssue,
+        mintTitle: mockedIssue,
         callStatic: {
-          "safeMint(address,uint256)": mockCallStaticSafeMint,
+          "mintTitle(address,address,uint256)": mockCallStaticSafeMint,
         },
       });
       mockedIssue.mockReturnValue({
@@ -75,7 +75,8 @@ describe("token-registry", () => {
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
-      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.tokenId);
+      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.to);
+      expect(mockedIssue.mock.calls[0][2]).toEqual(deployParams.tokenId);
       expect(mockCallStaticSafeMint).toHaveBeenCalledTimes(1);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
@@ -93,7 +94,8 @@ describe("token-registry", () => {
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
-      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.tokenId);
+      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.to);
+      expect(mockedIssue.mock.calls[0][2]).toEqual(deployParams.tokenId);
       expect(mockCallStaticSafeMint).toHaveBeenCalledTimes(1);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });

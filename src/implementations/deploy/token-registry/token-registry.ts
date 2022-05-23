@@ -1,4 +1,4 @@
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { getWalletOrSigner } from "../../utils/wallet";
 import signale from "signale";
 import { getLogger } from "../../../logger";
@@ -18,7 +18,7 @@ export const deployTokenRegistry = async ({
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
   if (dryRun) {
     // TODO this does not work ?
-    const factory = new TradeTrustErc721Factory();
+    const factory = new TradeTrustERC721Factory();
     await dryRunMode({
       network,
       gasPriceScale: gasPriceScale,
@@ -28,7 +28,7 @@ export const deployTokenRegistry = async ({
   }
   const wallet = await getWalletOrSigner({ network, ...rest });
   const gasPrice = await wallet.provider.getGasPrice();
-  const factory = new TradeTrustErc721Factory(wallet);
+  const factory = new TradeTrustERC721Factory(wallet);
   signale.await(`Sending transaction to pool`);
   const transaction = await factory.deploy(registryName, registrySymbol, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
