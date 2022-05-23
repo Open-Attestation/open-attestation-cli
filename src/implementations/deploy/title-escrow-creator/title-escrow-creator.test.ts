@@ -1,4 +1,4 @@
-import { deployTitleEscrowCreator } from "./title-escrow-creator";
+// import { deployTitleEscrowCreator } from "./title-escrow-creator";
 import { join } from "path";
 // import { TitleEscrowCreatorFactory } from "@govtechsg/token-registry";
 import { TradeTrustERC721, TradeTrustERC721Factory } from "@govtechsg/token-registry";
@@ -15,6 +15,8 @@ const deployParams: DeployTitleEscrowCreatorCommand = {
 };
 
 describe("token-registry", () => {
+  test.todo('Please implement Title Escrow Creator');
+
   // describe("deployTitleEscrowCreator", () => {
   //   const tokenFactory: any = TitleEscrowCreatorFactory;
   //   const mockedTokenFactory: jest.Mock<TitleEscrowCreatorFactory> = tokenFactory;

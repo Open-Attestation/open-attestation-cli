@@ -1,4 +1,4 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TitleEscrowCloneable, TitleEscrowCloneableFactory, TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { Wallet, constants } from "ethers";
 import signale from "signale";
 import { ConnectedSigner } from "../utils/wallet";
@@ -9,16 +9,16 @@ interface ConnectToTitleEscrowArgs {
   wallet: Wallet | ConnectedSigner;
 }
 
-type TitleEscrowInstanceType = ReturnType<typeof TitleEscrowFactory.connect>;
+type TitleEscrowInstanceType = ReturnType<typeof TitleEscrowCloneableFactory.connect>;
 
 export const connectToTitleEscrow = async ({
   tokenId,
   address,
   wallet,
 }: ConnectToTitleEscrowArgs): Promise<TitleEscrowInstanceType> => {
-  const tokenRegistry = await TradeTrustErc721Factory.connect(address, wallet);
+  const tokenRegistry = await TradeTrustERC721Factory.connect(address, wallet);
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
-  const titleEscrow = await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
+  const titleEscrow = await TitleEscrowCloneableFactory.connect(titleEscrowAddress, wallet);
   return titleEscrow;
 };
 
