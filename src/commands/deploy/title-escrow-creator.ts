@@ -15,18 +15,22 @@ export const describe = "Deploys a (global) title escrow creator on the blockcha
 export const builder = (yargs: Argv): Argv => withGasPriceOption(withNetworkAndWalletSignerOption(yargs));
 
 export const handler = async (args: DeployTitleEscrowCreatorCommand): Promise<string | undefined> => {
-  trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  try {
-    info(`Deploying title escrow creator`);
-    const titleEscrowCreator = await deployTitleEscrowCreator(args);
-    success(`Title escrow creator deployed at ${titleEscrowCreator.contractAddress}`);
-    info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${
-        titleEscrowCreator.contractAddress
-      }`
-    );
-    return titleEscrowCreator.contractAddress;
-  } catch (e) {
-    error(getErrorMessage(e));
-  }
+
+  error("Title Escrow Creator is currently unavailable, please wait for token-registry's beta release");
+  return;
+
+  // trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  // try {
+  //   info(`Deploying title escrow creator`);
+  //   const titleEscrowCreator = await deployTitleEscrowCreator(args);
+  //   success(`Title escrow creator deployed at ${titleEscrowCreator.contractAddress}`);
+  //   info(
+  //     `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${
+  //       titleEscrowCreator.contractAddress
+  //     }`
+  //   );
+  //   return titleEscrowCreator.contractAddress;
+  // } catch (e) {
+  //   error(getErrorMessage(e));
+  // }
 };
