@@ -1,4 +1,4 @@
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TitleEscrowCloneable, TitleEscrowClonerFactory, TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
@@ -18,7 +18,7 @@ export const acceptSurrendered = async ({
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const tokenRegistryInstance = await TradeTrustErc721Factory.connect(address, wallet);
+  const tokenRegistryInstance = await TradeTrustERC721Factory.connect(address, wallet);
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,

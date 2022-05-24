@@ -47,16 +47,17 @@ export const builder = (yargs: Argv): Argv =>
   );
 
 export const handler = async (args: DeployTitleEscrowCommand): Promise<string | undefined> => {
-  trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  try {
-    info(`Deploying title escrow`);
-    const titleEscrow = await deployTitleEscrow(args);
-    success(`Title escrow deployed at ${titleEscrow.contractAddress}`);
-    info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${titleEscrow.contractAddress}`
-    );
-    return titleEscrow.contractAddress;
-  } catch (e) {
-    error(getErrorMessage(e));
-  }
+  return;
+  // trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  // try {
+  //   info(`Deploying title escrow`);
+  //   const titleEscrow = await deployTitleEscrow(args);
+  //   success(`Title escrow deployed at ${titleEscrow.contractAddress}`);
+  //   info(
+  //     `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${titleEscrow.contractAddress}`
+  //   );
+  //   return titleEscrow.contractAddress;
+  // } catch (e) {
+  //   error(getErrorMessage(e));
+  // }
 };

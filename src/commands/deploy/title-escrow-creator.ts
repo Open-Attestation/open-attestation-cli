@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
-import { deployTitleEscrowCreator } from "../../implementations/deploy/title-escrow-creator";
+// import { deployTitleEscrowCreator } from "../../implementations/deploy/title-escrow-creator";
 import { DeployTitleEscrowCreatorCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
