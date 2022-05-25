@@ -1,4 +1,4 @@
-import { TitleEscrowCloneable, TitleEscrowCloneableFactory, TradeTrustERC721Factory } from "@govtechsg/token-registry";
+import { TitleEscrowCloneableFactory, TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import { Wallet, constants } from "ethers";
 import signale from "signale";
 import { ConnectedSigner } from "../utils/wallet";

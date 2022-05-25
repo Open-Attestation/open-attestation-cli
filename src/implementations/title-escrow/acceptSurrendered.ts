@@ -1,4 +1,4 @@
-import { TitleEscrowCloneable, TitleEscrowClonerFactory, TradeTrustERC721Factory } from "@govtechsg/token-registry";
+import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";

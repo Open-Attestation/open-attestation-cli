@@ -22,14 +22,16 @@ export const issueToTokenRegistry = async ({
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await tokenRegistry.estimateGas['mintTitle(address,address,uint256)'](to, to, tokenId),
+      estimatedGas: await tokenRegistry.estimateGas["mintTitle(address,address,uint256)"](to, to, tokenId),
       network,
     });
     process.exit(0);
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  await tokenRegistry.callStatic["mintTitle(address,address,uint256)"](to, to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
+  await tokenRegistry.callStatic["mintTitle(address,address,uint256)"](to, to, tokenId, {
+    gasPrice: gasPrice.mul(gasPriceScale),
+  });
   const transaction = await tokenRegistry.mintTitle(to, to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
