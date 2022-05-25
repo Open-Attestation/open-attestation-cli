@@ -38,8 +38,6 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | ------------------------------------------ | ----------- | ------ | ------- |
 | Create config                              | ❎          | ✔️     | ❎      |
 | Deploy document store                      | ✔           | ✔      | ✔       |
-| Deploy title escrow                        | ✔           | ✔      | ✔       |
-| Deploy title escrow creator                | ✔           | ✔      | ✔       |
 | Deploy token registry                      | ✔           | ✔      | ✔       |
 | Dns txt create                             | ❎          | ❎     | ❎      |
 | Dns txt get                                | ❎          | ❎     | ❎      |
@@ -216,22 +214,6 @@ Example - with private key set in `OA_PRIVATE_KEY` environment variable (recomme
 open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
-```
-
-#### Deploy new title escrow
-
-Deploys a title escrow contract on the blockchain
-
-```bash
-open-attestation deploy title-escrow --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --beneficiary <BENEFICIARY_ADDRESS> --holder <HOLDER_ADDRESS>
-```
-
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
-
-```bash
-open-attestation deploy title-escrow --network ropsten --address 0x4B127b8d5e53872d403ce43414afeb1db67B1842 --beneficiary 0x6FFeD6E6591b808130a9b248fEA32101b5220eca --holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca
-
-✔  success   Title escrow deployed at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
 #### Issue document to token registry
