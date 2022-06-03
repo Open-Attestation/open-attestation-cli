@@ -16,6 +16,15 @@ interface ConnectToTokenReturnType {
   isV3: boolean;
 }
 
+//   interfaceId Title                 interfaceId     V2     V3
+// --------------------------------- -------------- ------- -------
+//  _INTERFACE_ID_ERC165              0x01ffc9a7     true    true
+//  _INTERFACE_ID_ERC721              0x80ac58cd     true    true
+//  _INTERFACE_ID_ERC721_ENUMERABLE   0x780e9d63     true    false
+//  _INTERFACE_ID_ERC721_METADATA     0x5b5e139f     true    true
+//  _INTERFACE_ID_TRADETRUST_ERC721   0x9f9e69f3     true    false
+//  _INTERFACE_ID_TITLEESCROW         0xdcce2211     false   false
+
 export const connectToTokenRegistry = async ({
   address,
   wallet,
@@ -24,12 +33,11 @@ export const connectToTokenRegistry = async ({
   const supportInterfacesFunctionFragment: FunctionFragment =
     tradeTrustERC721Interfaces.functions["supportsInterface(bytes4)"];
   const supportInterfacesInterface: string = supportInterfacesFunctionFragment.format(utils.FormatTypes.full);
-  console.log(supportInterfacesInterface);
-
   const testContract: Contract = new Contract(address, JSON.stringify([supportInterfacesInterface]), wallet);
   const connectedTestContract: Contract = testContract.connect(wallet);
-  const isV3 = await connectedTestContract.callStatic["supportsInterface(bytes4)"]("0x01ffc9a7");
 
+  const isV2 = await connectedTestContract.callStatic["supportsInterface(bytes4)"]("0x9f9e69f3");
+  const isV3 = !isV2;
   if (isV3) {
     const tokenRegistry = await TradeTrustERC721Factory.connect(address, wallet);
     return { isV3: isV3, contract: tokenRegistry };
