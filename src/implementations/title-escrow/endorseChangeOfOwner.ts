@@ -20,8 +20,8 @@ export const endorseChangeOfOwner = async ({
   ...rest
 }: TitleEscrowEndorseChangeOfOwnerCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const { contract: titleEscrow } = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
-    const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
     await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
     await dryRunMode({
       gasPriceScale: gasPriceScale,
@@ -32,7 +32,6 @@ export const endorseChangeOfOwner = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
   await titleEscrow.callStatic.transferToNewEscrow(newOwner, newHolder, {
     gasPrice: gasPrice.mul(gasPriceScale),

@@ -22,8 +22,8 @@ export const endorseTransferOfOwner = async ({
   approvedHolder: string;
 }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const { contract: titleEscrow } = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
-    const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
     const approvedBeneficiary = await titleEscrow.approvedBeneficiary();
     const approvedHolder = await titleEscrow.approvedHolder();
     await validateEndorseTransferOwner({ approvedOwner: approvedBeneficiary, approvedHolder });
@@ -36,7 +36,6 @@ export const endorseTransferOfOwner = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const approvedBeneficiary = await titleEscrow.approvedBeneficiary();
   const approvedHolder = await titleEscrow.approvedHolder();
   await validateEndorseTransferOwner({ approvedOwner: approvedBeneficiary, approvedHolder });

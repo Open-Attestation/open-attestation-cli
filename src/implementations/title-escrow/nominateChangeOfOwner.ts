@@ -19,8 +19,8 @@ export const nominateChangeOfOwner = async ({
   ...rest
 }: TitleEscrowNominateChangeOfOwnerCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const { contract: titleEscrow } = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
-    const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
     const holder = await titleEscrow.holder();
     await validateNominateChangeOwner({ newOwner, titleEscrow });
     await dryRunMode({
@@ -32,7 +32,6 @@ export const nominateChangeOfOwner = async ({
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const holder = await titleEscrow.holder();
   await validateNominateChangeOwner({ newOwner, titleEscrow });
   await titleEscrow.callStatic.approveNewTransferTargets(newOwner, holder, {

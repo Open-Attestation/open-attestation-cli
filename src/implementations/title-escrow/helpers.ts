@@ -1,6 +1,8 @@
-import { TitleEscrowCloneableFactory, TradeTrustERC721Factory } from "@govtechsg/token-registry";
+import { TitleEscrowCloneableFactory } from "@govtechsg/token-registry";
+import { TitleEscrowFactory } from "@govtechsg/token-registry-v2";
 import { Wallet, constants } from "ethers";
 import signale from "signale";
+import { connectToTokenRegistry } from "../token-registry/helpers";
 import { ConnectedSigner } from "../utils/wallet";
 
 interface ConnectToTitleEscrowArgs {
@@ -9,17 +11,35 @@ interface ConnectToTitleEscrowArgs {
   wallet: Wallet | ConnectedSigner;
 }
 
-type TitleEscrowInstanceType = ReturnType<typeof TitleEscrowCloneableFactory.connect>;
+interface ConnectToTitleEscrowReturnType {
+  isV3: boolean;
+  contract: TitleEscrowInstanceType;
+}
+
+type TitleEscrowInstanceType = ReturnType<
+  typeof TitleEscrowCloneableFactory.connect | typeof TitleEscrowFactory.connect
+>;
 
 export const connectToTitleEscrow = async ({
   tokenId,
   address,
   wallet,
-}: ConnectToTitleEscrowArgs): Promise<TitleEscrowInstanceType> => {
-  const tokenRegistry = await TradeTrustERC721Factory.connect(address, wallet);
+}: ConnectToTitleEscrowArgs): Promise<ConnectToTitleEscrowReturnType> => {
+  const { isV3, contract: tokenRegistry } = await connectToTokenRegistry({ address, wallet });
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
-  const titleEscrow = await TitleEscrowCloneableFactory.connect(titleEscrowAddress, wallet);
-  return titleEscrow;
+  return { isV3: isV3, contract: await connectToTitleEscrowFactory(isV3, titleEscrowAddress, wallet) };
+};
+
+export const connectToTitleEscrowFactory = async (
+  isV3: boolean,
+  titleEscrowAddress: string,
+  wallet: Wallet | ConnectedSigner
+): Promise<TitleEscrowInstanceType> => {
+  if (isV3) {
+    return await TitleEscrowCloneableFactory.connect(titleEscrowAddress, wallet);
+  } else {
+    return await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
+  }
 };
 
 interface validateEndorseChangeOwnerArgs {
