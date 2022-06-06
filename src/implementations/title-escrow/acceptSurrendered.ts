@@ -1,4 +1,3 @@
-import { TradeTrustERC721Factory } from "@govtechsg/token-registry";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
@@ -6,6 +5,7 @@ import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from ".
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { connectToTokenRegistry } from "../token-registry/helpers";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -18,7 +18,7 @@ export const acceptSurrendered = async ({
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const tokenRegistryInstance = await TradeTrustERC721Factory.connect(address, wallet);
+  const { contract: tokenRegistryInstance } = await connectToTokenRegistry({ address, wallet });
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,
