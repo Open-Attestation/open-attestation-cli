@@ -3,8 +3,17 @@ import { Wallet } from "ethers";
 import { join } from "path";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { rejectSurrendered } from "./rejectSurrendered";
+import { connectToTokenRegistry } from "../token-registry/helpers";
 
 jest.mock("@govtechsg/token-registry");
+jest.mock("../token-registry/helpers", () => {
+  const originalModule = jest.requireActual("../token-registry/helpers");
+  return {
+    __esModule: true,
+    ...originalModule,
+    connectToTokenRegistry: jest.fn(),
+  };
+});
 
 const rejectSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
@@ -21,7 +30,7 @@ describe("title-escrow", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721Factory> = TradeTrustERC721Factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnectERC721Factory: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockedConnectERC721Factory: jest.Mock = connectToTokenRegistry as jest.Mock;
     const mockedTitleEscrowFactory: jest.Mock<TitleEscrowCloneableFactory> = TitleEscrowCloneableFactory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -66,14 +75,16 @@ describe("title-escrow", () => {
         holder: mockedHolder,
       });
       mockedConnectERC721Factory.mockReturnValue({
-        restoreTitle: mockRestoreTitle,
-        filters: { Transfer: mockTransferEvent },
-        queryFilter: mockQueryFilter,
-        callStatic: {
-          restoreTitle: mockCallStaticRestoreTitle,
+        isV3: true,
+        contract: {
+          restoreTitle: mockRestoreTitle,
+          filters: { Transfer: mockTransferEvent },
+          queryFilter: mockQueryFilter,
+          callStatic: {
+            restoreTitle: mockCallStaticRestoreTitle,
+          },
         },
       });
-
       mockedBeneficiary.mockClear();
       mockedHolder.mockClear();
       mockRestoreTitle.mockClear();
@@ -87,7 +98,7 @@ describe("title-escrow", () => {
 
       await rejectSurrendered(rejectSurrenderedDocumentParams);
 
-      const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][1];
+      const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][0]["wallet"];
       expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
     });
 
@@ -97,7 +108,7 @@ describe("title-escrow", () => {
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
       });
 
-      const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][1];
+      const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][0]["wallet"];
       expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
     });
 
@@ -108,13 +119,13 @@ describe("title-escrow", () => {
         key: privateKey,
       });
 
-      const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][1];
+      const passedSigner: Wallet = mockedConnectERC721Factory.mock.calls[0][0]["wallet"];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721Factory).toHaveBeenCalledWith(
-        rejectSurrenderedDocumentParams.tokenRegistry,
-        passedSigner
-      );
+      expect(mockedConnectERC721Factory).toHaveBeenCalledWith({
+        address: rejectSurrenderedDocumentParams.tokenRegistry,
+        wallet: passedSigner,
+      });
       expect(mockedConnectTitleEscrowFactory).toHaveBeenCalledWith(mockedLastTitleEscrowAddress, passedSigner);
       expect(mockedBeneficiary).toHaveBeenCalledTimes(1);
       expect(mockedHolder).toHaveBeenCalledTimes(1);

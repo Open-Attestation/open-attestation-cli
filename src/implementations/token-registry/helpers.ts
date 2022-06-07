@@ -24,11 +24,7 @@ interface ConnectToTokenReturnType {
 //  _INTERFACE_ID_ERC721_METADATA     0x5b5e139f     true    true
 //  _INTERFACE_ID_TRADETRUST_ERC721   0x9f9e69f3     true    false
 //  _INTERFACE_ID_TITLEESCROW         0xdcce2211     false   false
-
-export const connectToTokenRegistry = async ({
-  address,
-  wallet,
-}: ConnectToTokenRegistryArgs): Promise<ConnectToTokenReturnType> => {
+export const checkTokenRegistryVersion = async ({ address, wallet }: ConnectToTokenRegistryArgs): Promise<boolean> => {
   const tradeTrustERC721Interfaces: TradeTrustERC721Interface = TradeTrustERC721Factory.createInterface();
   const supportInterfacesFunctionFragment: FunctionFragment =
     tradeTrustERC721Interfaces.functions["supportsInterface(bytes4)"];
@@ -38,6 +34,14 @@ export const connectToTokenRegistry = async ({
 
   const isV2 = await connectedTestContract.callStatic["supportsInterface(bytes4)"]("0x9f9e69f3");
   const isV3 = !isV2;
+  return isV3;
+};
+
+export const connectToTokenRegistry = async ({
+  address,
+  wallet,
+}: ConnectToTokenRegistryArgs): Promise<ConnectToTokenReturnType> => {
+  const isV3 = await checkTokenRegistryVersion({ address, wallet });
   if (isV3) {
     const tokenRegistry = await TradeTrustERC721Factory.connect(address, wallet);
     return { isV3: isV3, contract: tokenRegistry };
