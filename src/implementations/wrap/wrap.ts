@@ -1,4 +1,4 @@
-import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
+import { documentsInDirectory, readOpenAttestationFile, writeOutput, Output } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";
 import {
@@ -23,12 +23,6 @@ class SchemaValidationError extends Error {
 
 interface Schema {
   $id: string;
-}
-
-export enum Output {
-  File,
-  Directory,
-  StdOut,
 }
 
 const remoteLoadSchema = async (uri: string): Promise<AnySchemaObject> => {
@@ -124,7 +118,7 @@ export const wrapIndividualDocuments = async (
       // Write digested document to new directory
       writeOutput({
         outputPathType,
-        digestedDocumentPath: digestedDocumentDir,
+        documentPath: digestedDocumentDir,
         file,
         document: wrappedDocument,
       });
@@ -141,27 +135,6 @@ export const wrapIndividualDocuments = async (
   }
   return hashArray;
 };
-
-const writeOutput = ({
-  outputPathType,
-  digestedDocumentPath,
-  file,
-  document,
-}: {
-  outputPathType: Output;
-  digestedDocumentPath?: string;
-  file: string;
-  document: any;
-}): void => {
-  if (outputPathType === Output.File && digestedDocumentPath) {
-    writeDocumentToDisk(path.parse(digestedDocumentPath).dir, path.parse(digestedDocumentPath).base, document);
-  } else if (outputPathType === Output.Directory && digestedDocumentPath) {
-    writeDocumentToDisk(digestedDocumentPath, path.parse(file).base, document);
-  } else {
-    console.log(JSON.stringify(document, undefined, 2)); // print to console, no file created
-  }
-};
-
 export const appendProofToDocuments = async ({
   intermediateDir,
   hashMap,
@@ -192,7 +165,7 @@ export const appendProofToDocuments = async ({
     document.signature ? (document.signature.merkleRoot = candidateRoot) : (document.proof.merkleRoot = candidateRoot);
     if (!merkleRoot) merkleRoot = candidateRoot;
 
-    writeOutput({ outputPathType, digestedDocumentPath, file, document });
+    writeOutput({ outputPathType, documentPath: digestedDocumentPath, file, document });
   });
 
   return merkleRoot;

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { appendProofToDocuments, merkleHashmap, Output } from "../implementations/wrap";
+import { appendProofToDocuments, merkleHashmap } from "../implementations/wrap";
+import { Output } from "../implementations/utils/disk";
 import fs from "fs";
 import { utils } from "@govtechsg/open-attestation";
 

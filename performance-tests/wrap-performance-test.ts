@@ -1,4 +1,5 @@
-import { Output, wrap } from "../src/implementations/wrap";
+import { wrap } from "../src/implementations/wrap";
+import { Output } from "../src/implementations/utils/disk";
 import { performance } from "perf_hooks";
 import { existsSync, mkdirSync, rmdirSync, promises } from "fs";
 import { SchemaId } from "@govtechsg/open-attestation";

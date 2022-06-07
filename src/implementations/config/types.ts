@@ -1,4 +1,4 @@
-import { v2 } from "@govtechsg/open-attestation";
+import { OpenAttestationDocument } from "@govtechsg/open-attestation";
 
 type WalletEncryptedJson = {
   type: "ENCRYPTED_JSON";
@@ -10,7 +10,7 @@ export type Dns = string | undefined;
 export type Form = {
   name: string;
   type: "VERIFIABLE_DOCUMENT" | "TRANSFERABLE_RECORD";
-  defaults: v2.OpenAttestationDocument;
+  defaults: OpenAttestationDocument;
   schema: any;
   uiSchema?: any;
   attachments?: {

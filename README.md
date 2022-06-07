@@ -55,6 +55,7 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | Encrypt document                           | ❎          | ❎     | ❎      |
 | Decrypt document                           | ❎          | ❎     | ❎      |
 | Wrap document                              | ❎          | ❎     | ❎      |
+| Unwrap document                            | ❎          | ❎     | ❎      |
 | Verify document                            | ❎          | ❎     | ❎      |
 | Change holder (Title Escrow)               | ✔           | ✔      | ✔       |
 | Nominate change of owner (Title Escrow)    | ✔           | ✔      | ✔       |
@@ -148,6 +149,38 @@ open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --
 ```
 
 > **_NOTE:_** For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](https://www.openattestation.com/docs/integrator-section/transferable-record/title-escrow).
+
+### Unwrapping documents
+
+This command processes a document in the input directory. It will unwrap the wrapped document to its raw document form to be displayed on the console.
+
+Example:
+
+```bash
+open-attestation unwrap ./examples/v2/wrapped-documents/example.0.json
+
+✔  success   The document has been unwrapped
+```
+
+The command will display the result in the console. If you need to save the file you can use the `--output-file` option.
+
+Example:
+
+```bash
+open-attestation unwrap ./examples/v2/wrapped-documents/example.0.json --output-file ./examples/v2/raw-documents/example.0.json
+
+✔  success   The document has been unwrapped
+```
+
+If you need to unwrap a folder you will need to provide the `--output-dir` option to specify which folder the documents must be unwrapped in.
+
+Example:
+
+```bash
+open-attestation unwrap ./examples/v2/wrapped-documents --output-dir ./examples/v2/raw-documents
+
+✔  success   The documents have been individually unwrapped into folder ./examples/v2/raw-documents
+```
 
 ### Document privacy filter
 

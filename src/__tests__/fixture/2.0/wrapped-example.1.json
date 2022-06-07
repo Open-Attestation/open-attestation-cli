@@ -1,0 +1,31 @@
+{
+  "version": "https://schema.openattestation.com/2.0/schema.json",
+  "data": {
+    "id": "189b1a8c-37a5-41d3-81be-a8937a80ed87:string:53b75bbe",
+    "name": "ff654adf-a018-49e3-bb63-87ffd070e901:string:Govtech Demo Certificate",
+    "$template": {
+      "name": "3400b6f8-2c7f-4f41-9c00-764e34fa3408:string:GOVTECH_DEMO",
+      "type": "4e4a1393-7051-451d-a83a-f71731b2a344:string:EMBEDDED_RENDERER",
+      "url": "d267a44b-66c6-4b7c-a249-a2910c6f35a8:string:https://demo-renderer.opencerts.io"
+    },
+    "issuers": [
+      {
+        "name": "797a7a59-9e89-47c1-b5db-e7f2134d76bf:string:Govtech",
+        "documentStore": "0276bfc6-01e8-4933-abbb-525698cc15a1:string:0x718B518565B81097b185661EBba3966Ff32A0039",
+        "identityProof": {
+          "type": "16f50562-241e-4200-b118-7af692d0d04d:string:DNS-TXT",
+          "location": "cacf4c12-a038-4419-8083-5b886cf5a410:string:example.openattestation.com"
+        }
+      }
+    ],
+    "recipient": {
+      "name": "38587afb-16c0-48b4-8bfb-9d87ad430641:string:Your Name"
+    }
+  },
+  "signature": {
+    "type": "SHA3MerkleProof",
+    "targetHash": "cc7362fb3dc939987cae9e86900ade8c1d687b0c3419de776cd559c3eb211614",
+    "proof": [],
+    "merkleRoot": "cc7362fb3dc939987cae9e86900ade8c1d687b0c3419de776cd559c3eb211614"
+  }
+}

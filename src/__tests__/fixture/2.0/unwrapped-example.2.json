@@ -1,0 +1,33 @@
+{
+  "$template": {
+    "name": "main",
+    "type": "EMBEDDED_RENDERER",
+    "url": "https://tutorial-renderer.openattestation.com"
+  },
+  "recipient": {
+    "name": "John Doe"
+  },
+  "issuers": [
+    {
+      "name": "Demo Issuer",
+      "documentStore": "0xBBb55Bd1D709955241CAaCb327A765e2b6D69c8b",
+      "identityProof": {
+        "type": "DNS-TXT",
+        "location": "few-green-cat.sandbox.openattestation.com"
+      }
+    }
+  ],
+  "signatoryAuthentication": {
+    "signature": "-",
+    "actualDateTime": "2020-05-29T09:46:34Z",
+    "statement": "The undersigned hereby declares that the above-stated information is correct and that the goods exported to [importer] comply with the origin requirements",
+    "description": "The undersigned hereby declares that the above-stated information"
+  },
+  "name": "Test Certificate",
+  "issueLocation": { "iD": "None", "name": "Adelaide" },
+  "status": "issued",
+  "isPreferential": true,
+  "freeTradeAgreement": "Test",
+  "iD": "Test",
+  "issueDateTime": "IssueDate"
+}
