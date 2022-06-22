@@ -16,19 +16,18 @@ export const deployTokenRegistry = async ({
   dryRun,
   ...rest
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
+  const wallet = await getWalletOrSigner({ network, ...rest });
+  const factory = new TradeTrustERC721Factory(wallet);
   if (dryRun) {
-    // TODO this does not work ?
-    const factory = new TradeTrustERC721Factory();
+    const tx = factory.getDeployTransaction(registryName, registrySymbol, {});
     await dryRunMode({
       network,
       gasPriceScale: gasPriceScale,
-      transaction: factory.getDeployTransaction(registryName, registrySymbol, {}),
+      transaction: tx,
     });
     process.exit(0);
   }
-  const wallet = await getWalletOrSigner({ network, ...rest });
   const gasPrice = await wallet.provider.getGasPrice();
-  const factory = new TradeTrustERC721Factory(wallet);
   signale.await(`Sending transaction to pool`);
   const transaction = await factory.deploy(registryName, registrySymbol, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
