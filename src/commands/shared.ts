@@ -5,6 +5,8 @@ export enum Network {
   "ropsten" = 3,
   "rinkeby" = 4,
   "goerli" = 5,
+  "polygon" = 137,
+  "polygon_mumbai" = 80001,
   "local" = 1337,
 }
 const networks = Object.values(Network).filter((key) => isNaN(Number(key)));
