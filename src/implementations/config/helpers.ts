@@ -6,6 +6,7 @@ import { ConfigFile, Form, Dns } from "./types";
 import { readFile } from "../../implementations/utils/disk";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
+import { Network } from "../../commands/shared";
 
 interface UpdatedWallet {
   configFile: ConfigFile;

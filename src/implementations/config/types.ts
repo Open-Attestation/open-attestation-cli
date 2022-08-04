@@ -1,4 +1,5 @@
 import { OpenAttestationDocument } from "@govtechsg/open-attestation";
+import { Network } from "../../commands/shared";
 
 type WalletEncryptedJson = {
   type: "ENCRYPTED_JSON";
@@ -22,7 +23,7 @@ export type Form = {
 };
 
 export interface ConfigFile {
-  network: "ropsten" | "rinkeby" | "homestead" | "local";
+  network: Network;
   wallet: WalletEncryptedJson;
   forms: Form[];
   documentStorage?: {
