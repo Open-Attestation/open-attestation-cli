@@ -38,7 +38,7 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | ropsten        | 3        | Test       |
 | rinkeby        | 4        | Test       |
 | goerli         | 5        | Test       |
-| polygon        | 137      | Production |
+| matic          | 137      | Production |
 | polygon_mumbai | 80001    | Test       |
 
 ---
