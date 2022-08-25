@@ -53,10 +53,7 @@ describe("title-escrow", () => {
         wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
       mockedConnectERC721.mockReturnValue({
-        isV3: true,
-        contract: {
           ownerOf: mockedOwnerOf,
-        },
       });
       mockedConnectTitleEscrowFactory.mockReturnValue({
         surrender: mockSurrender,

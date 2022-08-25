@@ -22,7 +22,7 @@ export const endorseTransferOfOwner = async ({
   approvedHolder: string;
 }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const { contract: titleEscrow } = await connectToTitleEscrow({ tokenId, address, wallet });
+  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
     const approvedBeneficiary = await titleEscrow.approvedBeneficiary();
     const approvedHolder = await titleEscrow.approvedHolder();

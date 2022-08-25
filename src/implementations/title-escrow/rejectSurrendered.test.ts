@@ -75,15 +75,12 @@ describe("title-escrow", () => {
         holder: mockedHolder,
       });
       mockedConnectERC721Factory.mockReturnValue({
-        isV3: true,
-        contract: {
           restoreTitle: mockRestoreTitle,
           filters: { Transfer: mockTransferEvent },
           queryFilter: mockQueryFilter,
           callStatic: {
             restoreTitle: mockCallStaticRestoreTitle,
           },
-        },
       });
       mockedBeneficiary.mockClear();
       mockedHolder.mockClear();

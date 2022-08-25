@@ -52,10 +52,7 @@ describe("token-registry", () => {
       mockedTradeTrustERC721Factory.mockClear();
       mockCallStaticSafeMint.mockClear();
       mockedConnect.mockReset();
-      mockedConnect.mockResolvedValue({
-        isV3: true,
-        contract: mockTTERC721Contract,
-      });
+      mockedConnect.mockResolvedValue(mockTTERC721Contract);
     });
 
     it("should take in the key from environment variable", async () => {

@@ -19,7 +19,7 @@ export const nominateChangeOfOwner = async ({
   ...rest
 }: TitleEscrowNominateChangeOfOwnerCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const { contract: titleEscrow } = await connectToTitleEscrow({ tokenId, address, wallet });
+  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
     const holder = await titleEscrow.holder();
     await validateNominateChangeOwner({ newOwner, titleEscrow });

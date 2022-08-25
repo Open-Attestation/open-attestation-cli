@@ -7,14 +7,13 @@ import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { ContractTransaction, Wallet } from "ethers";
 import { connectToTokenRegistry } from "../token-registry/helpers";
-import { TradeTrustERC721 as V2TradeTrustERC721 } from "@govtechsg/token-registry-v2/dist/ts/contracts";
 import { connectToTitleEscrowFactory } from "./helpers";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
 const retrieveLastBeneficiaryAndHolder = async (
   isV3: boolean,
-  tokenRegistryInstance: TradeTrustERC721 | V2TradeTrustERC721,
+  tokenRegistryInstance: TradeTrustERC721,
   tokenId: string,
   wallet: Wallet | ConnectedSigner
 ): Promise<{ lastBeneficiary: string; lastHolder: string }> => {
@@ -22,7 +21,7 @@ const retrieveLastBeneficiaryAndHolder = async (
   const transferLogFilter = tokenRegistryInstance.filters.Transfer(null, null, tokenId);
   const logs = await tokenRegistryInstance.queryFilter(transferLogFilter, 0);
   const lastTitleEscrowAddress = logs[logs.length - 1].args?.[0];
-  const lastTitleEscrowInstance = await connectToTitleEscrowFactory(isV3, lastTitleEscrowAddress, wallet);
+  const lastTitleEscrowInstance = await connectToTitleEscrowFactory(lastTitleEscrowAddress, wallet);
   const lastBeneficiary = await lastTitleEscrowInstance.beneficiary();
   const lastHolder = await lastTitleEscrowInstance.holder();
   return { lastBeneficiary, lastHolder };
@@ -37,9 +36,9 @@ export const rejectSurrendered = async ({
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const { isV3, contract: tokenRegistryInstance } = await connectToTokenRegistry({ address, wallet });
+  const tokenRegistryInstance  = await connectToTokenRegistry({ address, wallet });
   let transaction: ContractTransaction;
-  if (isV3) {
+  
     transaction = await rejectsurrenderV3Document({
       tokenRegistry: address,
       tokenId,
@@ -49,17 +48,8 @@ export const rejectSurrendered = async ({
       tokenRegistryInstance,
       wallet,
     });
-  } else {
-    transaction = await rejectsurrenderV2Document({
-      tokenRegistry: address,
-      tokenId,
-      network,
-      gasPriceScale,
-      dryRun,
-      tokenRegistryInstance,
-      wallet,
-    });
-  }
+  
+  
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
@@ -67,42 +57,8 @@ export const rejectSurrendered = async ({
 };
 
 export type VersionedTitleEscrowRejectSurrenderDocumentCommand = TitleEscrowSurrenderDocumentCommand & {
-  tokenRegistryInstance: TradeTrustERC721 | V2TradeTrustERC721;
+  tokenRegistryInstance: TradeTrustERC721;
   wallet: Wallet | ConnectedSigner;
-};
-
-export const rejectsurrenderV2Document = async ({
-  tokenId,
-  network,
-  gasPriceScale,
-  dryRun,
-  tokenRegistryInstance,
-  wallet,
-}: VersionedTitleEscrowRejectSurrenderDocumentCommand): Promise<ContractTransaction> => {
-  const V2tokenRegistryInstance = tokenRegistryInstance as V2TradeTrustERC721;
-  const isV3 = false;
-  const { lastBeneficiary, lastHolder } = await retrieveLastBeneficiaryAndHolder(
-    isV3,
-    tokenRegistryInstance,
-    tokenId,
-    wallet
-  );
-  if (dryRun) {
-    await dryRunMode({
-      gasPriceScale: gasPriceScale,
-      estimatedGas: await V2tokenRegistryInstance.estimateGas.sendToNewTitleEscrow(
-        lastBeneficiary,
-        lastHolder,
-        tokenId
-      ),
-      network,
-    });
-    process.exit(0);
-  }
-  signale.await(`Sending transaction to pool`);
-  await V2tokenRegistryInstance.callStatic.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId);
-  const transaction = await V2tokenRegistryInstance.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId);
-  return transaction;
 };
 
 export const rejectsurrenderV3Document = async ({

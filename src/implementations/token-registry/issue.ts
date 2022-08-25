@@ -19,25 +19,21 @@ export const issueToTokenRegistry = async ({
   ...rest
 }: TokenRegistryIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const { isV3, contract: tokenRegistry } = await connectToTokenRegistry({ address, wallet });
-  if (!isV3) {
-    throw new Error("Please upgrade to Token Registry V3");
-  }
-  const V3tokenRegistry = tokenRegistry as TradeTrustERC721;
+  const tokenRegistry: TradeTrustERC721 = await connectToTokenRegistry({ address, wallet });
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await V3tokenRegistry.estimateGas["mintTitle(address,address,uint256)"](to, to, tokenId),
+      estimatedGas: await tokenRegistry.estimateGas["mintTitle(address,address,uint256)"](to, to, tokenId),
       network,
     });
     process.exit(0);
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  await V3tokenRegistry.callStatic["mintTitle(address,address,uint256)"](to, to, tokenId, {
+  await tokenRegistry.callStatic["mintTitle(address,address,uint256)"](to, to, tokenId, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
-  const transaction = await V3tokenRegistry.mintTitle(to, to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
+  const transaction = await tokenRegistry.mintTitle(to, to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

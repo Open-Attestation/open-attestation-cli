@@ -45,13 +45,10 @@ describe("title-escrow", () => {
       });
 
       mockedConnectERC721.mockReturnValue({
-        isV3: true,
-        contract: {
           destroyToken: mockDestroyToken,
           callStatic: {
             destroyToken: mockCallStaticDestroyToken,
           },
-        },
       });
       mockDestroyToken.mockClear();
       mockCallStaticDestroyToken.mockClear();

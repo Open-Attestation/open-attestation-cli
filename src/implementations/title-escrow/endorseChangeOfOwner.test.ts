@@ -48,10 +48,8 @@ describe("title-escrow", () => {
     mockGetBeneficiary.mockReturnValue(mockedBeneficiary);
     mockGetHolder.mockReturnValue(mockedHolder);
     mockedConnectERC721.mockReturnValue({
-      isV3: true,
-      contract: {
         ownerOf: mockedOwnerOf,
-      },
+      
     });
     mockedConnectTokenFactory.mockReturnValue({
       transferToNewEscrow: mockTransferToNewEscrow,

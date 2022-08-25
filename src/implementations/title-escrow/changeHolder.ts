@@ -19,7 +19,7 @@ export const changeHolderOfTitleEscrow = async ({
   ...rest
 }: TitleEscrowChangeHolderCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const { contract: titleEscrow } = await connectToTitleEscrow({ tokenId, address, wallet });
+  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,
