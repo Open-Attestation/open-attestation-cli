@@ -34,38 +34,38 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 
 #### List of features with the required options
 
-|                                                                 | Private Key | Wallet | Aws Kms |
-| --------------------------------------------------------------- | ----------- | ------ | ------- |
-| [Create config](#user-content-config-create-configuration-file) | ❎          | ✔️     | ❎      |
-| Deploy document store                                           | ✔           | ✔      | ✔       |
-| Deploy title escrow                                             | ✔           | ✔      | ✔       |
-| Deploy title escrow creator                                     | ✔           | ✔      | ✔       |
-| Deploy token registry                                           | ✔           | ✔      | ✔       |
-| Dns txt create                                                  | ❎          | ❎     | ❎      |
-| Dns txt get                                                     | ❎          | ❎     | ❎      |
-| Document store issue                                            | ✔           | ✔      | ✔       |
-| Document store revoke                                           | ✔           | ✔      | ✔       |
-| Document store transfer ownership                               | ✔           | ✔      | ✔       |
-| Token registry issue                                            | ✔           | ✔      | ✔       |
-| Token registry mint                                             | ✔           | ✔      | ✔       |
-| Transaction cancel                                              | ✔           | ✔      | ✔       |
-| Wallet create                                                   | ❎          | ❎     | ❎      |
-| Wallet decrypt                                                  | ❎          | ❎     | ❎      |
-| Wallet encrypt                                                  | ✔           | ❎     | ❎      |
-| Filter (obfuscate) document                                     | ❎          | ❎     | ❎      |
-| Sign document                                                   | ✔           | ❎     | ❎      |
-| Encrypt document                                                | ❎          | ❎     | ❎      |
-| Decrypt document                                                | ❎          | ❎     | ❎      |
-| Wrap document                                                   | ❎          | ❎     | ❎      |
-| Unwrap document                                                 | ❎          | ❎     | ❎      |
-| Verify document                                                 | ❎          | ❎     | ❎      |
-| Change holder (Title Escrow)                                    | ✔           | ✔      | ✔       |
-| Nominate change of owner (Title Escrow)                         | ✔           | ✔      | ✔       |
-| Endorse transfer to owner (Title Escrow)                        | ✔           | ✔      | ✔       |
-| Endorse change of owner (Title Escrow)                          | ✔           | ✔      | ✔       |
-| Surrender document (Title Escrow)                               | ✔           | ✔      | ✔       |
-| Reject surrendered document (Title Escrow)                      | ✔           | ✔      | ✔       |
-| Accept surrendered document (Title Escrow)                      | ✔           | ✔      | ✔       |
+|                                                                            | Private Key | Wallet | Aws Kms |
+| -------------------------------------------------------------------------- | ----------- | ------ | ------- |
+| [Create config](#config-create-configuration-file)                         | ❎          | ✔️     | ❎      |
+| [Deploy document store](#deploy-new-document-store)                        | ✔           | ✔      | ✔       |
+| [Deploy title escrow](#deploy-new-title-escrow)                            | ✔           | ✔      | ✔       |
+| [Deploy title escrow creator](#title-escrow)                               | ✔           | ✔      | ✔       |
+| [Deploy token registry](#deploy-new-token-registry)                        | ✔           | ✔      | ✔       |
+| [Dns txt create](#dns-txt-record)                                          | ❎          | ❎     | ❎      |
+| [Dns txt get](#dns-txt-record)                                             | ❎          | ❎     | ❎      |
+| [Document store issue](#issue-document-to-document-store)                  | ✔           | ✔      | ✔       |
+| [Document store revoke](#revoke-document-in-document-store)                | ✔           | ✔      | ✔       |
+| [Document store transfer ownership](#transfer-ownership-of-document-store) | ✔           | ✔      | ✔       |
+| [Token registry issue](#issue-document-to-token-registry)                  | ✔           | ✔      | ✔       |
+| [Token registry mint](#issue-document-to-token-registry)                   | ✔           | ✔      | ✔       |
+| [Transaction cancel](#cancel-pending-transaction)                          | ✔           | ✔      | ✔       |
+| [Wallet create](#wallet)                                                   | ❎          | ❎     | ❎      |
+| [Wallet decrypt](#wallet)                                                  | ❎          | ❎     | ❎      |
+| [Wallet encrypt](#wallet)                                                  | ✔           | ❎     | ❎      |
+| [Filter (obfuscate) document](#document-privacy-filter)                    | ❎          | ❎     | ❎      |
+| [Sign document](#did-direct-signing)                                       | ✔           | ❎     | ❎      |
+| [Encrypt document](#encrypting-document)                                   | ❎          | ❎     | ❎      |
+| [Decrypt document](#decrypting-document)                                   | ❎          | ❎     | ❎      |
+| [Wrap document](#wrapping-documents)                                       | ❎          | ❎     | ❎      |
+| [Unwrap document](#unwrapping-documents)                                   | ❎          | ❎     | ❎      |
+| [Verify document](#verify)                                                 | ❎          | ❎     | ❎      |
+| [Change holder (Title Escrow)](#change-holder)                             | ✔           | ✔      | ✔       |
+| [Nominate change of owner (Title Escrow)](#nominate-change-of-owner)       | ✔           | ✔      | ✔       |
+| [Endorse transfer to owner (Title Escrow)](#endorse-transfer-of-owner)     | ✔           | ✔      | ✔       |
+| [Endorse change of owner (Title Escrow)](#endorse-change-of-owner)         | ✔           | ✔      | ✔       |
+| [Surrender document (Title Escrow)](#surrender-document)                   | ✔           | ✔      | ✔       |
+| [Reject surrendered document (Title Escrow)](#reject-surrendered-document) | ✔           | ✔      | ✔       |
+| [Accept surrendered document (Title Escrow)](#accept-surrendered-document) | ✔           | ✔      | ✔       |
 
 ### Wrapping documents
 
