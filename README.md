@@ -32,14 +32,14 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 
 ## Supported networks
 
-| Network  | Chain ID | Type       |
-| -------- | -------- | ---------- |
-| mainnet  | 1        | Production |
-| ropsten  | 3        | Test       |
-| rinkeby  | 4        | Test       |
-| goerli   | 5        | Test       |
-| matic    | 137      | Production |
-| maticmum | 80001    | Test       |
+| Network | Chain ID | Type       |
+|---------| -------- | ---------- |
+| mainnet | 1        | Production |
+| ropsten | 3        | Test       |
+| rinkeby | 4        | Test       |
+| goerli  | 5        | Test       |
+| polygon | 137      | Production |
+| mumbai  | 80001    | Test       |
 
 ---
 
