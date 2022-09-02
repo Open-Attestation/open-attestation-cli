@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import signale from "signale";
-import { ethers, getDefaultProvider, providers, Signer, Wallet } from "ethers";
+import { ethers, providers, Signer, Wallet } from "ethers";
 import { Provider } from "@ethersproject/abstract-provider";
 import { addAddressPrefix } from "../../utils";
 
@@ -48,7 +48,7 @@ export const getWalletOrSigner = async ({
   const provider =
     network === "local"
       ? new providers.JsonRpcProvider()
-      : getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+      : new providers.InfuraProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
   if (isWalletOption(options)) {
     const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
 
