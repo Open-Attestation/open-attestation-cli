@@ -1,15 +1,5 @@
 import { Argv } from "yargs";
-
-export enum Network {
-  "mainnet" = 1,
-  "ropsten" = 3,
-  "rinkeby" = 4,
-  "goerli" = 5,
-  "matic" = 137,
-  "maticmum" = 80001,
-  "local" = 1337,
-}
-const networks = Object.values(Network).filter((key) => isNaN(Number(key)));
+import { supportedNetwork } from "./networks";
 
 export interface NetworkOption {
   network: string;
@@ -63,7 +53,7 @@ export type NetworkAndWalletSignerOption = NetworkOption & (Partial<WalletOption
 export const withNetworkOption = (yargs: Argv): Argv =>
   yargs.option("network", {
     alias: "n",
-    choices: networks,
+    choices: Object.keys(supportedNetwork),
     default: "mainnet",
     description: "Ethereum network to deploy to",
   });
