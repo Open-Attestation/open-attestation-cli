@@ -46,7 +46,7 @@ export const getWalletOrSigner = async ({
 }: WalletOrSignerOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<
   Wallet | ConnectedSigner
 > => {
-  const provider = getSupportedNetwork(network ?? "mainnet").provider;
+  const provider = getSupportedNetwork(network ?? "mainnet").provider();
   if (isWalletOption(options)) {
     const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
 
