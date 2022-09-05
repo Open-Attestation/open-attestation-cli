@@ -30,9 +30,7 @@ export const transferDocumentStoreOwnershipToWallet = async ({
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
   const documentStore = await DocumentStoreFactory.connect(address, wallet);
-  await documentStore.callStatic.transferOwnership(newOwner, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
+  await documentStore.callStatic.transferOwnership(newOwner);
   const transaction = await documentStore.transferOwnership(newOwner, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });

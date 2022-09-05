@@ -55,9 +55,7 @@ export const rejectSurrendered = async ({
     tokenId,
     wallet
   );
-  await tokenRegistryInstance.callStatic.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
+  await tokenRegistryInstance.callStatic.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId);
   const transaction = await tokenRegistryInstance.sendToNewTitleEscrow(lastBeneficiary, lastHolder, tokenId, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
