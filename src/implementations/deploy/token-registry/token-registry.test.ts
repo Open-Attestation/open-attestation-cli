@@ -1,15 +1,16 @@
 import { deployTokenRegistry } from "./token-registry";
 import { join } from "path";
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 
-jest.mock("@govtechsg/token-registry");
+jest.mock("@govtechsg/token-registry/contracts");
 
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
   registrySymbol: "Tst",
   network: "ropsten",
+  factoryAddress: "0x0",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
   dryRun: false,
@@ -17,8 +18,8 @@ const deployParams: DeployTokenRegistryCommand = {
 
 describe("token-registry", () => {
   describe("deployTokenRegistry", () => {
-    const tokenFactory: any = TradeTrustErc721Factory;
-    const mockedTokenFactory: jest.Mock<TradeTrustErc721Factory> = tokenFactory;
+    const tokenFactory: any = TradeTrustERC721__factory;
+    const mockedTokenFactory: jest.Mock<TradeTrustERC721__factory> = tokenFactory;
     const mockedDeploy: jest.Mock = mockedTokenFactory.prototype.deploy;
     // increase timeout because ethers is throttling
     jest.setTimeout(30000);
@@ -68,8 +69,10 @@ describe("token-registry", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedDeploy.mock.calls[0][0]).toEqual(deployParams.registryName);
       expect(mockedDeploy.mock.calls[0][1]).toEqual(deployParams.registrySymbol);
+      expect(mockedDeploy.mock.calls[0][2]).toEqual(deployParams.factoryAddress);
+
       // price should be any length string of digits
-      expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+      expect(mockedDeploy.mock.calls[0][3].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
 

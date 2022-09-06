@@ -1,10 +1,10 @@
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 import { join } from "path";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { acceptSurrendered } from "./acceptSurrendered";
 
-jest.mock("@govtechsg/token-registry");
+jest.mock("@govtechsg/token-registry/contracts");
 
 const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
@@ -14,35 +14,35 @@ const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
+// TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
 // ideally must setup ganache, and run the function over it
 describe("title-escrow", () => {
   describe("accepts surrendered transferable record", () => {
-    const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
+    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnectERC721: jest.Mock = mockedTradeTrustErc721Factory.connect;
-    const mockDestroyToken = jest.fn();
-    const mockCallStaticDestroyToken = jest.fn().mockResolvedValue(undefined);
+    const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockBurnToken = jest.fn();
+    const mockCallStaticBurnToken = jest.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustErc721Factory.mockReset();
+      mockedTradeTrustERC721Factory.mockReset();
       mockedConnectERC721.mockReset();
 
-      mockDestroyToken.mockReturnValue({
+      mockBurnToken.mockReturnValue({
         hash: "hash",
         wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
 
       mockedConnectERC721.mockReturnValue({
-        destroyToken: mockDestroyToken,
+        burn: mockBurnToken,
         callStatic: {
-          destroyToken: mockCallStaticDestroyToken,
+          burn: mockCallStaticBurnToken,
         },
       });
-      mockDestroyToken.mockClear();
-      mockCallStaticDestroyToken.mockClear();
+      mockBurnToken.mockClear();
+      mockCallStaticBurnToken.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -75,8 +75,8 @@ describe("title-escrow", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnectERC721).toHaveBeenCalledWith(acceptSurrenderedDocumentParams.tokenRegistry, passedSigner);
-      expect(mockCallStaticDestroyToken).toHaveBeenCalledTimes(1);
-      expect(mockDestroyToken).toHaveBeenCalledTimes(1);
+      expect(mockCallStaticBurnToken).toHaveBeenCalledTimes(1);
+      expect(mockBurnToken).toHaveBeenCalledTimes(1);
     });
 
     it("should allow errors to bubble up", async () => {

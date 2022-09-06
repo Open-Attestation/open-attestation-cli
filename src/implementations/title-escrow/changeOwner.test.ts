@@ -1,10 +1,10 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 import { join } from "path";
 import { TitleEscrowEndorseChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { endorseChangeOfOwner } from "./endorseChangeOfOwner";
+import { endorseChangeOfOwner } from "./changeOwner";
 
-jest.mock("@govtechsg/token-registry");
+jest.mock("@govtechsg/token-registry/contracts");
 
 const endorseChangeOwnerParams: TitleEscrowEndorseChangeOfOwnerCommand = {
   newHolder: "0xabcd",
@@ -16,21 +16,22 @@ const endorseChangeOwnerParams: TitleEscrowEndorseChangeOfOwnerCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
+// TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
 // ideally must setup ganache, and run the function over it
 describe("title-escrow", () => {
   describe("endorse change of owner of transferable record", () => {
-    const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
+    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnectERC721: jest.Mock = mockedTradeTrustErc721Factory.connect;
-    const mockedTokenFactory: jest.Mock<TitleEscrowFactory> = TitleEscrowFactory as any;
+    const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockedTokenFactory: jest.Mock<TitleEscrow__factory> = TitleEscrow__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
+
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
     const mockedOwnerOf = jest.fn();
-    const mockTransferToNewEscrow = jest.fn();
-    const mockCallStaticTransferToNewEscrow = jest.fn().mockResolvedValue(undefined);
+    const mockTransferOwners = jest.fn();
+    const mockCallStaticTransferOwners = jest.fn().mockResolvedValue(undefined);
     const mockedTitleEscrowAddress = "0x2133";
     const mockedBeneficiary = "0xdssfs";
     const mockedHolder = "0xdsfls";
@@ -42,30 +43,30 @@ describe("title-escrow", () => {
       ownerOf: mockedOwnerOf,
     });
     mockedConnectTokenFactory.mockReturnValue({
-      transferToNewEscrow: mockTransferToNewEscrow,
+      transferOwners: mockTransferOwners,
       beneficiary: mockGetBeneficiary,
       holder: mockGetHolder,
       callStatic: {
-        transferToNewEscrow: mockCallStaticTransferToNewEscrow,
+        transferOwners: mockCallStaticTransferOwners,
       },
     });
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockTransferToNewEscrow.mockReturnValue({
+    mockTransferOwners.mockReturnValue({
       hash: "hash",
       wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustErc721Factory.mockClear();
+      mockedTradeTrustERC721Factory.mockClear();
       mockedConnectERC721.mockClear();
       mockedTokenFactory.mockClear();
       mockedConnectTokenFactory.mockClear();
       mockedOwnerOf.mockClear();
-      mockTransferToNewEscrow.mockClear();
+      mockTransferOwners.mockClear();
       mockGetBeneficiary.mockClear();
       mockGetHolder.mockClear();
-      mockCallStaticTransferToNewEscrow.mockClear();
+      mockCallStaticTransferOwners.mockClear();
     });
 
     it("should take in the key from environment variable", async () => {
@@ -102,8 +103,8 @@ describe("title-escrow", () => {
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockGetBeneficiary).toHaveBeenCalledTimes(1);
       expect(mockGetHolder).toHaveBeenCalledTimes(1);
-      expect(mockCallStaticTransferToNewEscrow).toHaveBeenCalledTimes(1);
-      expect(mockTransferToNewEscrow).toHaveBeenCalledTimes(1);
+      expect(mockCallStaticTransferOwners).toHaveBeenCalledTimes(1);
+      expect(mockTransferOwners).toHaveBeenCalledTimes(1);
     });
 
     it("should throw an error if new owner and new holder addresses are the same as current owner and holder addressses", async () => {

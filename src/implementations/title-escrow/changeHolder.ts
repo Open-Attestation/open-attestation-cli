@@ -19,20 +19,19 @@ export const changeHolderOfTitleEscrow = async ({
   ...rest
 }: TitleEscrowChangeHolderCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
-    const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await titleEscrow.estimateGas.changeHolder(to),
+      estimatedGas: await titleEscrow.estimateGas.transferHolder(to),
       network,
     });
     process.exit(0);
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-  await titleEscrow.callStatic.changeHolder(to);
-  const transaction = await titleEscrow.changeHolder(to, { gasPrice: gasPrice.mul(gasPriceScale) });
+  await titleEscrow.callStatic.transferHolder(to);
+  const transaction = await titleEscrow.transferHolder(to, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

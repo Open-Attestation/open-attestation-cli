@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
-import { nominateChangeOfOwner } from "../../implementations/title-escrow/nominateChangeOfOwner";
-import { TitleEscrowNominateChangeOfOwnerCommand } from "./title-escrow-command.type";
+import { nominateBeneficiary } from "../../implementations/title-escrow/nominateBeneficiary";
+import { TitleEscrowNominateBeneficiaryCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
@@ -28,14 +28,14 @@ export const builder = (yargs: Argv): Argv =>
           demandOption: true,
         })
         .option("newOwner", {
-          description: "Address of the new owner of the transferable record",
+          description: "Address of the beneficiary of the transferable record",
           type: "string",
           demandOption: true,
         })
     )
   );
 
-export const handler = async (args: TitleEscrowNominateChangeOfOwnerCommand): Promise<void> => {
+export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
@@ -44,7 +44,7 @@ export const handler = async (args: TitleEscrowNominateChangeOfOwnerCommand): Pr
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const { transactionHash } = await nominateChangeOfOwner(args);
+    const { transactionHash } = await nominateBeneficiary(args);
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newOwner}`
     );
