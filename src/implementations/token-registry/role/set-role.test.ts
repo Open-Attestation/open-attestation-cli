@@ -1,10 +1,10 @@
 import { TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
-import { TokenRegistrySetRoleCommand } from "../../../commands/token-registry/token-registry-command.type";
-import { setRoleToTokenRegistry } from "./set-role";
+import { TokenRegistrySetRoleAdminCommand } from "../../../commands/token-registry/token-registry-command.type";
+import { setRoleAdminTokenRegistry } from "./set-role";
 
 jest.mock("@govtechsg/token-registry/contracts");
-const roleParams: TokenRegistrySetRoleCommand = {
+const roleParams: TokenRegistrySetRoleAdminCommand = {
   address: "0x1122",
   role: "0x1",
   adminRole: "0x2",
@@ -46,7 +46,7 @@ describe("token-registry", () => {
 
     it("should pass in the correct params and successfully accepts set role", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await setRoleToTokenRegistry({
+      await setRoleAdminTokenRegistry({
         ...roleParams,
         key: privateKey,
       });
@@ -67,7 +67,7 @@ describe("token-registry", () => {
       mockedConnectERC721.mockImplementation(() => {
         throw new Error("An Error");
       });
-      await expect(setRoleToTokenRegistry(roleParams)).rejects.toThrow("An Error");
+      await expect(setRoleAdminTokenRegistry(roleParams)).rejects.toThrow("An Error");
     });
   });
 });

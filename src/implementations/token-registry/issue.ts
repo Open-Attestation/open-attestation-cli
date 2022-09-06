@@ -10,7 +10,8 @@ const { trace } = getLogger("token-registry:issue");
 
 export const issueToTokenRegistry = async ({
   address,
-  to,
+  beneficiary,
+  holder,
   tokenId,
   network,
   gasPriceScale,
@@ -23,17 +24,17 @@ export const issueToTokenRegistry = async ({
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await tokenRegistry.estimateGas.mint(to, to, tokenId),
+      estimatedGas: await tokenRegistry.estimateGas.mint(beneficiary, holder, tokenId),
       network,
     });
     process.exit(0);
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  await tokenRegistry.callStatic.mint(to, to, tokenId, {
+  await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
-  const transaction = await tokenRegistry.mint(to, to, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
+  const transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

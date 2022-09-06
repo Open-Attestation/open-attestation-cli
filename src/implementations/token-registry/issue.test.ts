@@ -8,7 +8,8 @@ import { issueToTokenRegistry } from "./issue";
 jest.mock("@govtechsg/token-registry/contracts");
 
 const deployParams: TokenRegistryIssueCommand = {
-  to: "0xabcd",
+  beneficiary: "0xabcd",
+  holder: "0xabce",
   tokenId: "0xzyxw",
   address: "0x1234",
   network: "ropsten",
@@ -76,8 +77,8 @@ describe("token-registry", () => {
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnectERC721.mock.calls[0][0]).toEqual(deployParams.address);
-      expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
-      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.to);
+      expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.beneficiary);
+      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.holder);
       expect(mockedIssue.mock.calls[0][2]).toEqual(deployParams.tokenId);
       expect(mockCallStaticSafeMint).toHaveBeenCalledTimes(1);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
@@ -94,8 +95,8 @@ describe("token-registry", () => {
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnectERC721.mock.calls[0][0]).toEqual(deployParams.address);
-      expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.to);
-      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.to);
+      expect(mockedIssue.mock.calls[0][0]).toEqual(deployParams.beneficiary);
+      expect(mockedIssue.mock.calls[0][1]).toEqual(deployParams.holder);
       expect(mockedIssue.mock.calls[0][2]).toEqual(deployParams.tokenId);
       expect(mockCallStaticSafeMint).toHaveBeenCalledTimes(1);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });

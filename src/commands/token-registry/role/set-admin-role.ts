@@ -1,17 +1,17 @@
 import { Argv } from "yargs";
 import { error, info, success } from "signale";
 import { getLogger } from "../../../logger";
-import { TokenRegistrySetRoleCommand } from "../token-registry-command.type";
+import { TokenRegistrySetRoleAdminCommand } from "../token-registry-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../../utils";
 import { getRoleEnumValue, normalRolesInput, adminRolesInput } from "./helper";
-import { setRoleToTokenRegistry } from "../../../implementations/token-registry/role/set-role";
+import { setRoleAdminTokenRegistry } from "../../../implementations/token-registry/role/set-role";
 
-const { trace } = getLogger("token-registry:set-roles");
+const { trace } = getLogger("token-registry:set-role-admin");
 
-export const command = "set-role [options]";
+export const command = "set-admin-role [options]";
 
-export const describe = "Set Role of Token Registry";
+export const describe = "Set Admin Role to Role of Token Registry";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
@@ -40,11 +40,11 @@ export const builder = (yargs: Argv): Argv =>
     )
   );
 
-export const handler = async (args: TokenRegistrySetRoleCommand): Promise<string | undefined> => {
+export const handler = async (args: TokenRegistrySetRoleAdminCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Setting ${args.adminRole} to the recipient role ${args.role} in the registry ${args.address}`);
-    const { transactionHash } = await setRoleToTokenRegistry({
+    const { transactionHash } = await setRoleAdminTokenRegistry({
       ...args,
       role: getRoleEnumValue(args.role),
       adminRole: getRoleEnumValue(args.adminRole),

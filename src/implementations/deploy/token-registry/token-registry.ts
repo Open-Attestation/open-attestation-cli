@@ -21,22 +21,19 @@ export const deployTokenRegistry = async ({
   const wallet = await getWalletOrSigner({ network, ...rest });
   const factory = new TradeTrustERC721__factory(wallet);
   const chainId = await wallet.getChainId();
-  const deployerAddress = await wallet.getAddress();
   const { contractAddress } = constants;
 
-  if (!chainId) {
-    throw new Error(`Invalid chain ID: ${chainId}`);
-  }
-
-  console.log(`[Deployer] ${deployerAddress}`);
-
   if (!factoryAddress) {
+    if (!chainId) {
+      throw new Error(`Invalid chain ID: ${chainId}`);
+    }
     factoryAddress = contractAddress.TitleEscrowFactory[chainId];
     if (!factoryAddress) {
-      throw new Error(`Network ${network} currently is not supported. Supply a factory address.`);
+      throw new Error(`Network ${network} currently is not supported. Supply a factory address.`) ;
     }
-    console.log(`[Status] Using ${factoryAddress} as Title Escrow factory.`);
   }
+
+  signale.info(`Using ${factoryAddress} as Title Escrow factory.`);
 
   if (dryRun) {
     const tx = factory.getDeployTransaction(registryName, registrySymbol, factoryAddress, {});

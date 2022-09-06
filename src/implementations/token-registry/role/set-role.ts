@@ -2,13 +2,13 @@ import { TradeTrustERC721, TradeTrustERC721__factory } from "@govtechsg/token-re
 import signale from "signale";
 import { getLogger } from "../../../logger";
 import { getWalletOrSigner } from "../../utils/wallet";
-import { TokenRegistrySetRoleCommand } from "../../../commands/token-registry/token-registry-command.type";
+import { TokenRegistrySetRoleAdminCommand } from "../../../commands/token-registry/token-registry-command.type";
 import { dryRunMode } from "../../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
 const { trace } = getLogger("token-registry:set-role");
 
-export const setRoleToTokenRegistry = async ({
+export const setRoleAdminTokenRegistry = async ({
   address,
   role,
   adminRole,
@@ -16,7 +16,7 @@ export const setRoleToTokenRegistry = async ({
   gasPriceScale,
   dryRun,
   ...rest
-}: TokenRegistrySetRoleCommand): Promise<TransactionReceipt> => {
+}: TokenRegistrySetRoleAdminCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistry: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
 
