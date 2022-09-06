@@ -26,7 +26,7 @@ export const builder = (yargs: Argv): Argv =>
           description: "Symbol of the token (typically 3 characters)",
           normalize: true,
         })
-        .positional("factory-address", {
+        .option("factory-address", {
           description: "Address of Token Registry factory (Optional)",
           normalize: true,
         })

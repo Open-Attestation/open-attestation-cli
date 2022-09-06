@@ -254,7 +254,7 @@ open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypte
 Deploys a token registry contract on the blockchain
 
 ```bash
-open-attestation deploy token-registry <registry-name> <registry-symbol> [options]
+open-attestation deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
@@ -270,7 +270,7 @@ open-attestation deploy token-registry "My Sample Token" MST --network ropsten
 `Issue` a hash to a token registry deployed on the blockchain. The `tokenId` option would be used to indicate the document hash, and the `to` option to indicate the title escrow address the document is mapped to.
 
 ```bash
-open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --beneficiary <BENEFICIARY> --holder <HOLDER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
@@ -283,6 +283,56 @@ open-attestation token-registry mint --network ropsten --address 0x6133f580aE903
 ```
 
 `mint` can be used instead of issue and will be strictly equivalent.
+
+#### Token Registry Roles - Grant
+
+Assign a role to a wallet address on the token registry deployed on the blockchain. The `recipient` option to indicate the wallet address that will be assigned the role, and the `role` option would be used to indicate the role given to the wallet address on the token registry. 
+
+```bash
+open-attestation token-registry role grant-role --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --recipient <RECIPIENT> --role <ROLE> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation token-registry role grant-role --address 0x405b976660b94e0839C4dBdCcb8D4837B9869AC5  --role restorer --recipient 0x90264b594B8dc2225cb7D05a14e78483BAc7FBF7 
+
+✔  success   Role restorer has been assigned to the recipient 0x90264b594B8dc2225cb7D05a14e78483BAc7FBF7 in the registry 0x405b976660b94e0839C4dBdCcb8D4837B9869AC5
+```
+
+#### Token Registry Roles - Revoke
+
+Revoke a role of a wallet address on the token registry deployed on the blockchain. The `recipient` option indicates the wallet address that will be revoked of the role, and the `role` option would be used to indicate the role to be revoked from the wallet address on the token registry. 
+
+```bash
+open-attestation token-registry role revoke-role --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --recipient <RECIPIENT> --role <ROLE> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+open-attestation token-registry role revoke-role --address 0x405b976660b94e0839C4dBdCcb8D4837B9869AC5  --role restorer --recipient 0x90264b594B8dc2225cb7D05a14e78483BAc7FBF7 
+
+✔  success   Role restorer has been revoked from the recipient 0x90264b594B8dc2225cb7D05a14e78483BAc7FBF7 in the registry 0x405b976660b94e0839C4dBdCcb8D4837B9869AC5
+```
+
+
+#### Token Registry Roles - Set Role
+
+Set role on the token registry to be have additional admin roles on the blockchain. The `role` option is the role to be provided additional roles, and the `adminRole` option sets the additional role granted to the `role`. 
+
+```bash
+open-attestation token-registry role set-role --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --role <ROLE> --adminRole <ADMIN_ROLE> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+0x90264b594B8dc2225cb7D05a14e78483BAc7FBF7 
+open-attestation token-registry role set-role --address 0x405b976660b94e0839C4dBdCcb8D4837B9869AC5  --role minter --adminRole minterAdmin
+
+✔  success   Role minterAdmin has been assigned to the recipient minter in the registry 0x405b976660b94e0839C4dBdCcb8D4837B9869AC5
+```
 
 ### Document Store
 
@@ -595,7 +645,7 @@ This command will allow the holder of the transferable record to endorse the tra
 **This command will fail if there is no approved owner or holder record on the transferable record.**
 
 ```bash
-open-attestation title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+open-attestation title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
