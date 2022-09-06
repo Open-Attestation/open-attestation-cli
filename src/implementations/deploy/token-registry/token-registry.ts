@@ -29,7 +29,7 @@ export const deployTokenRegistry = async ({
     }
     factoryAddress = contractAddress.TitleEscrowFactory[chainId];
     if (!factoryAddress) {
-      throw new Error(`Network ${network} currently is not supported. Supply a factory address.`) ;
+      throw new Error(`Network ${network} currently is not supported. Supply a factory address.`);
     }
   }
 
