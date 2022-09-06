@@ -1,7 +1,7 @@
 import chalk from "chalk";
+import { getSupportedNetwork } from "./commands/networks";
 
-export const getEtherscanAddress = ({ network }: { network: string }): string =>
-  `https://${network === "mainnet" ? "" : `${network}.`}etherscan.io`;
+export const getEtherscanAddress = ({ network }: { network: string }): string => getSupportedNetwork(network).explorer;
 
 export const addAddressPrefix = (address: string): string => (address.startsWith("0x") ? address : `0x${address}`);
 
