@@ -1,4 +1,5 @@
 import { Argv } from "yargs";
+import { supportedNetwork } from "./networks";
 
 export interface NetworkOption {
   network: string;
@@ -52,7 +53,7 @@ export type NetworkAndWalletSignerOption = NetworkOption & (Partial<WalletOption
 export const withNetworkOption = (yargs: Argv): Argv =>
   yargs.option("network", {
     alias: "n",
-    choices: ["mainnet", "ropsten", "rinkeby", "local"],
+    choices: Object.keys(supportedNetwork),
     default: "mainnet",
     description: "Ethereum network to deploy to",
   });

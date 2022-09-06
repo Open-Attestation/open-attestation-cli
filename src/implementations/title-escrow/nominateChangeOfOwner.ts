@@ -35,9 +35,7 @@ export const nominateChangeOfOwner = async ({
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const holder = await titleEscrow.holder();
   await validateNominateChangeOwner({ newOwner, titleEscrow });
-  await titleEscrow.callStatic.approveNewTransferTargets(newOwner, holder, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
+  await titleEscrow.callStatic.approveNewTransferTargets(newOwner, holder);
   const transaction = await titleEscrow.approveNewTransferTargets(newOwner, holder, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });

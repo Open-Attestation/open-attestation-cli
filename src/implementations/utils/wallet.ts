@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import signale from "signale";
-import { ethers, getDefaultProvider, providers, Signer, Wallet } from "ethers";
+import { ethers, Signer, Wallet } from "ethers";
 import { Provider } from "@ethersproject/abstract-provider";
 import { addAddressPrefix } from "../../utils";
 
@@ -15,6 +15,7 @@ import { readFile } from "./disk";
 import inquirer from "inquirer";
 import { progress as defaultProgress } from "./progress";
 import { AwsKmsSigner } from "ethers-aws-kms-signer";
+import { getSupportedNetwork } from "../../commands/networks";
 
 const getKeyFromFile = (file?: string): undefined | string => {
   return file ? readFileSync(file).toString().trim() : undefined;
@@ -45,10 +46,7 @@ export const getWalletOrSigner = async ({
 }: WalletOrSignerOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<
   Wallet | ConnectedSigner
 > => {
-  const provider =
-    network === "local"
-      ? new providers.JsonRpcProvider()
-      : getDefaultProvider(network === "mainnet" ? "homestead" : network); // homestead => aka mainnet
+  const provider = getSupportedNetwork(network ?? "mainnet").provider();
   if (isWalletOption(options)) {
     const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
 
