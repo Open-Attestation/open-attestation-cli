@@ -1,11 +1,11 @@
 import fs from "fs";
 import { error, info, success } from "signale";
 import { Argv } from "yargs";
+import { create } from "../../implementations/config/create";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
+import { isWalletOption, withWalletOption } from "../shared";
 import { CreateConfigCommand } from "./config.type";
-import { withWalletOption, isWalletOption } from "../shared";
-import { create } from "../../implementations/config/create";
 
 const { trace } = getLogger("config:create");
 
@@ -31,6 +31,12 @@ export const builder = (yargs: Argv): Argv =>
         type: "string",
         description: "URL of config template json",
         normalize: true,
+      })
+      .option("config-network", {
+        type: "string",
+        description: "Network of the config file",
+        demandOption: true,
+        choices: ["ropsten", "homestead", "rinkeby", "matic", "maticmum", "goerli", "kovan"],
       })
       .conflicts("config-template-path", "config-template-url")
       .check((argv) => {

@@ -21,8 +21,10 @@ export type Form = {
   fileName?: string;
 };
 
+export type Network = "ropsten" | "rinkeby" | "homestead" | "local" | "goerli" | "kovan" | "matic" | "maticmum";
+
 export interface ConfigFile {
-  network: "ropsten" | "rinkeby" | "homestead" | "local";
+  network: Network;
   wallet: WalletEncryptedJson;
   forms: Form[];
   documentStorage?: {
