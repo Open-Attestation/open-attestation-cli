@@ -22,7 +22,7 @@ export const supportedNetwork: {
   [NetworkCmdName.Local]: {
     chainId: 1337,
     explorer: "https://localhost/explorer",
-    provider: () => new providers.JsonRpcProvider(),
+    provider: () => new providers.JsonRpcProvider("http://127.0.0.1:8545"),
   },
   [NetworkCmdName.Mainnet]: {
     chainId: 1,
