@@ -1,61 +1,63 @@
 import { providers } from "ethers";
 
 type SupportedNetwork = {
-  chainId: number;
   explorer: string;
   provider: () => providers.Provider;
 };
 
-export enum NetworkCmdName {
-  local = "local",
-  mainnet = "mainnet",
-  ropsten = "ropsten",
-  rinkeby = "rinkeby",
-  goerli = "goerli",
-  polygon = "polygon",
-  mumbai = "mumbai",
+enum NetworkCmdName {
+  Local = "local",
+  Mainnet = "mainnet",
+  Ropsten = "ropsten",
+  Rinkeby = "rinkeby",
+  Goerli = "goerli",
+  Polygon = "polygon",
+  Mumbai = "mumbai",
 }
+
+const defaultInfuraProvider =
+  (networkName: string): (() => providers.Provider) =>
+  () =>
+    new providers.InfuraProvider(networkName);
+
+const jsonRpcProvider =
+  (url: string): (() => providers.Provider) =>
+  () =>
+    new providers.JsonRpcProvider(url);
 
 export const supportedNetwork: {
   [key in NetworkCmdName]: SupportedNetwork;
 } = {
-  [NetworkCmdName.local]: {
-    chainId: 1337,
+  [NetworkCmdName.Local]: {
     explorer: "https://localhost/explorer",
-    provider: () => new providers.JsonRpcProvider(),
+    provider: jsonRpcProvider("http://127.0.0.1:8545"),
   },
-  [NetworkCmdName.mainnet]: {
-    chainId: 1,
+  [NetworkCmdName.Mainnet]: {
     explorer: "https://etherscan.io",
-    provider: () => new providers.InfuraProvider("homestead"),
+    provider: defaultInfuraProvider("homestead"),
   },
-  [NetworkCmdName.ropsten]: {
-    chainId: 3,
+  [NetworkCmdName.Ropsten]: {
     explorer: "https://ropsten.etherscan.io",
-    provider: () => new providers.InfuraProvider("ropsten"),
+    provider: defaultInfuraProvider("ropsten"),
   },
-  [NetworkCmdName.rinkeby]: {
-    chainId: 4,
+  [NetworkCmdName.Rinkeby]: {
     explorer: "https://rinkeby.etherscan.io",
-    provider: () => new providers.InfuraProvider("rinkeby"),
+    provider: defaultInfuraProvider("rinkeby"),
   },
-  [NetworkCmdName.goerli]: {
-    chainId: 5,
+  [NetworkCmdName.Goerli]: {
     explorer: "https://goerli.etherscan.io",
-    provider: () => new providers.InfuraProvider("goerli"),
+    provider: defaultInfuraProvider("goerli"),
   },
-  [NetworkCmdName.polygon]: {
-    chainId: 137,
+  [NetworkCmdName.Polygon]: {
     explorer: "https://polygonscan.com",
-    provider: () => new providers.InfuraProvider("matic"),
+    provider: defaultInfuraProvider("matic"),
   },
-  [NetworkCmdName.mumbai]: {
-    chainId: 80001,
+  [NetworkCmdName.Mumbai]: {
     explorer: "https://mumbai.polygonscan.com",
-    provider: () => new providers.InfuraProvider("maticmum"),
+    provider: defaultInfuraProvider("maticmum"),
   },
 };
 
 export const getSupportedNetwork = (networkCmdName: string): SupportedNetwork => {
-  return supportedNetwork[NetworkCmdName[networkCmdName as keyof typeof NetworkCmdName]];
+  return supportedNetwork[networkCmdName as NetworkCmdName];
 };
