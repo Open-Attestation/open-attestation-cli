@@ -9,6 +9,7 @@ import {
 } from "@govtechsg/oa-verify";
 import { readOpenAttestationFile } from "../implementations/utils/disk";
 import { withNetworkOption } from "./shared";
+import { getSupportedNetwork } from "./networks";
 
 export const command = "verify [options]";
 
@@ -41,7 +42,9 @@ export const handler = async ({ document, network, verbose }: VerifyCommand): Pr
   };
   try {
     signale.await(`Verifying ${document}`);
-    const verify = verificationBuilder([...openAttestationVerifiers, openAttestationDidIdentityProof], { network });
+    const verify = verificationBuilder([...openAttestationVerifiers, openAttestationDidIdentityProof], {
+      provider: getSupportedNetwork(network).provider(),
+    });
     const fragments = await verify(readOpenAttestationFile(document));
     show(isValid(fragments), "The document is valid", "The document is not valid");
     if (verbose) {
