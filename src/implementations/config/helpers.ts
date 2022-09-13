@@ -176,11 +176,12 @@ export const validate = (forms: Form[]): boolean => {
 export const getNetworkId: {
   [key in NetworkCmdName]: number;
 } = {
-  [NetworkCmdName.local]: 1337,
-  [NetworkCmdName.mainnet]: 1,
-  [NetworkCmdName.ropsten]: 3,
-  [NetworkCmdName.rinkeby]: 4,
-  [NetworkCmdName.goerli]: 5,
-  [NetworkCmdName.polygon]: 137,
-  [NetworkCmdName.mumbai]: 80001,
+  [NetworkCmdName.Local]: 1337,
+  [NetworkCmdName.Mainnet]: 1,
+  [NetworkCmdName.Ropsten]: 3,
+  [NetworkCmdName.Rinkeby]: 4,
+  [NetworkCmdName.Goerli]: 5,
+  [NetworkCmdName.Sepolia]: 11155111,
+  [NetworkCmdName.Polygon]: 137,
+  [NetworkCmdName.Mumbai]: 80001,
 };

@@ -27,11 +27,12 @@ export enum NetworkName {
   ropsten = "ropsten",
   rinkeby = "rinkeby",
   goerli = "goerli",
+  sepolia = "sepolia",
   polygon = "matic",
   mumbai = "maticmum",
 }
 
-export type Network = "ropsten" | "rinkeby" | "homestead" | "local" | "goerli" | "matic" | "maticmum";
+export type Network = "ropsten" | "rinkeby" | "homestead" | "local" | "goerli" | "sepolia" | "matic" | "maticmum";
 
 export interface ConfigFile {
   network: Network;
