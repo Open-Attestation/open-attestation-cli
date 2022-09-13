@@ -1,11 +1,31 @@
 import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import fetch from "node-fetch";
 import { info, success } from "signale";
-import { highlight } from "../../utils";
-import { ConfigFile, Form, Dns } from "./types";
-import { readFile } from "../../implementations/utils/disk";
+import { NetworkCmdName } from "../../commands/networks";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
+import { readFile } from "../../implementations/utils/disk";
+import { highlight } from "../../utils";
+import { ConfigFile, Dns, Form, NetworkName } from "./types";
+
+interface ConfigWithNetwork {
+  configFile: ConfigFile;
+  network: NetworkCmdName;
+}
+
+export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
+  const networkName = NetworkName[network];
+  return {
+    ...configFile,
+    network: networkName,
+  };
+};
+
+export const getConfigWithUpdatedDocumentStorage = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
+  if (network === "ropsten") return configFile;
+  delete configFile.documentStorage;
+  return configFile;
+};
 
 interface UpdatedWallet {
   configFile: ConfigFile;
@@ -85,11 +105,16 @@ export const getConfigFile = async (configTemplatePath: string, configTemplateUr
   throw new Error("Config template reference not provided.");
 };
 
-export const getTokenRegistryAddress = async (encryptedWalletPath: string): Promise<string> => {
+export const getTokenRegistryAddress = async (
+  encryptedWalletPath: string,
+  walletPassword: string,
+  network: NetworkCmdName
+): Promise<string> => {
   info(`Enter password to continue deployment of Token Registry`);
   const tokenRegistry = await deployTokenRegistry({
     encryptedWalletPath,
-    network: "ropsten",
+    walletPassword,
+    network,
     gasPriceScale: 1,
     dryRun: false,
     registryName: "Token Registry",
@@ -100,11 +125,16 @@ export const getTokenRegistryAddress = async (encryptedWalletPath: string): Prom
   return contractAddress;
 };
 
-export const getDocumentStoreAddress = async (encryptedWalletPath: string): Promise<string> => {
+export const getDocumentStoreAddress = async (
+  encryptedWalletPath: string,
+  walletPassword: string,
+  network: NetworkCmdName
+): Promise<string> => {
   info(`Enter password to continue deployment of Document Store`);
   const documentStore = await deployDocumentStore({
     encryptedWalletPath,
-    network: "ropsten",
+    walletPassword,
+    network,
     gasPriceScale: 1,
     dryRun: false,
     storeName: "Document Store",
@@ -141,4 +171,16 @@ export const validate = (forms: Form[]): boolean => {
   });
   const anyInvalidForm = !isValidForm.some((validForm: boolean) => validForm === false);
   return anyInvalidForm;
+};
+
+export const getNetworkId: {
+  [key in NetworkCmdName]: number;
+} = {
+  [NetworkCmdName.local]: 1337,
+  [NetworkCmdName.mainnet]: 1,
+  [NetworkCmdName.ropsten]: 3,
+  [NetworkCmdName.rinkeby]: 4,
+  [NetworkCmdName.goerli]: 5,
+  [NetworkCmdName.polygon]: 137,
+  [NetworkCmdName.mumbai]: 80001,
 };

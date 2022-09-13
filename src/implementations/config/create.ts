@@ -1,19 +1,22 @@
+import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import fs from "fs";
 import path from "path";
 import { info } from "signale";
-import { readFile } from "../../implementations/utils/disk";
-import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
 import { CreateConfigCommand } from "../../commands/config/config.type";
-import { Dns } from "./types";
+import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
+import { readFile } from "../../implementations/utils/disk";
 import {
-  getConfigWithUpdatedWallet,
-  getConfigWithUpdatedForms,
   getConfigFile,
-  validate,
-  getTokenRegistryAddress,
+  getConfigWithUpdatedDocumentStorage,
+  getConfigWithUpdatedForms,
+  getConfigWithUpdatedNetwork,
+  getConfigWithUpdatedWallet,
   getDocumentStoreAddress,
+  getNetworkId,
+  getTokenRegistryAddress,
+  validate,
 } from "./helpers";
-import { utils, v2, v3 } from "@govtechsg/open-attestation";
+import { Dns } from "./types";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -22,6 +25,8 @@ export const create = async ({
   outputDir,
   configTemplatePath,
   configTemplateUrl,
+  walletPassword,
+  network,
 }: CreateConfigCommand): Promise<string> => {
   const walletStr = await readFile(encryptedWalletPath);
   const { address } = JSON.parse(walletStr);
@@ -29,6 +34,7 @@ export const create = async ({
 
   const configFile = await getConfigFile(configTemplatePath, configTemplateUrl);
   const { forms } = configFile;
+  const networkId = getNetworkId[network];
 
   if (!validate(forms)) {
     throw new Error("Invalid form detected in config file, please update the form before proceeding.");
@@ -59,18 +65,18 @@ export const create = async ({
   let dnsDid: Dns = "";
 
   if (hasTransferableRecord) {
-    tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath);
+    tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath, walletPassword, network);
     dnsTransferableRecord = await createTemporaryDns({
-      networkId: 3,
+      networkId: networkId,
       address: tokenRegistryAddress,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
   }
 
   if (hasDocumentStore) {
-    documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath);
+    documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath, walletPassword, network);
     dnsVerifiable = await createTemporaryDns({
-      networkId: 3,
+      networkId: networkId,
       address: documentStoreAddress,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
@@ -79,15 +85,23 @@ export const create = async ({
   if (hasDid) {
     // DID no need deploy any
     dnsDid = await createTemporaryDns({
-      networkId: 3,
+      networkId: networkId,
       publicKey: `did:ethr:0x${address}#controller`,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
   }
 
-  const updatedConfigFileWithWallet = getConfigWithUpdatedWallet({ configFile, walletStr });
-  const updatedConfigFileWithForms = getConfigWithUpdatedForms({
+  const updatedConfigFileWithNetwork = getConfigWithUpdatedNetwork({ configFile, network });
+  const updatedConfigFileWithWallet = getConfigWithUpdatedWallet({
+    configFile: updatedConfigFileWithNetwork,
+    walletStr,
+  });
+  const updatedConfigFileWithDocumentStorage = getConfigWithUpdatedDocumentStorage({
     configFile: updatedConfigFileWithWallet,
+    network,
+  });
+  const updatedConfigFileWithForms = getConfigWithUpdatedForms({
+    configFile: updatedConfigFileWithDocumentStorage,
     documentStoreAddress,
     tokenRegistryAddress,
     dnsVerifiable,

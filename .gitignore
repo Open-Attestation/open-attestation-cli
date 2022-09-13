@@ -14,3 +14,4 @@ yarn.lock
 key
 /.vscode/
 /vc-test-suite
+.DS_Store

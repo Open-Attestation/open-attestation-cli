@@ -2,8 +2,8 @@ import { DocumentStoreFactory } from "@govtechsg/document-store";
 import signale from "signale";
 import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
-import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
+import { getWalletOrSigner } from "../../utils/wallet";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -12,6 +12,7 @@ export const deployDocumentStore = async ({
   network,
   gasPriceScale,
   dryRun,
+  walletPassword,
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   if (dryRun) {
@@ -23,7 +24,7 @@ export const deployDocumentStore = async ({
     process.exit(0);
   }
 
-  const wallet = await getWalletOrSigner({ network, ...rest });
+  const wallet = await getWalletOrSigner({ network, walletPassword, ...rest });
   const gasPrice = await wallet.provider.getGasPrice();
   const factory = new DocumentStoreFactory(wallet);
   signale.await(`Sending transaction to pool`);
