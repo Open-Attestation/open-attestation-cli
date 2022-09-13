@@ -1,6 +1,6 @@
 import { TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
-import { join } from "path";
+
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 import { addAddressPrefix } from "../../utils";
 import { issueToTokenRegistry } from "./issue";
@@ -47,24 +47,6 @@ describe("token-registry", () => {
       mockCallStaticSafeMint.mockClear();
       mockedConnectERC721.mockReset();
       mockedConnectERC721.mockResolvedValue(mockTTERC721Contract);
-    });
-
-    it("should take in the key from environment variable", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-
-      await issueToTokenRegistry(deployParams);
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
-    });
-
-    it("should take in the key from key file", async () => {
-      await issueToTokenRegistry({
-        ...deployParams,
-        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
-      });
-
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
     });
 
     it("should pass in the correct params and return the deployed instance", async () => {

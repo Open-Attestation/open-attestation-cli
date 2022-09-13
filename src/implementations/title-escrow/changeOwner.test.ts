@@ -1,6 +1,6 @@
 import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
-import { join } from "path";
+
 import { TitleEscrowEndorseChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { endorseChangeOfOwner } from "./changeOwner";
 
@@ -69,25 +69,6 @@ describe("title-escrow", () => {
       mockCallStaticTransferOwners.mockClear();
     });
 
-    it("should take in the key from environment variable", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-
-      await endorseChangeOfOwner(endorseChangeOwnerParams);
-
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
-    });
-
-    it("should take in the key from key file", async () => {
-      await endorseChangeOfOwner({
-        ...endorseChangeOwnerParams,
-        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
-      });
-
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
-    });
-
     it("should pass in the correct params and call the following procedures to invoke an endorsement of change of owner of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await endorseChangeOfOwner({
@@ -117,20 +98,6 @@ describe("title-escrow", () => {
           key: privateKey,
         })
       ).rejects.toThrow("new owner and new holder addresses are the same as the current owner and holder addresses");
-    });
-
-    it("should allow errors to bubble up", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-      mockedConnectERC721.mockImplementation(() => {
-        throw new Error("An Error");
-      });
-      await expect(endorseChangeOfOwner(endorseChangeOwnerParams)).rejects.toThrow("An Error");
-    });
-
-    it("should throw when keys are not found anywhere", async () => {
-      await expect(endorseChangeOfOwner(endorseChangeOwnerParams)).rejects.toThrow(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
-      );
     });
   });
 });

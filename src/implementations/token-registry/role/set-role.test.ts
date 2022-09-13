@@ -61,13 +61,5 @@ describe("token-registry", () => {
       expect(mockGrantRole.mock.calls[0][0]).toEqual(roleParams.role);
       expect(mockGrantRole.mock.calls[0][1]).toEqual(roleParams.adminRole);
     });
-
-    it("should allow errors to bubble up", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-      mockedConnectERC721.mockImplementation(() => {
-        throw new Error("An Error");
-      });
-      await expect(setRoleAdminTokenRegistry(roleParams)).rejects.toThrow("An Error");
-    });
   });
 });

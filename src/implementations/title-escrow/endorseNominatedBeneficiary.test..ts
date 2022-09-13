@@ -1,6 +1,6 @@
 import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet, constants } from "ethers";
-import { join } from "path";
+
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { endorseNominatedBeneficiary } from "./endorseNominatedBeneficiary";
 
@@ -68,25 +68,6 @@ describe("title-escrow", () => {
       mockCallStaticTransferToNewEscrow.mockClear();
     });
 
-    it("should take in the key from environment variable", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-
-      await endorseNominatedBeneficiary(endorseNominatedBeneficiaryParams);
-
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
-    });
-
-    it("should take in the key from key file", async () => {
-      await endorseNominatedBeneficiary({
-        ...endorseNominatedBeneficiaryParams,
-        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
-      });
-
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
-    });
-
     it("should pass in the correct params and call the following procedures to invoke an endorsement of transfer of owner of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await endorseNominatedBeneficiary({
@@ -131,20 +112,6 @@ describe("title-escrow", () => {
         })
       ).rejects.toThrow(
         `there is no approved owner or holder or the approved owner or holder is equal to the genesis address: ${GENESIS_ADDRESS}`
-      );
-    });
-
-    it("should allow errors to bubble up", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-      mockedConnectERC721.mockImplementation(() => {
-        throw new Error("An Error");
-      });
-      await expect(endorseNominatedBeneficiary(endorseNominatedBeneficiaryParams)).rejects.toThrow("An Error");
-    });
-
-    it("should throw when keys are not found anywhere", async () => {
-      await expect(endorseNominatedBeneficiary(endorseNominatedBeneficiaryParams)).rejects.toThrow(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path"
       );
     });
   });

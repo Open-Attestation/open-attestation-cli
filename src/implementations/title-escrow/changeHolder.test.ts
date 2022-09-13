@@ -1,6 +1,6 @@
 import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
-import { join } from "path";
+
 import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { changeHolderOfTitleEscrow } from "./changeHolder";
 
@@ -58,16 +58,6 @@ describe("title-escrow", () => {
       mockCallStaticTransferHolder.mockClear();
     });
 
-    it("should take in the key from key file", async () => {
-      await changeHolderOfTitleEscrow({
-        ...transferHolderParams,
-        keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
-      });
-
-      const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
-      expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
-    });
-
     it("should pass in the correct params and call the following procedures to invoke a change in holder of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await changeHolderOfTitleEscrow({
@@ -83,14 +73,6 @@ describe("title-escrow", () => {
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockCallStaticTransferHolder).toHaveBeenCalledTimes(1);
       expect(mockTransferHolder).toHaveBeenCalledTimes(1);
-    });
-
-    it("should allow errors to bubble up", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-      mockedConnectERC721.mockImplementation(() => {
-        throw new Error("An Error");
-      });
-      await expect(changeHolderOfTitleEscrow(transferHolderParams)).rejects.toThrow("An Error");
     });
   });
 });
