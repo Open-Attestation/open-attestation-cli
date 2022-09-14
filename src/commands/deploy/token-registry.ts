@@ -38,11 +38,9 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
   try {
     info(`Deploying token registry ${args.registryName}`);
     const tokenRegistry = await deployTokenRegistry(args);
-    success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
-    info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
-    );
-    return tokenRegistry.contractAddress;
+    success(`Token registry deployed at ${tokenRegistry}`);
+    info(`Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry}`);
+    return tokenRegistry;
   } catch (e) {
     error(getErrorMessage(e));
   }

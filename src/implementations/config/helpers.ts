@@ -87,7 +87,7 @@ export const getConfigFile = async (configTemplatePath: string, configTemplateUr
 
 export const getTokenRegistryAddress = async (encryptedWalletPath: string): Promise<string> => {
   info(`Enter password to continue deployment of Token Registry`);
-  const tokenRegistry = await deployTokenRegistry({
+  const contractAddress = await deployTokenRegistry({
     encryptedWalletPath,
     network: "ropsten",
     gasPriceScale: 1,
@@ -95,7 +95,6 @@ export const getTokenRegistryAddress = async (encryptedWalletPath: string): Prom
     registryName: "Token Registry",
     registrySymbol: "TR",
   });
-  const { contractAddress } = tokenRegistry;
   success(`Token registry deployed, address: ${highlight(contractAddress)}`);
   return contractAddress;
 };
