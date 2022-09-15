@@ -23,12 +23,6 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
       demandOption: true,
     })
-    // .check((argv) => {
-    //   if (!isWalletOption(argv))
-    //     throw new Error(
-    //       "Please provide a encrypted wallet path, you can run the wallet creation command to obtain the wallet.json before proceeding."
-    //     );
-    // })
   );
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
