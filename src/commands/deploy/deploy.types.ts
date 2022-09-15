@@ -3,14 +3,14 @@ import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 export type DeployDocumentStoreCommand = NetworkAndWalletSignerOption &
   GasOption & {
     storeName: string;
-    walletPassword: string;
+    walletPassword?: string;
   };
 
 export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
   GasOption & {
     registryName: string;
     registrySymbol: string;
-    walletPassword: string;
+    walletPassword?: string;
   };
 
 export type DeployTitleEscrowCreatorCommand = NetworkAndWalletSignerOption & GasOption;
