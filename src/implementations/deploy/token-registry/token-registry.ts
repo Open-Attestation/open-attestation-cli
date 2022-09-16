@@ -4,9 +4,9 @@ import signale from "signale";
 import { getLogger } from "../../../logger";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { constants } from "@govtechsg/token-registry";
-import { BigNumber, ethers } from "ethers";
-import { encodeInitParams, getEventFromReceipt } from "@govtechsg/token-registry/dist/types/utils";
+import { BigNumber, ContractReceipt, ethers } from "ethers";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
+import { TypedEvent } from "@govtechsg/token-registry/dist/contracts/common";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -24,7 +24,7 @@ export const deployTokenRegistry = async ({
   gasPriceScale,
   dryRun,
   ...rest
-}: DeployTokenRegistryCommand): Promise<string> => {
+}: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployContractAddress: DeployContractAddress = retrieveFactoryAddress(chainId, factoryAddress);
@@ -34,7 +34,7 @@ export const deployTokenRegistry = async ({
     TDocDeployer__factory.createInterface(),
     wallet
   ) as TDocDeployer;
-  signale.info(`Using ${factoryAddress} as Title Escrow factory.`);
+  signale.info(`Using ${deployContractAddress.titleEscrowFactory} as Title Escrow factory.`);
 
   const initParam = encodeInitParams({
     name: registryName,
@@ -63,7 +63,18 @@ export const deployTokenRegistry = async ({
   const receipt = await transaction.wait();
   const registryAddress = getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment"))
     .args.deployed;
-  return registryAddress;
+    // console.log(getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment")).args)
+  return {contractAddress: registryAddress};
+};
+
+interface Params {
+  name: string;
+  symbol: string;
+  deployer: string;
+}
+
+export const encodeInitParams = ({ name, symbol, deployer }: Params) => {
+  return ethers.utils.defaultAbiCoder.encode(["string", "string", "address"], [name, symbol, deployer]);
 };
 
 const retrieveFactoryAddress = (chainId: number, factoryAddress: string | undefined): DeployContractAddress => {
@@ -73,32 +84,71 @@ const retrieveFactoryAddress = (chainId: number, factoryAddress: string | undefi
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
 
-  const deployContractAddress = {
-    titleEscrowFactory: factoryAddress,
-    tokenImplementation: contractAddress.TokenImplementation[chainId],
-    deployer: contractAddress.Deployer[chainId],
-  } as DeployContractAddress;
-
-  if (!deployContractAddress["tokenImplementation"] || !deployContractAddress["deployer"]) {
+  let titleEscrowFactory = factoryAddress;
+  let tokenImplementation = contractAddress.TokenImplementation[chainId];
+  let deployer = contractAddress.Deployer[chainId];
+  
+  if (!tokenImplementation || !deployer) {
     throw new Error(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);
   }
 
-  if (!factoryAddress) {
-    deployContractAddress["titleEscrowFactory"] = contractAddress.TitleEscrowFactory[chainId];
-    if (!factoryAddress) {
+  if (!titleEscrowFactory) {
+    titleEscrowFactory = contractAddress.TitleEscrowFactory[chainId];
+    if (!titleEscrowFactory) {
       throw new Error(`ChainId ${chainId} currently is not supported. Supply a factory address.`);
     }
   }
 
-  if (!factoryAddress) {
-    if (!chainId) {
-      throw new Error(`Invalid chain ID: ${chainId}`);
-    }
-    factoryAddress = contractAddress.TitleEscrowFactory[chainId];
-    if (!factoryAddress) {
-      throw new Error(`ChainId ${chainId} currently is not supported. Supply a factory address.`);
-    }
-  }
-
-  return deployContractAddress;
+  return {
+    titleEscrowFactory: titleEscrowFactory,
+    tokenImplementation: tokenImplementation,
+    deployer: deployer,
+  } as DeployContractAddress;
 };
+
+export const getEventFromReceipt = <T extends TypedEvent<any>>(
+  receipt: ContractReceipt,
+  topic: string,
+  iface?: ethers.utils.Interface
+) => {
+  if (!receipt.events) throw new Error("Events object is undefined");
+  const event = receipt.events.find((evt) => evt.topics[0] === topic);
+  if (!event) throw new Error(`Cannot find topic ${topic}`);
+
+  
+
+  if (iface) return iface.parseLog(event) as unknown as T
+  // console.log(event)
+  // console.log(event as T)
+  return event as T;
+};
+
+
+// const deo = {
+//   deployed: '0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7',
+//   implementation: '0xE5C75026d5f636C89cc77583B6BCe7C99F512763',
+//   deployer: '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
+//   titleEscrowFactory: '0x878A327daA390Bc602Ae259D3A374610356b6485',
+//   params: '0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000'
+// } as DeploymentEventObject
+
+// const why = [
+//   '0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7',
+//   '0xE5C75026d5f636C89cc77583B6BCe7C99F512763',
+//   '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
+//   '0x878A327daA390Bc602Ae259D3A374610356b6485',
+//   '0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000',
+// ] as [string, string, string, string, string],
+
+
+// const test: DeploymentEvent = [
+
+//   '0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7',
+//   '0xE5C75026d5f636C89cc77583B6BCe7C99F512763',
+//   '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
+//   '0x878A327daA390Bc602Ae259D3A374610356b6485',
+//   '0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000',
+
+
+
+// ] as unknown as DeploymentEvent;
