@@ -63,8 +63,7 @@ export const deployTokenRegistry = async ({
   const receipt = await transaction.wait();
   const registryAddress = getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment"))
     .args.deployed;
-    // console.log(getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment")).args)
-  return {contractAddress: registryAddress};
+  return { contractAddress: registryAddress };
 };
 
 interface Params {
@@ -73,7 +72,7 @@ interface Params {
   deployer: string;
 }
 
-export const encodeInitParams = ({ name, symbol, deployer }: Params) => {
+export const encodeInitParams = ({ name, symbol, deployer }: Params): string => {
   return ethers.utils.defaultAbiCoder.encode(["string", "string", "address"], [name, symbol, deployer]);
 };
 
@@ -85,9 +84,9 @@ const retrieveFactoryAddress = (chainId: number, factoryAddress: string | undefi
   }
 
   let titleEscrowFactory = factoryAddress;
-  let tokenImplementation = contractAddress.TokenImplementation[chainId];
-  let deployer = contractAddress.Deployer[chainId];
-  
+  const tokenImplementation = contractAddress.TokenImplementation[chainId];
+  const deployer = contractAddress.Deployer[chainId];
+
   if (!tokenImplementation || !deployer) {
     throw new Error(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);
   }
@@ -110,45 +109,11 @@ export const getEventFromReceipt = <T extends TypedEvent<any>>(
   receipt: ContractReceipt,
   topic: string,
   iface?: ethers.utils.Interface
-) => {
+): any => {
   if (!receipt.events) throw new Error("Events object is undefined");
   const event = receipt.events.find((evt) => evt.topics[0] === topic);
   if (!event) throw new Error(`Cannot find topic ${topic}`);
 
-  
-
-  if (iface) return iface.parseLog(event) as unknown as T
-  // console.log(event)
-  // console.log(event as T)
+  if (iface) return iface.parseLog(event) as unknown as T;
   return event as T;
 };
-
-
-// const deo = {
-//   deployed: '0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7',
-//   implementation: '0xE5C75026d5f636C89cc77583B6BCe7C99F512763',
-//   deployer: '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
-//   titleEscrowFactory: '0x878A327daA390Bc602Ae259D3A374610356b6485',
-//   params: '0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000'
-// } as DeploymentEventObject
-
-// const why = [
-//   '0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7',
-//   '0xE5C75026d5f636C89cc77583B6BCe7C99F512763',
-//   '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
-//   '0x878A327daA390Bc602Ae259D3A374610356b6485',
-//   '0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000',
-// ] as [string, string, string, string, string],
-
-
-// const test: DeploymentEvent = [
-
-//   '0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7',
-//   '0xE5C75026d5f636C89cc77583B6BCe7C99F512763',
-//   '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
-//   '0x878A327daA390Bc602Ae259D3A374610356b6485',
-//   '0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000',
-
-
-
-// ] as unknown as DeploymentEvent;
