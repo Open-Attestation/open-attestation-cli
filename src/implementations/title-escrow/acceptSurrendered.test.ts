@@ -14,8 +14,6 @@ const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustErc721Factory
-// ideally must setup ganache, and run the function over it
 describe("title-escrow", () => {
   describe("accepts surrendered transferable record", () => {
     const mockedTradeTrustErc721Factory: jest.Mock<TradeTrustErc721Factory> = TradeTrustErc721Factory as any;
