@@ -31,7 +31,7 @@ export const builder = (yargs: Argv): Argv =>
           choices: normalRolesInput,
         })
         .option("adminRole", {
-          describe: "Role to be set to Admin Role",
+          describe: "Admin Role to be set to Role",
           type: "string",
           nargs: 1,
           demandOption: true,
