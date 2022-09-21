@@ -52,6 +52,8 @@ describe("token-registry", () => {
   // @ts-ignore mock static method
   const mockedGetWalletOrSigner: jest.Mock = getWalletOrSigner as jest.Mock;
 
+  jest.setTimeout(90000);
+
   let tokenRegistryAddress = "";
   const defaultNetwork = "ropsten";
 
@@ -77,17 +79,23 @@ describe("token-registry", () => {
     },
   };
 
+  const ganacheProvider = ganache.provider(ganacheOptions);
+
   beforeAll(() => {
-    const provider = new ethers.providers.Web3Provider(ganache.provider(ganacheOptions));
     mockedGetWalletOrSigner.mockImplementation(
       async ({}: WalletOrSignerOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<
         Wallet | ConnectedSigner
       > => {
+        const provider = new ethers.providers.Web3Provider(ganacheProvider);
         const wallet = await ethers.Wallet.fromMnemonic(accounts.mnemonic, "m/44'/60'/0'/0/0");
         const connectedWallet = wallet.connect(provider);
         return connectedWallet;
       }
     );
+  });
+
+  afterAll(async () => {
+    await ganacheProvider.disconnect();
   });
 
   it("should be able to deploy token-registry", async () => {
