@@ -15,7 +15,8 @@ const deployParams: DeployTokenRegistryCommand = {
 describe("token-registry", () => {
   describe("deployTokenRegistry", () => {
     const mockedEthersContract: jest.Mock<Contract> = Contract as any;
-    jest.spyOn(mockedEthersContract.prototype, "deploy").mockImplementation();
+    // eslint-disable-next-line jest/prefer-spy-on
+    mockedEthersContract.prototype.deploy = jest.fn();
     const mockedDeploy: jest.Mock = mockedEthersContract.prototype.deploy;
 
     // increase timeout because ethers is throttling
@@ -51,7 +52,7 @@ describe("token-registry", () => {
     });
 
     it("should pass in the correct params and return the deployed instance", async () => {
-      const instance = await deployTokenRegistry(deployParams);
+      await deployTokenRegistry(deployParams);
 
       const expectedInitParams = encodeInitParams({
         name: deployParams.registryName,

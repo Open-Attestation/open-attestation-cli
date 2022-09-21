@@ -53,8 +53,10 @@ describe("token-registry", () => {
   const mockedGetWalletOrSigner: jest.Mock = getWalletOrSigner as jest.Mock;
 
   let tokenRegistryAddress = "";
+  const defaultNetwork = "ropsten";
+
   const defaults = {
-    network: "mainnet",
+    network: defaultNetwork,
     gasPriceScale: 1,
     dryRun: false,
   };
@@ -71,11 +73,9 @@ describe("token-registry", () => {
       mnemonic: accounts.mnemonic,
     },
     fork: {
-      network: "ropsten",
+      network: defaultNetwork,
     },
   };
-
-  // chainId: 1
 
   beforeAll(() => {
     const provider = new ethers.providers.Web3Provider(ganache.provider(ganacheOptions));
