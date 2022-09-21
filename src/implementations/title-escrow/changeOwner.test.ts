@@ -16,8 +16,6 @@ const endorseChangeOwnerParams: TitleEscrowEndorseChangeOfOwnerCommand = {
   dryRun: false,
 };
 
-
-
 describe("title-escrow", () => {
   describe("endorse change of owner of transferable record", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;

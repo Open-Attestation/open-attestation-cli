@@ -105,8 +105,6 @@ describe("token-registry", () => {
       ...defaults,
     };
     const tokenRegistryTransaction = await deployTokenRegistry(tokenRegistryParameter);
-    // expect(tokenRegistryTransaction.confirmations).toBeGreaterThanOrEqual(1);
-    // expect(tokenRegistryTransaction.status).toBe(1);
     const validTokenRegistryDeploy = regexEthAddress.test(tokenRegistryTransaction.contractAddress);
     expect(validTokenRegistryDeploy).toBe(true);
     tokenRegistryAddress = tokenRegistryTransaction.contractAddress;

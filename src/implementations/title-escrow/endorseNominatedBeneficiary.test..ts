@@ -16,8 +16,6 @@ const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand =
 };
 const GENESIS_ADDRESS = constants.AddressZero;
 
-
-
 describe("title-escrow", () => {
   describe("endorse transfer of owner of transferable record", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;

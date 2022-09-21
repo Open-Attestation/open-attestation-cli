@@ -14,8 +14,6 @@ const surrenderDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   dryRun: false,
 };
 
-
-
 describe("title-escrow", () => {
   describe("surrender transferable record", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;

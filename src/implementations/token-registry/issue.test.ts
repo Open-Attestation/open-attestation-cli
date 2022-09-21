@@ -17,8 +17,6 @@ const deployParams: TokenRegistryIssueCommand = {
   dryRun: false,
 };
 
-
-
 describe("token-registry", () => {
   describe("issue", () => {
     jest.setTimeout(30000);

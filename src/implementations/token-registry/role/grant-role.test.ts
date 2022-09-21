@@ -14,8 +14,6 @@ const roleParams: TokenRegistryRoleCommand = {
   dryRun: false,
 };
 
-
-
 describe("token-registry", () => {
   describe("grant role for token registry", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;

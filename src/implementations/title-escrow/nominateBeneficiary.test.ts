@@ -15,8 +15,6 @@ const nominateBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
   dryRun: false,
 };
 
-
-
 describe("title-escrow", () => {
   describe("nominate change of owner of transferable record", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
