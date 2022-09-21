@@ -77,7 +77,7 @@ describe("token-registry", () => {
     fork: {
       network: defaultNetwork,
     },
-  };
+  } as any;
 
   const ganacheProvider = ganache.provider(ganacheOptions);
 
@@ -86,7 +86,7 @@ describe("token-registry", () => {
       async ({}: WalletOrSignerOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<
         Wallet | ConnectedSigner
       > => {
-        const provider = new ethers.providers.Web3Provider(ganacheProvider);
+        const provider = new ethers.providers.Web3Provider(ganacheProvider as any);
         const wallet = await ethers.Wallet.fromMnemonic(accounts.mnemonic, "m/44'/60'/0'/0/0");
         const connectedWallet = wallet.connect(provider);
         return connectedWallet;
