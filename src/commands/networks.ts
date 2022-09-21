@@ -11,6 +11,7 @@ enum NetworkCmdName {
   Ropsten = "ropsten",
   Rinkeby = "rinkeby",
   Goerli = "goerli",
+  Sepolia = "sepolia",
   Polygon = "polygon",
   Mumbai = "mumbai",
 }
@@ -47,6 +48,10 @@ export const supportedNetwork: {
   [NetworkCmdName.Goerli]: {
     explorer: "https://goerli.etherscan.io",
     provider: defaultInfuraProvider("goerli"),
+  },
+  [NetworkCmdName.Sepolia]: {
+    explorer: "https://sepolia.etherscan.io",
+    provider: jsonRpcProvider("https://rpc.sepolia.org"),
   },
   [NetworkCmdName.Polygon]: {
     explorer: "https://polygonscan.com",
