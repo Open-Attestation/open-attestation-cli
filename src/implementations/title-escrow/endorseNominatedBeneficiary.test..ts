@@ -16,8 +16,8 @@ const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand =
 };
 const GENESIS_ADDRESS = constants.AddressZero;
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
-// ideally must setup ganache, and run the function over it
+
+
 describe("title-escrow", () => {
   describe("endorse transfer of owner of transferable record", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;

@@ -17,8 +17,8 @@ const deployParams: TokenRegistryIssueCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of TradeTrustERC721Factory
-// ideally must setup ganache, and run the function over it
+
+
 describe("token-registry", () => {
   describe("issue", () => {
     jest.setTimeout(30000);
