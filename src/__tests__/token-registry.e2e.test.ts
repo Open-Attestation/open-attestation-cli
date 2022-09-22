@@ -55,7 +55,7 @@ describe("token-registry", () => {
   jest.setTimeout(90000);
 
   let tokenRegistryAddress = "";
-  const defaultNetwork = "ropsten";
+  const defaultNetwork = "goerli";
 
   const defaults = {
     network: defaultNetwork,
