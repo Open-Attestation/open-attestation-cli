@@ -1,9 +1,12 @@
+import { Provider } from "@ethersproject/abstract-provider";
+import { ethers, Signer, Wallet } from "ethers";
 import { readFileSync } from "fs";
 import signale from "signale";
-import { ethers, Signer, Wallet } from "ethers";
-import { Provider } from "@ethersproject/abstract-provider";
 import { addAddressPrefix } from "../../utils";
 
+import { AwsKmsSigner } from "ethers-aws-kms-signer";
+import inquirer from "inquirer";
+import { getSupportedNetwork } from "../../commands/networks";
 import {
   isAwsKmsSignerOption,
   isWalletOption,
@@ -12,10 +15,7 @@ import {
   WalletOrSignerOption,
 } from "../../commands/shared";
 import { readFile } from "./disk";
-import inquirer from "inquirer";
 import { progress as defaultProgress } from "./progress";
-import { AwsKmsSigner } from "ethers-aws-kms-signer";
-import { getSupportedNetwork } from "../../commands/networks";
 
 const getKeyFromFile = (file?: string): undefined | string => {
   return file ? readFileSync(file).toString().trim() : undefined;
@@ -42,13 +42,18 @@ export const getPrivateKey = ({ keyFile, key }: PrivateKeyOption): string | unde
 export const getWalletOrSigner = async ({
   network,
   progress = defaultProgress("Decrypting Wallet"),
+  walletPassword,
   ...options
-}: WalletOrSignerOption & Partial<NetworkOption> & { progress?: (progress: number) => void }): Promise<
+}: WalletOrSignerOption &
+  Partial<NetworkOption> & { progress?: (progress: number) => void } & { walletPassword?: string }): Promise<
   Wallet | ConnectedSigner
 > => {
   const provider = getSupportedNetwork(network ?? "mainnet").provider();
   if (isWalletOption(options)) {
-    const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
+    const WalletPassword = walletPassword
+      ? { password: walletPassword }
+      : await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
+    const { password } = WalletPassword;
 
     const file = await readFile(options.encryptedWalletPath);
     const wallet = await ethers.Wallet.fromEncryptedJson(file, password, progress);

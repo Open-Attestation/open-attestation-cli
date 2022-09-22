@@ -5,7 +5,7 @@ type SupportedNetwork = {
   provider: () => providers.Provider;
 };
 
-enum NetworkCmdName {
+export enum NetworkCmdName {
   Local = "local",
   Mainnet = "mainnet",
   Ropsten = "ropsten",
