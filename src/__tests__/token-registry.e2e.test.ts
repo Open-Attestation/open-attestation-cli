@@ -21,6 +21,7 @@ import ganache from "ganache";
 import { endorseChangeOfOwner } from "../implementations/title-escrow/changeOwner";
 import { nominateBeneficiary } from "../implementations/title-escrow/nominateBeneficiary";
 import { endorseNominatedBeneficiary } from "../implementations/title-escrow/endorseNominatedBeneficiary";
+import { isAddress } from "ethers/lib/utils";
 
 jest.mock("../implementations/utils/wallet", () => {
   const originalModule = jest.requireActual("../implementations/utils/wallet");
@@ -31,21 +32,18 @@ jest.mock("../implementations/utils/wallet", () => {
   };
 });
 
-const accounts = {
-  mnemonic: "indicate swing place chair flight used hammer soon photo region volume shuffle",
-  owner: {
-    ethAddress: "0xe0A71284EF59483795053266CB796B65E48B5124",
-    publicKey: "0x02de2454a05cdb55780b85c04128233e31ac9179235607e4d6fa0c6b38140fb51a",
-    privateKey: "0xe82294532bcfcd8e0763ee5cef194f36f00396be59b94fb418f5f8d83140d9a7",
-  },
-  receiver: {
-    ethAddress: "0xcDFAcbb428DD30ddf6d99875dcad04CbEFcd6E60",
-    publicKey: "0x0396762cb3d373ddab0685bbd5e45ccaf7481d8deb5b75ab38704fba089abed629",
-    privateKey: "0xc58c1ff75001afdca8cecb61b47f36964febe4188b8f7b26252286ecae5a8879",
-  },
+const mnemonic = "indicate swing place chair flight used hammer soon photo region volume shuffle";
+const owner = {
+  ethAddress: "0xe0A71284EF59483795053266CB796B65E48B5124",
+  publicKey: "0x02de2454a05cdb55780b85c04128233e31ac9179235607e4d6fa0c6b38140fb51a",
+  privateKey: "0xe82294532bcfcd8e0763ee5cef194f36f00396be59b94fb418f5f8d83140d9a7",
 };
 
-const regexEthAddress = new RegExp("^0x[a-fA-F0-9]{40}$");
+const receiver = {
+  ethAddress: "0xcDFAcbb428DD30ddf6d99875dcad04CbEFcd6E60",
+  publicKey: "0x0396762cb3d373ddab0685bbd5e45ccaf7481d8deb5b75ab38704fba089abed629",
+  privateKey: "0xc58c1ff75001afdca8cecb61b47f36964febe4188b8f7b26252286ecae5a8879",
+};
 
 describe("token-registry", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -55,7 +53,7 @@ describe("token-registry", () => {
   jest.setTimeout(90000);
 
   let tokenRegistryAddress = "";
-  const defaultNetwork = "goerli";
+  const defaultNetwork = "ropsten";
 
   const defaults = {
     network: defaultNetwork,
@@ -72,7 +70,7 @@ describe("token-registry", () => {
       chainId: 3,
     },
     wallet: {
-      mnemonic: accounts.mnemonic,
+      mnemonic: mnemonic,
     },
     fork: {
       network: defaultNetwork,
@@ -87,7 +85,7 @@ describe("token-registry", () => {
         Wallet | ConnectedSigner
       > => {
         const provider = new ethers.providers.Web3Provider(ganacheProvider as any);
-        const wallet = await ethers.Wallet.fromMnemonic(accounts.mnemonic, "m/44'/60'/0'/0/0");
+        const wallet = await ethers.Wallet.fromMnemonic(mnemonic, "m/44'/60'/0'/0/0");
         const connectedWallet = wallet.connect(provider);
         return connectedWallet;
       }
@@ -105,15 +103,9 @@ describe("token-registry", () => {
       ...defaults,
     };
     const tokenRegistryTransaction = await deployTokenRegistry(tokenRegistryParameter);
-    const validTokenRegistryDeploy = regexEthAddress.test(tokenRegistryTransaction.contractAddress);
-    expect(validTokenRegistryDeploy).toBe(true);
+    expect(isAddress(tokenRegistryTransaction.contractAddress)).toBe(true);
     tokenRegistryAddress = tokenRegistryTransaction.contractAddress;
   });
-
-  const mintTransactionParameter = {
-    to: accounts.owner.ethAddress,
-    ...defaults,
-  };
 
   const mintTransaction = async (
     retrievedTokenRegistryAddress: string,
@@ -122,9 +114,9 @@ describe("token-registry", () => {
     const transactionParameter: TokenRegistryIssueCommand = {
       address: retrievedTokenRegistryAddress,
       tokenId: tokenId,
-      beneficiary: accounts.owner.ethAddress,
-      holder: accounts.owner.ethAddress,
-      ...mintTransactionParameter,
+      beneficiary: owner.ethAddress,
+      holder: owner.ethAddress,
+      ...defaults,
     };
     const transaction = await issueToTokenRegistry(transactionParameter);
     return transaction;
@@ -202,7 +194,7 @@ describe("token-registry", () => {
       const transactionParameter: TitleEscrowChangeHolderCommand = {
         tokenRegistry: retrievedTokenRegistryAddress,
         tokenId: tokenId,
-        to: accounts.receiver.ethAddress,
+        to: receiver.ethAddress,
         ...defaults,
       };
       const transaction = await changeHolderOfTitleEscrow(transactionParameter);
@@ -213,8 +205,8 @@ describe("token-registry", () => {
       const transactionParameter: TitleEscrowEndorseChangeOfOwnerCommand = {
         tokenRegistry: retrievedTokenRegistryAddress,
         tokenId: tokenId,
-        newHolder: accounts.receiver.ethAddress,
-        newOwner: accounts.receiver.ethAddress,
+        newHolder: receiver.ethAddress,
+        newOwner: receiver.ethAddress,
         ...defaults,
       };
       const transaction = await endorseChangeOfOwner(transactionParameter);
@@ -228,7 +220,7 @@ describe("token-registry", () => {
       const transactionParameter: TitleEscrowNominateBeneficiaryCommand = {
         tokenRegistry: retrievedTokenRegistryAddress,
         tokenId: tokenId,
-        newOwner: accounts.receiver.ethAddress,
+        newOwner: receiver.ethAddress,
         ...defaults,
       };
       const transaction = await nominateBeneficiary(transactionParameter);
@@ -271,12 +263,12 @@ describe("token-registry", () => {
       const transactionParameter: TitleEscrowNominateBeneficiaryCommand = {
         tokenRegistry: retrievedTokenRegistryAddress,
         tokenId: tokenId,
-        newOwner: accounts.receiver.ethAddress,
+        newOwner: receiver.ethAddress,
         ...defaults,
       };
       const transaction = await endorseNominatedBeneficiary(transactionParameter);
 
-      expect(transaction.nominatedBeneficiary).toBe(accounts.receiver.ethAddress);
+      expect(transaction.nominatedBeneficiary).toBe(receiver.ethAddress);
       expect(transaction.transactionReceipt.confirmations).toBeGreaterThanOrEqual(1);
       expect(transaction.transactionReceipt.status).toBe(1);
     });
