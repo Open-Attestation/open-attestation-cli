@@ -1,4 +1,9 @@
-import { TitleEscrowFactory, TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import {
+  TitleEscrow,
+  TitleEscrow__factory,
+  TradeTrustERC721,
+  TradeTrustERC721__factory,
+} from "@govtechsg/token-registry/contracts";
 import { Wallet, constants } from "ethers";
 import signale from "signale";
 import { ConnectedSigner } from "../utils/wallet";
@@ -9,23 +14,27 @@ interface ConnectToTitleEscrowArgs {
   wallet: Wallet | ConnectedSigner;
 }
 
-type TitleEscrowInstanceType = ReturnType<typeof TitleEscrowFactory.connect>;
-
 export const connectToTitleEscrow = async ({
   tokenId,
   address,
   wallet,
-}: ConnectToTitleEscrowArgs): Promise<TitleEscrowInstanceType> => {
-  const tokenRegistry = await TradeTrustErc721Factory.connect(address, wallet);
+}: ConnectToTitleEscrowArgs): Promise<TitleEscrow> => {
+  const tokenRegistry: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
-  const titleEscrow = await TitleEscrowFactory.connect(titleEscrowAddress, wallet);
-  return titleEscrow;
+  return await connectToTitleEscrowFactory(titleEscrowAddress, wallet);
+};
+
+export const connectToTitleEscrowFactory = async (
+  titleEscrowAddress: string,
+  wallet: Wallet | ConnectedSigner
+): Promise<TitleEscrow> => {
+  return await TitleEscrow__factory.connect(titleEscrowAddress, wallet);
 };
 
 interface validateEndorseChangeOwnerArgs {
   newHolder: string;
   newOwner: string;
-  titleEscrow: TitleEscrowInstanceType;
+  titleEscrow: TitleEscrow;
 }
 export const validateEndorseChangeOwner = async ({
   newHolder,
@@ -41,17 +50,17 @@ export const validateEndorseChangeOwner = async ({
   }
 };
 
-interface validateNominateChangeOwnerArgs {
-  newOwner: string;
-  titleEscrow: TitleEscrowInstanceType;
+interface validateNominateBeneficiaryArgs {
+  beneficiaryNominee: string;
+  titleEscrow: TitleEscrow;
 }
-export const validateNominateChangeOwner = async ({
-  newOwner,
+export const validateNominateBeneficiary = async ({
+  beneficiaryNominee,
   titleEscrow,
-}: validateNominateChangeOwnerArgs): Promise<void> => {
+}: validateNominateBeneficiaryArgs): Promise<void> => {
   const beneficiary = await titleEscrow.beneficiary();
-  if (newOwner === beneficiary) {
-    const error = "new owner address is the same as the current owner address";
+  if (beneficiaryNominee === beneficiary) {
+    const error = "new beneficiary address is the same as the current beneficiary address";
     signale.error(error);
     throw new Error(error);
   }
