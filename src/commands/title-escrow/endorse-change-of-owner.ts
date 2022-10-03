@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
-import { endorseChangeOfOwner } from "../../implementations/title-escrow/endorseChangeOfOwner";
+import { endorseChangeOfOwner } from "../../implementations/title-escrow/changeOwner";
 import { TitleEscrowEndorseChangeOfOwnerCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
