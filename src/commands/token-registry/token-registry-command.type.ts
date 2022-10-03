@@ -7,4 +7,17 @@ export type TokenRegistryIssueCommand = NetworkAndWalletSignerOption &
     holder: string;
     tokenId: string;
   };
-  
+
+export type TokenRegistryRoleCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    role: string;
+    recipient: string;
+  };
+
+export type TokenRegistrySetRoleAdminCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    role: string;
+    adminRole: string;
+  };
