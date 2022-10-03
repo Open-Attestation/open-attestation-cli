@@ -3,6 +3,8 @@ import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 export type TokenRegistryIssueCommand = NetworkAndWalletSignerOption &
   GasOption & {
     address: string;
-    to: string;
+    beneficiary: string;
+    holder: string;
     tokenId: string;
   };
+  

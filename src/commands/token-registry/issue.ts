@@ -27,8 +27,13 @@ export const builder = (yargs: Argv): Argv =>
           type: "string",
           demandOption: true,
         })
-        .option("to", {
-          description: "Initial recipient of the tokenId",
+        .option("beneficiary", {
+          description: "Initial beneficiary of the tokenId",
+          type: "string",
+          demandOption: true,
+        })
+        .option("holder", {
+          description: "Initial holder of the tokenId",
           type: "string",
           demandOption: true,
         })
@@ -38,13 +43,15 @@ export const builder = (yargs: Argv): Argv =>
 export const handler = async (args: TokenRegistryIssueCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
-    info(`Issuing ${args.tokenId} to the initial recipient ${args.to} in the registry ${args.address}`);
+    info(
+      `Issuing ${args.tokenId} to the initial recipient ${args.beneficiary} and initial holder ${args.holder} in the registry ${args.address}`
+    );
     const { transactionHash } = await issueToTokenRegistry({
       ...args,
       tokenId: addAddressPrefix(args.tokenId),
     });
     success(
-      `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.to}`
+      `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.beneficiary} and initial holder ${args.holder}`
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
     return args.address;

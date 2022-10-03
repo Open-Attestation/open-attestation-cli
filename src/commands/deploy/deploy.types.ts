@@ -10,13 +10,3 @@ export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
     registryName: string;
     registrySymbol: string;
   };
-
-export type DeployTitleEscrowCreatorCommand = NetworkAndWalletSignerOption & GasOption;
-
-export type DeployTitleEscrowCommand = NetworkAndWalletSignerOption &
-  GasOption & {
-    tokenRegistry: string;
-    beneficiary: string;
-    holder: string;
-    titleEscrowFactory?: string;
-  };
