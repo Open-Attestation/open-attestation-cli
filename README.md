@@ -51,8 +51,6 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | ------------------------------------------ | ----------- | ------ | ------- |
 | Create config                              | ❎          | ✔️     | ❎      |
 | Deploy document store                      | ✔           | ✔      | ✔       |
-| Deploy title escrow                        | ✔           | ✔      | ✔       |
-| Deploy title escrow creator                | ✔           | ✔      | ✔       |
 | Deploy token registry                      | ✔           | ✔      | ✔       |
 | Dns txt create                             | ❎          | ❎     | ❎      |
 | Dns txt get                                | ❎          | ❎     | ❎      |
@@ -253,7 +251,7 @@ open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypte
 Deploys a token registry contract on the blockchain
 
 ```bash
-open-attestation deploy token-registry <registry-name> <registry-symbol> [options]
+open-attestation deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
