@@ -1,13 +1,10 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
-import { ConnectedSigner, getWalletOrSigner } from "../utils/wallet";
+import { getWalletOrSigner } from "../utils/wallet";
 import { connectToTitleEscrow } from "./helpers";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
-
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { ContractTransaction, Wallet } from "ethers";
-import { TitleEscrow } from "@govtechsg/token-registry/contracts";
 
 const { trace } = getLogger("title-escrow:surrenderDocument");
 
@@ -22,34 +19,6 @@ export const surrenderDocument = async ({
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
 
-  const transaction: ContractTransaction = await surrendeDocument({
-    tokenRegistry: address,
-    tokenId,
-    network,
-    gasPriceScale,
-    dryRun,
-    titleEscrow,
-    wallet,
-  });
-
-  trace(`Tx hash: ${transaction.hash}`);
-  trace(`Block Number: ${transaction.blockNumber}`);
-  signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
-  return transaction.wait();
-};
-
-export type VersionedTitleEscrowSurrenderDocumentCommand = TitleEscrowSurrenderDocumentCommand & {
-  titleEscrow: TitleEscrow;
-  wallet: Wallet | ConnectedSigner;
-};
-
-export const surrendeDocument = async ({
-  network,
-  gasPriceScale,
-  dryRun,
-  titleEscrow,
-  wallet,
-}: VersionedTitleEscrowSurrenderDocumentCommand): Promise<ContractTransaction> => {
   if (dryRun) {
     await dryRunMode({
       gasPriceScale: gasPriceScale,
@@ -62,5 +31,8 @@ export const surrendeDocument = async ({
   signale.await(`Sending transaction to pool`);
   await titleEscrow.callStatic.surrender({ gasPrice: gasPrice.mul(gasPriceScale) });
   const transaction = await titleEscrow.surrender({ gasPrice: gasPrice.mul(gasPriceScale) });
-  return transaction;
+  trace(`Tx hash: ${transaction.hash}`);
+  trace(`Block Number: ${transaction.blockNumber}`);
+  signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
+  return transaction.wait();
 };

@@ -24,7 +24,7 @@ export const builder = (yargs: Argv): Argv =>
           demandOption: true,
         })
         .option("role", {
-          describe: "Role to be granted to receipient",
+          describe: "Role to be granted to recipient",
           type: "string",
           nargs: 1,
           demandOption: true,

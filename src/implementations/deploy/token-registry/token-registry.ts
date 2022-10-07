@@ -47,7 +47,7 @@ export const deployTokenRegistry = async ({
       deployContractAddress.tokenImplementation,
       initParam
     );
-    signale.info("Dry Run is unavailable for token reigstry deploy");
+    signale.info("Dry Run is unavailable for token registry deploy");
     signale.info(`Estimated Gas Required: ${estimatedGas.toString()}`);
     process.exit(0);
   }

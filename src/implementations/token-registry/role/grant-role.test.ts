@@ -9,7 +9,7 @@ const roleParams: TokenRegistryRoleCommand = {
   address: "0x1122",
   role: "0x1",
   recipient: "0x12345",
-  network: "ropsten",
+  network: "goerli",
   gasPriceScale: 1,
   dryRun: false,
 };

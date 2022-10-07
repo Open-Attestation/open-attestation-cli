@@ -10,7 +10,7 @@ const transferHolderParams: TitleEscrowChangeHolderCommand = {
   to: "0xabcd",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
-  network: "ropsten",
+  network: "goerli",
   gasPriceScale: 1,
   dryRun: false,
 };

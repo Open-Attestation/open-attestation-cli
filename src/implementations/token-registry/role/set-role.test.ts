@@ -8,7 +8,7 @@ const roleParams: TokenRegistrySetRoleAdminCommand = {
   address: "0x1122",
   role: "0x1",
   adminRole: "0x2",
-  network: "ropsten",
+  network: "goerli",
   gasPriceScale: 1,
   dryRun: false,
 };
