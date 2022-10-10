@@ -76,7 +76,7 @@ export const encodeInitParams = ({ name, symbol, deployer }: Params): string => 
   return ethers.utils.defaultAbiCoder.encode(["string", "string", "address"], [name, symbol, deployer]);
 };
 
-const retrieveFactoryAddress = (chainId: number, factoryAddress: string | undefined): DeployContractAddress => {
+export const retrieveFactoryAddress = (chainId: number, factoryAddress: string | undefined): DeployContractAddress => {
   const { contractAddress } = constants;
 
   if (!chainId) {

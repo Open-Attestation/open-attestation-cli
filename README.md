@@ -247,11 +247,11 @@ open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypte
 ✔  success   Decrypted document saved to: decrypted.json
 ```
 
-### Token registry
+### Token Registry
 
-#### Deploy new token registry
+#### Deploy new Token Registry
 
-Deploys a token registry contract on the blockchain
+Deploys a token registry contract on the blockchain. Factory Contract that have been deployed using token-registry can be used with the factory address flag. To deploy a standalone token registry, please refer to [Token-Registry](https://github.com/Open-Attestation/token-registry) deployment.
 
 ```bash
 open-attestation deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]

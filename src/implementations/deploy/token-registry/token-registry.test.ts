@@ -1,8 +1,8 @@
-import { deployTokenRegistry, encodeInitParams } from "./token-registry";
-import { BigNumber, Contract, ContractReceipt } from "ethers";
+import { deployTokenRegistry, encodeInitParams, retrieveFactoryAddress } from "./token-registry";
+import { Contract } from "ethers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
-import { getEventFromReceipt } from "./token-registry";
+import { isAddress } from "ethers/lib/utils";
 
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
@@ -87,160 +87,27 @@ describe("token-registry", () => {
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
     });
+
+    describe("Valid Token Registry Factory Address", () => {
+
+      it("should return valid deployer address", () => {
+        const address = retrieveFactoryAddress(5, undefined);
+        
+        expect(isAddress(address.titleEscrowFactory)).toBe(true);
+        expect(isAddress(address.tokenImplementation)).toBe(true);
+        expect(isAddress(address.deployer)).toBe(true);
+      });
+
+      it("should return valid deployer address", () => {
+        const suppliedAddress = "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7"
+        const address = retrieveFactoryAddress(5, suppliedAddress); 
+        
+        expect(address.titleEscrowFactory).toBe(suppliedAddress);
+        expect(isAddress(address.tokenImplementation)).toBe(true);
+        expect(isAddress(address.deployer)).toBe(true);
+      });
+
+    })
+
   });
-
-  describe("getEventFromReceipt", () => {
-    it("should return the event from the receipt", async () => {
-      const receipt = {
-        to: '0x9eBC30E7506E6Ce36eAc5507FCF0121BaF7AeA57',
-        from: '0x8d366250A96deBE81C8619459a503a0eEBE33ca6',
-        contractAddress: null,
-        transactionIndex: 36,
-        gasUsed: { _hex: '0x0496e5', _isBigNumber: true } as BigNumber,
-        logsBloom: '0x0000000400000080000000000000800000000100000000000000000000000000000000008000000000000000000000410000000000000000000200000000000000000000000000000000000000000000000000001800000040000000000000000040000002000000000000000000080000100000100000000000000000100000000000004000000040000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000110080000000000000000000000000000000000000002000100000000000010000000000002000000000000000000000000000010001000040000000c400400000000001400000',
-        blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826',
-        transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-        logs: [
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 86,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826'
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 87,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826'
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 88,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826'
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 89,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826'
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x9eBC30E7506E6Ce36eAc5507FCF0121BaF7AeA57',
-            topics: [],
-            data: '0x000000000000000000000000878a327daa390bc602ae259d3a374610356b6485000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000',
-            logIndex: 90,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826'
-          }
-        ],
-        blockNumber: 7725626,
-        confirmations: 1,
-        cumulativeGasUsed: { _hex: '0x013255bb', _isBigNumber: true } as BigNumber,
-        effectiveGasPrice: { _hex: '0x030d31', _isBigNumber: true } as BigNumber,
-        status: 1,
-        type: 2,
-        byzantium: true,
-        events: [
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 86,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826',
-            removeListener: [Function],
-            getBlock: [Function],
-            getTransaction: [Function],
-            getTransactionReceipt: [Function]
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 87,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826',
-            removeListener: [Function],
-            getBlock: [Function],
-            getTransaction: [Function],
-            getTransactionReceipt: [Function]
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 88,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826',
-            removeListener: [Function],
-            getBlock: [Function],
-            getTransaction: [Function],
-            getTransactionReceipt: [Function]
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x426c58C2B29111eAfc53bDcB9C99DC7714FDb262',
-            topics: [],
-            data: '0x',
-            logIndex: 89,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826',
-            removeListener: [Function],
-            getBlock: [Function],
-            getTransaction: [Function],
-            getTransactionReceipt: [Function]
-          },
-          {
-            transactionIndex: 36,
-            blockNumber: 7725626,
-            transactionHash: '0x3deb27a2513e3e421e12aa1ff54f11c98abe78020bff9c0b902861f83a808346',
-            address: '0x9eBC30E7506E6Ce36eAc5507FCF0121BaF7AeA57',
-            topics: ['0x3588ebb5c75fdf91927f8472318f41513ee567c2612a5ce52ac840dcf6f162f5'],
-            data: '0x000000000000000000000000878a327daa390bc602ae259d3a374610356b6485000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000008d366250a96debe81c8619459a503a0eebe33ca60000000000000000000000000000000000000000000000000000000000000011563420546f6b656e20526567697374727900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034d54540000000000000000000000000000000000000000000000000000000000',
-            logIndex: 90,
-            blockHash: '0xc9b9a44452c0131ed1859f79b90ca4eb5b66a90b458cf852faedaa38e3d40826',
-            args: [],
-            decode: [],
-            event: 'Deployment',
-            eventSignature: 'Deployment(address,address,address,address,bytes)',
-            removeListener: [],
-            getBlock: [],
-            getTransaction: [],
-            getTransactionReceipt: []
-          }
-        ]
-      } as unknown as ContractReceipt;
-      
-      const topics = '0x3588ebb5c75fdf91927f8472318f41513ee567c2612a5ce52ac840dcf6f162f5';
-
-      console.log(getEventFromReceipt(receipt, topics, undefined));
-
-    });
-  })
 });

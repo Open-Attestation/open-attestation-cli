@@ -9,7 +9,5 @@ export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
   GasOption & {
     registryName: string;
     registrySymbol: string;
-    verify?: boolean;
-    standalone?: boolean;
     factoryAddress?: string;
   };
