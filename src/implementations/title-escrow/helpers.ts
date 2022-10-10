@@ -21,13 +21,6 @@ export const connectToTitleEscrow = async ({
 }: ConnectToTitleEscrowArgs): Promise<TitleEscrow> => {
   const tokenRegistry: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
-  return await connectToTitleEscrowFactory(titleEscrowAddress, wallet);
-};
-
-export const connectToTitleEscrowFactory = async (
-  titleEscrowAddress: string,
-  wallet: Wallet | ConnectedSigner
-): Promise<TitleEscrow> => {
   return await TitleEscrow__factory.connect(titleEscrowAddress, wallet);
 };
 
