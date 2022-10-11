@@ -2,7 +2,7 @@ import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/toke
 import { Wallet } from "ethers";
 
 import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { changeHolderOfTitleEscrow } from "./changeHolder";
+import { changeHolderOfTitleEscrow } from "./transferHolder";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
