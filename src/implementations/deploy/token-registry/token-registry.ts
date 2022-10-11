@@ -4,9 +4,9 @@ import signale from "signale";
 import { getLogger } from "../../../logger";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { constants } from "@govtechsg/token-registry";
-import { BigNumber, ContractReceipt, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
-import { TypedEvent } from "@govtechsg/token-registry/dist/contracts/common";
+import { utils } from "@govtechsg/token-registry";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -61,7 +61,7 @@ export const deployTokenRegistry = async ({
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
   const receipt = await transaction.wait();
-  const registryAddress = getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment"))
+  const registryAddress = utils.getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment"))
     .args.deployed;
   return { contractAddress: registryAddress };
 };
@@ -103,17 +103,4 @@ export const retrieveFactoryAddress = (chainId: number, factoryAddress: string |
     tokenImplementation: tokenImplementation,
     deployer: deployer,
   } as DeployContractAddress;
-};
-
-export const getEventFromReceipt = <T extends TypedEvent<any>>(
-  receipt: ContractReceipt,
-  topic: string,
-  iface?: ethers.utils.Interface
-): any => {
-  if (!receipt.events) throw new Error("Events object is undefined");
-  const event = receipt.events.find((evt) => evt.topics[0] === topic);
-  if (!event) throw new Error(`Cannot find topic ${topic}`);
-
-  if (iface) return iface.parseLog(event) as unknown as T;
-  return event as T;
 };

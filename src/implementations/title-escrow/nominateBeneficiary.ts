@@ -12,7 +12,7 @@ const { trace } = getLogger("title-escrow:nominateChangeOfOwner");
 export const nominateBeneficiary = async ({
   tokenRegistry: address,
   tokenId,
-  newOwner,
+  newBeneficiary,
   network,
   gasPriceScale,
   dryRun,
@@ -21,21 +21,21 @@ export const nominateBeneficiary = async ({
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
-    await validateNominateBeneficiary({ beneficiaryNominee: newOwner, titleEscrow });
+    await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
     await dryRunMode({
       gasPriceScale: gasPriceScale,
-      estimatedGas: await titleEscrow.estimateGas.nominate(newOwner),
+      estimatedGas: await titleEscrow.estimateGas.nominate(newBeneficiary),
       network,
     });
     process.exit(0);
   }
   const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
-  await validateNominateBeneficiary({ beneficiaryNominee: newOwner, titleEscrow });
-  await titleEscrow.callStatic.nominate(newOwner, {
+  await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
+  await titleEscrow.callStatic.nominate(newBeneficiary, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
-  const transaction = await titleEscrow.nominate(newOwner, {
+  const transaction = await titleEscrow.nominate(newBeneficiary, {
     gasPrice: gasPrice.mul(gasPriceScale),
   });
   trace(`Tx hash: ${transaction.hash}`);

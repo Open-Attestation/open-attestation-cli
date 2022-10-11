@@ -7,7 +7,7 @@ import { nominateBeneficiary } from "./nominateBeneficiary";
 jest.mock("@govtechsg/token-registry/contracts");
 
 const nominateBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
-  newOwner: "0fosui",
+  newBeneficiary: "0fosui",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "goerli",
@@ -83,7 +83,7 @@ describe("title-escrow", () => {
     });
 
     it("should throw an error if new owner addresses is the same as current owner", async () => {
-      mockGetBeneficiary.mockReturnValue(nominateBeneficiaryParams.newOwner);
+      mockGetBeneficiary.mockReturnValue(nominateBeneficiaryParams.newBeneficiary);
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await expect(
         nominateBeneficiary({

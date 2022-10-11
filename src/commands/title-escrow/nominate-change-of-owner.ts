@@ -27,7 +27,8 @@ export const builder = (yargs: Argv): Argv =>
           type: "string",
           demandOption: true,
         })
-        .option("newOwner", {
+        .option("newBeneficiary", {
+          alias: "newOwner",
           description: "Address of the beneficiary of the transferable record",
           type: "string",
           demandOption: true,
@@ -39,14 +40,14 @@ export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Prom
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
-      `Connecting to the registry ${args.tokenRegistry} and attempting to nominate the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newOwner}`
+      `Connecting to the registry ${args.tokenRegistry} and attempting to nominate the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newBeneficiary}`
     );
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
     const { transactionHash } = await nominateBeneficiary(args);
     success(
-      `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newOwner}`
+      `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newBeneficiary}`
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
