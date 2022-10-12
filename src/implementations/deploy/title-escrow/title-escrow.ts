@@ -13,6 +13,7 @@ const CREATOR_CONTRACTS: { [network: string]: string } = {
   mainnet: "0x907A4D491A09D59Bcb5dC38eeb9d121ac47237F1",
   ropsten: "0xB0dE5E22bAc12820b6dbF6f63287B1ec44026c83",
   rinkeby: "0xa51B8dAC076d5aC80507041146AC769542aAe195",
+  goerli: "0x3906daFc722089A8eb3D07D833CDE3C84629FF52",
 };
 
 export const getDefaultEscrowFactory = (network: string): string => {
