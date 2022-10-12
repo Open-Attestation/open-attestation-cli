@@ -89,7 +89,7 @@ export const getTokenRegistryAddress = async (encryptedWalletPath: string): Prom
   info(`Enter password to continue deployment of Token Registry`);
   const tokenRegistry = await deployTokenRegistry({
     encryptedWalletPath,
-    network: "ropsten",
+    network: "goerli",
     gasPriceScale: 1,
     dryRun: false,
     registryName: "Token Registry",
@@ -104,7 +104,7 @@ export const getDocumentStoreAddress = async (encryptedWalletPath: string): Prom
   info(`Enter password to continue deployment of Document Store`);
   const documentStore = await deployDocumentStore({
     encryptedWalletPath,
-    network: "ropsten",
+    network: "goerli",
     gasPriceScale: 1,
     dryRun: false,
     storeName: "Document Store",

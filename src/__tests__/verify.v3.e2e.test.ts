@@ -12,7 +12,7 @@ describe("verify", () => {
     await handler({
       document: path.resolve("examples", "v3", "signed-documents", "dnsdid-invalid-v3.json"),
       verbose: true,
-      network: "ropsten",
+      network: "goerli",
     });
     expect(signaleSuccessSpy).toHaveBeenCalledTimes(2);
     expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "The document has not been tampered");
@@ -25,7 +25,7 @@ describe("verify", () => {
     await handler({
       document: path.resolve("examples", "v3", "signed-documents", "did-v3.json"),
       verbose: true,
-      network: "ropsten",
+      network: "goerli",
     });
     expect(signaleSuccessSpy).toHaveBeenCalledTimes(4);
     expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "The document is valid");

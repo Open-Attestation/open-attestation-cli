@@ -7,7 +7,7 @@ import { DeployTitleEscrowCreatorCommand } from "../../../commands/deploy/deploy
 jest.mock("@govtechsg/token-registry");
 
 const deployParams: DeployTitleEscrowCreatorCommand = {
-  network: "ropsten",
+  network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
   dryRun: false,
@@ -33,7 +33,7 @@ describe("token-registry", () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
       await deployTitleEscrowCreator({
-        network: "ropsten",
+        network: "goerli",
         gasPriceScale: 1,
         dryRun: false,
       });
@@ -44,7 +44,7 @@ describe("token-registry", () => {
 
     it("should take in the key from key file", async () => {
       await deployTitleEscrowCreator({
-        network: "ropsten",
+        network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         gasPriceScale: 1,
         dryRun: false,
@@ -74,7 +74,7 @@ describe("token-registry", () => {
       delete process.env.OA_PRIVATE_KEY;
       await expect(
         deployTitleEscrowCreator({
-          network: "ropsten",
+          network: "goerli",
           gasPriceScale: 1,
           dryRun: false,
         })
