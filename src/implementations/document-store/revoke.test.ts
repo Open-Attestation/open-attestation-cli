@@ -10,7 +10,7 @@ jest.mock("@govtechsg/document-store");
 const deployParams: DocumentStoreRevokeCommand = {
   hash: "0xabcd",
   address: "0x1234",
-  network: "ropsten",
+  network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
   dryRun: false,

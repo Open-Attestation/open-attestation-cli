@@ -9,7 +9,7 @@ jest.mock("@govtechsg/token-registry/contracts");
 const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
-  newOwner: "0x1232",
+  newBeneficiary: "0x1232",
   network: "goerli",
   gasPriceScale: 1,
   dryRun: false,
