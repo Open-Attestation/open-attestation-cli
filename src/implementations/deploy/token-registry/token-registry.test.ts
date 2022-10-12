@@ -9,7 +9,7 @@ jest.mock("@govtechsg/token-registry");
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
   registrySymbol: "Tst",
-  network: "ropsten",
+  network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
   dryRun: false,
@@ -37,7 +37,7 @@ describe("token-registry", () => {
       await deployTokenRegistry({
         registryName: "Test",
         registrySymbol: "Tst",
-        network: "ropsten",
+        network: "goerli",
         gasPriceScale: 1,
         dryRun: false,
       });
@@ -50,7 +50,7 @@ describe("token-registry", () => {
       await deployTokenRegistry({
         registryName: "Test",
         registrySymbol: "Tst",
-        network: "ropsten",
+        network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         gasPriceScale: 1,
         dryRun: false,
@@ -84,7 +84,7 @@ describe("token-registry", () => {
         deployTokenRegistry({
           registryName: "Test",
           registrySymbol: "Tst",
-          network: "ropsten",
+          network: "goerli",
           gasPriceScale: 1,
           dryRun: false,
         })

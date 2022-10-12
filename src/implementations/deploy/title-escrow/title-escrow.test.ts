@@ -11,7 +11,7 @@ const deployParams: DeployTitleEscrowCommand = {
   beneficiary: "0x0000000000000000000000000000000000000001",
   holder: "0x0000000000000000000000000000000000000002",
   titleEscrowFactory: "0x0000000000000000000000000000000000000003",
-  network: "ropsten",
+  network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
   dryRun: false,
@@ -41,7 +41,7 @@ describe("token-registry", () => {
         beneficiary: "0x0000000000000000000000000000000000000001",
         holder: "0x0000000000000000000000000000000000000002",
         titleEscrowFactory: "0x0000000000000000000000000000000000000003",
-        network: "ropsten",
+        network: "goerli",
         gasPriceScale: 1,
         dryRun: false,
       });
@@ -52,7 +52,7 @@ describe("token-registry", () => {
 
     it("should take in the key from key file", async () => {
       await deployTitleEscrow({
-        network: "ropsten",
+        network: "goerli",
         tokenRegistry: "0x0000000000000000000000000000000000000000",
         beneficiary: "0x0000000000000000000000000000000000000001",
         holder: "0x0000000000000000000000000000000000000002",
@@ -90,7 +90,7 @@ describe("token-registry", () => {
       delete process.env.OA_PRIVATE_KEY;
       await expect(
         deployTitleEscrow({
-          network: "ropsten",
+          network: "goerli",
           tokenRegistry: "0x0000000000000000000000000000000000000000",
           beneficiary: "0x0000000000000000000000000000000000000001",
           holder: "0x0000000000000000000000000000000000000002",

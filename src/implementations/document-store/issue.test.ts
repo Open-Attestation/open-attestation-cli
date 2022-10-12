@@ -10,7 +10,7 @@ jest.mock("@govtechsg/document-store");
 const deployParams: DocumentStoreIssueCommand = {
   hash: "0xabcd",
   address: "0x1234",
-  network: "ropsten",
+  network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
   dryRun: false,
@@ -52,7 +52,7 @@ describe("document-store", () => {
       await issueToDocumentStore({
         hash: "0xabcd",
         address: "0x1234",
-        network: "ropsten",
+        network: "goerli",
         gasPriceScale: 1,
         dryRun: false,
       });
@@ -65,7 +65,7 @@ describe("document-store", () => {
       await issueToDocumentStore({
         hash: "0xabcd",
         address: "0x1234",
-        network: "ropsten",
+        network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
         gasPriceScale: 1,
         dryRun: false,
@@ -111,7 +111,7 @@ describe("document-store", () => {
         issueToDocumentStore({
           hash: "0xabcd",
           address: "0x1234",
-          network: "ropsten",
+          network: "goerli",
           gasPriceScale: 1,
           dryRun: false,
         })

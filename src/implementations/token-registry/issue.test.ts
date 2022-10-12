@@ -11,7 +11,7 @@ const deployParams: TokenRegistryIssueCommand = {
   to: "0xabcd",
   tokenId: "0xzyxw",
   address: "0x1234",
-  network: "ropsten",
+  network: "goerli",
   gasPriceScale: 1,
   dryRun: false,
 };
