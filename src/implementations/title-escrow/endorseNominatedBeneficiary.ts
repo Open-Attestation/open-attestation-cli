@@ -12,7 +12,7 @@ const { trace } = getLogger("title-escrow:endorseTransferOfOwner");
 export const endorseNominatedBeneficiary = async ({
   tokenRegistry: address,
   tokenId,
-  newOwner,
+  newBeneficiary,
   network,
   gasPriceScale,
   dryRun,
@@ -23,7 +23,7 @@ export const endorseNominatedBeneficiary = async ({
 }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-  const nominatedBeneficiary = newOwner;
+  const nominatedBeneficiary = newBeneficiary;
   await validateNominateBeneficiary({ beneficiaryNominee: nominatedBeneficiary, titleEscrow });
   if (dryRun) {
     await dryRunMode({
