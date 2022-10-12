@@ -61,8 +61,10 @@ export const deployTokenRegistry = async ({
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
   const receipt = await transaction.wait();
-  const registryAddress = utils.getEventFromReceipt<DeploymentEvent>(receipt, factory.interface.getEventTopic("Deployment"))
-    .args.deployed;
+  const registryAddress = utils.getEventFromReceipt<DeploymentEvent>(
+    receipt,
+    factory.interface.getEventTopic("Deployment")
+  ).args.deployed;
   return { contractAddress: registryAddress };
 };
 

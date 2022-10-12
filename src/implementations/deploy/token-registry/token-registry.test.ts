@@ -88,26 +88,23 @@ describe("token-registry", () => {
       );
     });
 
-    describe("Valid Token Registry Factory Address", () => {
-
-      it("should return valid deployer address", () => {
+    describe("valid Token Registry Factory Address", () => {
+      it("should return deployer address", () => {
         const address = retrieveFactoryAddress(5, undefined);
-        
+
         expect(isAddress(address.titleEscrowFactory)).toBe(true);
         expect(isAddress(address.tokenImplementation)).toBe(true);
         expect(isAddress(address.deployer)).toBe(true);
       });
 
-      it("should return valid deployer address", () => {
-        const suppliedAddress = "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7"
-        const address = retrieveFactoryAddress(5, suppliedAddress); 
-        
+      it("should return provided deployer address", () => {
+        const suppliedAddress = "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7";
+        const address = retrieveFactoryAddress(5, suppliedAddress);
+
         expect(address.titleEscrowFactory).toBe(suppliedAddress);
         expect(isAddress(address.tokenImplementation)).toBe(true);
         expect(isAddress(address.deployer)).toBe(true);
       });
-
-    })
-
+    });
   });
 });
