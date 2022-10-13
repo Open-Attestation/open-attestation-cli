@@ -4,7 +4,7 @@ import path from "path";
 import { info } from "signale";
 import { CreateConfigCommand } from "../../commands/config/config.type";
 import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
-import { readFile } from "../../implementations/utils/disk";
+import { readFile } from "../utils/disk";
 import {
   getConfigFile,
   getConfigWithUpdatedForms,
