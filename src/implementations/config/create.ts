@@ -1,19 +1,19 @@
+import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import fs from "fs";
 import path from "path";
 import { info } from "signale";
-import { readFile } from "../../implementations/utils/disk";
-import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
 import { CreateConfigCommand } from "../../commands/config/config.type";
-import { Dns } from "./types";
+import { handler as createTemporaryDns } from "../../commands/dns/txt-record/create";
+import { readFile } from "../../implementations/utils/disk";
 import {
-  getConfigWithUpdatedWallet,
-  getConfigWithUpdatedForms,
   getConfigFile,
-  validate,
-  getTokenRegistryAddress,
+  getConfigWithUpdatedForms,
+  getConfigWithUpdatedWallet,
   getDocumentStoreAddress,
+  getTokenRegistryAddress,
+  validate,
 } from "./helpers";
-import { utils, v2, v3 } from "@govtechsg/open-attestation";
+import { Dns } from "./types";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -61,7 +61,7 @@ export const create = async ({
   if (hasTransferableRecord) {
     tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath);
     dnsTransferableRecord = await createTemporaryDns({
-      networkId: 3,
+      networkId: 5,
       address: tokenRegistryAddress,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
@@ -70,7 +70,7 @@ export const create = async ({
   if (hasDocumentStore) {
     documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath);
     dnsVerifiable = await createTemporaryDns({
-      networkId: 3,
+      networkId: 5,
       address: documentStoreAddress,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
@@ -79,7 +79,7 @@ export const create = async ({
   if (hasDid) {
     // DID no need deploy any
     dnsDid = await createTemporaryDns({
-      networkId: 3,
+      networkId: 5,
       publicKey: `did:ethr:0x${address}#controller`,
       sandboxEndpoint: SANDBOX_ENDPOINT_URL,
     });
