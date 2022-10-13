@@ -20,11 +20,13 @@ describe("valid Token Registry Factory Address", () => {
   });
 
   it("should reject invalid chainId", () => {
+    let validTest = false;
     try {
-      const address = retrieveFactoryAddress(2022, undefined);
-      fail("invalid chainId failed to fail");
+      retrieveFactoryAddress(2022, undefined);
     } catch (e) {
-      expect(e).toBeDefined();
+      validTest = true;
+    } finally {
+      expect(validTest).toBe(true);
     }
   });
 });
