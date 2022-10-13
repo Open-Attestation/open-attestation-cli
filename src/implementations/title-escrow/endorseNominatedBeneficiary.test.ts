@@ -26,29 +26,30 @@ describe("title-escrow", () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
-    const mockedOwnerOf = jest.fn();
-    const mockTransferToNewEscrow = jest.fn();
+
     const mockedTitleEscrowAddress = "0x2133";
-    const mockedApprovedBeneficiary = "0xdssfs";
-    const mockedApprovedHolder = "0xdsfls";
-    const mockGetApprovedBeneficiary = jest.fn();
-    const mockGetApprovedHolder = jest.fn();
-    const mockCallStaticTransferToNewEscrow = jest.fn().mockResolvedValue(undefined);
-    mockGetApprovedBeneficiary.mockReturnValue(mockedApprovedBeneficiary);
-    mockGetApprovedHolder.mockReturnValue(mockedApprovedHolder);
+    const mockedOwnerOf = jest.fn();
+    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
+
+    const mockTransferOwners = jest.fn();
+    const mockCallStaticTransferOwners = jest.fn().mockResolvedValue(undefined);
+
+    const mockedBeneficiary = "0xdssfs";
+    const mockGetBeneficiary = jest.fn();
+    mockGetBeneficiary.mockReturnValue(mockedBeneficiary);
+
     mockedConnectERC721.mockReturnValue({
       ownerOf: mockedOwnerOf,
     });
+
     mockedConnectTokenFactory.mockReturnValue({
-      transferToNewEscrow: mockTransferToNewEscrow,
-      approvedBeneficiary: mockGetApprovedBeneficiary,
-      approvedHolder: mockGetApprovedHolder,
+      transferBeneficiary: mockTransferOwners,
+      beneficiary: mockGetBeneficiary,
       callStatic: {
-        transferToNewEscrow: mockCallStaticTransferToNewEscrow,
+        transferBeneficiary: mockCallStaticTransferOwners,
       },
     });
-    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockTransferToNewEscrow.mockReturnValue({
+    mockTransferOwners.mockReturnValue({
       hash: "hash",
       wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
@@ -60,10 +61,8 @@ describe("title-escrow", () => {
       mockedTokenFactory.mockClear();
       mockedConnectTokenFactory.mockClear();
       mockedOwnerOf.mockClear();
-      mockTransferToNewEscrow.mockClear();
-      mockGetApprovedBeneficiary.mockClear();
-      mockGetApprovedHolder.mockClear();
-      mockCallStaticTransferToNewEscrow.mockClear();
+      mockTransferOwners.mockClear();
+      mockCallStaticTransferOwners.mockClear();
     });
 
     it("should pass in the correct params and call the following procedures to invoke an endorsement of transfer of owner of a transferable record", async () => {
@@ -79,37 +78,20 @@ describe("title-escrow", () => {
       expect(mockedConnectERC721).toHaveBeenCalledWith(endorseNominatedBeneficiaryParams.tokenRegistry, passedSigner);
       expect(mockedOwnerOf).toHaveBeenCalledWith(endorseNominatedBeneficiaryParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
-      expect(mockGetApprovedBeneficiary).toHaveBeenCalledTimes(1);
-      expect(mockGetApprovedHolder).toHaveBeenCalledTimes(1);
-      expect(mockCallStaticTransferToNewEscrow).toHaveBeenCalledTimes(1);
-      expect(mockTransferToNewEscrow).toHaveBeenCalledTimes(1);
+      expect(mockCallStaticTransferOwners).toHaveBeenCalledTimes(1);
+      expect(mockTransferOwners).toHaveBeenCalledTimes(1);
     });
 
-    it("should throw an error if approved owner or approved holder addresses is the Genesis address", async () => {
-      mockGetApprovedBeneficiary.mockReturnValue(GENESIS_ADDRESS);
-      mockGetApprovedHolder.mockReturnValue(GENESIS_ADDRESS);
+    it("should throw an error if nominee is the owner address", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await expect(
         endorseNominatedBeneficiary({
           ...endorseNominatedBeneficiaryParams,
+          newBeneficiary: "0xdssfs",
           key: privateKey,
         })
       ).rejects.toThrow(
-        `there is no approved owner or holder or the approved owner or holder is equal to the genesis address: ${GENESIS_ADDRESS}`
-      );
-    });
-
-    it("should throw an error if approved owner or approved holder addresses does not exist", async () => {
-      mockGetApprovedBeneficiary.mockReturnValue("");
-      mockGetApprovedHolder.mockReturnValue("");
-      const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await expect(
-        endorseNominatedBeneficiary({
-          ...endorseNominatedBeneficiaryParams,
-          key: privateKey,
-        })
-      ).rejects.toThrow(
-        `there is no approved owner or holder or the approved owner or holder is equal to the genesis address: ${GENESIS_ADDRESS}`
+        `new beneficiary address is the same as the current beneficiary address`
       );
     });
   });

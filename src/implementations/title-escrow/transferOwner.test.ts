@@ -1,12 +1,12 @@
 import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
-import { TitleEscrowEndorseChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { endorseChangeOfOwner } from "./transferOwner";
+import { TitleEscrowEndorseTransferOfOwnersCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { transferOwners } from "./transferOwner";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
-const endorseChangeOwnerParams: TitleEscrowEndorseChangeOfOwnerCommand = {
+const endorseChangeOwnerParams: TitleEscrowEndorseTransferOfOwnersCommand = {
   newHolder: "0xabcd",
   newOwner: "0fosui",
   tokenId: "0xzyxw",
@@ -69,7 +69,7 @@ describe("title-escrow", () => {
 
     it("should pass in the correct params and call the following procedures to invoke an endorsement of change of owner of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await endorseChangeOfOwner({
+      await transferOwners({
         ...endorseChangeOwnerParams,
         key: privateKey,
       });
@@ -91,7 +91,7 @@ describe("title-escrow", () => {
       mockGetHolder.mockReturnValue(endorseChangeOwnerParams.newHolder);
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await expect(
-        endorseChangeOfOwner({
+        transferOwners({
           ...endorseChangeOwnerParams,
           key: privateKey,
         })

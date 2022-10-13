@@ -2,14 +2,14 @@ import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
 import { connectToTitleEscrow, validateEndorseChangeOwner } from "./helpers";
-import { TitleEscrowEndorseChangeOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { TitleEscrowEndorseTransferOfOwnersCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
 const { trace } = getLogger("title-escrow:endorseChangeOfOwner");
 
-export const endorseChangeOfOwner = async ({
+export const transferOwners = async ({
   tokenRegistry: address,
   tokenId,
   newHolder,
@@ -18,7 +18,7 @@ export const endorseChangeOfOwner = async ({
   gasPriceScale,
   dryRun,
   ...rest
-}: TitleEscrowEndorseChangeOfOwnerCommand): Promise<TransactionReceipt> => {
+}: TitleEscrowEndorseTransferOfOwnersCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });

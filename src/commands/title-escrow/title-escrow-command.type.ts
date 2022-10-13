@@ -9,7 +9,7 @@ export type TitleEscrowChangeHolderCommand = BaseTitleEscrowCommand & {
   to: string;
 };
 
-export type TitleEscrowEndorseChangeOfOwnerCommand = BaseTitleEscrowCommand & {
+export type TitleEscrowEndorseTransferOfOwnersCommand = BaseTitleEscrowCommand & {
   newHolder: string;
   newOwner: string;
 };
