@@ -1,13 +1,13 @@
 import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
-import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { changeHolderOfTitleEscrow } from "./transferHolder";
+import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { transferHolder } from "./transferHolder";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
-const transferHolderParams: TitleEscrowChangeHolderCommand = {
-  to: "0xabcd",
+const transferHolderParams: TitleEscrowTransferHolderCommand = {
+  newHolder: "0xabcd",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "goerli",
@@ -58,7 +58,7 @@ describe("title-escrow", () => {
 
     it("should pass in the correct params and call the following procedures to invoke a change in holder of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await changeHolderOfTitleEscrow({
+      await transferHolder({
         ...transferHolderParams,
         key: privateKey,
       });

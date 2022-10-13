@@ -2,22 +2,22 @@ import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
 import { connectToTitleEscrow } from "./helpers";
-import { TitleEscrowChangeHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("title-escrow:changeHolder");
+const { trace } = getLogger("title-escrow:transferHolder");
 
-export const changeHolderOfTitleEscrow = async ({
+export const transferHolder = async ({
   tokenRegistry: address,
-  to,
+  newHolder: to,
   tokenId,
   network,
   gasPriceScale,
   dryRun,
   ...rest
-}: TitleEscrowChangeHolderCommand): Promise<TransactionReceipt> => {
+}: TitleEscrowTransferHolderCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {

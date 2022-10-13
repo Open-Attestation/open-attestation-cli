@@ -1,5 +1,5 @@
 import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
-import { Wallet, constants } from "ethers";
+import { Wallet } from "ethers";
 
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { endorseNominatedBeneficiary } from "./endorseNominatedBeneficiary";
@@ -14,7 +14,6 @@ const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand =
   gasPriceScale: 1,
   dryRun: false,
 };
-const GENESIS_ADDRESS = constants.AddressZero;
 
 describe("title-escrow", () => {
   describe("endorse transfer of owner of transferable record", () => {
@@ -90,9 +89,7 @@ describe("title-escrow", () => {
           newBeneficiary: "0xdssfs",
           key: privateKey,
         })
-      ).rejects.toThrow(
-        `new beneficiary address is the same as the current beneficiary address`
-      );
+      ).rejects.toThrow(`new beneficiary address is the same as the current beneficiary address`);
     });
   });
 });

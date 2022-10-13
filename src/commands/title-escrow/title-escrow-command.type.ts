@@ -5,8 +5,8 @@ export type BaseTitleEscrowCommand = NetworkAndWalletSignerOption &
     tokenRegistry: string;
     tokenId: string;
   };
-export type TitleEscrowChangeHolderCommand = BaseTitleEscrowCommand & {
-  to: string;
+export type TitleEscrowTransferHolderCommand = BaseTitleEscrowCommand & {
+  newHolder: string;
 };
 
 export type TitleEscrowEndorseTransferOfOwnersCommand = BaseTitleEscrowCommand & {
