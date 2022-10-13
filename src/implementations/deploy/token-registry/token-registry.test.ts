@@ -1,8 +1,8 @@
-import { deployTokenRegistry, encodeInitParams, retrieveFactoryAddress } from "./token-registry";
+import { deployTokenRegistry } from "./token-registry";
+import { encodeInitParams } from "./helpers";
 import { Contract } from "ethers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
-import { isAddress } from "ethers/lib/utils";
 
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
@@ -86,25 +86,6 @@ describe("token-registry", () => {
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
-    });
-
-    describe("valid Token Registry Factory Address", () => {
-      it("should return deployer address", () => {
-        const address = retrieveFactoryAddress(5, undefined);
-
-        expect(isAddress(address.titleEscrowFactory)).toBe(true);
-        expect(isAddress(address.tokenImplementation)).toBe(true);
-        expect(isAddress(address.deployer)).toBe(true);
-      });
-
-      it("should return provided deployer address", () => {
-        const suppliedAddress = "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7";
-        const address = retrieveFactoryAddress(5, suppliedAddress);
-
-        expect(address.titleEscrowFactory).toBe(suppliedAddress);
-        expect(isAddress(address.tokenImplementation)).toBe(true);
-        expect(isAddress(address.deployer)).toBe(true);
-      });
     });
   });
 });
