@@ -8,8 +8,6 @@ type SupportedNetwork = {
 enum NetworkCmdName {
   Local = "local",
   Mainnet = "mainnet",
-  Ropsten = "ropsten",
-  Rinkeby = "rinkeby",
   Goerli = "goerli",
   Sepolia = "sepolia",
   Polygon = "polygon",
@@ -36,14 +34,6 @@ export const supportedNetwork: {
   [NetworkCmdName.Mainnet]: {
     explorer: "https://etherscan.io",
     provider: defaultInfuraProvider("homestead"),
-  },
-  [NetworkCmdName.Ropsten]: {
-    explorer: "https://ropsten.etherscan.io",
-    provider: defaultInfuraProvider("ropsten"),
-  },
-  [NetworkCmdName.Rinkeby]: {
-    explorer: "https://rinkeby.etherscan.io",
-    provider: defaultInfuraProvider("rinkeby"),
   },
   [NetworkCmdName.Goerli]: {
     explorer: "https://goerli.etherscan.io",
