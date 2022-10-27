@@ -35,8 +35,6 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | Network | Chain ID | Type       |
 | ------- | -------- | ---------- |
 | mainnet | 1        | Production |
-| ropsten | 3        | Test       |
-| rinkeby | 4        | Test       |
 | goerli  | 5        | Test       |
 | polygon | 137      | Production |
 | mumbai  | 80001    | Test       |
@@ -259,7 +257,7 @@ open-attestation deploy token-registry <registry-name> <registry-symbol> [option
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy token-registry "My Sample Token" MST --network ropsten
+open-attestation deploy token-registry "My Sample Token" MST --network goerli
 
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
@@ -275,7 +273,7 @@ open-attestation deploy title-escrow --network <NETWORK> --address <TOKEN_REGIST
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy title-escrow --network ropsten --address 0x4B127b8d5e53872d403ce43414afeb1db67B1842 --beneficiary 0x6FFeD6E6591b808130a9b248fEA32101b5220eca --holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca
+open-attestation deploy title-escrow --network goerli --address 0x4B127b8d5e53872d403ce43414afeb1db67B1842 --beneficiary 0x6FFeD6E6591b808130a9b248fEA32101b5220eca --holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca
 
 ✔  success   Title escrow deployed at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
@@ -291,7 +289,7 @@ open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGIS
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation token-registry mint --network ropsten --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+open-attestation token-registry mint --network goerli --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 
 ✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 0x6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
@@ -312,7 +310,7 @@ open-attestation deploy document-store <store-name> [options]
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy document-store "My Name" --network ropsten
+open-attestation deploy document-store "My Name" --network goerli
 
 ✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
@@ -328,7 +326,7 @@ open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store issue --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+open-attestation document-store issue --network goerli --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -344,7 +342,7 @@ open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store revoke --network ropsten --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+open-attestation document-store revoke --network goerli --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -360,7 +358,7 @@ open-attestation document-store transfer-ownership --address <DOCUMENT_STORE_ADD
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network ropsten
+open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network goerli
 
 ✔  success   Ownership of document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 has been transferred to new wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
 ```
@@ -370,7 +368,7 @@ open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e5
 Verify if a document is valid.
 
 ```bash
-open-attestation verify --document ./examples/wrapped-documents/example.0.json --network ropsten
+open-attestation verify --document ./examples/wrapped-documents/example.0.json --network goerli
 
 …  awaiting  Verifying examples/wrapped-documents/example.0.json
 ✔  success   The document is valid
@@ -475,29 +473,29 @@ Example:
 
 ```bash
 # Using encrypted-wallet-path option
-open-attestation deploy document-store "My Name" --network ropsten --encrypted-wallet-path /path/to/wallet.json
+open-attestation deploy document-store "My Name" --network goerli --encrypted-wallet-path /path/to/wallet.json
 # Then you will be prompted to type your password to decrypt the wallet
 ? Wallet password [input is hidden]
 
 # Using environment variable
 export OA_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
-open-attestation deploy document-store "My Name" --network ropsten
+open-attestation deploy document-store "My Name" --network goerli
 unset OA_PRIVATE_KEY
 
 # Using private key stored in file
 echo -n 0000000000000000000000000000000000000000000000000000000000000002 >> ./examples/sample-key
-open-attestation deploy document-store "My Name" --network ropsten --key-file ./examples/sample-key
+open-attestation deploy document-store "My Name" --network goerli --key-file ./examples/sample-key
 rm ./examples/sample-key
 
 # Providing the key to the command
-open-attestation deploy document-store "My Name" --network ropsten --key 0000000000000000000000000000000000000000000000000000000000000003
+open-attestation deploy document-store "My Name" --network goerli --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
 ### Config (Create configuration file)
 
 This command will generate a config file with sandbox DNS, document store and token registry.
 
-> Please note that a wallet.json file in ropsten network with sufficient **funds** must be provided in order for this command to work.
+> Please note that a wallet.json file with sufficient **funds** in goerli network must be provided in order for this command to work.
 
 You will need:
 
@@ -512,16 +510,21 @@ There are 2 ways of using this command to generate a config file, both in which,
 
 This method will generate the most basic config file with a sandbox DNS, document store and token registry. The reference config templates are [here](https://github.com/TradeTrust/document-creator-website/tree/master/src/test/fixtures/config/_generated-config-files/v2).
 
-Step 1: Generate a wallet.json file
+Step 1a: Generate a wallet.json file
 
 ```
-// If you already have a wallet.json that is in ropsten network with sufficient funds, you can skip this step.
-open-attestation wallet create --output-file wallet.json --fund ropsten
+// If you already have a wallet.json that has sufficient funds in goerli network, you can skip this step.
+open-attestation wallet create --output-file wallet.json
 ```
+
+Step 1b: Add fund into the newly created wallet.json
+
+Currently, we do not provide any faucet to dispense any funds into the wallet.json. You can search the web for some faucets.
 
 Step 2: Generate config file by passing in the generated wallet.json file
 
 ```
+// Please note that to proceed successfully with this step you would require a wallet.json with sufficient funds.
 open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-url <remote url>
 ```
 
@@ -529,12 +532,16 @@ open-attestation config create --output-dir ./example-configs --encrypted-wallet
 
 This method will generate a copy of your existing config file with the updated sandbox DNS, document store and token registry.
 
-Step 1: Generate a wallet.json file
+Step 1a: Generate a wallet.json file
 
 ```
-// If you already have a wallet.json that is in ropsten network with sufficient funds, you can skip this step.
-open-attestation wallet create --output-file wallet.json --fund ropsten
+// If you already have a wallet.json that has sufficient funds in goerli network, you can skip this step.
+open-attestation wallet create --output-file wallet.json
 ```
+
+Step 1b: Add fund into the newly created wallet.json
+
+Currently, we do not provide any faucet to dispense any funds into the wallet.json. You can search the web for some faucets.
 
 Step 2: Generate config file by passing in the generated wallet.json file and a existing config file
 
@@ -562,11 +569,11 @@ open-attestation transaction cancel --nonce <pending transaction nonce> --gas-pr
 Examples:
 
 ```
-open-attestation transaction cancel --nonce 1 --gas-price 300 --network ropsten --encrypted-wallet-path /path/to/wallet
+open-attestation transaction cancel --nonce 1 --gas-price 300 --network goerli --encrypted-wallet-path /path/to/wallet
 ```
 
 ```
-open-attestation transaction cancel --transaction-hash 0x000 --network ropsten --encrypted-wallet-path /path/to/wallet
+open-attestation transaction cancel --transaction-hash 0x000 --network goerli --encrypted-wallet-path /path/to/wallet
 ```
 
 ### Title Escrow
@@ -649,7 +656,7 @@ open-attestation title-escrow surrender --token-registry <TOKEN_REGISTRY_ADDRESS
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network ropsten
+open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been surrendered.
 ```
@@ -665,7 +672,7 @@ open-attestation title-escrow reject-surrendered --token-registry <TOKEN_REGISTR
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network ropsten
+open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
 ```
@@ -681,7 +688,7 @@ open-attestation title-escrow accept-surrendered --token-registry <TOKEN_REGISTR
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network ropsten
+open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
 ```
