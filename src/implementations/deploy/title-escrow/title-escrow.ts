@@ -12,6 +12,8 @@ const { trace } = getLogger("deploy:title-escrow");
 const CREATOR_CONTRACTS: { [network: string]: string } = {
   mainnet: "0x907A4D491A09D59Bcb5dC38eeb9d121ac47237F1",
   goerli: "0x3906daFc722089A8eb3D07D833CDE3C84629FF52",
+  sepolia: "0xebcFFcDDf84BA6C66C83aE377E41611A43b30c34",
+  mumbai: "0xc60E5d2f8ca962f7803B28487fa7cB507daDefE9",
 };
 
 export const getDefaultEscrowFactory = (network: string): string => {
