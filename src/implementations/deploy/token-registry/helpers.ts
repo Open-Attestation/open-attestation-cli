@@ -17,16 +17,19 @@ export const encodeInitParams = ({ name, symbol, deployer }: Params): string => 
   return ethers.utils.defaultAbiCoder.encode(["string", "string", "address"], [name, symbol, deployer]);
 };
 
-export const retrieveFactoryAddress = (chainId: number, inputAddress: DeployContractAddress): DeployContractAddress => {
+export const retrieveFactoryAddress = (
+  chainId: number,
+  inputAddress?: DeployContractAddress
+): DeployContractAddress => {
   const { contractAddress } = constants;
 
   if (!chainId) {
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
 
-  const titleEscrowFactory = contractAddress.TitleEscrowFactory[chainId] || inputAddress.titleEscrowFactory;
-  const tokenImplementation = contractAddress.TokenImplementation[chainId] || inputAddress.tokenImplementation;
-  const deployer = contractAddress.Deployer[chainId] || inputAddress.deployer;
+  const titleEscrowFactory = inputAddress?.titleEscrowFactory || contractAddress.TitleEscrowFactory[chainId];
+  const tokenImplementation = inputAddress?.tokenImplementation || contractAddress.TokenImplementation[chainId];
+  const deployer = inputAddress?.deployer || contractAddress.Deployer[chainId];
 
   if (!tokenImplementation || !deployer) {
     throw new Error(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);

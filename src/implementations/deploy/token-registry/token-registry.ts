@@ -26,7 +26,7 @@ export const deployTokenRegistry = async ({
     titleEscrowFactory: factoryAddress || "",
     tokenImplementation: tokenImplementationAddress || "",
     deployer: deployerAddress || "",
-  }
+  };
   const deployContractAddress: DeployContractAddress = retrieveFactoryAddress(chainId, deployContractAddressInput);
 
   const factory = new ethers.Contract(

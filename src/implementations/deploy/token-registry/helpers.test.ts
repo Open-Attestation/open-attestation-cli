@@ -11,10 +11,14 @@ describe("valid Token Registry Factory Address", () => {
   });
 
   it("should return provided deployer address", () => {
-    const suppliedAddress = "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7";
+    const suppliedAddress = {
+      titleEscrowFactory: "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7",
+      tokenImplementation: "",
+      deployer: "",
+    };
     const address = retrieveFactoryAddress(5, suppliedAddress);
 
-    expect(address.titleEscrowFactory).toBe(suppliedAddress);
+    expect(address.titleEscrowFactory).toBe(suppliedAddress.titleEscrowFactory);
     expect(isAddress(address.tokenImplementation)).toBe(true);
     expect(isAddress(address.deployer)).toBe(true);
   });
@@ -22,7 +26,7 @@ describe("valid Token Registry Factory Address", () => {
   it("should reject invalid chainId", () => {
     let validTest = false;
     try {
-      retrieveFactoryAddress(2022, undefined);
+      retrieveFactoryAddress(2022);
     } catch (e) {
       validTest = true;
     } finally {
