@@ -30,6 +30,14 @@ export const builder = (yargs: Argv): Argv =>
           description: "Address of Token Registry factory (Optional)",
           normalize: true,
         })
+        .option("token-implementation-address", {
+          description: "Address of Token Implementation (Optional)",
+          normalize: true,
+        })
+        .option("deployer-address", {
+          description: "Address of Deployer (Optional)",
+          normalize: true,
+        })
     )
   );
 

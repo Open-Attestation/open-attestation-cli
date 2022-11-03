@@ -13,6 +13,8 @@ export const deployTokenRegistry = async ({
   registryName,
   registrySymbol,
   factoryAddress,
+  tokenImplementationAddress,
+  deployerAddress,
   network,
   gasPriceScale,
   dryRun,
@@ -20,7 +22,12 @@ export const deployTokenRegistry = async ({
 }: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
-  const deployContractAddress: DeployContractAddress = retrieveFactoryAddress(chainId, factoryAddress);
+  const deployContractAddressInput: DeployContractAddress = {
+    titleEscrowFactory: factoryAddress || "",
+    tokenImplementation: tokenImplementationAddress || "",
+    deployer: deployerAddress || "",
+  }
+  const deployContractAddress: DeployContractAddress = retrieveFactoryAddress(chainId, deployContractAddressInput);
 
   const factory = new ethers.Contract(
     deployContractAddress.deployer,
