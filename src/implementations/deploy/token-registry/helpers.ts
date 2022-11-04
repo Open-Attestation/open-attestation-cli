@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { constants } from "@govtechsg/token-registry";
+import { isAddress } from "ethers/lib/utils";
 
 export interface DeployContractAddress {
   titleEscrowFactory: string;
@@ -27,15 +28,15 @@ export const retrieveFactoryAddress = (
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
 
-  const titleEscrowFactory = inputAddress?.titleEscrowFactory || contractAddress.TitleEscrowFactory[chainId];
-  const tokenImplementation = inputAddress?.tokenImplementation || contractAddress.TokenImplementation[chainId];
-  const deployer = inputAddress?.deployer || contractAddress.Deployer[chainId];
+  const titleEscrowFactory = inputAddress?.titleEscrowFactory || contractAddress.TitleEscrowFactory[chainId] || "";
+  const tokenImplementation = inputAddress?.tokenImplementation || contractAddress.TokenImplementation[chainId] || "";
+  const deployer = inputAddress?.deployer || contractAddress.Deployer[chainId] || "";
 
-  if (!tokenImplementation || !deployer) {
+  if (!isAddress(tokenImplementation) || !isAddress(deployer)) {
     throw new Error(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);
   }
 
-  if (!titleEscrowFactory) {
+  if (!isAddress(titleEscrowFactory)) {
     throw new Error(`ChainId ${chainId} currently is not supported. Supply a factory address.`);
   }
 

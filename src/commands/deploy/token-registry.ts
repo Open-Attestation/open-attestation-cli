@@ -28,15 +28,15 @@ export const builder = (yargs: Argv): Argv =>
         })
         .option("factory-address", {
           description: "Address of Token Registry factory (Optional)",
-          normalize: true,
+          type: "string",
         })
         .option("token-implementation-address", {
           description: "Address of Token Implementation (Optional)",
-          normalize: true,
+          type: "string",
         })
         .option("deployer-address", {
           description: "Address of Deployer (Optional)",
-          normalize: true,
+          type: "string",
         })
     )
   );
