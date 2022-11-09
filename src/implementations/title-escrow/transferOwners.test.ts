@@ -6,7 +6,7 @@ import { transferOwners } from "./transferOwners";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
-const endorseChangeOwnerParams: TitleEscrowEndorseTransferOfOwnersCommand = {
+const endorseChangeOwnersParams: TitleEscrowEndorseTransferOfOwnersCommand = {
   newHolder: "0xabcd",
   newOwner: "0fosui",
   tokenId: "0xzyxw",
@@ -17,7 +17,7 @@ const endorseChangeOwnerParams: TitleEscrowEndorseTransferOfOwnersCommand = {
 };
 
 describe("title-escrow", () => {
-  describe("endorse change of owner of transferable record", () => {
+  describe("endorse change of owners of transferable record", () => {
     const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -70,15 +70,15 @@ describe("title-escrow", () => {
     it("should pass in the correct params and call the following procedures to invoke an endorsement of change of owner of a transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await transferOwners({
-        ...endorseChangeOwnerParams,
+        ...endorseChangeOwnersParams,
         key: privateKey,
       });
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721).toHaveBeenCalledWith(endorseChangeOwnerParams.tokenRegistry, passedSigner);
-      expect(mockedOwnerOf).toHaveBeenCalledWith(endorseChangeOwnerParams.tokenId);
+      expect(mockedConnectERC721).toHaveBeenCalledWith(endorseChangeOwnersParams.tokenRegistry, passedSigner);
+      expect(mockedOwnerOf).toHaveBeenCalledWith(endorseChangeOwnersParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockGetBeneficiary).toHaveBeenCalledTimes(1);
       expect(mockGetHolder).toHaveBeenCalledTimes(1);
@@ -87,12 +87,12 @@ describe("title-escrow", () => {
     });
 
     it("should throw an error if new owner and new holder addresses are the same as current owner and holder addressses", async () => {
-      mockGetBeneficiary.mockReturnValue(endorseChangeOwnerParams.newOwner);
-      mockGetHolder.mockReturnValue(endorseChangeOwnerParams.newHolder);
+      mockGetBeneficiary.mockReturnValue(endorseChangeOwnersParams.newOwner);
+      mockGetHolder.mockReturnValue(endorseChangeOwnersParams.newHolder);
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
       await expect(
         transferOwners({
-          ...endorseChangeOwnerParams,
+          ...endorseChangeOwnersParams,
           key: privateKey,
         })
       ).rejects.toThrow("new owner and new holder addresses are the same as the current owner and holder addresses");
