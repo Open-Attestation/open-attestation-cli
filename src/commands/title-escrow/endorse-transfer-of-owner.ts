@@ -29,7 +29,7 @@ export const builder = (yargs: Argv): Argv =>
           demandOption: true,
         })
         .option("newBeneficiary", {
-          alias: ["to","newOwner"],
+          alias: ["to", "newOwner"],
           description: "Address of the beneficiary of the transferable record",
           type: "string",
           demandOption: true,
