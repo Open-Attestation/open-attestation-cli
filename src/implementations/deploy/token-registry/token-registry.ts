@@ -7,6 +7,7 @@ import { BigNumber, ethers } from "ethers";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
 import { utils } from "@govtechsg/token-registry";
 import { DeployContractAddress, encodeInitParams, retrieveFactoryAddress } from "./helpers";
+import { dryRunMode } from "../../utils/dryRun";
 const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
@@ -16,8 +17,9 @@ export const deployTokenRegistry = async ({
   tokenImplementationAddress,
   deployerAddress,
   network,
-  gasPriceScale,
-  dryRun,
+  maxFeePerGasScale,
+  maxPriorityFeePerGasScale,
+  feeData,
   ...rest
 }: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -42,20 +44,25 @@ export const deployTokenRegistry = async ({
     deployer: await wallet.getAddress(),
   });
 
-  if (dryRun) {
+  if (feeData) {
     const estimatedGas: BigNumber = await factory.estimateGas.deploy(
       deployContractAddress.tokenImplementation,
       initParam
     );
-    signale.info("Dry Run is unavailable for token registry deploy");
-    signale.info(`Estimated Gas Required: ${estimatedGas.toString()}`);
+    await dryRunMode({
+      estimatedGas,
+      network,
+    });
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
 
   const transaction = await factory.deploy(deployContractAddress.tokenImplementation, initParam, {
-    gasPrice: gasPrice.mul(gasPriceScale),
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

@@ -4,19 +4,20 @@ import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.type
 import { getLogger } from "../../../logger";
 import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
+import { BigNumber } from "ethers";
 
 const { trace } = getLogger("deploy:document-store");
 
 export const deployDocumentStore = async ({
   storeName,
   network,
-  gasPriceScale,
-  dryRun,
+  maxFeePerGasScale,
+  maxPriorityFeePerGasScale,
+  feeData,
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
-  if (dryRun) {
+  if (feeData) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       transaction: new DocumentStoreFactory().getDeployTransaction(storeName),
       network,
     });
@@ -24,10 +25,14 @@ export const deployDocumentStore = async ({
   }
 
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const gasPrice = await wallet.provider.getGasPrice();
   const factory = new DocumentStoreFactory(wallet);
   signale.await(`Sending transaction to pool`);
-  const transaction = await factory.deploy(storeName, { gasPrice: gasPrice.mul(gasPriceScale) });
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
+  const transaction = await factory.deploy(storeName, {
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+  });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);

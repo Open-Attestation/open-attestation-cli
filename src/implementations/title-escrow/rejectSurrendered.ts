@@ -5,6 +5,7 @@ import { getWalletOrSigner } from "../utils/wallet";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { BigNumber } from "ethers";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -12,23 +13,30 @@ export const rejectSurrendered = async ({
   tokenRegistry: address,
   tokenId,
   network,
-  gasPriceScale,
-  dryRun,
+  maxFeePerGasScale,
+  maxPriorityFeePerGasScale,
+  feeData,
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistryInstance: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
-  if (dryRun) {
+  if (feeData) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await tokenRegistryInstance.estimateGas.restore(tokenId),
       network,
     });
     process.exit(0);
   }
   signale.await(`Sending transaction to pool`);
-  await tokenRegistryInstance.callStatic.restore(tokenId);
-  const transaction = await tokenRegistryInstance.restore(tokenId);
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
+  await tokenRegistryInstance.callStatic.restore(tokenId, {
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+  });
+  const transaction = await tokenRegistryInstance.restore(tokenId, {
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+  });
 
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

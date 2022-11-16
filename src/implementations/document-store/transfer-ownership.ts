@@ -5,6 +5,7 @@ import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-s
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { BigNumber } from "ethers";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -12,27 +13,29 @@ export const transferDocumentStoreOwnershipToWallet = async ({
   address,
   newOwner,
   network,
-  gasPriceScale,
-  dryRun,
+  maxFeePerGasScale,
+  maxPriorityFeePerGasScale,
+  feeData,
   ...rest
 }: DocumentStoreTransferOwnershipCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  if (dryRun) {
+  if (feeData) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await documentStore.estimateGas.transferOwnership(newOwner),
       network,
     });
     process.exit(0);
   }
 
-  const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   const documentStore = await DocumentStoreFactory.connect(address, wallet);
   await documentStore.callStatic.transferOwnership(newOwner);
   const transaction = await documentStore.transferOwnership(newOwner, {
-    gasPrice: gasPrice.mul(gasPriceScale),
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

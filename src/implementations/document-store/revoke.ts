@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { DocumentStoreRevokeCommand } from "../../commands/document-store/document-store-command.type";
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
+import { BigNumber } from "ethers";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -11,26 +12,29 @@ export const revokeToDocumentStore = async ({
   address,
   hash,
   network,
-  gasPriceScale,
-  dryRun,
+  maxFeePerGasScale,
+  maxPriorityFeePerGasScale,
+  feeData,
   ...rest
 }: DocumentStoreRevokeCommand): Promise<{ transactionHash: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  if (dryRun) {
+  if (feeData) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await documentStore.estimateGas.revoke(hash),
       network,
     });
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   const documentStore = await DocumentStoreFactory.connect(address, wallet);
   await documentStore.callStatic.revoke(hash);
   const transaction = await documentStore.revoke(hash, {
-    gasPrice: gasPrice.mul(gasPriceScale),
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

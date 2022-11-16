@@ -9,8 +9,9 @@ const deployParams: DeployTokenRegistryCommand = {
   registrySymbol: "Tst",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
-  dryRun: false,
+  maxFeePerGasScale: 1,
+  maxPriorityFeePerGasScale: 1,
+  feeData: false,
 };
 
 describe("token-registry", () => {
@@ -65,7 +66,7 @@ describe("token-registry", () => {
       expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
 
       // price should be any length string of digits
-      expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+      expect(mockedDeploy.mock.calls[0][2].maxFeePerGas.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       // expect(instance.contractAddress).toBe("contractAddress"); // TODO
     });
 
@@ -80,8 +81,9 @@ describe("token-registry", () => {
           registryName: "Test",
           registrySymbol: "Tst",
           network: "goerli",
-          gasPriceScale: 1,
-          dryRun: false,
+          maxFeePerGasScale: 1,
+          maxPriorityFeePerGasScale: 1,
+          feeData: false,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"

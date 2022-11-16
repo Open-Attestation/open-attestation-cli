@@ -11,8 +11,9 @@ const nominateBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "goerli",
-  gasPriceScale: 1,
-  dryRun: false,
+  maxFeePerGasScale: 1,
+  maxPriorityFeePerGasScale: 1,
+  feeData: false,
 };
 
 describe("title-escrow", () => {

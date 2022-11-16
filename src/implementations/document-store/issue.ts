@@ -5,6 +5,7 @@ import { DocumentStoreIssueCommand } from "../../commands/document-store/documen
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { BigNumber } from "ethers";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -12,28 +13,30 @@ export const issueToDocumentStore = async ({
   address,
   hash,
   network,
-  gasPriceScale,
-  dryRun,
+  maxFeePerGasScale,
+  maxPriorityFeePerGasScale,
+  feeData,
   ...rest
 }: DocumentStoreIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  if (dryRun) {
+  if (feeData) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await documentStore.estimateGas.issue(hash),
       network,
     });
     process.exit(0);
   }
 
-  const gasPrice = await wallet.provider.getGasPrice();
   signale.await(`Sending transaction to pool`);
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   const documentStore = await DocumentStoreFactory.connect(address, wallet);
   await documentStore.callStatic.issue(hash);
 
   const transaction = await documentStore.issue(hash, {
-    gasPrice: gasPrice.mul(gasPriceScale),
+    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
+
+    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

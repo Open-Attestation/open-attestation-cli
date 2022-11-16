@@ -10,8 +10,9 @@ const rejectSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
   tokenId: "0x12345",
   network: "goerli",
-  gasPriceScale: 1,
-  dryRun: false,
+  maxFeePerGasScale: 1,
+  maxPriorityFeePerGasScale: 1,
+  feeData: false,
 };
 
 describe("title-escrow", () => {
@@ -85,13 +86,13 @@ describe("title-escrow", () => {
         ...rejectSurrenderedDocumentParams,
         key: privateKey,
       });
-
+mockRestoreTitle
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnectERC721).toHaveBeenCalledWith(rejectSurrenderedDocumentParams.tokenRegistry, passedSigner);
       expect(mockCallStaticRestoreTitle).toHaveBeenCalledTimes(1);
-      expect(mockRestoreTitle).toHaveBeenCalledWith(rejectSurrenderedDocumentParams.tokenId);
+      expect(mockRestoreTitle.mock.calls[0][0]).toBe(rejectSurrenderedDocumentParams.tokenId);
     });
   });
 });

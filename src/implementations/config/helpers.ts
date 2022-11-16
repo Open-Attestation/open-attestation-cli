@@ -90,10 +90,11 @@ export const getTokenRegistryAddress = async (encryptedWalletPath: string): Prom
   const tokenRegistry = await deployTokenRegistry({
     encryptedWalletPath,
     network: "goerli",
-    gasPriceScale: 1,
-    dryRun: false,
+    maxFeePerGasScale: 1,
+    maxPriorityFeePerGasScale: 1,
     registryName: "Token Registry",
     registrySymbol: "TR",
+    feeData: false,
   });
   const { contractAddress } = tokenRegistry;
   success(`Token registry deployed, address: ${highlight(contractAddress)}`);
@@ -105,8 +106,9 @@ export const getDocumentStoreAddress = async (encryptedWalletPath: string): Prom
   const documentStore = await deployDocumentStore({
     encryptedWalletPath,
     network: "goerli",
-    gasPriceScale: 1,
-    dryRun: false,
+    feeData: false,
+    maxFeePerGasScale: 1,
+    maxPriorityFeePerGasScale: 1,
     storeName: "Document Store",
   });
   const { contractAddress } = documentStore;

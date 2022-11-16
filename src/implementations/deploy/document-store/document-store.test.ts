@@ -10,8 +10,9 @@ const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
-  dryRun: false,
+  maxFeePerGasScale: 1,
+  maxPriorityFeePerGasScale: 1,
+  feeData: false,
 };
 
 describe("document-store", () => {
@@ -37,8 +38,9 @@ describe("document-store", () => {
       await deployDocumentStore({
         storeName: "Test",
         network: "goerli",
-        gasPriceScale: 1,
-        dryRun: false,
+        feeData: false,
+        maxFeePerGasScale: 1,
+        maxPriorityFeePerGasScale: 1,
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -50,8 +52,9 @@ describe("document-store", () => {
         storeName: "Test",
         network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
-        gasPriceScale: 1,
-        dryRun: false,
+        feeData: false,
+        maxFeePerGasScale: 1,
+        maxPriorityFeePerGasScale: 1,
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -66,7 +69,7 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
       // price should be any length string of digits
-      expect(mockedDeploy.mock.calls[0][1].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+      expect(mockedDeploy.mock.calls[0][1].maxPriorityFeePerGas.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
@@ -80,8 +83,9 @@ describe("document-store", () => {
         deployDocumentStore({
           storeName: "Test",
           network: "goerli",
-          gasPriceScale: 1,
-          dryRun: false,
+          feeData: false,
+          maxFeePerGasScale: 1,
+          maxPriorityFeePerGasScale: 1,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"

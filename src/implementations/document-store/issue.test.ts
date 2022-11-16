@@ -11,8 +11,9 @@ const deployParams: DocumentStoreIssueCommand = {
   address: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
-  dryRun: false,
+  maxFeePerGasScale: 1,
+  maxPriorityFeePerGasScale: 1,
+  feeData: false,
 };
 
 // TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
@@ -52,8 +53,9 @@ describe("document-store", () => {
         hash: "0xabcd",
         address: "0x1234",
         network: "goerli",
-        gasPriceScale: 1,
-        dryRun: false,
+        maxFeePerGasScale: 1,
+        maxPriorityFeePerGasScale: 1,
+        feeData: false,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
