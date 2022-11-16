@@ -12,7 +12,6 @@ export const rejectSurrendered = async ({
   tokenRegistry: address,
   tokenId,
   network,
-  gasPriceScale,
   dryRun,
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
@@ -20,7 +19,6 @@ export const rejectSurrendered = async ({
   const tokenRegistryInstance: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
   if (dryRun) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await tokenRegistryInstance.estimateGas.restore(tokenId),
       network,
     });

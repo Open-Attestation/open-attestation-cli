@@ -14,7 +14,6 @@ export const endorseNominatedBeneficiary = async ({
   tokenId,
   newBeneficiary,
   network,
-  gasPriceScale,
   dryRun,
   ...rest
 }: TitleEscrowNominateBeneficiaryCommand): Promise<{
@@ -27,20 +26,15 @@ export const endorseNominatedBeneficiary = async ({
   await validateNominateBeneficiary({ beneficiaryNominee: nominatedBeneficiary, titleEscrow });
   if (dryRun) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary),
       network,
     });
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
-  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
-  const transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
+  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
+  const transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

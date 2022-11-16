@@ -16,7 +16,6 @@ export const deployTokenRegistry = async ({
   tokenImplementationAddress,
   deployerAddress,
   network,
-  gasPriceScale,
   dryRun,
   ...rest
 }: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
@@ -51,12 +50,10 @@ export const deployTokenRegistry = async ({
     signale.info(`Estimated Gas Required: ${estimatedGas.toString()}`);
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
 
-  const transaction = await factory.deploy(deployContractAddress.tokenImplementation, initParam, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
+  const transaction = await factory.deploy(deployContractAddress.tokenImplementation, initParam);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

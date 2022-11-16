@@ -13,7 +13,6 @@ export const acceptSurrendered = async ({
   tokenRegistry: address,
   tokenId,
   network,
-  gasPriceScale,
   dryRun,
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
@@ -21,16 +20,15 @@ export const acceptSurrendered = async ({
   const tokenRegistryInstance = await TradeTrustERC721__factory.connect(address, wallet);
   if (dryRun) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await tokenRegistryInstance.estimateGas.burn(tokenId),
       network,
     });
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
-  await tokenRegistryInstance.callStatic.burn(tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
-  const transaction = await tokenRegistryInstance.burn(tokenId, { gasPrice: gasPrice.mul(gasPriceScale) });
+  await tokenRegistryInstance.callStatic.burn(tokenId);
+  const transaction = await tokenRegistryInstance.burn(tokenId);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

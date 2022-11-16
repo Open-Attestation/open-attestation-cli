@@ -14,7 +14,6 @@ export const transferHolder = async ({
   newHolder: to,
   tokenId,
   network,
-  gasPriceScale,
   dryRun,
   ...rest
 }: TitleEscrowTransferHolderCommand): Promise<TransactionReceipt> => {
@@ -22,16 +21,15 @@ export const transferHolder = async ({
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await titleEscrow.estimateGas.transferHolder(to),
       network,
     });
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
   await titleEscrow.callStatic.transferHolder(to);
-  const transaction = await titleEscrow.transferHolder(to, { gasPrice: gasPrice.mul(gasPriceScale) });
+  const transaction = await titleEscrow.transferHolder(to);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

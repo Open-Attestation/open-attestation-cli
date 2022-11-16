@@ -15,7 +15,6 @@ export const transferOwners = async ({
   newHolder,
   newOwner,
   network,
-  gasPriceScale,
   dryRun,
   ...rest
 }: TitleEscrowEndorseTransferOfOwnersCommand): Promise<TransactionReceipt> => {
@@ -24,20 +23,15 @@ export const transferOwners = async ({
   await validateEndorseChangeOwners({ newHolder, newOwner, titleEscrow });
   if (dryRun) {
     await dryRunMode({
-      gasPriceScale: gasPriceScale,
       estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder),
       network,
     });
     process.exit(0);
   }
-  const gasPrice = await wallet.provider.getGasPrice();
+
   signale.await(`Sending transaction to pool`);
-  await titleEscrow.callStatic.transferOwners(newOwner, newHolder, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
-  const transaction = await titleEscrow.transferOwners(newOwner, newHolder, {
-    gasPrice: gasPrice.mul(gasPriceScale),
-  });
+  await titleEscrow.callStatic.transferOwners(newOwner, newHolder);
+  const transaction = await titleEscrow.transferOwners(newOwner, newHolder);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
