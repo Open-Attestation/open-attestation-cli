@@ -2,8 +2,7 @@ import { Argv } from "yargs";
 import signale, { error, success } from "signale";
 import { getLogger } from "../../../logger";
 import { DnsCreateTxtRecordCommand } from "./dns-command.type";
-import fetch, { RequestInit } from "node-fetch";
-import { getErrorMessage, highlight } from "../../../utils";
+import { getErrorMessage, highlight, request } from "../../../utils";
 
 const { trace } = getLogger("dns:txt-record");
 
@@ -40,16 +39,6 @@ export const builder = (yargs: Argv): Argv =>
       type: "string",
     });
 
-export const request = (url: string, options?: RequestInit): Promise<any> => {
-  return fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`unexpected response ${response.statusText}`);
-      }
-      return response;
-    })
-    .then((response) => response.json());
-};
 export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   if (!args.publicKey && !(args.address && args.networkId)) {

@@ -10,7 +10,6 @@ const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  maxFeePerGasScale: 1,
   maxPriorityFeePerGasScale: 1,
   feeData: false,
 };
@@ -39,7 +38,6 @@ describe("document-store", () => {
         storeName: "Test",
         network: "goerli",
         feeData: false,
-        maxFeePerGasScale: 1,
         maxPriorityFeePerGasScale: 1,
       });
 
@@ -53,7 +51,6 @@ describe("document-store", () => {
         network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         feeData: false,
-        maxFeePerGasScale: 1,
         maxPriorityFeePerGasScale: 1,
       });
 
@@ -84,7 +81,6 @@ describe("document-store", () => {
           storeName: "Test",
           network: "goerli",
           feeData: false,
-          maxFeePerGasScale: 1,
           maxPriorityFeePerGasScale: 1,
         })
       ).rejects.toThrow(

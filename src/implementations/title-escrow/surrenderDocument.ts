@@ -5,7 +5,7 @@ import { connectToTitleEscrow } from "./helpers";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { BigNumber } from "ethers";
+import { calculateMaxFee, scaleBigNumber } from "../../utils";
 
 const { trace } = getLogger("title-escrow:surrenderDocument");
 
@@ -13,7 +13,6 @@ export const surrenderDocument = async ({
   tokenRegistry: address,
   tokenId,
   network,
-  maxFeePerGasScale,
   maxPriorityFeePerGasScale,
   feeData,
   ...rest
@@ -32,12 +31,12 @@ export const surrenderDocument = async ({
   signale.await(`Sending transaction to pool`);
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   await titleEscrow.callStatic.surrender({
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   const transaction = await titleEscrow.surrender({
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

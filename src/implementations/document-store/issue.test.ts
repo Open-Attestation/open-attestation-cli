@@ -11,7 +11,6 @@ const deployParams: DocumentStoreIssueCommand = {
   address: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  maxFeePerGasScale: 1,
   maxPriorityFeePerGasScale: 1,
   feeData: false,
 };
@@ -53,7 +52,6 @@ describe("document-store", () => {
         hash: "0xabcd",
         address: "0x1234",
         network: "goerli",
-        maxFeePerGasScale: 1,
         maxPriorityFeePerGasScale: 1,
         feeData: false,
       });

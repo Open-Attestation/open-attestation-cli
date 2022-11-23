@@ -1,7 +1,14 @@
-import { ethers, utils } from "ethers";
-import { green, highlight, red } from "../../utils";
+import { constants, utils } from "ethers";
+import { getSpotRate, green, highlight, red } from "../../utils";
 import { BigNumber } from "ethers";
 import { TransactionRequest } from "@ethersproject/providers";
+import { convertWEISGD } from "../../utils";
+import { getSupportedNetwork } from "../../commands/networks";
+
+export interface FeeDataType {
+  maxFeePerGas: BigNumber | null;
+  maxPriorityFeePerGas: BigNumber | null;
+}
 
 export const dryRunMode = async ({
   transaction,
@@ -14,7 +21,7 @@ export const dryRunMode = async ({
 }): Promise<void> => {
   // estimated gas or a transaction must be provided, if a transaction is provided let's estimate the gas automatically
   // the transaction is run on the provided network
-  const provider = ethers.getDefaultProvider(network);
+  const provider = getSupportedNetwork(network ?? "mainnet").provider();
   let _estimatedGas = estimatedGas;
   if (!estimatedGas && transaction) {
     _estimatedGas = await provider.estimateGas(transaction);
@@ -23,25 +30,21 @@ export const dryRunMode = async ({
     throw new Error("Please provide estimatedGas or transaction");
   }
 
-  const formatGwei = (value: BigNumber): string => utils.formatUnits(value, "gwei");
-  // const formatEther = (value: BigNumber): string => utils.formatUnits(value, "ether");
-
+  const blockNumber = await provider.getBlockNumber();
   const feeData = await provider.getFeeData();
-  const zero = BigNumber.from(0);
+  const zero = constants.Zero;
+  const { maxFeePerGas, gasPrice, maxPriorityFeePerGas } = {
+    maxFeePerGas: BigNumber.from(feeData.maxFeePerGas) || zero,
+    gasPrice: BigNumber.from(feeData.gasPrice) || zero,
+    maxPriorityFeePerGas: BigNumber.from(feeData.maxPriorityFeePerGas) || zero,
+  };
 
-  const gasPriceGwei = formatGwei(feeData.gasPrice || zero);
-  const maxFeePerGasGwei = formatGwei(feeData.maxFeePerGas || zero);
-  const maxPriorityFeePerGasGwei = formatGwei(feeData.maxPriorityFeePerGas || zero);
+  const gasCost = gasPrice.mul(_estimatedGas);
+  const maxCost = maxFeePerGas.mul(_estimatedGas);
+  const maxPriorityCost = maxPriorityFeePerGas.mul(_estimatedGas);
 
-  const gasCost = (feeData.gasPrice || zero).mul(_estimatedGas);
-  const maxBaseFee = (feeData.maxFeePerGas || zero).mul(_estimatedGas);
-  const maxPriorityFee = (feeData.maxPriorityFeePerGas || zero).mul(_estimatedGas);
-  const estimatedFee = maxBaseFee.add(maxPriorityFee);
-
-  const gasCostGwei = formatGwei(gasCost);
-  const maxBaseFeeGwei = formatGwei(maxBaseFee);
-  const maxPriorityFeeGwei = formatGwei(maxPriorityFee);
-  const estimatedFeeGwei = formatGwei(estimatedFee);
+  const spotRate = await getSpotRate();
+  const estimatedFeeSGD = convertWEISGD(gasCost, spotRate);
 
   console.log(
     red("\n\n/!\\ Welcome to the fee table. Please read the information below to understand the transaction fee")
@@ -49,30 +52,41 @@ export const dryRunMode = async ({
   console.log(
     `\nThe table below display information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you better help you to choose a gas price depending on your needs:\n`
   );
+
   console.log(green("Information about the network:"));
+  console.log(`Costs based on block number: ${highlight(blockNumber)}`);
   console.table({
     current: {
-      time: "N/A",
-      "gas price (gwei)": gasPriceGwei,
-      "max fee per gas (gwei)": maxFeePerGasGwei,
-      "max priority fee per gas (gwei)": maxPriorityFeePerGasGwei,
+      "block number": blockNumber,
+      "gas price (gwei)": utils.formatUnits(gasPrice, "gwei"),
+      "max priority fee per gas (gwei)": utils.formatUnits(maxPriorityFeePerGas, "gwei"),
+      "max fee per gas (gwei)": utils.formatUnits(maxFeePerGas, "gwei"),
     },
   });
 
   console.log(green("Information about the transaction:"));
+
   console.log(
     `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
-      utils.formatEther(estimatedFeeGwei)
-    )} eth based on the selected gas price`
+      `S$${estimatedFeeSGD}`
+    )} based on prevailing gas price.`
   );
 
   console.table({
-    current: {
-      time: "N/A",
-      "gas cost (gwei)": gasCostGwei,
-      "base fee price (gwei)": maxBaseFeeGwei,
-      "priority fee price (gwei)": maxPriorityFeeGwei,
-      "estimated fee (gwei)": estimatedFeeGwei,
+    gwei: {
+      "gas cost": utils.formatUnits(gasCost, "gwei"),
+      "priority fee price": utils.formatUnits(maxPriorityCost, "gwei"),
+      "max fee price": utils.formatUnits(maxCost, "gwei"),
+    },
+    eth: {
+      "gas cost": utils.formatUnits(gasCost, "ether"),
+      "priority fee price": utils.formatUnits(maxPriorityCost, "ether"),
+      "max fee price": utils.formatUnits(maxCost, "ether"),
+    },
+    SGD: {
+      "gas cost": convertWEISGD(gasCost, spotRate),
+      "priority fee price": convertWEISGD(maxPriorityCost, spotRate),
+      "max fee price": convertWEISGD(maxCost, spotRate),
     },
   });
   console.log(red("Please read the information above to understand the table"));

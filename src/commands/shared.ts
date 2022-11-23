@@ -44,7 +44,6 @@ export const isWalletOption = (option: any): option is WalletOption => {
 export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmsSignerOption> | Partial<WalletOption>;
 
 export interface GasOption {
-  maxFeePerGasScale: number;
   maxPriorityFeePerGasScale: number;
   feeData: boolean;
 }
@@ -60,14 +59,7 @@ export const withNetworkOption = (yargs: Argv): Argv =>
   });
 export const withGasPriceOption = (yargs: Argv): Argv =>
   yargs
-    .option("fee-scale", {
-      alias: "maxFeePerGasScale",
-      type: "number",
-      demandOption: false,
-      default: 1,
-      description: "Scale for estimated base fees (maxFeePerGasScale * estimatedBaseFeePerGas)",
-    })
-    .option("priority-scale", {
+    .option("priority", {
       alias: "maxPriorityFeePerGasScale",
       type: "number",
       default: 1,
@@ -78,7 +70,7 @@ export const withGasPriceOption = (yargs: Argv): Argv =>
       alias: "fee-data",
       type: "boolean",
       default: false,
-      description: "Provide estimated BaseFeePerGas and estimated PriorityFeePerGas",
+      description: "Provide estimated MaxFeePerGas and PriorityFeePerGas",
     });
 
 export const withPrivateKeyOption = (yargs: Argv): Argv =>

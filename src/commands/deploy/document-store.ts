@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getErrorMessage, getEtherscanAddress, highlight } from "../../utils";
+import { displayTransactionPrice, getErrorMessage, getEtherscanAddress, highlight } from "../../utils";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -27,12 +27,14 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
   try {
     info(`Deploying document store ${args.storeName}`);
     const documentStore = await deployDocumentStore(args);
+    displayTransactionPrice(documentStore);
     success(`Document store ${args.storeName} deployed at ${highlight(documentStore.contractAddress)}`);
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${documentStore.contractAddress}`
     );
     return documentStore.contractAddress;
   } catch (e) {
+    console.log(e);
     error(getErrorMessage(e));
   }
 };

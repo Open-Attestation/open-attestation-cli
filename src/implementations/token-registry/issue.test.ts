@@ -13,7 +13,6 @@ const deployParams: TokenRegistryIssueCommand = {
   tokenId: "0xzyxw",
   address: "0x1234",
   network: "goerli",
-  maxFeePerGasScale: 1,
   maxPriorityFeePerGasScale: 1,
   feeData: false,
 };

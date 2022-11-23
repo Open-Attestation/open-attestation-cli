@@ -5,7 +5,7 @@ import { DocumentStoreIssueCommand } from "../../commands/document-store/documen
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { BigNumber } from "ethers";
+import { calculateMaxFee, scaleBigNumber } from "../../utils";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -13,7 +13,6 @@ export const issueToDocumentStore = async ({
   address,
   hash,
   network,
-  maxFeePerGasScale,
   maxPriorityFeePerGasScale,
   feeData,
   ...rest
@@ -34,9 +33,8 @@ export const issueToDocumentStore = async ({
   await documentStore.callStatic.issue(hash);
 
   const transaction = await documentStore.issue(hash, {
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

@@ -8,6 +8,8 @@ import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contra
 import { utils } from "@govtechsg/token-registry";
 import { DeployContractAddress, encodeInitParams, retrieveFactoryAddress } from "./helpers";
 import { dryRunMode } from "../../utils/dryRun";
+import { TransactionReceipt } from "@ethersproject/abstract-provider";
+import { calculateMaxFee, scaleBigNumber } from "../../../utils";
 const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
@@ -17,11 +19,10 @@ export const deployTokenRegistry = async ({
   tokenImplementationAddress,
   deployerAddress,
   network,
-  maxFeePerGasScale,
   maxPriorityFeePerGasScale,
   feeData,
   ...rest
-}: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
+}: DeployTokenRegistryCommand): Promise<TransactionReceipt & { contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployContractAddressInput: DeployContractAddress = {
@@ -60,9 +61,8 @@ export const deployTokenRegistry = async ({
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
 
   const transaction = await factory.deploy(deployContractAddress.tokenImplementation, initParam, {
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
@@ -72,5 +72,5 @@ export const deployTokenRegistry = async ({
     receipt,
     factory.interface.getEventTopic("Deployment")
   ).args.deployed;
-  return { contractAddress: registryAddress };
+  return { ...receipt, contractAddress: registryAddress };
 };

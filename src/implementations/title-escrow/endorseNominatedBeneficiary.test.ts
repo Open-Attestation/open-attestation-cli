@@ -11,7 +11,6 @@ const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand =
   tokenRegistry: "0x1234",
   newBeneficiary: "0x1232",
   network: "goerli",
-  maxFeePerGasScale: 1,
   maxPriorityFeePerGasScale: 1,
   feeData: false,
 };

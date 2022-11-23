@@ -6,7 +6,7 @@ import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/ti
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { BigNumber } from "ethers";
+import { calculateMaxFee, scaleBigNumber } from "../../utils";
 
 const { trace } = getLogger("title-escrow:transferHolder");
 
@@ -15,7 +15,6 @@ export const transferHolder = async ({
   newHolder: to,
   tokenId,
   network,
-  maxFeePerGasScale,
   maxPriorityFeePerGasScale,
   feeData,
   ...rest
@@ -34,8 +33,8 @@ export const transferHolder = async ({
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   await titleEscrow.callStatic.transferHolder(to);
   const transaction = await titleEscrow.transferHolder(to, {
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

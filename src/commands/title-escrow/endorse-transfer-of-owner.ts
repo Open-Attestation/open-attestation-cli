@@ -4,7 +4,7 @@ import { getLogger } from "../../logger";
 import { endorseNominatedBeneficiary } from "../../implementations/title-escrow/endorseNominatedBeneficiary";
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getErrorMessage, getEtherscanAddress } from "../../utils";
+import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
 
 const { trace } = getLogger("title-escrow:endorse-transfer-of-owner");
 
@@ -46,13 +46,13 @@ export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Prom
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const { transactionReceipt, nominatedBeneficiary } = await endorseNominatedBeneficiary(args);
+    const transaction = await endorseNominatedBeneficiary(args);
+    displayTransactionPrice(transaction);
+    const { transactionHash } = transaction;
     success(
-      `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to approved beneficiary at ${nominatedBeneficiary}`
+      `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to approved beneficiary at ${args.newBeneficiary}`
     );
-    info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionReceipt.transactionHash}`
-    );
+    info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
     error(getErrorMessage(e));
   }

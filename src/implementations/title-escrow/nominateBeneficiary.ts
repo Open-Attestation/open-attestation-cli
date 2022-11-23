@@ -6,7 +6,7 @@ import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escr
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { BigNumber } from "ethers";
+import { calculateMaxFee, scaleBigNumber } from "../../utils";
 
 const { trace } = getLogger("title-escrow:nominateChangeOfOwner");
 
@@ -15,7 +15,6 @@ export const nominateBeneficiary = async ({
   tokenId,
   newBeneficiary,
   network,
-  maxFeePerGasScale,
   maxPriorityFeePerGasScale,
   feeData,
   ...rest
@@ -35,13 +34,12 @@ export const nominateBeneficiary = async ({
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
   await titleEscrow.callStatic.nominate(newBeneficiary, {
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   const transaction = await titleEscrow.nominate(newBeneficiary, {
-    maxFeePerGas: (maxFeePerGas || BigNumber.from(0)).mul(maxFeePerGasScale),
-
-    maxPriorityFeePerGas: (maxPriorityFeePerGas || BigNumber.from(0)).mul(maxPriorityFeePerGasScale),
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);

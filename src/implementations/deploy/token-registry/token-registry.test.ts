@@ -9,7 +9,6 @@ const deployParams: DeployTokenRegistryCommand = {
   registrySymbol: "Tst",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  maxFeePerGasScale: 1,
   maxPriorityFeePerGasScale: 1,
   feeData: false,
 };
@@ -66,7 +65,7 @@ describe("token-registry", () => {
       expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
 
       // price should be any length string of digits
-      expect(mockedDeploy.mock.calls[0][2].maxFeePerGas.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+      expect(mockedDeploy.mock.calls[0][2].maxPriorityFeePerGas.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       // expect(instance.contractAddress).toBe("contractAddress"); // TODO
     });
 
@@ -81,7 +80,6 @@ describe("token-registry", () => {
           registryName: "Test",
           registrySymbol: "Tst",
           network: "goerli",
-          maxFeePerGasScale: 1,
           maxPriorityFeePerGasScale: 1,
           feeData: false,
         })
