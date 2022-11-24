@@ -2,7 +2,7 @@ import { constants, utils } from "ethers";
 import { getSpotRate, green, highlight, red } from "../../utils";
 import { BigNumber } from "ethers";
 import { TransactionRequest } from "@ethersproject/providers";
-import { convertWEISGD } from "../../utils";
+import { convertWeiFiatDollars } from "../../utils";
 import { getSupportedNetwork } from "../../commands/networks";
 
 export interface FeeDataType {
@@ -43,8 +43,11 @@ export const dryRunMode = async ({
   const maxCost = maxFeePerGas.mul(_estimatedGas);
   const maxPriorityCost = maxPriorityFeePerGas.mul(_estimatedGas);
 
-  const spotRate = await getSpotRate();
-  const estimatedFeeSGD = convertWEISGD(gasCost, spotRate);
+  const spotRateETHUSD = await getSpotRate("ETH", "USD");
+  const spotRateETHSGD = await getSpotRate("ETH", "SGD");
+  const spotRateMATICUSD = await getSpotRate("MATIC", "USD");
+  const spotRateMATICSGD = await getSpotRate("MATIC", "SGD");
+  const estimatedFeeUSD = convertWeiFiatDollars(gasCost, spotRateETHUSD);
 
   console.log(
     red("\n\n/!\\ Welcome to the fee table. Please read the information below to understand the transaction fee")
@@ -68,25 +71,40 @@ export const dryRunMode = async ({
 
   console.log(
     `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
-      `S$${estimatedFeeSGD}`
+      `US$${estimatedFeeUSD}`
     )} based on prevailing gas price.`
   );
 
   console.table({
-    gwei: {
+    GWEI: {
       "gas cost": utils.formatUnits(gasCost, "gwei"),
       "priority fee price": utils.formatUnits(maxPriorityCost, "gwei"),
       "max fee price": utils.formatUnits(maxCost, "gwei"),
     },
-    eth: {
+    ETH: {
       "gas cost": utils.formatUnits(gasCost, "ether"),
       "priority fee price": utils.formatUnits(maxPriorityCost, "ether"),
       "max fee price": utils.formatUnits(maxCost, "ether"),
     },
-    SGD: {
-      "gas cost": convertWEISGD(gasCost, spotRate),
-      "priority fee price": convertWEISGD(maxPriorityCost, spotRate),
-      "max fee price": convertWEISGD(maxCost, spotRate),
+    ETHUSD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateETHUSD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateETHUSD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateETHUSD),
+    },
+    ETHSGD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateETHSGD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateETHSGD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateETHSGD),
+    },
+    MATICUSD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateMATICUSD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateMATICUSD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateMATICUSD),
+    },
+    MATICSGD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateMATICSGD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateMATICSGD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateMATICSGD),
     },
   });
   console.log(red("Please read the information above to understand the table"));

@@ -19,7 +19,11 @@ export const surrenderDocument = async ({
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
+  await titleEscrow.callStatic.surrender({
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+  });
   if (feeData) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.surrender(),
@@ -29,11 +33,6 @@ export const surrenderDocument = async ({
   }
 
   signale.await(`Sending transaction to pool`);
-  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
-  await titleEscrow.callStatic.surrender({
-    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-  });
   const transaction = await titleEscrow.surrender({
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),

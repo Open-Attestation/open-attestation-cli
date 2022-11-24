@@ -21,6 +21,11 @@ export const transferHolder = async ({
 }: TitleEscrowTransferHolderCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
+  await titleEscrow.callStatic.transferHolder(to, {
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+  });
   if (feeData) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferHolder(to),
@@ -28,10 +33,7 @@ export const transferHolder = async ({
     });
     process.exit(0);
   }
-
   signale.await(`Sending transaction to pool`);
-  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
-  await titleEscrow.callStatic.transferHolder(to);
   const transaction = await titleEscrow.transferHolder(to, {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),

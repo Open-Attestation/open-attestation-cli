@@ -73,9 +73,11 @@ export const calculateMaxFee = (
 
 export const displayTransactionPrice = async (transaction: TransactionReceiptFees): Promise<void> => {
   const totalWEI = transaction.effectiveGasPrice.mul(transaction.gasUsed);
-  const spotRate = await getSpotRate();
-  const totalSGD = convertWEISGD(totalWEI, spotRate);
-  info(`Transaction fee of ${utils.formatEther(totalWEI)} eth / ~S$ ${totalSGD}`);
+  const spotRateETH = await getSpotRate("ETH","USD");
+  const totalETHUSD = convertWeiFiatDollars(totalWEI, spotRateETH);
+  const spotRateMATIC = await getSpotRate("MATIC","USD");
+  const totalMATICUSD = convertWeiFiatDollars(totalWEI, spotRateMATIC);
+  info(`Transaction fee of ${utils.formatEther(totalWEI)} eth / ~ ETH-USD ${totalETHUSD} or MATIC-USD ${totalMATICUSD}`);
 };
 
 export const request = (url: string, options?: RequestInit): Promise<any> => {
@@ -89,18 +91,19 @@ export const request = (url: string, options?: RequestInit): Promise<any> => {
     .then((response) => response.json());
 };
 
-export const getSpotRate = async (): Promise<number> => {
-  const spotRate = (await request("https://api.coinbase.com/v2/prices/ETH-SGD/spot")).data.amount;
+export const getSpotRate = async (crypto_currency: string = "ETH", fiat_currency: string = "USD"): Promise<number> => {
+  const spotRate = (await request(`https://api.coinbase.com/v2/prices/${crypto_currency}-${fiat_currency}/spot`)).data.amount;
   return spotRate;
 };
 
-export const convertWEISGD = (cost: BigNumber, spotRate: number): number => {
-  const cents = 100;
-  const spotRateCents = Math.ceil(spotRate * cents); // Higher better than lower
-  const costInWeiSGC = cost.mul(BigNumber.from(spotRateCents));
-  const costInSGD = costInWeiSGC.div(constants.WeiPerEther).div(cents).toNumber(); // Singapore Dollar
-  const costInSGC = (costInWeiSGC.mul(cents).div(constants.WeiPerEther).toNumber() % cents) / cents; // Singapore Cents
-  return costInSGD + costInSGC;
+// Minimally precision of 2 to get precision of 1 cent
+export const convertWeiFiatDollars = (cost: BigNumber, spotRate: number, precision: number = 5): number => {
+  const padding = Math.pow(10, precision); 
+  const spotRateCents = Math.ceil(spotRate * padding); // Higher better than lower
+  const costInWeiFiatCents = cost.mul(BigNumber.from(spotRateCents));
+  const costInFiatDollars = costInWeiFiatCents.div(constants.WeiPerEther).div(padding).toNumber(); // Fiat Dollar
+  const costInFiatCents = costInWeiFiatCents.div(constants.WeiPerEther).toNumber() % padding / padding /// Fiat Cents
+  return costInFiatDollars + costInFiatCents;
 };
 
 export const extractErrorMessage = (error: unknown): string => toErrorWithMessage(error).message;

@@ -23,6 +23,11 @@ export const endorseNominatedBeneficiary = async ({
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const nominatedBeneficiary = newBeneficiary;
   await validateNominateBeneficiary({ beneficiaryNominee: nominatedBeneficiary, titleEscrow });
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
+  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, {
+    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+  });
   if (feeData) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary),
@@ -32,11 +37,6 @@ export const endorseNominatedBeneficiary = async ({
   }
 
   signale.await(`Sending transaction to pool`);
-  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
-  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, {
-    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-  });
   const transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
