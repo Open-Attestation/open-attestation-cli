@@ -19,7 +19,12 @@ export const builder = (yargs: Argv): Argv =>
         description: "Name of the store",
         normalize: true,
       })
-    )
+    ).option("owner", {
+      alias: "o",
+      description: "Document Store owner address. Default owner is deployer address.",
+      type: "string",
+      normalize: true,
+    })
   );
 
 export const handler = async (args: DeployDocumentStoreCommand): Promise<string | undefined> => {
