@@ -3,6 +3,7 @@ import { GasOption, NetworkAndWalletSignerOption } from "../shared";
 export type DeployDocumentStoreCommand = NetworkAndWalletSignerOption &
   GasOption & {
     storeName: string;
+    owner?: string;
   };
 
 export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
