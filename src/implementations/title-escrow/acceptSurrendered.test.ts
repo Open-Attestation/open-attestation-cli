@@ -11,7 +11,7 @@ const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenId: "0x12345",
   network: "goerli",
   maxPriorityFeePerGasScale: 1,
-  feeData: false,
+  dryRun: false,
 };
 
 describe("title-escrow", () => {

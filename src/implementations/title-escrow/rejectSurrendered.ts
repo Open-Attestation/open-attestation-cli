@@ -14,7 +14,7 @@ export const rejectSurrendered = async ({
   tokenId,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -24,7 +24,7 @@ export const rejectSurrendered = async ({
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
-  if (feeData) {
+  if (dryRun) {
     await dryRunMode({
       estimatedGas: await tokenRegistryInstance.estimateGas.restore(tokenId),
       network,

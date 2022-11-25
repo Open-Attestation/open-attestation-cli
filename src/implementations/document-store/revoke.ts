@@ -13,11 +13,11 @@ export const revokeToDocumentStore = async ({
   hash,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: DocumentStoreRevokeCommand): Promise<{ transactionHash: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  if (feeData) {
+  if (dryRun) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       estimatedGas: await documentStore.estimateGas.revoke(hash),

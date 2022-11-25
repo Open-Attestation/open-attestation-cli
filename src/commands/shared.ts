@@ -45,7 +45,7 @@ export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmsSig
 
 export interface GasOption {
   maxPriorityFeePerGasScale: number;
-  feeData: boolean;
+  dryRun: boolean;
 }
 
 export type NetworkAndWalletSignerOption = NetworkOption & (Partial<WalletOption> | Partial<PrivateKeyOption>);
@@ -66,8 +66,8 @@ export const withGasPriceOption = (yargs: Argv): Argv =>
       demandOption: false,
       description: "Scale for estimated priority fees (maxPriorityFeePerGasScale * estimatedPriorityFeePerGas)",
     })
-    .option("feeData", {
-      alias: "fee-data",
+    .option("dry-run", {
+      alias: "dr",
       type: "boolean",
       default: false,
       description: "Provide estimated MaxFeePerGas and PriorityFeePerGas",

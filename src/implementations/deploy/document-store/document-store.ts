@@ -13,10 +13,10 @@ export const deployDocumentStore = async ({
   storeName,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: DeployDocumentStoreCommand): Promise<TransactionReceipt> => {
-  if (feeData) {
+  if (dryRun) {
     await dryRunMode({
       transaction: new DocumentStoreFactory().getDeployTransaction(storeName),
       network,

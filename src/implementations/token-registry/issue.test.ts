@@ -14,7 +14,7 @@ const deployParams: TokenRegistryIssueCommand = {
   address: "0x1234",
   network: "goerli",
   maxPriorityFeePerGasScale: 1,
-  feeData: false,
+  dryRun: false,
 };
 
 describe("token-registry", () => {

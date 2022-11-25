@@ -14,11 +14,11 @@ export const transferDocumentStoreOwnershipToWallet = async ({
   newOwner,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: DocumentStoreTransferOwnershipCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  if (feeData) {
+  if (dryRun) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       estimatedGas: await documentStore.estimateGas.transferOwnership(newOwner),

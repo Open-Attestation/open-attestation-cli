@@ -12,7 +12,7 @@ const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand =
   newBeneficiary: "0x1232",
   network: "goerli",
   maxPriorityFeePerGasScale: 1,
-  feeData: false,
+  dryRun: false,
 };
 
 describe("title-escrow", () => {

@@ -17,7 +17,7 @@ export const transferOwners = async ({
   newOwner,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: TitleEscrowEndorseTransferOfOwnersCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -28,7 +28,7 @@ export const transferOwners = async ({
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
-  if (feeData) {
+  if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder),
       network,

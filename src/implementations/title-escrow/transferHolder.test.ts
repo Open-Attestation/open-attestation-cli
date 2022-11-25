@@ -12,7 +12,7 @@ const transferHolderParams: TitleEscrowTransferHolderCommand = {
   tokenRegistry: "0x1234",
   network: "goerli",
   maxPriorityFeePerGasScale: 1,
-  feeData: false,
+  dryRun: false,
 };
 
 describe("title-escrow", () => {

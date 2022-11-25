@@ -14,11 +14,11 @@ export const issueToDocumentStore = async ({
   hash,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: DocumentStoreIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  if (feeData) {
+  if (dryRun) {
     const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       estimatedGas: await documentStore.estimateGas.issue(hash),

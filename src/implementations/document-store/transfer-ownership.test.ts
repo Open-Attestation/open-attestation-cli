@@ -13,7 +13,7 @@ const deployParams: DocumentStoreTransferOwnershipCommand = {
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   maxPriorityFeePerGasScale: 1,
-  feeData: false,
+  dryRun: false,
 };
 
 // TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory

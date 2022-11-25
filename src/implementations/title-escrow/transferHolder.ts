@@ -16,7 +16,7 @@ export const transferHolder = async ({
   tokenId,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: TitleEscrowTransferHolderCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -26,7 +26,7 @@ export const transferHolder = async ({
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
-  if (feeData) {
+  if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferHolder(to),
       network,

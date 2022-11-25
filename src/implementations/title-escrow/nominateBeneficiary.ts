@@ -16,7 +16,7 @@ export const nominateBeneficiary = async ({
   newBeneficiary,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: TitleEscrowNominateBeneficiaryCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -27,7 +27,7 @@ export const nominateBeneficiary = async ({
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
-  if (feeData) {
+  if (dryRun) {
     await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.nominate(newBeneficiary),

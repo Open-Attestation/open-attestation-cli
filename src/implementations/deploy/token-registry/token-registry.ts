@@ -20,7 +20,7 @@ export const deployTokenRegistry = async ({
   deployerAddress,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt & { contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -45,7 +45,7 @@ export const deployTokenRegistry = async ({
     deployer: await wallet.getAddress(),
   });
 
-  if (feeData) {
+  if (dryRun) {
     const estimatedGas: BigNumber = await factory.estimateGas.deploy(
       deployContractAddress.tokenImplementation,
       initParam

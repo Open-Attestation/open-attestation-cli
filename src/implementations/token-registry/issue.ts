@@ -16,7 +16,7 @@ export const issueToTokenRegistry = async ({
   tokenId,
   network,
   maxPriorityFeePerGasScale,
-  feeData,
+  dryRun,
   ...rest
 }: TokenRegistryIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
@@ -26,7 +26,7 @@ export const issueToTokenRegistry = async ({
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   });
-  if (feeData) {
+  if (dryRun) {
     // console.log(await tokenRegistry.get.mint(beneficiary, holder, tokenId),)
     await dryRunMode({
       estimatedGas: await tokenRegistry.estimateGas.mint(beneficiary, holder, tokenId),

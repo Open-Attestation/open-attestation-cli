@@ -10,7 +10,7 @@ const deployParams: DeployTokenRegistryCommand = {
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   maxPriorityFeePerGasScale: 1,
-  feeData: false,
+  dryRun: false,
 };
 
 describe("token-registry", () => {
@@ -81,7 +81,7 @@ describe("token-registry", () => {
           registrySymbol: "Tst",
           network: "goerli",
           maxPriorityFeePerGasScale: 1,
-          feeData: false,
+          dryRun: false,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"

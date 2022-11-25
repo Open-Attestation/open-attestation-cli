@@ -38,7 +38,7 @@ export const cancelTransaction = async ({
         to: wallet.getAddress(),
         from: wallet.getAddress(),
         nonce: BigNumber.from(parseFloat(transactionNonce)),
-        gasPrice: BigNumber.from(parseFloat(transactionGasPrice)), // ????
+        gasPrice: BigNumber.from(parseFloat(transactionGasPrice)),
       });
       signale.success(`Transaction has been cancelled`);
     } else {
