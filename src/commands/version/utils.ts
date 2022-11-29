@@ -16,7 +16,7 @@ export const getLatestRelease = async (): Promise<GithubReleaseSchema> => {
     );
 }
 
-export const getReleaseAsset = async (machinePlatform: string, availableAssets: [GithubAssetsSchema], latest: string): Promise<GithubDownloadInfo | undefined> => {
+export const getReleaseAsset = async (machinePlatform: string, availableAssets: GithubAssetsSchema[], latest: string): Promise<GithubDownloadInfo | undefined> => {
     let expectedPlatform: supportedPlatforms = "linux";
     switch (machinePlatform) {
       case "darwin":
@@ -85,7 +85,7 @@ export interface GithubReleaseSchema {
     tarball_url: string;
     zipball_url: string;
     body: string;
-    assets: [GithubAssetsSchema];
+    assets: GithubAssetsSchema[];
   }
   
   export interface GithubAssetsSchema {
