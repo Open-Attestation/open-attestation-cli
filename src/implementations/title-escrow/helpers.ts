@@ -1,8 +1,8 @@
 import {
   TitleEscrow,
   TitleEscrow__factory,
-  TradeTrustERC721,
-  TradeTrustERC721__factory,
+  TradeTrustToken,
+  TradeTrustToken__factory,
 } from "@govtechsg/token-registry/contracts";
 import { Wallet, constants } from "ethers";
 import signale from "signale";
@@ -19,7 +19,7 @@ export const connectToTitleEscrow = async ({
   address,
   wallet,
 }: ConnectToTitleEscrowArgs): Promise<TitleEscrow> => {
-  const tokenRegistry: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
+  const tokenRegistry: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
   return await TitleEscrow__factory.connect(titleEscrowAddress, wallet);
 };

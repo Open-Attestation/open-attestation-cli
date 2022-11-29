@@ -1,4 +1,4 @@
-import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
+import { TitleEscrow__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
@@ -16,10 +16,10 @@ const surrenderDocumentParams: TitleEscrowSurrenderDocumentCommand = {
 
 describe("title-escrow", () => {
   describe("surrender transferable record", () => {
-    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
+    const mockedTradeTrustTokenFactory: jest.Mock<TradeTrustToken__factory> = TradeTrustToken__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockedConnectERC721: jest.Mock = mockedTradeTrustTokenFactory.connect;
     const mockedTitleEscrowFactory: jest.Mock<TitleEscrow__factory> = TitleEscrow__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -31,7 +31,7 @@ describe("title-escrow", () => {
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustERC721Factory.mockReset();
+      mockedTradeTrustTokenFactory.mockReset();
       mockedConnectERC721.mockReset();
       mockedTitleEscrowFactory.mockReset();
       mockedConnectTitleEscrowFactory.mockReset();

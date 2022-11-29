@@ -1,4 +1,4 @@
-import { TradeTrustERC721, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
+import { TradeTrustToken, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
@@ -16,7 +16,7 @@ export const rejectSurrendered = async ({
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const tokenRegistryInstance: TradeTrustERC721 = await TradeTrustERC721__factory.connect(address, wallet);
+  const tokenRegistryInstance: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await tokenRegistryInstance.estimateGas.restore(tokenId),

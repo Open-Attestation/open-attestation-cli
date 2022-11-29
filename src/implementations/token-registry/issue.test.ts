@@ -1,4 +1,4 @@
-import { TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
+import { TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
@@ -20,10 +20,10 @@ const deployParams: TokenRegistryIssueCommand = {
 describe("token-registry", () => {
   describe("issue", () => {
     jest.setTimeout(30000);
-    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
+    const mockedTradeTrustTokenFactory: jest.Mock<TradeTrustToken__factory> = TradeTrustToken__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockedConnectERC721: jest.Mock = mockedTradeTrustTokenFactory.connect;
     const mockedIssue = jest.fn();
     const mockCallStaticSafeMint = jest.fn().mockResolvedValue(undefined);
 
@@ -41,7 +41,7 @@ describe("token-registry", () => {
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustERC721Factory.mockClear();
+      mockedTradeTrustTokenFactory.mockClear();
       mockCallStaticSafeMint.mockClear();
       mockedConnectERC721.mockReset();
       mockedConnectERC721.mockResolvedValue(mockTTERC721Contract);
