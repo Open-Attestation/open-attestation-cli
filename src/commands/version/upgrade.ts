@@ -25,10 +25,10 @@ export interface OpenAttestationDownloadArgs {
 export const handler = async (argv: OpenAttestationDownloadArgs): Promise<void> => {
   const { assets, name: latest } = await getLatestRelease();
   if (latest !== version) {
-      const machinePlatform = platform();
-      info(`The latest version of OpenAttestation CLI is ${latest}, you are currently on ${version}`);
-      info(`Downloading OpenAttestation CLI...`);
-      const downloadInfo: GithubDownloadInfo | undefined = await getReleaseAsset(machinePlatform, assets, latest);
+    const machinePlatform = platform();
+    info(`The latest version of OpenAttestation CLI is ${latest}, you are currently on ${version}`);
+    info(`Downloading OpenAttestation CLI...`);
+    const downloadInfo: GithubDownloadInfo | undefined = await getReleaseAsset(machinePlatform, assets, latest);
     if (!downloadInfo) {
       error("Download link for OpenAttestation CLI is currently unavailable.");
       error("Please visit the releases page for more information.");

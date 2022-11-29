@@ -10,7 +10,9 @@ export const describe = "Check if OpenAttestation CLI is latest version availabl
 export const builder = (yargs: Argv): Argv => yargs.version();
 
 export const handler = async (): Promise<void> => {
-  const { name: latest } = await request("https://api.github.com/repos/open-attestation/open-attestation-cli/releases/latest");
+  const { name: latest } = await request(
+    "https://api.github.com/repos/open-attestation/open-attestation-cli/releases/latest"
+  );
   if (latest !== version) {
     info(`The latest version of OpenAttestation CLI is ${latest}, you are currently on ${version}`);
     info(
