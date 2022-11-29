@@ -3,13 +3,13 @@ const version = process.env.npm_package_version;
 import { request } from "../dns/txt-record/create";
 import { success, info } from "signale";
 
-export const command = "update [options]";
+export const command = "check [options]";
 
 export const describe = "Check if OpenAttestation CLI is latest version available";
 
 export const builder = (yargs: Argv): Argv => yargs.version();
 
-export const handler = async (argv: Argv): Promise<void> => {
+export const handler = async (): Promise<void> => {
   const response = await request("https://api.github.com/repos/open-attestation/open-attestation-cli/releases/latest");
   const latest = response.name;
   if (latest !== version) {

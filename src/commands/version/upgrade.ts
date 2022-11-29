@@ -1,15 +1,14 @@
-// yargs.version
-
 import { Argv } from "yargs";
-import { getLogger } from "../../logger";
-const { trace } = getLogger("version:update");
 const version = process.env.npm_package_version;
-import https from "https";
 import { platform } from "os";
-import signale, { error, success, info } from "signale";
+import { error, success, info } from "signale";
 import fs from "fs";
 import { request } from "../dns/txt-record/create";
-import { ClientRequest } from "http";
+import fetch, { Response } from "node-fetch";
+
+import util from "util";
+import { pipeline } from "stream";
+import { progress as defaultProgress } from "../../implementations/utils/progress";
 
 export const command = "upgrade [options]";
 
@@ -24,18 +23,23 @@ export const builder = (yargs: Argv): Argv =>
     demandOption: false,
   });
 
-const downloadFile = async (url: string, path: string, filename: string): Promise<ClientRequest> => {
-  const file = fs.createWriteStream(path + filename);
-  const request = https.get(url, function (response) {
-    response.pipe(file);
-
-    // after download completed close filestream
-    file.on("finish", () => {
-      file.close();
-      console.log("Download Completed");
-    });
+const downloadFile = async (
+  downloadInfo: GithubDownloadInfo,
+  path: string,
+  progress: (progress: number) => void
+): Promise<void> => {
+  const { name: filename, url, size } = downloadInfo;
+  const newOAFile = fs.createWriteStream(path + filename);
+  const streamPipeline = util.promisify(pipeline);
+  const response: Response = await fetch(url);
+  if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
+  let downloadedSize = 0;
+  const totalSize = size;
+  response.body.on("data", (data: any) => {
+    downloadedSize += data.length;
+    progress(downloadedSize / totalSize);
   });
-  return request;
+  await streamPipeline(response.body, newOAFile);
 };
 
 type supportedPlatforms = "linux" | "win" | "macos";
@@ -70,22 +74,24 @@ export const handler = async (argv: OpenAttestationDownloadArgs): Promise<void> 
     }
     info(`The latest version of OpenAttestation CLI is ${latest}, you are currently on ${version}`);
     info(`Downloading OpenAttestation CLI...`);
-    let downloadURL: string;
-    let downloadName: string;
-
+    let downloadInfo: GithubDownloadInfo | undefined;
     assets.forEach((platformAsset) => {
       if (platformAsset.name.includes(expectedPlatform)) {
-        downloadURL = platformAsset.browser_download_url;
-        downloadName = platformAsset.name;
+        downloadInfo = {
+          name: `${latest}-${platformAsset.name}`,
+          size: platformAsset.size,
+          url: platformAsset.browser_download_url,
+        };
       }
     });
-    if (!downloadURL! || !downloadName!) {
+    if (!downloadInfo) {
       error("Download link for OpenAttestation CLI is currently unavailable.");
       error("Please visit the releases page for more information.");
       info(`https://github.com/open-attestation/open-attestation-cli/releases`);
     } else {
-      await downloadFile(downloadURL, argv.path, downloadName);
-      success(`OpenAttestation CLI have been successfully downloaded into ${argv.path}`);
+      const progress = defaultProgress("Downloading");
+      await downloadFile(downloadInfo, argv.path, progress);
+      success(`OpenAttestation CLI has been successfully downloaded into ${argv.path}${downloadInfo.name}`);
     }
   } else {
     success(`You do not need an upgrade of OpenAttestation CLI.`);
@@ -125,4 +131,10 @@ interface GithubAssetsSchema {
   created_at: string;
   updated_at: string;
   browser_download_url: string;
+}
+
+interface GithubDownloadInfo {
+  name: string;
+  url: string;
+  size: number;
 }
