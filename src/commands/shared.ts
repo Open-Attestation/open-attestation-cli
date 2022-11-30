@@ -44,7 +44,6 @@ export const isWalletOption = (option: any): option is WalletOption => {
 export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmsSignerOption> | Partial<WalletOption>;
 
 export interface GasOption {
-  gasPriceScale: number;
   dryRun: boolean;
 }
 

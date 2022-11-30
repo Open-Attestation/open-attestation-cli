@@ -12,7 +12,6 @@ const endorseChangeOwnersParams: TitleEscrowEndorseTransferOfOwnersCommand = {
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "goerli",
-  gasPriceScale: 1,
   dryRun: false,
 };
 

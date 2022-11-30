@@ -11,7 +11,6 @@ const deployParams: DeployDocumentStoreCommand = {
   owner: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
   dryRun: false,
 };
 
@@ -38,7 +37,6 @@ describe("document-store", () => {
       await deployDocumentStore({
         storeName: "Test",
         network: "goerli",
-        gasPriceScale: 1,
         dryRun: false,
       });
 
@@ -51,7 +49,6 @@ describe("document-store", () => {
         storeName: "Test",
         network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
-        gasPriceScale: 1,
         dryRun: false,
       });
 
@@ -81,7 +78,6 @@ describe("document-store", () => {
         deployDocumentStore({
           storeName: "Test",
           network: "goerli",
-          gasPriceScale: 1,
           dryRun: false,
         })
       ).rejects.toThrow(
@@ -95,7 +91,6 @@ describe("document-store", () => {
       await deployDocumentStore({
         storeName: "Test",
         network: "goerli",
-        gasPriceScale: 1,
         dryRun: false,
       });
 

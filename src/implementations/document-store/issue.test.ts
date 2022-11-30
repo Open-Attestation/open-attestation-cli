@@ -11,7 +11,6 @@ const deployParams: DocumentStoreIssueCommand = {
   address: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
   dryRun: false,
 };
 
@@ -52,7 +51,6 @@ describe("document-store", () => {
         hash: "0xabcd",
         address: "0x1234",
         network: "goerli",
-        gasPriceScale: 1,
         dryRun: false,
       });
 

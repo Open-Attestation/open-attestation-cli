@@ -12,7 +12,6 @@ const deployParams: DocumentStoreRevokeCommand = {
   address: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
   dryRun: false,
 };
 

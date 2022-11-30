@@ -9,21 +9,23 @@ const { trace } = getLogger("deploy:document-store");
 
 export const deployDocumentStore = async ({
   storeName,
+  owner,
   network,
   dryRun,
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const ownerAddress = owner ?? (await wallet.getAddress());
   if (dryRun) {
     await dryRunMode({
-      transaction: new DocumentStoreFactory().getDeployTransaction(storeName),
+      transaction: new DocumentStoreFactory().getDeployTransaction(storeName, ownerAddress),
       network,
     });
     process.exit(0);
   }
   const factory = new DocumentStoreFactory(wallet);
   signale.await(`Sending transaction to pool`);
-  const transaction = await factory.deploy(storeName);
+  const transaction = await factory.deploy(storeName, ownerAddress);
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);

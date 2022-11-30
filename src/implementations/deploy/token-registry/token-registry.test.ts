@@ -9,7 +9,6 @@ const deployParams: DeployTokenRegistryCommand = {
   registrySymbol: "Tst",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
   dryRun: false,
 };
 
@@ -80,7 +79,6 @@ describe("token-registry", () => {
           registryName: "Test",
           registrySymbol: "Tst",
           network: "goerli",
-          gasPriceScale: 1,
           dryRun: false,
         })
       ).rejects.toThrow(
