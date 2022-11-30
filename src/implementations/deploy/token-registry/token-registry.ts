@@ -1,10 +1,10 @@
-import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
-import { getWalletOrSigner } from "../../utils/wallet";
-import signale from "signale";
-import { getLogger } from "../../../logger";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { TradeTrustErc721Factory } from "@govtechsg/token-registry";
+import signale from "signale";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { getLogger } from "../../../logger";
 import { dryRunMode } from "../../utils/dryRun";
+import { getWalletOrSigner } from "../../utils/wallet";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -14,9 +14,10 @@ export const deployTokenRegistry = async ({
   network,
   gasPriceScale,
   dryRun,
+  walletPassword,
   ...rest
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
-  const wallet = await getWalletOrSigner({ network, ...rest });
+  const wallet = await getWalletOrSigner({ network, walletPassword, ...rest });
   const factory = new TradeTrustErc721Factory(wallet);
   if (dryRun) {
     const unsignedTx = factory.getDeployTransaction(registryName, registrySymbol, {});

@@ -90,6 +90,7 @@ export const withWalletOption = (yargs: Argv): Argv =>
     type: "string",
     description: "Path to file containing private key of owner account",
     normalize: true,
+    demandOption: true,
   });
 
 export const withAwsKmsSignerOption = (yargs: Argv): Argv =>

@@ -1,11 +1,39 @@
 import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import fetch from "node-fetch";
-import { info, success } from "signale";
-import { highlight } from "../../utils";
-import { ConfigFile, Form, Dns } from "./types";
-import { readFile } from "../../implementations/utils/disk";
+import { success } from "signale";
+import { NetworkCmdName } from "../../commands/networks";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
+import { readFile } from "../../implementations/utils/disk";
+import { highlight } from "../../utils";
+import { ConfigFile, Dns, Form, NetworkName } from "./types";
+
+interface ConfigWithNetwork {
+  configFile: ConfigFile;
+  network: NetworkCmdName;
+}
+
+export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
+  const networkName = NetworkName[network];
+  return {
+    ...configFile,
+    network: networkName,
+  };
+};
+
+export const getConfigWithUpdatedDocumentStorage = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
+  if (network === "goerli") {
+    return {
+      ...configFile,
+      documentStorage: {
+        apiKey: "randomKey",
+        url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
+      },
+    };
+  }
+  delete configFile.documentStorage;
+  return configFile;
+};
 
 interface UpdatedWallet {
   configFile: ConfigFile;
@@ -85,11 +113,15 @@ export const getConfigFile = async (configTemplatePath: string, configTemplateUr
   throw new Error("Config template reference not provided.");
 };
 
-export const getTokenRegistryAddress = async (encryptedWalletPath: string): Promise<string> => {
-  info(`Enter password to continue deployment of Token Registry`);
+export const getTokenRegistryAddress = async (
+  encryptedWalletPath: string,
+  walletPassword: string,
+  network: NetworkCmdName
+): Promise<string> => {
   const tokenRegistry = await deployTokenRegistry({
     encryptedWalletPath,
-    network: "goerli",
+    walletPassword,
+    network,
     gasPriceScale: 1,
     dryRun: false,
     registryName: "Token Registry",
@@ -100,11 +132,15 @@ export const getTokenRegistryAddress = async (encryptedWalletPath: string): Prom
   return contractAddress;
 };
 
-export const getDocumentStoreAddress = async (encryptedWalletPath: string): Promise<string> => {
-  info(`Enter password to continue deployment of Document Store`);
+export const getDocumentStoreAddress = async (
+  encryptedWalletPath: string,
+  walletPassword: string,
+  network: NetworkCmdName
+): Promise<string> => {
   const documentStore = await deployDocumentStore({
     encryptedWalletPath,
-    network: "goerli",
+    walletPassword,
+    network,
     gasPriceScale: 1,
     dryRun: false,
     storeName: "Document Store",
@@ -141,4 +177,15 @@ export const validate = (forms: Form[]): boolean => {
   });
   const anyInvalidForm = !isValidForm.some((validForm: boolean) => validForm === false);
   return anyInvalidForm;
+};
+
+export const getNetworkId: {
+  [key in NetworkCmdName]: number;
+} = {
+  [NetworkCmdName.Local]: 1337,
+  [NetworkCmdName.Mainnet]: 1,
+  [NetworkCmdName.Goerli]: 5,
+  [NetworkCmdName.Sepolia]: 11155111,
+  [NetworkCmdName.Polygon]: 137,
+  [NetworkCmdName.Mumbai]: 80001,
 };

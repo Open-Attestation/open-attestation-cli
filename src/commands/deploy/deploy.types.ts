@@ -4,12 +4,14 @@ export type DeployDocumentStoreCommand = NetworkAndWalletSignerOption &
   GasOption & {
     storeName: string;
     owner?: string;
+    walletPassword?: string;
   };
 
 export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
   GasOption & {
     registryName: string;
     registrySymbol: string;
+    walletPassword?: string;
   };
 
 export type DeployTitleEscrowCreatorCommand = NetworkAndWalletSignerOption & GasOption;
