@@ -9,13 +9,11 @@ const { trace } = getLogger("deploy:document-store");
 
 export const deployDocumentStore = async ({
   storeName,
-  owner,
   network,
   dryRun,
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const ownerAddress = owner ?? (await wallet.getAddress());
   if (dryRun) {
     await dryRunMode({
       transaction: new DocumentStoreFactory().getDeployTransaction(storeName),
