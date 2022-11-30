@@ -301,6 +301,10 @@ open-attestation deploy document-store "My Name" --network goerli
 
 ✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
+By default, the owner of the document store will be the deployer. You can specify a different owner using the `--owner` option:
+```bash 
+open-attestation deploy document-store "My Name" --owner 0x1234 --network goerli
+```
 
 #### Issue document to document store
 

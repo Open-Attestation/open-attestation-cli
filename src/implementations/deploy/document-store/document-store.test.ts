@@ -8,6 +8,7 @@ jest.mock("@govtechsg/document-store");
 
 const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",
+  owner: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   gasPriceScale: 1,
@@ -65,8 +66,8 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
+      expect(mockedDeploy.mock.calls[0][1]).toStrictEqual(deployParams.owner);
       // price should be any length string of digits
-      // expect(mockedDeploy.mock.calls[0][1].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
@@ -86,6 +87,21 @@ describe("document-store", () => {
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
+    });
+
+    it("should default the owner as the deployer", async () => {
+      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
+
+      await deployDocumentStore({
+        storeName: "Test",
+        network: "goerli",
+        gasPriceScale: 1,
+        dryRun: false,
+      });
+
+      const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
+      const addr = await passedSigner.getAddress();
+      expect(mockedDeploy.mock.calls[0][1]).toStrictEqual(addr);
     });
   });
 });
