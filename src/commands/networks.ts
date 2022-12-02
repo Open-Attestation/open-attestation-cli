@@ -14,6 +14,8 @@ enum NetworkCmdName {
   Sepolia = "sepolia",
   Polygon = "polygon",
   Mumbai = "mumbai",
+  XDC = "xdc",
+  XDCApothem = "xdcapothem",
 }
 
 const defaultInfuraProvider =
@@ -60,6 +62,14 @@ export const supportedNetwork: {
   [NetworkCmdName.Mumbai]: {
     explorer: "https://mumbai.polygonscan.com",
     provider: defaultInfuraProvider("maticmum"),
+  },
+  [NetworkCmdName.XDC]: {
+    explorer: "https://xdcscan.io",
+    provider: jsonRpcProvider("https://erpc.xinfin.network"),
+  },
+  [NetworkCmdName.XDCApothem]: {
+    explorer: "https://apothem.xdcscan.io",
+    provider: jsonRpcProvider("https://erpc.apothem.network"),
   },
 };
 
