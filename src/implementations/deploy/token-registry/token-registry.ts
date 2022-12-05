@@ -14,10 +14,10 @@ export const deployTokenRegistry = async ({
   network,
   gasPriceScale,
   dryRun,
-  walletPassword,
+  passedOnWallet,
   ...rest
 }: DeployTokenRegistryCommand): Promise<TransactionReceipt> => {
-  const wallet = await getWalletOrSigner({ network, walletPassword, ...rest });
+  const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const factory = new TradeTrustErc721Factory(wallet);
   if (dryRun) {
     const unsignedTx = factory.getDeployTransaction(registryName, registrySymbol, {});

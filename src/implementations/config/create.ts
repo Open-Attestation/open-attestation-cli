@@ -17,6 +17,7 @@ import {
   validate,
 } from "./helpers";
 import { Dns } from "./types";
+import { getWalletOrSigner } from "../utils/wallet";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -25,12 +26,13 @@ export const create = async ({
   outputDir,
   configTemplatePath,
   configTemplateUrl,
-  walletPassword,
   network,
 }: CreateConfigCommand): Promise<string> => {
   const walletStr = await readFile(encryptedWalletPath);
   const { address } = JSON.parse(walletStr);
   info(`Wallet detected at ${encryptedWalletPath}`);
+
+  const passedOnWallet = await getWalletOrSigner({ network, encryptedWalletPath });
 
   const configFile = await getConfigFile(configTemplatePath, configTemplateUrl);
   const { forms } = configFile;
@@ -66,7 +68,7 @@ export const create = async ({
   let dnsDid: Dns = "";
 
   if (hasTransferableRecord) {
-    tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath, walletPassword, network);
+    tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath, passedOnWallet, network);
     dnsTransferableRecord = await createTemporaryDns({
       networkId: networkId,
       address: tokenRegistryAddress,
@@ -75,7 +77,7 @@ export const create = async ({
   }
 
   if (hasDocumentStore) {
-    documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath, walletPassword, network);
+    documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath, passedOnWallet, network);
     dnsVerifiable = await createTemporaryDns({
       networkId: networkId,
       address: documentStoreAddress,

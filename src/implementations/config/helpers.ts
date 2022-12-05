@@ -7,6 +7,8 @@ import { deployTokenRegistry } from "../../implementations/deploy/token-registry
 import { readFile } from "../../implementations/utils/disk";
 import { highlight } from "../../utils";
 import { ConfigFile, Dns, Form, NetworkName } from "./types";
+import { Wallet } from "ethers";
+import { ConnectedSigner } from "../../implementations/utils/wallet";
 
 interface ConfigWithNetwork {
   configFile: ConfigFile;
@@ -115,12 +117,12 @@ export const getConfigFile = async (configTemplatePath: string, configTemplateUr
 
 export const getTokenRegistryAddress = async (
   encryptedWalletPath: string,
-  walletPassword: string,
+  passedOnWallet: Wallet | ConnectedSigner,
   network: NetworkCmdName
 ): Promise<string> => {
   const tokenRegistry = await deployTokenRegistry({
     encryptedWalletPath,
-    walletPassword,
+    passedOnWallet,
     network,
     gasPriceScale: 1,
     dryRun: false,
@@ -134,12 +136,12 @@ export const getTokenRegistryAddress = async (
 
 export const getDocumentStoreAddress = async (
   encryptedWalletPath: string,
-  walletPassword: string,
+  passedOnWallet: Wallet | ConnectedSigner,
   network: NetworkCmdName
 ): Promise<string> => {
   const documentStore = await deployDocumentStore({
     encryptedWalletPath,
-    walletPassword,
+    passedOnWallet,
     network,
     gasPriceScale: 1,
     dryRun: false,

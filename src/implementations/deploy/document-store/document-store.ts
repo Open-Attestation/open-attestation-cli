@@ -13,10 +13,10 @@ export const deployDocumentStore = async ({
   network,
   gasPriceScale,
   dryRun,
-  walletPassword,
+  passedOnWallet,
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
-  const wallet = await getWalletOrSigner({ network, walletPassword, ...rest });
+  const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const ownerAddress = owner ?? (await wallet.getAddress());
 
   if (dryRun) {

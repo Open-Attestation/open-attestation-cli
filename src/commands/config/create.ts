@@ -34,9 +34,6 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
   try {
     info("Creating a new config file");
 
-    const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
-    args.walletPassword = password;
-
     const { useTemplateUrl } = await inquirer.prompt({
       type: "confirm",
       name: "useTemplateUrl",
