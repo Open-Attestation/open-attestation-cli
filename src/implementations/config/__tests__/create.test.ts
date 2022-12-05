@@ -49,7 +49,6 @@ describe("create config file", () => {
     folder = tmp.dirSync();
     args = {
       network: NetworkCmdName.Goerli,
-      walletPassword: "password",
       outputDir: folder.name,
       encryptedWalletPath: "src/implementations/config/__tests__/wallet.json",
       configTemplatePath: "",
@@ -62,6 +61,9 @@ describe("create config file", () => {
   });
 
   it("should create a config file with correct values when using configTemplatePath", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
     mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd" });
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
@@ -75,6 +77,9 @@ describe("create config file", () => {
   });
 
   it("should create a config file with correct values when using configTemplateUrl", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
     mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd" });
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
@@ -88,6 +93,9 @@ describe("create config file", () => {
   });
 
   it("should create a config file with the correct network", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
     mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd" });
     mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
     mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
@@ -103,6 +111,9 @@ describe("create config file", () => {
   });
 
   it("should throw an error when detected config file with wrong form type", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
     args.configTemplatePath = "src/implementations/config/__tests__/error-config-file.json";
 
     await expect(createConfig(args)).rejects.toHaveProperty(
