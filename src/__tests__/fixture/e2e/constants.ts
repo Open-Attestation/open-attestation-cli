@@ -3,8 +3,8 @@ import { constants } from "@govtechsg/token-registry";
 export const { contractAddress } = constants;
 
 export const network = "local";
-export const chainId = 1337
-export const forkedNetwork = 5
+export const chainId = 1337;
+export const forkedNetwork = 5;
 
 export const mnemonic = "indicate swing place chair flight used hammer soon photo region volume shuffle";
 
@@ -21,7 +21,12 @@ export const receiver = {
 };
 
 export const creators = {
-    titleEscrowFactory: contractAddress.TitleEscrowFactory[forkedNetwork],
-    deployer: contractAddress.Deployer[forkedNetwork],
-    tokenImplementation: contractAddress.TokenImplementation[forkedNetwork],
-}
+  titleEscrowFactory: contractAddress.TitleEscrowFactory[forkedNetwork],
+  deployer: contractAddress.Deployer[forkedNetwork],
+  tokenImplementation: contractAddress.TokenImplementation[forkedNetwork],
+};
+
+export const emoji = {
+  tick: "✔",
+  cross: "✖",
+};

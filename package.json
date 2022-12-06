@@ -14,7 +14,7 @@
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --project ./tsconfig.prod.json",
     "build:type": "tsc -d --emitDeclarationOnly --outDir dist/types",
     "clean": "rm -rf dist/",
-    "blockchain": "ganache --wallet.mnemonic \"indicate swing place chair flight used hammer soon photo region volume shuffle\" -i 1337 --fork.network goerli",
+    "blockchain": "ganache --wallet.mnemonic \"indicate swing place chair flight used hammer soon photo region volume shuffle\" -i 1337 --fork.network goerli --miner.blockTime 1",
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
