@@ -12,12 +12,12 @@ import {
   getConfigWithUpdatedNetwork,
   getConfigWithUpdatedWallet,
   getDocumentStoreAddress,
-  getNetworkId,
   getTokenRegistryAddress,
   validate,
 } from "./helpers";
 import { Dns } from "./types";
 import { getWalletOrSigner } from "../utils/wallet";
+import { supportedNetwork } from "../../commands/networks";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 
@@ -32,12 +32,12 @@ export const create = async ({
   const { address } = JSON.parse(walletStr);
   info(`Wallet detected at ${encryptedWalletPath}`);
 
-  const passedOnWallet = await getWalletOrSigner({ network, encryptedWalletPath });
+  const wallet = await getWalletOrSigner({ network, encryptedWalletPath });
 
   const configFile = await getConfigFile(configTemplatePath, configTemplateUrl);
   const { forms } = configFile;
 
-  const networkId = getNetworkId[network];
+  const networkId = supportedNetwork[network].networkId;
 
   if (!validate(forms)) {
     throw new Error("Invalid form detected in config file, please update the form before proceeding.");
@@ -68,7 +68,7 @@ export const create = async ({
   let dnsDid: Dns = "";
 
   if (hasTransferableRecord) {
-    tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath, passedOnWallet, network);
+    tokenRegistryAddress = await getTokenRegistryAddress(encryptedWalletPath, wallet, network);
     dnsTransferableRecord = await createTemporaryDns({
       networkId: networkId,
       address: tokenRegistryAddress,
@@ -77,7 +77,7 @@ export const create = async ({
   }
 
   if (hasDocumentStore) {
-    documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath, passedOnWallet, network);
+    documentStoreAddress = await getDocumentStoreAddress(encryptedWalletPath, wallet, network);
     dnsVerifiable = await createTemporaryDns({
       networkId: networkId,
       address: documentStoreAddress,

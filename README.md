@@ -501,7 +501,7 @@ open-attestation deploy document-store "My Name" --network goerli --key 00000000
 
 This command will generate a config file with sandbox DNS, document store and token registry.
 
-> Please note that a wallet.json file with sufficient **funds** in the specific network must be provided in order for this command to work.
+> Please note that a wallet.json file with sufficient **funds** in the specified network must be provided in order for this command to work.
 
 Command options to take note:
 

@@ -1,12 +1,12 @@
 import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import fetch from "node-fetch";
 import { success } from "signale";
-import { NetworkCmdName } from "../../commands/networks";
+import { NetworkCmdName, supportedNetwork } from "../../commands/networks";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 import { readFile } from "../../implementations/utils/disk";
 import { highlight } from "../../utils";
-import { ConfigFile, Dns, Form, NetworkName } from "./types";
+import { ConfigFile, Dns, Form } from "./types";
 import { Wallet } from "ethers";
 import { ConnectedSigner } from "../../implementations/utils/wallet";
 
@@ -16,7 +16,7 @@ interface ConfigWithNetwork {
 }
 
 export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
-  const networkName = NetworkName[network];
+  const networkName = supportedNetwork[network].networkName;
   return {
     ...configFile,
     network: networkName,
@@ -179,15 +179,4 @@ export const validate = (forms: Form[]): boolean => {
   });
   const anyInvalidForm = !isValidForm.some((validForm: boolean) => validForm === false);
   return anyInvalidForm;
-};
-
-export const getNetworkId: {
-  [key in NetworkCmdName]: number;
-} = {
-  [NetworkCmdName.Local]: 1337,
-  [NetworkCmdName.Mainnet]: 1,
-  [NetworkCmdName.Goerli]: 5,
-  [NetworkCmdName.Sepolia]: 11155111,
-  [NetworkCmdName.Polygon]: 137,
-  [NetworkCmdName.Mumbai]: 80001,
 };

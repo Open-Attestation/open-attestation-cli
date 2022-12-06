@@ -48,8 +48,7 @@ export const getWalletOrSigner = async ({
 > => {
   const provider = getSupportedNetwork(network ?? "mainnet").provider();
   if (isWalletOption(options)) {
-    const walletPass = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
-    const { password } = walletPass;
+    const { password } = await inquirer.prompt({ type: "password", name: "password", message: "Wallet password" });
 
     const file = await readFile(options.encryptedWalletPath);
     const wallet = await ethers.Wallet.fromEncryptedJson(file, password, progress);

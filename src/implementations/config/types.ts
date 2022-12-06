@@ -21,19 +21,8 @@ export type Form = {
   fileName?: string;
 };
 
-export enum NetworkName {
-  local = "local",
-  mainnet = "homestead",
-  goerli = "goerli",
-  sepolia = "sepolia",
-  polygon = "matic",
-  mumbai = "maticmum",
-}
-
-export type Network = "homestead" | "local" | "goerli" | "sepolia" | "matic" | "maticmum";
-
 export interface ConfigFile {
-  network: Network;
+  network: string;
   wallet: WalletEncryptedJson;
   forms: Form[];
   documentStorage?: {
