@@ -1,19 +1,18 @@
 import { isAddress } from "web3-utils";
 import { DeployDocumentStoreCommand, DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { creators, emoji, network } from "./constants";
-import { run } from "./shell";
+import { extractLine, LineInfo, run } from "./shell";
 import { Wallet } from "ethers";
 import { TokenRegistryIssueCommand } from "../../../commands/token-registry/token-registry-command.type";
 import {
   generateDeployDocumentStoreCommand,
   generateDeployTokenRegistryCommand,
   generateMintTitleEscrowCommand,
+  generateNominateCommand,
 } from "./commands";
+import { TitleEscrowNominateBeneficiaryCommand } from "../../../commands/title-escrow/title-escrow-command.type";
 
 const defaults = {
-  factoryAddress: creators.titleEscrowFactory,
-  tokenImplementationAddress: creators.tokenImplementation,
-  deployerAddress: creators.deployer,
   network: network,
   dryRun: false,
 };
@@ -27,14 +26,16 @@ export const deployTokenRegistry = (
   tokenRegistryParameters?: DeployTokenRegistryCommand
 ): string => {
   if (!tokenRegistryParameters) {
-    const index = numberGenerator(2);
+    const index = numberGenerator(100);
     tokenRegistryParameters = {
       registryName: `Test Tokenx ${index}`,
       registrySymbol: `TKNx${index}`,
+      factoryAddress: creators.titleEscrowFactory,
+      tokenImplementationAddress: creators.tokenImplementation,
+      deployerAddress: creators.deployer,
       ...defaults,
     };
   }
-
   const command = generateDeployTokenRegistryCommand(tokenRegistryParameters, privateKey);
   const results = run(command, true);
   const tokenRegistrySuccessFormat = `${emoji.tick}  success   Token registry deployed at `;
@@ -52,7 +53,7 @@ export const deployDocumentStore = (
   documentStoreParameters?: DeployDocumentStoreCommand
 ): string => {
   if (!documentStoreParameters) {
-    const index = numberGenerator(2);
+    const index = numberGenerator(100);
     documentStoreParameters = {
       storeName: `Test Document Store ${index}`,
       ...defaults,
@@ -83,7 +84,13 @@ export const generateTokenId = (): string => {
   throw new Error("Unable to generate tokenIds");
 };
 
-export const mintToken = (privateKey: string, titleEscrowParameter?: TokenRegistryIssueCommand): string => {
+export interface TokenInfo {
+  tokenRegistry: string,
+  tokenId: string,
+  titleEscrowAddress?: string,
+}
+
+export const mintToken = (privateKey: string, titleEscrowParameter?: TokenRegistryIssueCommand): TokenInfo => {
   if (!titleEscrowParameter) {
     const wallet = new Wallet(privateKey);
     titleEscrowParameter = {
@@ -104,5 +111,41 @@ export const mintToken = (privateKey: string, titleEscrowParameter?: TokenRegist
   const titleEscrowAddressLine = splitResults[splitResults.length - 2];
   const titleEscrowAddress = titleEscrowAddressLine.trim().substring(115, 115 + 42);
   if (!isAddress(titleEscrowAddress)) throw new Error("Unable to find token");
-  return titleEscrowAddress;
+  return {
+    tokenRegistry: titleEscrowParameter.address,
+    tokenId: titleEscrowParameter.tokenId,
+    titleEscrowAddress
+  };
 };
+
+export const mintNominatedToken = (privateKey: string, nominee: string) => {
+  const { tokenRegistry, tokenId } = mintToken(privateKey);
+  const nominateParameter: TitleEscrowNominateBeneficiaryCommand = {
+    tokenId: tokenId,
+    tokenRegistry: tokenRegistry,
+    newBeneficiary: nominee,
+    ...defaults
+  }
+  nominateToken(privateKey, nominateParameter);
+  return { tokenRegistry, tokenId };
+}
+
+export const nominateToken = (privateKey: string, nominateParameter: TitleEscrowNominateBeneficiaryCommand) => {
+  const command = generateNominateCommand(nominateParameter, privateKey);
+  const results = run(command, true);
+  const frontFormat = `${emoji.tick}  success   Transferable record with hash `;
+  const middleFormat = `'s holder has been successfully nominated to new owner with address `
+  const queryResults = extractLine(results, frontFormat);
+  if (!queryResults) throw new Error("Unable to nominate token");
+  const filteredLine = (queryResults as LineInfo[])[0].lineContent.trim();
+  const checkSuccess = filteredLine.includes(frontFormat);
+  const checkContext = filteredLine.includes(middleFormat);
+  expect(checkSuccess && checkContext).toBe(true);
+  if (!checkSuccess || !checkContext) throw new Error("Unexpected nominate token format");
+  const resultTokenId = filteredLine.trim().substring(frontFormat.length, frontFormat.length + 66);
+  expect(resultTokenId).toBe(nominateParameter.tokenId);
+  if (resultTokenId !== nominateParameter.tokenId) throw new Error("Unexpected nominate tokenid");
+  const destination = filteredLine.trim().substring(filteredLine.length - 42);
+  if (destination !== nominateParameter.newBeneficiary) throw new Error("Unexpected nominee");
+};
+

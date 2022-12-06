@@ -30,3 +30,6 @@ export const emoji = {
   tick: "✔",
   cross: "✖",
 };
+
+export const silent = true;
+export const verbose = true;

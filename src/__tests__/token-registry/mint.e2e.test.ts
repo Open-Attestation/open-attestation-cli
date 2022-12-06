@@ -1,7 +1,9 @@
 import { deployTokenRegistry, generateTokenId } from "../fixture/e2e/utils";
 import { run } from "../fixture/e2e/shell";
-import { emoji, network, owner } from "../fixture/e2e/constants";
+import { emoji, network, owner, silent } from "../fixture/e2e/constants";
 import { isAddress } from "web3-utils";
+import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
+import { generateMintTitleEscrowCommand } from "../fixture/e2e/commands";
 
 describe("deploy token-registry", () => {
   jest.setTimeout(90000);
@@ -13,7 +15,16 @@ describe("deploy token-registry", () => {
 
   it("should be able to mint title-escrow on token-registry", async () => {
     const tokenId = generateTokenId();
-    const command = `npm run dev -- token-registry mint --address ${tokenRegistryAddress} --tokenId ${tokenId} --beneficiary ${owner.ethAddress} --holder ${owner.ethAddress} -k ${owner.privateKey} --network ${network}`;
+    const titleEscrowParameter: TokenRegistryIssueCommand = {
+      address: tokenRegistryAddress,
+      tokenId: tokenId,
+      beneficiary: owner.ethAddress,
+      holder: owner.ethAddress,
+      network: network,
+      dryRun: false,
+    }
+    // const command = `npm run dev -- token-registry mint --address ${tokenRegistryAddress} --tokenId ${tokenId} --beneficiary ${owner.ethAddress} --holder ${owner.ethAddress} -k ${owner.privateKey} --network ${network}`;
+    const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     const tokenRegistrySuccessFormat = `${emoji.tick}  success   Token with hash `;
     const checkSuccess = results.includes(tokenRegistrySuccessFormat);
