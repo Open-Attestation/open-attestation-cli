@@ -3,11 +3,9 @@ import { BigNumber, ethers } from "ethers";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
 import { utils } from "@govtechsg/token-registry";
 import { DeployContractAddress, encodeInitParams, retrieveFactoryAddress } from "./helpers";
-import { TransactionReceipt } from "@ethersproject/providers";
 import signale from "signale";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
-import { dryRunMode } from "../../utils/dryRun";
 import { getWalletOrSigner } from "../../utils/wallet";
 
 const { trace } = getLogger("deploy:token-registry");
