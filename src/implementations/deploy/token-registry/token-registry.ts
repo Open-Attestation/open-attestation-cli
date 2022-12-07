@@ -22,7 +22,7 @@ export const deployTokenRegistry = async ({
   dryRun,
   passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
-}: DeployTokenRegistryCommand): Promise<{contractAddress: string}> => {
+}: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
   const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployContractAddressInput: DeployContractAddress = {
