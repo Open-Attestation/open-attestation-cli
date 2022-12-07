@@ -1,8 +1,7 @@
-import { deployTokenRegistry, generateTokenId, mintToken, nominateToken } from "../fixture/e2e/utils";
+import { deployTokenRegistry, mintNominatedToken } from "../fixture/e2e/utils";
 import { extractLine, LineInfo, run } from "../fixture/e2e/shell";
 import { emoji, network, owner, receiver } from "../fixture/e2e/constants";
-import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
-import { TitleEscrowNominateBeneficiaryCommand, TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { generateEndorseTransferOwnerCommand } from "../fixture/e2e/commands";
 
 describe("nominate title-escrow", () => {
@@ -13,13 +12,12 @@ describe("nominate title-escrow", () => {
     tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
   });
 
-  const defaultTitleEscrow = {
-    beneficiary: owner.ethAddress,
-    holder: owner.ethAddress,
-    network: network,
-    dryRun: false,
-  };
-
+  // const defaultTitleEscrow = {
+  //   beneficiary: owner.ethAddress,
+  //   holder: owner.ethAddress,
+  //   network: network,
+  //   dryRun: false,
+  // };
 
   const defaultTransferHolder = {
     newBeneficiary: receiver.ethAddress,
@@ -28,24 +26,21 @@ describe("nominate title-escrow", () => {
   };
 
   it("should be able to nominate title-escrow on token-registry", async () => {
-    const tokenId = generateTokenId();
-    const titleEscrow: TokenRegistryIssueCommand = {
-        address: tokenRegistryAddress,
-        tokenId: tokenId,
-        ...defaultTitleEscrow,
-    }
-    mintToken(owner.privateKey, titleEscrow);
+    const { tokenRegistry, tokenId } = mintNominatedToken(
+      owner.privateKey,
+      defaultTransferHolder.newBeneficiary,
+      tokenRegistryAddress
+    );
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
-        tokenId: titleEscrow.tokenId,
-        tokenRegistry: titleEscrow.address,
-        ...defaultTransferHolder,
-    }
-    nominateToken(owner.privateKey, transferHolder)
-    
-    const command = generateEndorseTransferOwnerCommand(transferHolder, owner.privateKey)
+      tokenId: tokenId,
+      tokenRegistry: tokenRegistry,
+      ...defaultTransferHolder,
+    };
+
+    const command = generateEndorseTransferOwnerCommand(transferHolder, owner.privateKey);
     const results = run(command);
     const frontFormat = `${emoji.tick}  success   Transferable record with hash `;
-    const middleFormat = `'s holder has been successfully endorsed to approved beneficiary at `
+    const middleFormat = `'s holder has been successfully endorsed to approved beneficiary at `;
     const queryResults = extractLine(results, frontFormat);
     expect(queryResults).toBeTruthy();
     const filteredLine = (queryResults as LineInfo[])[0].lineContent.trim();

@@ -4,7 +4,7 @@ import { deployTokenRegistry, generateTokenId, mintToken } from "../fixture/e2e/
 import { extractLine, LineInfo, run } from "../fixture/e2e/shell";
 import { emoji, network, owner, receiver } from "../fixture/e2e/constants";
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
-import { TitleEscrowNominateBeneficiaryCommand, TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { generateNominateCommand } from "../fixture/e2e/commands";
 
 describe("nominate title-escrow", () => {
@@ -31,20 +31,20 @@ describe("nominate title-escrow", () => {
   it("should be able to nominate title-escrow on token-registry", async () => {
     const tokenId = generateTokenId();
     const titleEscrow: TokenRegistryIssueCommand = {
-        address: tokenRegistryAddress,
-        tokenId: tokenId,
-        ...defaultTitleEscrow,
-    }
+      address: tokenRegistryAddress,
+      tokenId: tokenId,
+      ...defaultTitleEscrow,
+    };
     mintToken(owner.privateKey, titleEscrow);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
-        tokenId: titleEscrow.tokenId,
-        tokenRegistry: titleEscrow.address,
-        ...defaultTransferHolder,
-    }
+      tokenId: titleEscrow.tokenId,
+      tokenRegistry: titleEscrow.address,
+      ...defaultTransferHolder,
+    };
     const command = generateNominateCommand(transferHolder, owner.privateKey);
     const results = run(command);
     const frontFormat = `${emoji.tick}  success   Transferable record with hash `;
-    const middleFormat = `'s holder has been successfully nominated to new owner with address `
+    const middleFormat = `'s holder has been successfully nominated to new owner with address `;
     const queryResults = extractLine(results, frontFormat);
     expect(queryResults).toBeTruthy();
     const filteredLine = (queryResults as LineInfo[])[0].lineContent.trim();
