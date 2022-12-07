@@ -80,8 +80,9 @@ export const withPrivateKeyOption = (yargs: Argv): Argv =>
 export const withWalletOption = (yargs: Argv): Argv =>
   yargs.option("encrypted-wallet-path", {
     type: "string",
-    description: "Path to file containing private key of owner account",
+    description: "Path to wallet.json file",
     normalize: true,
+    demandOption: true,
   });
 
 export const withAwsKmsSignerOption = (yargs: Argv): Argv =>

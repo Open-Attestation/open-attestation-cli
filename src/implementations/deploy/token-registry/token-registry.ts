@@ -1,12 +1,15 @@
 import { TDocDeployer, TDocDeployer__factory } from "@govtechsg/token-registry/contracts";
-import { getWalletOrSigner } from "../../utils/wallet";
-import signale from "signale";
-import { getLogger } from "../../../logger";
-import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { BigNumber, ethers } from "ethers";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
 import { utils } from "@govtechsg/token-registry";
 import { DeployContractAddress, encodeInitParams, retrieveFactoryAddress } from "./helpers";
+import { TransactionReceipt } from "@ethersproject/providers";
+import signale from "signale";
+import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { getLogger } from "../../../logger";
+import { dryRunMode } from "../../utils/dryRun";
+import { getWalletOrSigner } from "../../utils/wallet";
+
 const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
@@ -17,9 +20,10 @@ export const deployTokenRegistry = async ({
   deployerAddress,
   network,
   dryRun,
+  passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
-}: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
-  const wallet = await getWalletOrSigner({ network, ...rest });
+}: DeployTokenRegistryCommand): Promise<{contractAddress: string}> => {
+  const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployContractAddressInput: DeployContractAddress = {
     titleEscrowFactory: factoryAddress || "",
