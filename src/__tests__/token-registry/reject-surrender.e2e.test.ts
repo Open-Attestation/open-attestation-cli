@@ -3,7 +3,7 @@ import { extractLine, LineInfo, run } from "../fixture/e2e/shell";
 import { emoji, network, owner } from "../fixture/e2e/constants";
 import { generateRejectSurrenderCommand } from "../fixture/e2e/commands";
 
-describe("surrender title-escrow", () => {
+describe("reject surrender title-escrow", () => {
   jest.setTimeout(90000);
 
   let tokenRegistryAddress = "";
@@ -18,7 +18,7 @@ describe("surrender title-escrow", () => {
     dryRun: false,
   };
 
-  it("should be able to surrender title-escrow on token-registry", async () => {
+  it("should be able to reject surrender title-escrow on token-registry", async () => {
     const { tokenRegistry, tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
     const command = generateRejectSurrenderCommand({ tokenRegistry, tokenId, ...defaultTitleEscrow }, owner.privateKey);
     const results = run(command);

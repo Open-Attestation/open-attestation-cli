@@ -4,7 +4,7 @@ import { emoji, network, owner, receiver } from "../fixture/e2e/constants";
 import { TitleEscrowEndorseTransferOfOwnersCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { generateTransferOwnersCommand } from "../fixture/e2e/commands";
 
-describe("nominate title-escrow", () => {
+describe("endorse change owner title-escrow", () => {
   jest.setTimeout(90000);
 
   let tokenRegistryAddress = "";
@@ -26,7 +26,7 @@ describe("nominate title-escrow", () => {
     dryRun: false,
   };
 
-  it("should be able to nominate title-escrow on token-registry", async () => {
+  it("should be able to endorse change owner title-escrow on token-registry", async () => {
     const { tokenRegistry, tokenId } = mintNominatedToken(
       owner.privateKey,
       defaultTransferOwners.newOwner,

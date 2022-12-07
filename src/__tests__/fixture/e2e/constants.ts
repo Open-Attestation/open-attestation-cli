@@ -32,4 +32,4 @@ export const emoji = {
 };
 
 export const silent = true;
-export const verbose = true;
+export const verbose = false;

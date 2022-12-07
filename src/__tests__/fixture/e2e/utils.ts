@@ -121,7 +121,6 @@ export const mintToken = (privateKey: string, titleEscrowParameter: TokenRegistr
   const titleEscrowAddressLine = splitResults[splitResults.length - 2];
   const titleEscrowAddress = titleEscrowAddressLine.trim().substring(115, 115 + 42);
   if (!isAddress(titleEscrowAddress)) throw new Error("Unable to find token");
-  if (titleEscrowAddress !== titleEscrowParameter.tokenId) throw new Error("tokenId mismatch");
   return {
     tokenRegistry: titleEscrowParameter.address,
     tokenId: titleEscrowParameter.tokenId,
