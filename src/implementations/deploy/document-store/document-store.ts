@@ -13,7 +13,7 @@ export const deployDocumentStore = async ({
   network,
   gasPriceScale,
   dryRun,
-  passedOnWallet, // wallet variable that we passed from config create implementation.
+  passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
   const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
