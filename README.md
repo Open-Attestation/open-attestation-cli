@@ -45,38 +45,38 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 
 #### List of features with the required options
 
-|                                            | Private Key | Wallet | Aws Kms |
-| ------------------------------------------ | ----------- | ------ | ------- |
-| Create config                              | ❎          | ✔️     | ❎      |
-| Deploy document store                      | ✔           | ✔      | ✔       |
-| Deploy title escrow                        | ✔           | ✔      | ✔       |
-| Deploy title escrow creator                | ✔           | ✔      | ✔       |
-| Deploy token registry                      | ✔           | ✔      | ✔       |
-| Dns txt create                             | ❎          | ❎     | ❎      |
-| Dns txt get                                | ❎          | ❎     | ❎      |
-| Document store issue                       | ✔           | ✔      | ✔       |
-| Document store revoke                      | ✔           | ✔      | ✔       |
-| Document store transfer ownership          | ✔           | ✔      | ✔       |
-| Token registry issue                       | ✔           | ✔      | ✔       |
-| Token registry mint                        | ✔           | ✔      | ✔       |
-| Transaction cancel                         | ✔           | ✔      | ✔       |
-| Wallet create                              | ❎          | ❎     | ❎      |
-| Wallet decrypt                             | ❎          | ❎     | ❎      |
-| Wallet encrypt                             | ✔           | ❎     | ❎      |
-| Filter (obfuscate) document                | ❎          | ❎     | ❎      |
-| Sign document                              | ✔           | ❎     | ❎      |
-| Encrypt document                           | ❎          | ❎     | ❎      |
-| Decrypt document                           | ❎          | ❎     | ❎      |
-| Wrap document                              | ❎          | ❎     | ❎      |
-| Unwrap document                            | ❎          | ❎     | ❎      |
-| Verify document                            | ❎          | ❎     | ❎      |
-| Change holder (Title Escrow)               | ✔           | ✔      | ✔       |
-| Nominate change of owner (Title Escrow)    | ✔           | ✔      | ✔       |
-| Endorse transfer to owner (Title Escrow)   | ✔           | ✔      | ✔       |
-| Endorse change of owner (Title Escrow)     | ✔           | ✔      | ✔       |
-| Surrender document (Title Escrow)          | ✔           | ✔      | ✔       |
-| Reject surrendered document (Title Escrow) | ✔           | ✔      | ✔       |
-| Accept surrendered document (Title Escrow) | ✔           | ✔      | ✔       |
+|                                                                            | Private Key | Wallet | Aws Kms |
+| -------------------------------------------------------------------------- | ----------- | ------ | ------- |
+| [Create config](#config-create-configuration-file)                         | ❎          | ✔️     | ❎      |
+| [Deploy document store](#deploy-new-document-store)                        | ✔           | ✔      | ✔       |
+| [Deploy title escrow](#deploy-new-title-escrow)                            | ✔           | ✔      | ✔       |
+| [Deploy title escrow creator](#title-escrow)                               | ✔           | ✔      | ✔       |
+| [Deploy token registry](#deploy-new-token-registry)                        | ✔           | ✔      | ✔       |
+| [Dns txt create](#dns-txt-record)                                          | ❎          | ❎     | ❎      |
+| [Dns txt get](#dns-txt-record)                                             | ❎          | ❎     | ❎      |
+| [Document store issue](#issue-document-to-document-store)                  | ✔           | ✔      | ✔       |
+| [Document store revoke](#revoke-document-in-document-store)                | ✔           | ✔      | ✔       |
+| [Document store transfer ownership](#transfer-ownership-of-document-store) | ✔           | ✔      | ✔       |
+| [Token registry issue](#issue-document-to-token-registry)                  | ✔           | ✔      | ✔       |
+| [Token registry mint](#issue-document-to-token-registry)                   | ✔           | ✔      | ✔       |
+| [Transaction cancel](#cancel-pending-transaction)                          | ✔           | ✔      | ✔       |
+| [Wallet create](#wallet)                                                   | ❎          | ❎     | ❎      |
+| [Wallet decrypt](#wallet)                                                  | ❎          | ❎     | ❎      |
+| [Wallet encrypt](#wallet)                                                  | ✔           | ❎     | ❎      |
+| [Filter (obfuscate) document](#document-privacy-filter)                    | ❎          | ❎     | ❎      |
+| [Sign document](#did-direct-signing)                                       | ✔           | ❎     | ❎      |
+| [Encrypt document](#encrypting-document)                                   | ❎          | ❎     | ❎      |
+| [Decrypt document](#decrypting-document)                                   | ❎          | ❎     | ❎      |
+| [Wrap document](#wrapping-documents)                                       | ❎          | ❎     | ❎      |
+| [Unwrap document](#unwrapping-documents)                                   | ❎          | ❎     | ❎      |
+| [Verify document](#verify)                                                 | ❎          | ❎     | ❎      |
+| [Change holder (Title Escrow)](#change-holder)                             | ✔           | ✔      | ✔       |
+| [Nominate change of owner (Title Escrow)](#nominate-change-of-owner)       | ✔           | ✔      | ✔       |
+| [Endorse transfer to owner (Title Escrow)](#endorse-transfer-of-owner)     | ✔           | ✔      | ✔       |
+| [Endorse change of owner (Title Escrow)](#endorse-change-of-owner)         | ✔           | ✔      | ✔       |
+| [Surrender document (Title Escrow)](#surrender-document)                   | ✔           | ✔      | ✔       |
+| [Reject surrendered document (Title Escrow)](#reject-surrendered-document) | ✔           | ✔      | ✔       |
+| [Accept surrendered document (Title Escrow)](#accept-surrendered-document) | ✔           | ✔      | ✔       |
 
 ### Wrapping documents
 
@@ -314,8 +314,10 @@ open-attestation deploy document-store "My Name" --network goerli
 
 ✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
+
 By default, the owner of the document store will be the deployer. You can specify a different owner using the `--owner` option:
-```bash 
+
+```bash
 open-attestation deploy document-store "My Name" --owner 0x1234 --network goerli
 ```
 
@@ -499,58 +501,64 @@ open-attestation deploy document-store "My Name" --network goerli --key 00000000
 
 This command will generate a config file with sandbox DNS, document store and token registry.
 
-> Please note that a wallet.json file with sufficient **funds** in goerli network must be provided in order for this command to work.
+> Please note that a wallet.json file with sufficient **funds** in the specified network must be provided in order for this command to work.
 
-You will need:
+Command options to take note:
 
 - `--output-dir` option specify which folder the config file will be created in.
 - `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
-- `--config-template-url` option to provide a path to reference a config template file hosted on a public url.
-- `--config-template-path` option to provide a path to reference a config template file locally.
+
+<!-- - `--config-template-url` option to provide a path to reference a config template file hosted on a public url.
+- `--config-template-path` option to provide a path to reference a config template file locally. -->
 
 There are 2 ways of using this command to generate a config file, both in which, will return a new config file with sandbox DNS, updated document store and updated token registry.
 
 #### Method 1: Using config-template-url option (recommended)
 
-This method will generate the most basic config file with a sandbox DNS, document store and token registry. The reference config templates are [here](https://github.com/TradeTrust/document-creator-website/tree/master/src/test/fixtures/config/_generated-config-files/v2).
+These are the reference config templates:
 
-Step 1a: Generate a wallet.json file
+- [v2 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v2.json)
+- [v3 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v3.json).
+
+Step 1: Generate a wallet.json file & add funds into wallet.json
 
 ```
-// If you already have a wallet.json that has sufficient funds in goerli network, you can skip this step.
+// If you already have a wallet.json that has sufficient funds in the specific network, you can skip step 1.
 open-attestation wallet create --output-file wallet.json
 ```
 
-Step 1b: Add fund into the newly created wallet.json
-
 Currently, we do not provide any faucet to dispense any funds into the wallet.json. You can search the web for some faucets.
 
-Step 2: Generate config file by passing in the generated wallet.json file
+Step 2: Generate config file by passing in the generated wallet.json file and a config template url
 
 ```
-// Please note that to proceed successfully with this step you would require a wallet.json with sufficient funds.
-open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-url <remote url>
+open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
+
+// Please fill in the necessary information when prompted.
+ℹ  info      Creating a new config file
+? Wallet password [hidden]
+? Using a config template URL? Yes
+? Please enter the config template URL https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v3.json
+? Select Network goerli
 ```
 
 #### Method 2: Using config-template-path option
 
-This method will generate a copy of your existing config file with the updated sandbox DNS, document store and token registry.
+Step 1: Generate a wallet.json file & add funds into wallet.json
 
-Step 1a: Generate a wallet.json file
-
-```
-// If you already have a wallet.json that has sufficient funds in goerli network, you can skip this step.
-open-attestation wallet create --output-file wallet.json
-```
-
-Step 1b: Add fund into the newly created wallet.json
-
-Currently, we do not provide any faucet to dispense any funds into the wallet.json. You can search the web for some faucets.
+This step is the same as [Method 1](#method-1-using-config-template-url-option-recommended).
 
 Step 2: Generate config file by passing in the generated wallet.json file and a existing config file
 
 ```
-open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json --config-template-path </path/to>/config.json
+open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
+
+// Please fill in the necessary information when prompted.
+ℹ  info      Creating a new config file
+? Wallet password [hidden]
+? Using a config template URL? No
+? Please enter the config template path </path/to>/config.json
+? Select Network goerli
 ```
 
 ### Cancel pending transaction

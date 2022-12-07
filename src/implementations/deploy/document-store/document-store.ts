@@ -2,8 +2,8 @@ import { DocumentStoreFactory } from "@govtechsg/document-store";
 import signale from "signale";
 import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
-import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
+import { getWalletOrSigner } from "../../utils/wallet";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -13,9 +13,10 @@ export const deployDocumentStore = async ({
   network,
   gasPriceScale,
   dryRun,
+  passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
 }: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
-  const wallet = await getWalletOrSigner({ network, ...rest });
+  const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const ownerAddress = owner ?? (await wallet.getAddress());
 
   if (dryRun) {
