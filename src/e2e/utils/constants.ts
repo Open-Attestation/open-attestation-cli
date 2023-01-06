@@ -1,5 +1,6 @@
+// import { NonceManager } from "@ethersproject/experimental";
 import { constants } from "@govtechsg/token-registry";
-
+import { providers, Wallet } from "ethers";
 export const { contractAddress } = constants;
 
 export const network = "local";
@@ -7,6 +8,9 @@ export const chainId = 1337;
 export const forkedNetwork = 5;
 
 export const mnemonic = "indicate swing place chair flight used hammer soon photo region volume shuffle";
+
+export const BurnAddress = "0x0000000000000000000000000000000000000000";
+export const EmptyTokenID = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 export const owner = {
   ethAddress: "0xe0A71284EF59483795053266CB796B65E48B5124",
@@ -26,10 +30,30 @@ export const creators = {
   tokenImplementation: contractAddress.TokenImplementation[forkedNetwork],
 };
 
-export const emoji = {
-  tick: "✔",
-  cross: "✖",
+export const EndStatus = {
+  success: "✔  success",
+  error: "✖  error",
+} as const;
+
+export const TokenIdLength = 66;
+export const AddressLength = 42;
+
+export type EndStatusType = typeof EndStatus[keyof typeof EndStatus];
+
+export const silent = false;
+export const verbose = false;
+export const defaultRunParameters = {
+  network: network,
+  dryRun: false,
 };
 
-export const silent = true;
-export const verbose = false;
+export interface TokenInfo {
+  tokenRegistry: string;
+  tokenId: string;
+  titleEscrowAddress?: string;
+}
+
+export interface Owners {
+  owner: string;
+  holder: string;
+}

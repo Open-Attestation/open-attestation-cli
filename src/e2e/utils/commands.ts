@@ -1,11 +1,11 @@
-import { DeployDocumentStoreCommand, DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { DeployDocumentStoreCommand, DeployTokenRegistryCommand } from "../../commands/deploy/deploy.types";
 import {
   BaseTitleEscrowCommand,
   TitleEscrowEndorseTransferOfOwnersCommand,
   TitleEscrowNominateBeneficiaryCommand,
   TitleEscrowTransferHolderCommand,
-} from "../../../commands/title-escrow/title-escrow-command.type";
-import { TokenRegistryIssueCommand } from "../../../commands/token-registry/token-registry-command.type";
+} from "../../commands/title-escrow/title-escrow-command.type";
+import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 
 const command = `npm run dev --`;
 

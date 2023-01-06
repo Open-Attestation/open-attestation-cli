@@ -1,6 +1,6 @@
 import shell, { ShellString } from "shelljs";
 import { log } from "signale";
-import { emoji, verbose } from "./constants";
+import { EndStatus, verbose, silent as globalSilent, EndStatusType } from "./constants";
 shell.config.silent = true;
 
 export interface LineInfo {
@@ -8,23 +8,26 @@ export interface LineInfo {
   lineContent: string;
 }
 
-export const run = (command: string, silent = false): string => {
-  shell.config.silent = !(!silent && verbose);
+export const run = (command: string, silent = true): string => {
+  silent = silent && globalSilent;
   const rawResults: ShellString = shell.exec(command);
   const results = stripAnsi(rawResults.trim());
   if (!silent) {
-    const success = `${emoji.tick}  success`;
-    const failure = `${emoji.cross}  error`;
-    let successLines = extractLine(results, success);
-    if (!successLines) successLines = [];
-    let failureLines = extractLine(results, failure);
-    if (!failureLines) failureLines = [];
-    const statusLines: LineInfo[] = [...successLines, ...failureLines];
+    const successLines = extractStatus(results, EndStatus.success);
+    const failureLines = extractStatus(results, EndStatus.error);
+    const statusLines = [...successLines, ...failureLines];
     log(command);
     printLines(statusLines);
-    if (verbose && failureLines.length > 0) log(rawResults);
+    if (verbose && failureLines.length > 0) log(results);
   }
   return results;
+};
+
+export const extractStatus = (results: string, expectedStatus: EndStatusType, expectedMessage = ""): LineInfo[] => {
+  const expectedString = `${expectedStatus}   ${expectedMessage}`;
+  let lineInfo = extractLine(results, expectedString);
+  if (!lineInfo) lineInfo = [];
+  return lineInfo;
 };
 
 export const printLines = (lines: LineInfo[]): void => {

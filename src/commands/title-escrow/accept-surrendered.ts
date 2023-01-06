@@ -35,6 +35,7 @@ export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promis
   try {
     info(`Accepting surrendered document`);
     const transaction = await acceptSurrendered(args);
+    console.log(transaction);
     success(`Surrendered transferable record with hash ${args.tokenId} has been accepted.`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transaction.transactionHash}`);
   } catch (e) {
