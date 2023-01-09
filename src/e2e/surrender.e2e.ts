@@ -15,15 +15,10 @@ const defaultTitleEscrow = {
 };
 
 
-describe("surrender title-escrow", () => {
-  jest.setTimeout(90000);
+export const surrender = async () => {
+  const  tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
-  let tokenRegistryAddress = "";
-  beforeAll(() => {
-    tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
-  });
-
-  it("should be able to surrender title-escrow on token-registry", async () => {
+  {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
     const surrenderTitleEscrow: BaseTitleEscrowCommand = {
@@ -37,21 +32,21 @@ describe("surrender title-escrow", () => {
       surrenderTitleEscrow.tokenRegistry,
       surrenderTitleEscrow.tokenId
     );
-    expect(isAddress(titleEscrowOwner)).toBe(true);
-    expect(titleEscrowOwner).not.toBe(surrenderTitleEscrow.tokenRegistry);
+    if(isAddress(titleEscrowOwner) !== true){ throw new Error(`(isAddress(titleEscrowOwner) === true);`)};
+    if(titleEscrowOwner === surrenderTitleEscrow.tokenRegistry){ throw new Error(`(titleEscrowOwner === surrenderTitleEscrow.tokenRegistry);`)};
     const command = generateSurrenderCommand(surrenderTitleEscrow, owner.privateKey);
     const results = run(command);
     const surrenderResults = checkSurrenderSuccess(results);
-    expect(surrenderResults.tokenId).toBe(surrenderTitleEscrow.tokenId);
+    if(surrenderResults.tokenId !== surrenderTitleEscrow.tokenId){ throw new Error(`(surrenderResults.tokenId !== surrenderTitleEscrow.tokenId);`)};
     titleEscrowOwner = await retrieveTitleEscrowOwner(
       signer,
       surrenderTitleEscrow.tokenRegistry,
       surrenderTitleEscrow.tokenId
     );
-    expect(titleEscrowOwner).toBe(surrenderTitleEscrow.tokenRegistry);
-  });
+    if(titleEscrowOwner !== surrenderTitleEscrow.tokenRegistry){ throw new Error(`(titleEscrowOwner !== surrenderTitleEscrow.tokenRegistry);`)};
+  };
 
-  it("should not surrender unowned title escrow", async () => {
+  {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
     const surrenderTitleEscrow: BaseTitleEscrowCommand = {
@@ -68,11 +63,11 @@ describe("surrender title-escrow", () => {
       surrenderTitleEscrow.tokenRegistry,
       surrenderTitleEscrow.tokenId
     );
-    expect(isAddress(titleEscrowOwner)).toBe(true);
-    expect(titleEscrowOwner).not.toBe(surrenderTitleEscrow.tokenRegistry);
-  });
+    if(isAddress(titleEscrowOwner) !== true){ throw new Error(`(isAddress(titleEscrowOwner) !== true);`)};
+    if(titleEscrowOwner === surrenderTitleEscrow.tokenRegistry){ throw new Error(`(titleEscrowOwner === surrenderTitleEscrow.tokenRegistry);`)};
+  };
 
-  it("should not surrender invalid title escrow", async () => {
+  {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
     const surrenderTitleEscrow: BaseTitleEscrowCommand = {
@@ -83,9 +78,9 @@ describe("surrender title-escrow", () => {
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
     checkFailure(results, "missing revert data in call exception");
-  });
+  };
 
-  it("should not surrender invalid title escrow with invalid token registry", async () => {
+  {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
     const surrenderTitleEscrow: BaseTitleEscrowCommand = {
@@ -96,5 +91,5 @@ describe("surrender title-escrow", () => {
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
     checkFailure(results, "null");
-  });
-});
+  };
+};

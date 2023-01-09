@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "e2e": "concurrently -k -s first \"npm:blockchain\" \"npm:e2e-test\"",
     "build": "npm run clean && npm run build:cjs && npm run build:type",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs --project ./tsconfig.prod.json",
     "build:type": "tsc -d --emitDeclarationOnly --outDir dist/types",
@@ -19,6 +20,7 @@
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
+    "e2e-test": "ts-node src/e2e/all.ts",
     "lint": "eslint . --ext .ts --max-warnings 0",
     "lint:fix": "eslint . --ext .ts --fix",
     "benchmark:make-certs": "./scripts/makeCerts.sh 20000",
@@ -56,6 +58,7 @@
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "commitizen": "^4.2.4",
+    "concurrently": "^6.2.0",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^24.3.6",

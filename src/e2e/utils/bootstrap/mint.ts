@@ -16,10 +16,10 @@ export interface MintData {
 }
 
 export const validateMintData = (expectedValue: MintData, value: MintData) => {
-  expect(expectedValue.address).toBe(value.address);
-  expect(expectedValue.beneficiary).toBe(value.beneficiary);
-  expect(expectedValue.holder).toBe(value.holder);
-  expect(expectedValue.tokenId).toBe(value.tokenId);
+  if(!(expectedValue.address === value.address)) throw new Error(`expectedValue.address === value.address`);
+  if(!(expectedValue.beneficiary === value.beneficiary)) throw new Error(`expectedValue.beneficiary === value.beneficiary`);
+  if(!(expectedValue.holder === value.holder)) throw new Error(`expectedValue.holder === value.holder`);
+  if(!(expectedValue.tokenId === value.tokenId)) throw new Error(`expectedValue.tokenId === value.tokenId`);
 };
 
 export const mintTokenRegistry = (privateKey: string, tokenRegistryAddress?: string): TokenInfo => {

@@ -40,7 +40,7 @@ export const AddressLength = 42;
 
 export type EndStatusType = typeof EndStatus[keyof typeof EndStatus];
 
-export const silent = false;
+export const silent = true;
 export const verbose = false;
 export const defaultRunParameters = {
   network: network,

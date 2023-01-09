@@ -1,9 +1,9 @@
 import { EndStatus } from "../constants";
 import { extractStatus } from "../shell";
 
-export const checkFailure = (results: string, expectedErrorMessage: string) => {
+export const checkFailure = (results: string, expectedErrorMessage: string) => { //}: Error | undefined => {
     const statusMessage = extractStatus(results, EndStatus.error);
-    expect(statusMessage.length).toBeGreaterThan(0);
+    if(!(statusMessage.length > 0)) throw new Error(`!statusMessage.length > 0`);
     const errorMessage = statusMessage[0].lineContent.substring(13);
-    expect(errorMessage).toContain(expectedErrorMessage);
+    if(!(errorMessage.includes(expectedErrorMessage))){throw new Error(`!errorMessage.includes(expectedErrorMessage)`)};
 };

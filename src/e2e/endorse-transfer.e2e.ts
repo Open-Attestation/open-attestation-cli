@@ -4,13 +4,12 @@ import { TitleEscrowNominateBeneficiaryCommand } from "../commands/title-escrow/
 import { generateEndorseTransferOwnerCommand } from "./utils/commands";
 import { checkEndorseTransfer, checkFailure, deployTokenRegistry, mintNominatedToken, mintToken, mintTokenRegistry } from "./utils/bootstrap";
 
-describe("endorse transfer title-escrow", () => {
-  jest.setTimeout(90000);
+// describe("endorse transfer title-escrow", () => {
+export const endorseTransfer = async () => {
+  // jest.setTimeout(90000);
 
-  let tokenRegistryAddress = "";
-  beforeAll(() => {
-    tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
-  });
+  
+  const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
   const defaultTransferHolder = {
     newBeneficiary: receiver.ethAddress,
@@ -18,7 +17,8 @@ describe("endorse transfer title-escrow", () => {
     dryRun: false,
   };
 
-  it("should be able to endorse transfer title-escrow on token-registry", async () => {
+  // it("should be able to endorse transfer title-escrow on token-registry", async () => {
+  {
     const { tokenRegistry, tokenId } = mintNominatedToken(
       owner.privateKey,
       defaultTransferHolder.newBeneficiary,
@@ -33,10 +33,11 @@ describe("endorse transfer title-escrow", () => {
     const command = generateEndorseTransferOwnerCommand(transferHolder, owner.privateKey);
     const results = run(command);
     checkEndorseTransfer(results);
-  });
+  }
 
 
-  it("should not be able to endorse un-nominated title-escrow on token-registry", async () => {
+  // it("should not be able to endorse un-nominated title-escrow on token-registry", async () => {
+  {
     const { tokenRegistry, tokenId } = mintTokenRegistry(
       owner.privateKey,
       tokenRegistryAddress
@@ -51,6 +52,6 @@ describe("endorse transfer title-escrow", () => {
     const command = generateEndorseTransferOwnerCommand(transferHolder, owner.privateKey);
     const results = run(command);
     checkFailure(results, "");
-  });
+  }
 
-});
+}

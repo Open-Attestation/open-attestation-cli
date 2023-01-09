@@ -6,10 +6,12 @@ import { generateDeployDocumentStoreCommand, generateDeployTokenRegistryCommand 
 import { getSigner, retrieveTokenInfo, rolesCheck } from "./utils/contract-checks";
 import { checkTokenRegistrySuccess, defaultTokenRegistry } from "./utils/bootstrap";
 
-describe("deploy token-registry", () => {
-  jest.setTimeout(90000);
+export const deployTokenRegistry = async () => {
+// describe("deploy token-registry", () => {
+  // jest.setTimeout(90000);
 
-  it("should be able to deploy token-registry", async () => {
+  // it("should be able to deploy token-registry", async () => {
+  {
     const tokenRegistryParameter: DeployTokenRegistryCommand = {
       registryName: "Test Token",
       registrySymbol: "TKN",
@@ -21,20 +23,21 @@ describe("deploy token-registry", () => {
     const tokenRegistryAddress = checkTokenRegistrySuccess(results);
     const signer = getSigner(defaultRunParameters.network, owner.privateKey);
     const tokenInfo = await retrieveTokenInfo(signer, tokenRegistryAddress);
-    expect(tokenInfo.name).toBe(tokenRegistryParameter.registryName);
-    expect(tokenInfo.symbol).toBe(tokenRegistryParameter.registrySymbol);
+    if(!(tokenInfo.name === tokenRegistryParameter.registryName)){ throw new Error("tokenInfo.name === tokenRegistryParameter.registryName")};
+    if(!(tokenInfo.symbol === tokenRegistryParameter.registrySymbol)){ throw new Error("tokenInfo.symbol === tokenRegistryParameter.registrySymbol")};
     const rolesInfo = await rolesCheck(signer, tokenRegistryAddress);
-    expect(rolesInfo.accepterRole).toBe(true);
-    expect(rolesInfo.defaultRole).toBe(true);
-    expect(rolesInfo.minterRole).toBe(true);
-    expect(rolesInfo.restorerRole).toBe(true);
-  });
-});
+    if(!(rolesInfo.accepterRole === true)){ throw new Error("rolesInfo.accepterRole === true")};
+    if(!(rolesInfo.defaultRole === true)){ throw new Error("rolesInfo.defaultRole === true")};
+    if(!(rolesInfo.minterRole === true)){ throw new Error("rolesInfo.minterRole === true")};
+    if(!(rolesInfo.restorerRole === true)){ throw new Error("rolesInfo.restorerRole === true")};
+  }
+}
 
-describe("deploy document-store", () => {
-  jest.setTimeout(90000);
-
-  it("should be able to deploy document-store", async () => {
+// describe("deploy document-store", () => {
+export const deployDocumentStore = () => {
+  // jest.setTimeout(90000);
+  // it("should be able to deploy document-store", async () => 
+  {
     const documentStoreParameters: DeployDocumentStoreCommand = {
       storeName: "Test Document Store",
       ...defaultRunParameters,
@@ -44,10 +47,11 @@ describe("deploy document-store", () => {
     const results = run(command);
     const tokenRegistrySuccessFormat = `${EndStatus.success}   Document store Test Document Store deployed at `;
     const checkSuccess = results.includes(tokenRegistrySuccessFormat);
-    expect(checkSuccess).toBe(true);
+    if(!(checkSuccess === true)) throw new Error(`checkSuccess === true)`);
     const splitResults = results.trim().split("\n");
     const tokenRegistryAddressLine = splitResults[splitResults.length - 2];
     const tokenRegistryAddress = tokenRegistryAddressLine.trim().substring(tokenRegistrySuccessFormat.length);
-    expect(isAddress(tokenRegistryAddress)).toBe(true);
-  });
-});
+    if(!(isAddress(tokenRegistryAddress) === true)) throw new Error(`isAddress(tokenRegistryAddress) === true)`);
+    if(!(isAddress(tokenRegistryAddress) === true)){ throw new Error("isAddress(tokenRegistryAddress) === true")};
+  }
+}

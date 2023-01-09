@@ -18,15 +18,15 @@ import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
 import { BigNumber } from "ethers";
 import { deployTokenRegistry, validateMintData, MintData, checkFailure, checkMintSuccess } from "./utils/bootstrap";
 
-describe("deploy token-registry", () => {
-  jest.setTimeout(90000);
+export const mint = async () => {
+// describe("deploy token-registry", () => {
+  // jest.setTimeout(90000);
 
-  let tokenRegistryAddress = "";
-  beforeAll(() => {
-    tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
-  });
+  
+  const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
-  it("should be able to mint title-escrow on token-registry", async () => {
+  // it("should be able to mint title-escrow on token-registry", async () => {
+  {
     const tokenId = generateTokenId();
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       address: tokenRegistryAddress,
@@ -46,17 +46,18 @@ describe("deploy token-registry", () => {
       titleEscrowParameter.address,
       titleEscrowParameter.tokenId
     );
-    expect(titleEscrowInfo.active).toBe(true);
-    expect(titleEscrowInfo.beneficiary).toBe(titleEscrowParameter.beneficiary);
-    expect(titleEscrowInfo.holder).toBe(titleEscrowParameter.holder);
-    expect(titleEscrowInfo.isHoldingToken).toBe(true);
-    expect(titleEscrowInfo.nominee).toBe(BurnAddress);
-    expect(titleEscrowInfo.registry).toBe(titleEscrowParameter.address);
+    if(!(titleEscrowInfo.active === true)) throw new Error(`titleEscrowInfo.active === true`);
+    if(!(titleEscrowInfo.beneficiary === titleEscrowParameter.beneficiary)) throw new Error(`titleEscrowInfo.beneficiary === titleEscrowParameter.beneficiary`);
+    if(!(titleEscrowInfo.holder === titleEscrowParameter.holder)) throw new Error(`titleEscrowInfo.holder === titleEscrowParameter.holder`);
+    if(!(titleEscrowInfo.isHoldingToken === true)) throw new Error(`titleEscrowInfo.isHoldingToken === true`);
+    if(!(titleEscrowInfo.nominee === BurnAddress)) throw new Error(`titleEscrowInfo.nominee === BurnAddress`);
+    if(!(titleEscrowInfo.registry === titleEscrowParameter.address)) throw new Error(`titleEscrowInfo.registry === titleEscrowParameter.address`);
     const correctTokenID = titleEscrowInfo.tokenId.eq(BigNumber.from(titleEscrowParameter.tokenId));
-    expect(correctTokenID).toBe(true);
-  });
+    if(!(correctTokenID === true)) throw new Error(`correctTokenID === true`);
+  }
 
-  it("should be able to mint title-escrow for a different wallet on token-registry", async () => {
+  // it("should be able to mint title-escrow for a different wallet on token-registry", async () => {
+  {
     const tokenId = generateTokenId();
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       address: tokenRegistryAddress,
@@ -76,17 +77,18 @@ describe("deploy token-registry", () => {
       titleEscrowParameter.address,
       titleEscrowParameter.tokenId
     );
-    expect(titleEscrowInfo.active).toBe(true);
-    expect(titleEscrowInfo.beneficiary).toBe(titleEscrowParameter.beneficiary);
-    expect(titleEscrowInfo.holder).toBe(titleEscrowParameter.holder);
-    expect(titleEscrowInfo.isHoldingToken).toBe(true);
-    expect(titleEscrowInfo.nominee).toBe(BurnAddress);
-    expect(titleEscrowInfo.registry).toBe(titleEscrowParameter.address);
+    if(!(titleEscrowInfo.active === true)) throw new Error(`titleEscrowInfo.active === true`);
+    if(!(titleEscrowInfo.beneficiary === titleEscrowParameter.beneficiary)) throw new Error(`titleEscrowInfo.beneficiary === titleEscrowParameter.beneficiary`);
+    if(!(titleEscrowInfo.holder === titleEscrowParameter.holder)) throw new Error(`titleEscrowInfo.holder === titleEscrowParameter.holder`);
+    if(!(titleEscrowInfo.isHoldingToken === true)) throw new Error(`titleEscrowInfo.isHoldingToken === true`);
+    if(!(titleEscrowInfo.nominee === BurnAddress)) throw new Error(`titleEscrowInfo.nominee === BurnAddress`);
+    if(!(titleEscrowInfo.registry === titleEscrowParameter.address)) throw new Error(`titleEscrowInfo.registry === titleEscrowParameter.address`);
     const correctTokenID = titleEscrowInfo.tokenId.eq(BigNumber.from(titleEscrowParameter.tokenId));
-    expect(correctTokenID).toBe(true);
-  });
+    if(!(correctTokenID === true)) throw new Error(`correctTokenID === true`);
+  }
 
-  it("should fail with invalid token id", async () => {
+  // it("should fail with invalid token id", async () => {
+  {
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       address: tokenRegistryAddress,
       tokenId: "0xZ",
@@ -97,9 +99,10 @@ describe("deploy token-registry", () => {
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     checkFailure(results, "invalid BigNumber string");
-  });
+  }
 
-  it("should fail with invalid token registry", async () => {
+  // it("should fail with invalid token registry", async () => {
+  {
     const tokenId = generateTokenId();
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       address: BurnAddress,
@@ -111,9 +114,10 @@ describe("deploy token-registry", () => {
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     checkFailure(results, "null");
-  });
+  }
 
-  it("should fail with invalid beneficiary", async () => {
+  // it("should fail with invalid beneficiary", async () => {
+  {
     const tokenId = generateTokenId();
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       address: tokenRegistryAddress,
@@ -125,9 +129,10 @@ describe("deploy token-registry", () => {
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     checkFailure(results, "missing revert data in call exception");
-  });
+  }
 
-  it("should fail with invalid holder", async () => {
+  // it("should fail with invalid holder", async () => {
+  {
     const tokenId = generateTokenId();
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       address: tokenRegistryAddress,
@@ -139,9 +144,10 @@ describe("deploy token-registry", () => {
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     checkFailure(results, "missing revert data in call exception");
-  });
+  }
 
-  it("should fail with no funds", async () => {
+  // it("should fail with no funds", async () => {
+  {
     const tokenId = generateTokenId();
     const titleEscrowParameter: TokenRegistryIssueCommand = {
       ...defaultRunParameters,
@@ -154,5 +160,5 @@ describe("deploy token-registry", () => {
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     checkFailure(results, "null");
-  });
-});
+  }
+}
