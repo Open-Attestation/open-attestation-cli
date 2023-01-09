@@ -42,47 +42,24 @@ describe("getConfigWithUpdatedNetwork", () => {
 });
 
 describe("getConfigWithUpdatedDocumentStorage", () => {
-  it("should remove document storage in the config file if network is not 'goerli' for V2", () => {
+  it("should add document storage field for v2", () => {
     const config = { ...ConfigFileV2 };
+
     expect(
-      getConfigWithUpdatedDocumentStorage({ configFile: config as ConfigFile, network: NetworkCmdName.Sepolia })
+      getConfigWithUpdatedDocumentStorage({ configFile: config as ConfigFile, network: NetworkCmdName.Mumbai })
         .documentStorage
-    ).toBeUndefined();
+    ).toBeDefined();
   });
 
-  it("should remove document storage in the config file if network is not 'goerli' for V3", () => {
+  it("should add document storage field for v3", () => {
     const config = { ...ConfigFileV3 };
-    expect(
-      getConfigWithUpdatedDocumentStorage({
-        configFile: config as ConfigFile,
-        network: NetworkCmdName.Sepolia,
-      }).documentStorage
-    ).toBeUndefined();
-  });
 
-  it("should not remove document storage in the config file if network is 'goerli' for V2", () => {
-    const config = { ...ConfigFileV2 };
     expect(
       getConfigWithUpdatedDocumentStorage({
         configFile: config as ConfigFile,
-        network: NetworkCmdName.Goerli,
+        network: NetworkCmdName.Mumbai,
       }).documentStorage
-    ).toStrictEqual({
-      apiKey: "randomKey",
-      url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
-    });
-  });
-  it("should not remove document storage in the config file if network is 'goerli' for V3", () => {
-    const config = { ...ConfigFileV3 };
-    expect(
-      getConfigWithUpdatedDocumentStorage({
-        configFile: config as ConfigFile,
-        network: NetworkCmdName.Goerli,
-      }).documentStorage
-    ).toStrictEqual({
-      apiKey: "randomKey",
-      url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
-    });
+    ).toBeDefined();
   });
 });
 

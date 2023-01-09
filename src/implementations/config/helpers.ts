@@ -24,18 +24,14 @@ export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithN
   };
 };
 
-export const getConfigWithUpdatedDocumentStorage = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
-  if (network === "goerli") {
-    return {
-      ...configFile,
-      documentStorage: {
-        apiKey: "randomKey",
-        url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
-      },
-    };
-  }
-  delete configFile.documentStorage;
-  return configFile;
+export const getConfigWithUpdatedDocumentStorage = ({ configFile }: ConfigWithNetwork): ConfigFile => {
+  return {
+    ...configFile,
+    documentStorage: {
+      apiKey: "randomKey",
+      url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
+    },
+  }; // storage is only magically provided in OA-CLI here, for QR image document scan POC purposes
 };
 
 interface UpdatedWallet {
