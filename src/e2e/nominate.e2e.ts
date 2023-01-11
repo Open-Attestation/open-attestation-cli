@@ -1,23 +1,20 @@
 import { run } from "./utils/shell";
-import {
-  BurnAddress,
-  defaultRunParameters,
-  owner,
-  receiver,
-} from "./utils/constants";
+import { BurnAddress, defaultRunParameters, owner, receiver } from "./utils/constants";
 import { TitleEscrowNominateBeneficiaryCommand } from "../commands/title-escrow/title-escrow-command.type";
 import { generateNominateCommand } from "./utils/commands";
 import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
-import { checkFailure, checkNominateSuccess, defaultNominateBeneficiary, deployTokenRegistry, mintTokenRegistry } from "./utils/bootstrap";
+import {
+  checkFailure,
+  checkNominateSuccess,
+  defaultNominateBeneficiary,
+  deployTokenRegistry,
+  mintTokenRegistry,
+} from "./utils/bootstrap";
 
-export const nominate = async () => {
-// describe("nominate title-escrow", () => {
-  // jest.setTimeout(90000);
-
-  
+export const nominate = async (): Promise<void> => {
   const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
-  // it("should be able to nominate title-escrow on token-registry", async () => {
+  //"should be able to nominate title-escrow on token-registry"
   {
     const { tokenId, tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
@@ -29,14 +26,17 @@ export const nominate = async () => {
     const command = generateNominateCommand(transferHolder, owner.privateKey);
     const results = run(command);
     const nominateInfo = checkNominateSuccess(results);
-    if(!(nominateInfo.tokenId === transferHolder.tokenId)) throw new Error (`nominateInfo.tokenId === transferHolder.tokenId`);
-    if(!(nominateInfo.nominee === transferHolder.newBeneficiary)) throw new Error (`nominateInfo.nominee === transferHolder.newBeneficiary`);
+    if (!(nominateInfo.tokenId === transferHolder.tokenId))
+      throw new Error(`nominateInfo.tokenId === transferHolder.tokenId`);
+    if (!(nominateInfo.nominee === transferHolder.newBeneficiary))
+      throw new Error(`nominateInfo.nominee === transferHolder.newBeneficiary`);
     const signer = await getSigner(transferHolder.network, owner.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(signer, transferHolder.tokenRegistry, transferHolder.tokenId);
-    if(!(titleEscrowInfo.nominee === transferHolder.newBeneficiary)) throw new Error (`titleEscrowInfo.nominee === transferHolder.newBeneficiary`);
+    if (!(titleEscrowInfo.nominee === transferHolder.newBeneficiary))
+      throw new Error(`titleEscrowInfo.nominee === transferHolder.newBeneficiary`);
   }
 
-  // it("should be able to cancel nomination of title-escrow on token-registry", async () => {
+  //"should be able to cancel nomination of title-escrow on token-registry"
   {
     const { tokenId, tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
@@ -49,15 +49,17 @@ export const nominate = async () => {
     const command = generateNominateCommand(transferHolder, owner.privateKey);
     results = run(command);
     const nominateInfo = checkNominateSuccess(results);
-    if(!(nominateInfo.tokenId === transferHolder.tokenId)) throw new Error (`nominateInfo.tokenId === transferHolder.tokenId`);
-    if(!(nominateInfo.nominee === transferHolder.newBeneficiary)) throw new Error (`nominateInfo.nominee === transferHolder.newBeneficiary`);
+    if (!(nominateInfo.tokenId === transferHolder.tokenId))
+      throw new Error(`nominateInfo.tokenId === transferHolder.tokenId`);
+    if (!(nominateInfo.nominee === transferHolder.newBeneficiary))
+      throw new Error(`nominateInfo.nominee === transferHolder.newBeneficiary`);
 
     const signer = await getSigner(transferHolder.network, owner.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(signer, transferHolder.tokenRegistry, transferHolder.tokenId);
-    if(!(titleEscrowInfo.nominee === BurnAddress)) throw new Error (`titleEscrowInfo.nominee === BurnAddress`);
+    if (!(titleEscrowInfo.nominee === BurnAddress)) throw new Error(`titleEscrowInfo.nominee === BurnAddress`);
   }
 
-  // it("should not be able to nominate self", async () => {
+  //"should not be able to nominate self"
   {
     const { tokenId, tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
@@ -71,7 +73,7 @@ export const nominate = async () => {
     checkFailure(results, "new beneficiary address is the same as the current beneficiary address");
   }
 
-  // it("should not be able to nominate unowned token", async () => {
+  //"should not be able to nominate unowned token"
   {
     const { tokenId, tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
@@ -85,7 +87,7 @@ export const nominate = async () => {
     checkFailure(results, "missing revert data in call exception");
   }
 
-  // it("should not be able to nominate non-existent token", async () => {
+  //"should not be able to nominate non-existent token"
   {
     const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
@@ -99,7 +101,7 @@ export const nominate = async () => {
     checkFailure(results, "missing revert data in call exception");
   }
 
-  // it("should not be able to nominate non-existent token registry", async () => {
+  //"should not be able to nominate non-existent token registry"
   {
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
       ...defaultNominateBeneficiary,
@@ -111,4 +113,4 @@ export const nominate = async () => {
     const results = run(command);
     checkFailure(results, "null");
   }
-}
+};

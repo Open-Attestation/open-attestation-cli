@@ -1,17 +1,21 @@
-import { extractLine, LineInfo, run } from "./utils/shell";
-import { BurnAddress, EmptyTokenID, EndStatus, network, owner, receiver } from "./utils/constants";
 import { TitleEscrowTransferHolderCommand } from "../commands/title-escrow/title-escrow-command.type";
+import {
+  changeHolderToken,
+  checkChangeHolderSuccess,
+  checkFailure,
+  defaultTransferHolder,
+  deployTokenRegistry,
+  mintTokenRegistry,
+} from "./utils/bootstrap";
 import { generateChangeHolderCommand } from "./utils/commands";
-import { checkFailure, deployTokenRegistry, mintTokenRegistry } from "./utils/bootstrap";
-import { changeHolderToken, checkChangeHolderSuccess, defaultTransferHolder } from "./utils/bootstrap";
+import { BurnAddress, EmptyTokenID, owner, receiver } from "./utils/constants";
+import { run } from "./utils/shell";
 
-// describe("transfer holder title-escrow", () => {
-export const changeHolder = async () => {
-  // jest.setTimeout(90000);
-
+// "transfer holder title-escrow"
+export const changeHolder = async (): Promise<void> => {
   const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
-  // it("should be able to transfer holder title-escrow on token-registry", async () => {
+  //should be able to transfer holder title-escrow on token-registry"
   {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
@@ -24,8 +28,7 @@ export const changeHolder = async () => {
     checkChangeHolderSuccess(results);
   }
 
-
-  // it("holder should be able to transfer holder of title-escrow", async () => {
+  //holder should be able to transfer holder of title-escrow"
   {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     // Transfer Holder to Receiver
@@ -50,9 +53,9 @@ export const changeHolder = async () => {
     checkChangeHolderSuccess(results);
   }
 
-  // it("should not be able to transfer holder of invalid title-escrow on token-registry", async () => {
+  //should not be able to transfer holder of invalid title-escrow on token-registry"
   {
-    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       tokenId: EmptyTokenID,
       tokenRegistry: tokenRegistry,
@@ -63,10 +66,9 @@ export const changeHolder = async () => {
     checkFailure(results, "missing revert data in call exception");
   }
 
-
-  // it("should not be able to transfer holder of invalid title-escrow on token-registry", async () => {
+  //should not be able to transfer holder of invalid title-escrow on token-registry"
   {
-    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       tokenId: tokenId,
       tokenRegistry: BurnAddress,
@@ -77,7 +79,7 @@ export const changeHolder = async () => {
     checkFailure(results, "null");
   }
 
-  // it("beneficiary should not be able to transfer holder of title-escrow", async () => {
+  //beneficiary should not be able to transfer holder of title-escrow"
   {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     // Transfer Holder to Receiver
@@ -100,5 +102,5 @@ export const changeHolder = async () => {
     // Beneficiary attempts to transfer Holder without permission
     const results = run(command);
     checkFailure(results, "missing revert data in call exception");
-  } 
+  }
 };

@@ -53,7 +53,7 @@ export const retrieveEscrowDetails = async (
 ): Promise<TokenRegistryInfo | TitleEscrowInfo> => {
   //TODO: check ownership
   const { tokenRegistry, tokenId, titleEscrowAddress } = tokenInfo;
-  if(!titleEscrowAddress) throw new Error("Escrow Address unspecified");
+  if (!titleEscrowAddress) throw new Error("Escrow Address unspecified");
   const tokenDetails = await retrieveTokenInfo(signerOrProvider, tokenRegistry);
   let titleEscrowDetails: TitleEscrowInfo | undefined;
   if (!titleEscrowAddress) {

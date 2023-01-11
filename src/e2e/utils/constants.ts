@@ -1,6 +1,5 @@
 // import { NonceManager } from "@ethersproject/experimental";
 import { constants } from "@govtechsg/token-registry";
-import { providers, Wallet } from "ethers";
 export const { contractAddress } = constants;
 
 export const network = "local";

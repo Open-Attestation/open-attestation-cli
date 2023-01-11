@@ -1,14 +1,16 @@
-import { extractLine, LineInfo, run } from "./utils/shell";
-import { BurnAddress, EndStatus, network, owner, receiver } from "./utils/constants";
 import { TitleEscrowNominateBeneficiaryCommand } from "../commands/title-escrow/title-escrow-command.type";
+import {
+  checkEndorseTransfer,
+  checkFailure,
+  deployTokenRegistry,
+  mintNominatedToken,
+  mintTokenRegistry,
+} from "./utils/bootstrap";
 import { generateEndorseTransferOwnerCommand } from "./utils/commands";
-import { checkEndorseTransfer, checkFailure, deployTokenRegistry, mintNominatedToken, mintToken, mintTokenRegistry } from "./utils/bootstrap";
+import { BurnAddress, network, owner, receiver } from "./utils/constants";
+import { run } from "./utils/shell";
 
-// describe("endorse transfer title-escrow", () => {
-export const endorseTransfer = async () => {
-  // jest.setTimeout(90000);
-
-  
+export const endorseTransfer = async (): Promise<void> => {
   const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
   const defaultTransferHolder = {
@@ -17,7 +19,7 @@ export const endorseTransfer = async () => {
     dryRun: false,
   };
 
-  // it("should be able to endorse transfer title-escrow on token-registry", async () => {
+  //"should be able to endorse transfer title-escrow on token-registry"
   {
     const { tokenRegistry, tokenId } = mintNominatedToken(
       owner.privateKey,
@@ -35,23 +37,18 @@ export const endorseTransfer = async () => {
     checkEndorseTransfer(results);
   }
 
-
-  // it("should not be able to endorse un-nominated title-escrow on token-registry", async () => {
+  //"should not be able to endorse un-nominated title-escrow on token-registry"
   {
-    const { tokenRegistry, tokenId } = mintTokenRegistry(
-      owner.privateKey,
-      tokenRegistryAddress
-    );
+    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowNominateBeneficiaryCommand = {
       ...defaultTransferHolder,
       tokenId,
       tokenRegistry,
-      newBeneficiary: BurnAddress
+      newBeneficiary: BurnAddress,
     };
 
     const command = generateEndorseTransferOwnerCommand(transferHolder, owner.privateKey);
     const results = run(command);
     checkFailure(results, "");
   }
-
-}
+};

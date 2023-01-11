@@ -12,11 +12,12 @@ export const generateTokenId = (): string => {
   throw new Error("Unable to generate tokenIds");
 };
 
-export const isTokenId = (tokenId: string) => {
-  const hexRegex = /[0-9A-Fa-f]{6}/g;
+export const isTokenId = (tokenId: string): boolean => {
+  const hexRegex = /[0-9A-Fa-f]{64}/g;
   tokenId = tokenId.trim();
   const containsHexPrefix = tokenId.substring(0, 2) === "0x";
   if (containsHexPrefix) tokenId = tokenId.substring(2);
   if (tokenId.length <= 0) return false;
-  return tokenId.match(hexRegex);
+  const matchedString = tokenId.match(hexRegex);
+  return matchedString?.length === 1;
 };

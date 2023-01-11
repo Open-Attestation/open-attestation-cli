@@ -4,7 +4,6 @@ import { deployTokenRegistry } from ".";
 import { TokenRegistryIssueCommand } from "../../../commands/token-registry/token-registry-command.type";
 import { generateMintTitleEscrowCommand } from "../commands";
 import { AddressLength, defaultRunParameters, EndStatus, TokenIdLength, TokenInfo } from "../constants";
-import { getSigner, retrieveTitleEscrowOwner } from "../contract-checks";
 import { extractStatus, run } from "../shell";
 import { generateTokenId, isTokenId } from "../token-management";
 
@@ -15,11 +14,12 @@ export interface MintData {
   holder: string;
 }
 
-export const validateMintData = (expectedValue: MintData, value: MintData) => {
-  if(!(expectedValue.address === value.address)) throw new Error(`expectedValue.address === value.address`);
-  if(!(expectedValue.beneficiary === value.beneficiary)) throw new Error(`expectedValue.beneficiary === value.beneficiary`);
-  if(!(expectedValue.holder === value.holder)) throw new Error(`expectedValue.holder === value.holder`);
-  if(!(expectedValue.tokenId === value.tokenId)) throw new Error(`expectedValue.tokenId === value.tokenId`);
+export const validateMintData = (expectedValue: MintData, value: MintData): void => {
+  if (!(expectedValue.address === value.address)) throw new Error(`expectedValue.address === value.address`);
+  if (!(expectedValue.beneficiary === value.beneficiary))
+    throw new Error(`expectedValue.beneficiary === value.beneficiary`);
+  if (!(expectedValue.holder === value.holder)) throw new Error(`expectedValue.holder === value.holder`);
+  if (!(expectedValue.tokenId === value.tokenId)) throw new Error(`expectedValue.tokenId === value.tokenId`);
 };
 
 export const mintTokenRegistry = (privateKey: string, tokenRegistryAddress?: string): TokenInfo => {
@@ -38,7 +38,6 @@ export const mintTokenRegistry = (privateKey: string, tokenRegistryAddress?: str
 
   return mintToken(privateKey, titleEscrowParameter);
 };
-
 
 export const checkMintSuccess = (results: string): MintData => {
   const statusLine = extractStatus(results, EndStatus.success, "Token with hash ");
@@ -70,16 +69,9 @@ export const checkMintSuccess = (results: string): MintData => {
 export const mintToken = (privateKey: string, titleEscrowParameter: TokenRegistryIssueCommand): TokenInfo => {
   const command = generateMintTitleEscrowCommand(titleEscrowParameter, privateKey);
   const results = run(command);
-  const {address: tokenRegistry, tokenId, beneficiary, holder} = checkMintSuccess(results);
-  const signer = getSigner(titleEscrowParameter.network, privateKey);
-  // let titleEscrowAddress: string = retrieveTitleEscrowOwner(
-  //   signer,
-  //   tokenRegistry,
-  //   tokenId,
-  // );
+  const { address: tokenRegistry, tokenId } = checkMintSuccess(results);
   return {
     tokenRegistry,
     tokenId,
-    // titleEscrowAddress,
   };
 };

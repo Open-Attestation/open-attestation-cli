@@ -8,4 +8,3 @@ export * from "./change-holder";
 export * from "./surrender";
 export * from "./reject-surrender";
 export * from "./accept-surrender";
-
