@@ -2,7 +2,7 @@ import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import { updateFormV2, updateFormV3 } from "@govtechsg/tradetrust-config";
 import fetch from "node-fetch";
 import { success } from "signale";
-import { NetworkCmdName, supportedNetwork } from "../../commands/networks";
+import { NetworkCmdName, networkCurrency } from "../../commands/networks";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 import { readFile } from "../../implementations/utils/disk";
@@ -11,47 +11,12 @@ import { ConfigFile, Dns, Form } from "./types";
 import { Wallet } from "ethers";
 import { ConnectedSigner } from "../../implementations/utils/wallet";
 
-interface ConfigWithNetwork {
-  configFile: ConfigFile;
-  network: NetworkCmdName;
-}
-
-export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
-  const networkName = supportedNetwork[network].networkName;
-  return {
-    ...configFile,
-    network: networkName,
-  };
-};
-
-export const getConfigWithUpdatedDocumentStorage = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
-  if (network === "goerli") {
-    return {
-      ...configFile,
-      documentStorage: {
-        apiKey: "randomKey",
-        url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
-      },
-    };
-  }
-  delete configFile.documentStorage;
-  return configFile;
-};
-
-interface UpdatedWallet {
-  configFile: ConfigFile;
-  walletStr: string;
-}
-
-export const getConfigWithUpdatedWallet = ({ configFile, walletStr }: UpdatedWallet): ConfigFile => {
-  return {
-    ...configFile,
-    wallet: { ...configFile.wallet, encryptedJson: walletStr },
-  };
-};
-
 interface UpdatedForms {
   configFile: ConfigFile;
+  chain: {
+    id: string;
+    currency: networkCurrency;
+  };
   documentStoreAddress: string;
   tokenRegistryAddress: string;
   dnsVerifiable: Dns;
@@ -61,6 +26,7 @@ interface UpdatedForms {
 
 export const getConfigWithUpdatedForms = ({
   configFile,
+  chain,
   documentStoreAddress,
   tokenRegistryAddress,
   dnsVerifiable,
@@ -72,6 +38,7 @@ export const getConfigWithUpdatedForms = ({
   const updatedForms = forms.map((form: Form) => {
     if (utils.isRawV3Document(form.defaults)) {
       updateFormV3({
+        chain,
         wallet,
         form,
         documentStoreAddress,
@@ -82,6 +49,7 @@ export const getConfigWithUpdatedForms = ({
       });
     } else {
       updateFormV2({
+        chain,
         wallet,
         form,
         documentStoreAddress,
