@@ -106,7 +106,6 @@ export const create = async ({
     walletStr,
   });
 
-  // update config file with generated addresses + dns temp domain names
   const updatedConfigFileWithForms = getConfigWithUpdatedForms({
     configFile: updatedConfigFileWithWallet,
     chain,
