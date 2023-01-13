@@ -15,3 +15,7 @@ key
 /.vscode/
 /vc-test-suite
 .DS_Store
+
+# oa create config
+wallet.json
+example-configs

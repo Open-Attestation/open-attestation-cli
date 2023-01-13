@@ -22,7 +22,11 @@
             "name": "DEMO TOKEN REGISTRY",
             "tokenRegistry": "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D"
           }
-        ]
+        ],
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
+        }
       }
     },
     {
@@ -38,7 +42,11 @@
               "location": "alert-cyan-stoat.sandbox.openattestation.com"
             }
           }
-        ]
+        ],
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
+        }
       }
     },
     {
@@ -58,7 +66,11 @@
               "key": "did:ethr:0x709731d94d65b078496937655582401157c8a640#controller"
             }
           }
-        ]
+        ],
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
+        }
       }
     }
   ]
