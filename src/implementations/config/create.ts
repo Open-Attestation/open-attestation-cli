@@ -8,6 +8,8 @@ import { readFile } from "../utils/disk";
 import {
   getConfigFile,
   getConfigWithUpdatedForms,
+  getConfigWithUpdatedNetwork,
+  getConfigWithUpdatedWallet,
   getDocumentStoreAddress,
   getTokenRegistryAddress,
   validate,
@@ -97,16 +99,16 @@ export const create = async ({
     });
   }
 
-  // update config with user input arguments
-  const updatedConfigFile = {
-    ...configFile,
-    wallet: { ...configFile.wallet, encryptedJson: walletStr },
-    network,
-  };
+  const updatedConfigFileWithNetwork = getConfigWithUpdatedNetwork({ configFile, network });
+
+  const updatedConfigFileWithWallet = getConfigWithUpdatedWallet({
+    configFile: updatedConfigFileWithNetwork,
+    walletStr,
+  });
 
   // update config file with generated addresses + dns temp domain names
   const updatedConfigFileWithForms = getConfigWithUpdatedForms({
-    configFile: updatedConfigFile,
+    configFile: updatedConfigFileWithWallet,
     chain,
     documentStoreAddress,
     tokenRegistryAddress,

@@ -1,4 +1,11 @@
-import { getConfigFile, getConfigWithUpdatedForms } from "../helpers";
+import { NetworkCmdName } from "../../../commands/networks";
+import {
+  getConfigFile,
+  getConfigWithUpdatedForms,
+  getConfigWithUpdatedNetwork,
+  getConfigWithUpdatedWallet,
+} from "../helpers";
+import { ConfigFile } from "../types";
 import ConfigFileV3 from "./config-reference-v3.json";
 import expectedConfigFileOutputV3 from "./expected-config-file-output-v3.json";
 import expectedConfigFileOutputV2 from "./expected-config-file-output-v2.json";
@@ -19,17 +26,43 @@ describe("getConfigFile", () => {
     await expect(getConfigFile("", "")).rejects.toHaveProperty("message", "Config template reference not provided.");
   });
 });
-wallet;
+
+describe("getConfigWithUpdatedNetwork", () => {
+  it("should update config file with network for V2", () => {
+    expect(
+      getConfigWithUpdatedNetwork({ configFile: ConfigFileV2 as ConfigFile, network: NetworkCmdName.Goerli }).network
+    ).toStrictEqual(NetworkCmdName.Goerli);
+  });
+  it("should update config file with network for V3", () => {
+    expect(
+      getConfigWithUpdatedNetwork({ configFile: ConfigFileV3 as ConfigFile, network: NetworkCmdName.Goerli }).network
+    ).toStrictEqual(NetworkCmdName.Goerli);
+  });
+});
+
+describe("getConfigWithUpdatedWallet", () => {
+  it("should update config file with wallet string for V2", () => {
+    expect(
+      getConfigWithUpdatedWallet({ configFile: ConfigFileV2 as ConfigFile, walletStr: JSON.stringify(wallet) }).wallet
+        .encryptedJson
+    ).toStrictEqual(JSON.stringify(wallet));
+  });
+  it("should update config file with wallet string for V3", () => {
+    expect(
+      getConfigWithUpdatedWallet({ configFile: ConfigFileV3 as ConfigFile, walletStr: JSON.stringify(wallet) }).wallet
+        .encryptedJson
+    ).toStrictEqual(JSON.stringify(wallet));
+  });
+});
+
 describe("getConfigWithUpdatedForms", () => {
   it("should update form correctly for V2 forms", () => {
+    const configWithWallet = getConfigWithUpdatedWallet({
+      configFile: ConfigFileV2 as ConfigFile,
+      walletStr: JSON.stringify(wallet),
+    });
     const config = getConfigWithUpdatedForms({
-      configFile: {
-        ...ConfigFileV2,
-        wallet: {
-          ...ConfigFileV2.wallet,
-          encryptedJson: JSON.stringify(wallet),
-        },
-      } as any,
+      configFile: configWithWallet as ConfigFile,
       chain: {
         id: "5",
         currency: "ETH",
@@ -44,14 +77,12 @@ describe("getConfigWithUpdatedForms", () => {
   });
 
   it("should update form correctly for V3 forms", () => {
+    const configWithWallet = getConfigWithUpdatedWallet({
+      configFile: ConfigFileV3 as ConfigFile,
+      walletStr: JSON.stringify(wallet),
+    });
     const config = getConfigWithUpdatedForms({
-      configFile: {
-        ...ConfigFileV3,
-        wallet: {
-          ...ConfigFileV3.wallet,
-          encryptedJson: JSON.stringify(wallet),
-        },
-      } as any,
+      configFile: configWithWallet as ConfigFile,
       chain: {
         id: "5",
         currency: "ETH",
