@@ -517,8 +517,8 @@ There are 2 ways of using this command to generate a config file, both in which,
 
 These are the reference config templates:
 
-- [v2 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v2.json)
-- [v3 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v3.json).
+- [v2 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/reference/config-v2.json)
+- [v3 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/reference/config-v3.json).
 
 Step 1: Generate a wallet.json file & add funds into wallet.json
 

@@ -7,7 +7,6 @@ import { handler as createTemporaryDns } from "../../commands/dns/txt-record/cre
 import { readFile } from "../utils/disk";
 import {
   getConfigFile,
-  getConfigWithUpdatedDocumentStorage,
   getConfigWithUpdatedForms,
   getConfigWithUpdatedNetwork,
   getConfigWithUpdatedWallet,
@@ -38,6 +37,12 @@ export const create = async ({
   const { forms } = configFile;
 
   const networkId = supportedNetwork[network].networkId;
+  const networkCurrency = supportedNetwork[network].currency;
+
+  const chain = {
+    id: String(networkId), // schema `chainId` is defined as string -> https://schema.openattestation.com/2.0/schema.json
+    currency: networkCurrency,
+  };
 
   if (!validate(forms)) {
     throw new Error("Invalid form detected in config file, please update the form before proceeding.");
@@ -101,13 +106,9 @@ export const create = async ({
     walletStr,
   });
 
-  const updatedConfigFileWithDocumentStorage = getConfigWithUpdatedDocumentStorage({
-    configFile: updatedConfigFileWithWallet,
-    network,
-  });
-
   const updatedConfigFileWithForms = getConfigWithUpdatedForms({
-    configFile: updatedConfigFileWithDocumentStorage,
+    configFile: updatedConfigFileWithWallet,
+    chain,
     documentStoreAddress,
     tokenRegistryAddress,
     dnsVerifiable,
