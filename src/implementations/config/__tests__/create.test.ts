@@ -7,7 +7,7 @@ import { NetworkCmdName } from "../../../commands/networks";
 import { deployDocumentStore } from "../../deploy/document-store/document-store";
 import { deployTokenRegistry } from "../../deploy/token-registry/token-registry";
 import { create as createConfig } from "../create";
-import expectedConfigFileOutput from "./expected-config-file-output.json";
+import expectedConfigFileOutput from "./expected-config-file-output-v2.json";
 import inputConfigFile from "./input-config-file.json";
 
 const mockInputConfigFile = inputConfigFile;
