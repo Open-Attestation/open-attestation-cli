@@ -17,12 +17,20 @@ export const describe = "Create a config file";
 
 export const builder = (yargs: Argv): Argv =>
   withWalletOption(
-    yargs.option("output-dir", {
-      alias: "od",
-      description: "Write output to a directory",
-      type: "string",
-      demandOption: true,
-    })
+    yargs
+      .option("output-dir", {
+        alias: "od",
+        description: "Write output to a directory",
+        type: "string",
+        demandOption: true,
+      })
+      .check((argv) => {
+        if (argv.encryptedWalletPath) {
+          return true;
+        } else {
+          throw new Error("Missing required argument: encrypted-wallet-path.");
+        }
+      })
   );
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
