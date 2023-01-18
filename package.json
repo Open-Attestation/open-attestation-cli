@@ -41,7 +41,6 @@
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/prompt": "^12.1.4",
-    "@ethersproject/experimental": "^5.7.0",
     "@ls-age/commitlint-circle": "1.0.0",
     "@semantic-release/exec": "^5.0.0",
     "@types/debug": "4.1.5",

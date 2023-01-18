@@ -10,7 +10,7 @@ import { endorseChangeOwner } from "./endorse-change-owner.e2e";
 
 const awaitForDuration = async (runFunction: () => void): Promise<void> => {
   await runFunction();
-  console.log(runFunction.name)
+  console.log(runFunction.name);
 };
 
 awaitForDuration(deployDocumentStore);
