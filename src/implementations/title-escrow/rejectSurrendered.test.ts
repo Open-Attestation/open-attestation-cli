@@ -67,6 +67,7 @@ describe("title-escrow", () => {
         filters: { Transfer: mockTransferEvent },
         queryFilter: mockQueryFilter,
         callStatic: {
+          genesis: jest.fn().mockResolvedValue(0),
           restore: mockCallStaticRestoreTitle,
         },
       });

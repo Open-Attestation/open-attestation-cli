@@ -14,14 +14,28 @@ interface ConnectToTitleEscrowArgs {
   wallet: Wallet | ConnectedSigner;
 }
 
+interface ConnectToTokenRegistryArgs {
+  address: string;
+  wallet: Wallet | ConnectedSigner;
+}
+
 export const connectToTitleEscrow = async ({
   tokenId,
   address,
   wallet,
 }: ConnectToTitleEscrowArgs): Promise<TitleEscrow> => {
-  const tokenRegistry: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
+  const tokenRegistry: TradeTrustToken = await connectToTokenRegistry({ address, wallet });
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
-  return await TitleEscrow__factory.connect(titleEscrowAddress, wallet);
+  return TitleEscrow__factory.connect(titleEscrowAddress, wallet);
+};
+
+export const connectToTokenRegistry = async ({
+  address,
+  wallet,
+}: ConnectToTokenRegistryArgs): Promise<TradeTrustToken> => {
+  const tokenRegistryInstance: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
+  await tokenRegistryInstance.callStatic.genesis();
+  return tokenRegistryInstance;
 };
 
 interface validateEndorseChangeOwnerArgs {

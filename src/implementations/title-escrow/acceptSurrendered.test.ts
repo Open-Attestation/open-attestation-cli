@@ -35,6 +35,7 @@ describe("title-escrow", () => {
       mockedConnectERC721.mockReturnValue({
         burn: mockBurnToken,
         callStatic: {
+          genesis: jest.fn().mockResolvedValue(0),
           burn: mockCallStaticBurnToken,
         },
       });

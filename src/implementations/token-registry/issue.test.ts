@@ -34,6 +34,7 @@ describe("token-registry", () => {
     const mockTTERC721Contract = {
       mint: mockedIssue,
       callStatic: {
+        genesis: jest.fn().mockResolvedValue(0),
         mint: mockCallStaticSafeMint,
       },
     };

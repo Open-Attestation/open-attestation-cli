@@ -38,6 +38,9 @@ describe("title-escrow", () => {
 
     mockedConnectERC721.mockReturnValue({
       ownerOf: mockedOwnerOf,
+      callStatic: {
+        genesis: jest.fn().mockResolvedValue(0),
+      },
     });
 
     mockedConnectTokenFactory.mockReturnValue({

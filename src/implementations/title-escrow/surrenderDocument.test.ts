@@ -41,6 +41,9 @@ describe("title-escrow", () => {
         wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
       mockedConnectERC721.mockReturnValue({
+        callStatic: {
+          genesis: jest.fn().mockResolvedValue(0),
+        },
         ownerOf: mockedOwnerOf,
       });
       mockedConnectTitleEscrowFactory.mockReturnValue({
