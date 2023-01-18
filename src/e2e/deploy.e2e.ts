@@ -4,7 +4,7 @@ import { isAddress } from "web3-utils";
 import { defaultRunParameters, EndStatus, owner } from "./utils/constants";
 import { generateDeployDocumentStoreCommand, generateDeployTokenRegistryCommand } from "./utils/commands";
 import { getSigner, retrieveTokenInfo, rolesCheck } from "./utils/contract-checks";
-import { checkTokenRegistrySuccess, defaultTokenRegistry } from "./utils/bootstrap";
+import { checkTokenRegistrySuccess, defaultTokenRegistry } from "./utils/helpers";
 
 export const deployTokenRegistry = async (): Promise<void> => {
   //should be able to deploy token-registry"

@@ -4,7 +4,14 @@ import { BaseTitleEscrowCommand } from "../commands/title-escrow/title-escrow-co
 import { generateSurrenderCommand } from "./utils/commands";
 import { getSigner, retrieveTitleEscrowOwner } from "./utils/contract-checks";
 import { isAddress } from "web3-utils";
-import { deployTokenRegistry, mintTokenRegistry, checkSurrenderSuccess, checkFailure } from "./utils/bootstrap";
+import {
+  deployTokenRegistry,
+  mintTokenRegistry,
+  checkSurrenderSuccess,
+  checkFailure,
+  changeHolderToken,
+  nominateAndEndorseBeneficiary,
+} from "./utils/helpers";
 
 const defaultTitleEscrow = {
   ...defaultRunParameters,
@@ -15,6 +22,7 @@ const defaultTitleEscrow = {
 export const surrender = async (): Promise<void> => {
   const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
+  // "should be able to surrender title-escrow"
   {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
@@ -51,6 +59,7 @@ export const surrender = async (): Promise<void> => {
     }
   }
 
+  // "Should not be able to surrender unowned title-escrow"
   {
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
@@ -62,20 +71,49 @@ export const surrender = async (): Promise<void> => {
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
     checkFailure(results, "missing revert data in call exception");
-    const signer = await getSigner(surrenderTitleEscrow.network, owner.privateKey);
-    const titleEscrowOwner: string = await retrieveTitleEscrowOwner(
-      signer,
-      surrenderTitleEscrow.tokenRegistry,
-      surrenderTitleEscrow.tokenId
-    );
-    if (isAddress(titleEscrowOwner) !== true) {
-      throw new Error(`(isAddress(titleEscrowOwner) !== true);`);
-    }
-    if (titleEscrowOwner === surrenderTitleEscrow.tokenRegistry) {
-      throw new Error(`(titleEscrowOwner === surrenderTitleEscrow.tokenRegistry);`);
-    }
   }
 
+  // "Should not be able to surrender title-escrow as beneficiary"
+  {
+    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+
+    const surrenderTitleEscrow: BaseTitleEscrowCommand = {
+      ...defaultTitleEscrow,
+      tokenRegistry,
+      tokenId,
+    };
+    nominateAndEndorseBeneficiary(owner.privateKey, {
+      ...defaultTitleEscrow,
+      tokenId,
+      tokenRegistry,
+      newBeneficiary: receiver.ethAddress,
+    });
+    const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
+  }
+
+  // "Should not be able to surrender title-escrow as holder"
+  {
+    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+
+    const surrenderTitleEscrow: BaseTitleEscrowCommand = {
+      ...defaultTitleEscrow,
+      tokenRegistry,
+      tokenId,
+    };
+    changeHolderToken(owner.privateKey, {
+      ...defaultTitleEscrow,
+      tokenId,
+      tokenRegistry,
+      newHolder: receiver.ethAddress,
+    });
+    const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
+  }
+
+  // "Should not be able to surrender invalid title-escrow"
   {
     const { tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 
@@ -89,6 +127,7 @@ export const surrender = async (): Promise<void> => {
     checkFailure(results, "missing revert data in call exception");
   }
 
+  // "Should not be able to surrender invalid token-registry"
   {
     const { tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
 

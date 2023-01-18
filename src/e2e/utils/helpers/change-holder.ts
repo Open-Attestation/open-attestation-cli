@@ -1,14 +1,13 @@
 import { isAddress } from "web3-utils";
 import { TitleEscrowTransferHolderCommand } from "../../../commands/title-escrow/title-escrow-command.type";
 import { generateChangeHolderCommand } from "../commands";
-import { AddressLength, EndStatus, network, receiver, TokenIdLength } from "../constants";
+import { AddressLength, defaultRunParameters, EndStatus, receiver, TokenIdLength } from "../constants";
 import { extractStatus, run } from "../shell";
 import { isTokenId } from "../token-management";
 
 export const defaultTransferHolder = {
+  ...defaultRunParameters,
   newHolder: receiver.ethAddress,
-  network: network,
-  dryRun: false,
 };
 
 export const checkChangeHolderSuccess = (results: string): { newHolder: string; tokenId: string } => {

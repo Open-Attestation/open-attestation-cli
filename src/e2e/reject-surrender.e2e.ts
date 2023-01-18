@@ -1,9 +1,9 @@
 // import { deployTokenRegistry, mintSurrenderToken } from "./utils/utils";
 import { run } from "./utils/shell";
-import { BurnAddress, EmptyTokenID, network, owner } from "./utils/constants";
+import { BurnAddress, defaultRunParameters, EmptyTokenID, owner, receiver } from "./utils/constants";
 import { generateRejectSurrenderCommand } from "./utils/commands";
-import { checkFailure, deployTokenRegistry, mintSurrenderToken } from "./utils/bootstrap";
-import { checkSurrenderRejectSuccess } from "./utils/bootstrap";
+import { checkFailure, deployTokenRegistry, mintSurrenderToken, mintTokenRegistry } from "./utils/helpers";
+import { checkSurrenderRejectSuccess } from "./utils/helpers";
 import { getSigner, retrieveTitleEscrowOwner } from "./utils/contract-checks";
 import { isAddress } from "web3-utils";
 
@@ -11,10 +11,9 @@ export const rejectSurrender = async (): Promise<void> => {
   const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
   const defaultTitleEscrow = {
+    ...defaultRunParameters,
     beneficiary: owner.ethAddress,
     holder: owner.ethAddress,
-    network: network,
-    dryRun: false,
   };
 
   //"should be able to reject surrender title-escrow on token-registry"
@@ -52,5 +51,27 @@ export const rejectSurrender = async (): Promise<void> => {
     );
     const results = run(command);
     checkFailure(results, "null");
+  }
+
+  //"should not be able to accept un-owned/held surrendered title-escrow on invalid token-registry"
+  {
+    const { tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
+    const command = generateRejectSurrenderCommand(
+      { tokenRegistry: tokenRegistryAddress, tokenId, ...defaultTitleEscrow },
+      receiver.privateKey
+    );
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
+  }
+
+  //"should not be able to accept un-surrendered title-escrow on token-registry"
+  {
+    const { tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const command = generateRejectSurrenderCommand(
+      { tokenRegistry: tokenRegistryAddress, tokenId, ...defaultTitleEscrow },
+      owner.privateKey
+    );
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
   }
 };

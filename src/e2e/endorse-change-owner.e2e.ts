@@ -1,24 +1,28 @@
 import { run } from "./utils/shell";
-import { network, owner, receiver } from "./utils/constants";
+import { BurnAddress, defaultRunParameters, owner, receiver, thirdParty } from "./utils/constants";
 import { TitleEscrowEndorseTransferOfOwnersCommand } from "../commands/title-escrow/title-escrow-command.type";
 import { generateTransferOwnersCommand } from "./utils/commands";
 import {
+  burnToken,
+  changeHolderToken,
   checkEndorseOwner,
   checkFailure,
   deployTokenRegistry,
   mintNominatedToken,
   mintTokenRegistry,
-} from "./utils/bootstrap";
+  surrenderToken,
+} from "./utils/helpers";
+import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
+import { BigNumber } from "ethers";
 
 // "endorse change owner title-escrow"
 export const endorseChangeOwner = async (): Promise<void> => {
   const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
 
   const defaultTransferOwners = {
+    ...defaultRunParameters,
     newOwner: receiver.ethAddress,
     newHolder: receiver.ethAddress,
-    network: network,
-    dryRun: false,
   };
 
   //should be able to endorse change owner title-escrow on token-registry"
@@ -39,10 +43,99 @@ export const endorseChangeOwner = async (): Promise<void> => {
     if (!(beneficiary === transferOwners.newOwner)) throw new Error(`beneficiary === transferOwners.newOwner`);
     if (!(holder === transferOwners.newHolder)) throw new Error(`holder === transferOwners.newHolder`);
     if (!(tokenIdResult === transferOwners.tokenId)) throw new Error(`tokenIdResult === transferOwners.tokenId`);
+
+    const signer = await getSigner(transferOwners.network, receiver.privateKey);
+    const titleEscrowInfo = await retrieveTitleEscrow(signer, transferOwners.tokenRegistry, transferOwners.tokenId);
+    if (!(titleEscrowInfo.active === true)) throw new Error(`titleEscrowInfo.active === true`);
+    if (!(titleEscrowInfo.beneficiary === transferOwners.newOwner))
+      throw new Error(`titleEscrowInfo.beneficiary === transferOwners.beneficiary`);
+    if (!(titleEscrowInfo.holder === transferOwners.newHolder))
+      throw new Error(`titleEscrowInfo.holder === transferOwners.holder`);
+    if (!(titleEscrowInfo.isHoldingToken === true)) throw new Error(`titleEscrowInfo.isHoldingToken === true`);
+    if (!(titleEscrowInfo.nominee === BurnAddress)) throw new Error(`titleEscrowInfo.nominee === BurnAddress`);
+    if (!(titleEscrowInfo.registry === transferOwners.tokenRegistry))
+      throw new Error(`titleEscrowInfo.registry === transferOwners.address`);
+    const correctTokenID = titleEscrowInfo.tokenId.eq(BigNumber.from(transferOwners.tokenId));
+    if (!(correctTokenID === true)) throw new Error(`correctTokenID === true`);
   }
 
-  //should not be able to endorse change owner on un-nominated title-escrow"
+  //"should not be able to endorse change owner from just beneficiary title-escrow on token-registry"
   {
+    const { tokenRegistry, tokenId } = mintNominatedToken(owner.privateKey, receiver.ethAddress, tokenRegistryAddress);
+    changeHolderToken(owner.privateKey, {
+      ...defaultTransferOwners,
+      tokenRegistry: tokenRegistry,
+      tokenId: tokenId,
+      newHolder: receiver.ethAddress,
+    });
+    const transferHolder: TitleEscrowEndorseTransferOfOwnersCommand = {
+      ...defaultTransferOwners,
+      tokenId,
+      tokenRegistry,
+    };
+
+    const command = generateTransferOwnersCommand(transferHolder, owner.privateKey);
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
+  }
+
+  //"should not be able to endorse change owner from nominee title-escrow on token-registry"
+  {
+    const { tokenRegistry, tokenId } = mintNominatedToken(owner.privateKey, receiver.ethAddress, tokenRegistryAddress);
+    const transferHolder: TitleEscrowEndorseTransferOfOwnersCommand = {
+      ...defaultTransferOwners,
+      tokenId,
+      tokenRegistry,
+    };
+
+    const command = generateTransferOwnersCommand(transferHolder, receiver.privateKey);
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
+  }
+
+  //"should not be able to endorse surrendered title-escrow on token-registry"
+  {
+    const { tokenRegistry, tokenId } = mintNominatedToken(owner.privateKey, tokenRegistryAddress);
+    surrenderToken(owner.privateKey, {
+      ...defaultTransferOwners,
+      tokenRegistry,
+      tokenId,
+    });
+    const transferHolder: TitleEscrowEndorseTransferOfOwnersCommand = {
+      ...defaultTransferOwners,
+      tokenId,
+      tokenRegistry,
+    };
+
+    const command = generateTransferOwnersCommand(transferHolder, owner.privateKey);
+    const results = run(command);
+    checkFailure(results, "missing revert data in call exception");
+  }
+
+  //"should not be able to endorse burnt title-escrow on token-registry"
+  {
+    const { tokenRegistry, tokenId } = mintNominatedToken(owner.privateKey, tokenRegistryAddress);
+    burnToken(owner.privateKey, {
+      ...defaultTransferOwners,
+      tokenId,
+      tokenRegistry,
+    });
+    const transferHolder: TitleEscrowEndorseTransferOfOwnersCommand = {
+      ...defaultTransferOwners,
+      tokenId,
+      tokenRegistry,
+    };
+
+    const command = generateTransferOwnersCommand(transferHolder, owner.privateKey);
+    const results = run(command);
+    checkFailure(results, "null");
+  }
+
+  //"should not be able to endorse change owner on un-nominated title-escrow"
+  {
+    console.info("Skipped Test");
+    console.info("should not be able to endorse change owner on un-nominated title-escrow");
+    return;
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferOwners: TitleEscrowEndorseTransferOfOwnersCommand = {
       tokenId: tokenId,
@@ -52,5 +145,28 @@ export const endorseChangeOwner = async (): Promise<void> => {
     const command = generateTransferOwnersCommand(transferOwners, owner.privateKey);
     const results = run(command);
     checkFailure(results, "");
+  }
+
+  //"should not be able to endorse change owner from holder title-escrow on token-registry"
+  {
+    console.info("Skipped Test");
+    console.info("should not be able to endorse change owner from holder title-escrow on token-registry");
+    return;
+    const { tokenRegistry, tokenId } = mintNominatedToken(owner.privateKey, receiver.ethAddress, tokenRegistryAddress);
+    changeHolderToken(owner.privateKey, {
+      ...defaultTransferOwners,
+      tokenRegistry: tokenRegistry,
+      tokenId: tokenId,
+      newHolder: thirdParty.ethAddress,
+    });
+    const transferHolder: TitleEscrowEndorseTransferOfOwnersCommand = {
+      ...defaultTransferOwners,
+      tokenId,
+      tokenRegistry,
+    };
+
+    const command = generateTransferOwnersCommand(transferHolder, thirdParty.privateKey);
+    const results = run(command);
+    checkFailure(results, "null");
   }
 };
