@@ -1,10 +1,13 @@
 import { providers } from "ethers";
 
+export type networkCurrency = "ETH" | "MATIC";
+
 type SupportedNetwork = {
   explorer: string;
   provider: () => providers.Provider;
   networkId: number;
   networkName: string;
+  currency: networkCurrency;
 };
 
 export enum NetworkCmdName {
@@ -12,8 +15,8 @@ export enum NetworkCmdName {
   Mainnet = "mainnet",
   Goerli = "goerli",
   Sepolia = "sepolia",
-  Polygon = "polygon",
-  Mumbai = "mumbai",
+  Matic = "matic",
+  Maticmum = "maticmum",
 }
 
 const defaultInfuraProvider =
@@ -34,36 +37,42 @@ export const supportedNetwork: {
     provider: jsonRpcProvider("http://127.0.0.1:8545"),
     networkId: 1337,
     networkName: "local",
+    currency: "ETH",
   },
   [NetworkCmdName.Mainnet]: {
     explorer: "https://etherscan.io",
     provider: defaultInfuraProvider("homestead"),
     networkId: 1,
     networkName: "homestead",
+    currency: "ETH",
   },
   [NetworkCmdName.Goerli]: {
     explorer: "https://goerli.etherscan.io",
     provider: defaultInfuraProvider("goerli"),
     networkId: 5,
     networkName: "goerli",
+    currency: "ETH",
   },
   [NetworkCmdName.Sepolia]: {
     explorer: "https://sepolia.etherscan.io",
     provider: jsonRpcProvider("https://rpc.sepolia.org"),
     networkId: 11155111,
     networkName: "sepolia",
+    currency: "ETH",
   },
-  [NetworkCmdName.Polygon]: {
+  [NetworkCmdName.Matic]: {
     explorer: "https://polygonscan.com",
     provider: defaultInfuraProvider("matic"),
     networkId: 137,
     networkName: "matic",
+    currency: "MATIC",
   },
-  [NetworkCmdName.Mumbai]: {
+  [NetworkCmdName.Maticmum]: {
     explorer: "https://mumbai.polygonscan.com",
     provider: defaultInfuraProvider("maticmum"),
     networkId: 80001,
     networkName: "maticmum",
+    currency: "MATIC",
   },
 };
 

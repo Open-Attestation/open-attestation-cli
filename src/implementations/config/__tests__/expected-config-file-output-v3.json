@@ -45,6 +45,10 @@
           "id": "https://example.com",
           "name": "DEMO TOKEN REGISTRY",
           "type": "OpenAttestationIssuer"
+        },
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
         }
       },
       "schema": {
@@ -180,6 +184,10 @@
           "id": "https://example.com",
           "name": "DEMO DOCUMENT STORE",
           "type": "OpenAttestationIssuer"
+        },
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
         }
       },
       "schema": {
@@ -645,6 +653,10 @@
           "id": "https://example.com",
           "name": "DEMO DNS-DID",
           "type": "OpenAttestationIssuer"
+        },
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
         }
       },
       "schema": {
@@ -819,6 +831,10 @@
           "id": "https://example.com",
           "name": "DEMO DOCUMENT STORE",
           "type": "OpenAttestationIssuer"
+        },
+        "network": {
+          "chainId": "5",
+          "chain": "ETH"
         }
       },
       "schema": {
