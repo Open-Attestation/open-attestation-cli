@@ -1,7 +1,8 @@
 import { utils, v2, v3 } from "@govtechsg/open-attestation";
+import { updateFormV2, updateFormV3 } from "@govtechsg/tradetrust-config";
 import fetch from "node-fetch";
 import { success } from "signale";
-import { NetworkCmdName, supportedNetwork } from "../../commands/networks";
+import { NetworkCmdName, supportedNetwork, networkCurrency } from "../../commands/networks";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
 import { readFile } from "../../implementations/utils/disk";
@@ -23,20 +24,6 @@ export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithN
   };
 };
 
-export const getConfigWithUpdatedDocumentStorage = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
-  if (network === "goerli") {
-    return {
-      ...configFile,
-      documentStorage: {
-        apiKey: "randomKey",
-        url: "https://tradetrust-functions.netlify.app/.netlify/functions/storage",
-      },
-    };
-  }
-  delete configFile.documentStorage;
-  return configFile;
-};
-
 interface UpdatedWallet {
   configFile: ConfigFile;
   walletStr: string;
@@ -51,6 +38,10 @@ export const getConfigWithUpdatedWallet = ({ configFile, walletStr }: UpdatedWal
 
 interface UpdatedForms {
   configFile: ConfigFile;
+  chain: {
+    id: string;
+    currency: networkCurrency;
+  };
   documentStoreAddress: string;
   tokenRegistryAddress: string;
   dnsVerifiable: Dns;
@@ -60,6 +51,7 @@ interface UpdatedForms {
 
 export const getConfigWithUpdatedForms = ({
   configFile,
+  chain,
   documentStoreAddress,
   tokenRegistryAddress,
   dnsVerifiable,
@@ -70,7 +62,8 @@ export const getConfigWithUpdatedForms = ({
 
   const updatedForms = forms.map((form: Form) => {
     if (utils.isRawV3Document(form.defaults)) {
-      utils.updateFormV3({
+      updateFormV3({
+        chain,
         wallet,
         form,
         documentStoreAddress,
@@ -80,7 +73,8 @@ export const getConfigWithUpdatedForms = ({
         dnsTransferableRecord: dnsTransferableRecord || "",
       });
     } else {
-      utils.updateFormV2({
+      updateFormV2({
+        chain,
         wallet,
         form,
         documentStoreAddress,

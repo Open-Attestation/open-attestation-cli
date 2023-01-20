@@ -82,7 +82,6 @@ export const withWalletOption = (yargs: Argv): Argv =>
     type: "string",
     description: "Path to wallet.json file",
     normalize: true,
-    demandOption: true,
   });
 
 export const withAwsKmsSignerOption = (yargs: Argv): Argv =>

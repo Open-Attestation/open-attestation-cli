@@ -83,6 +83,7 @@
     "@govtechsg/oa-verify": "^7.11.0",
     "@govtechsg/open-attestation": "^6.4.1",
     "@govtechsg/token-registry": "^4.1.2",
+    "@govtechsg/tradetrust-config": "^1.2.3",
     "ajv": "^8.4.0",
     "ajv-formats": "^2.1.0",
     "chalk": "^4.1.2",
