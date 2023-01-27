@@ -17,7 +17,7 @@ export const acceptSurrendered = async ({
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistryInstance = await connectToTokenRegistry({ address, wallet });
-  await validateSurrenderMethod({tokenRegistry: tokenRegistryInstance, tokenId, wallet})
+  await validateSurrenderMethod({ tokenRegistry: tokenRegistryInstance, tokenId, wallet });
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await tokenRegistryInstance.estimateGas.burn(tokenId),
