@@ -4,7 +4,7 @@ import { getWalletOrSigner } from "../utils/wallet";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { connectToTokenRegistry } from "./helpers";
+import { connectToTokenRegistry, validateSurrenderMethod } from "./helpers";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -17,6 +17,7 @@ export const acceptSurrendered = async ({
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistryInstance = await connectToTokenRegistry({ address, wallet });
+  await validateSurrenderMethod({tokenRegistry: tokenRegistryInstance, tokenId, wallet})
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await tokenRegistryInstance.estimateGas.burn(tokenId),
@@ -24,11 +25,8 @@ export const acceptSurrendered = async ({
     });
     process.exit(0);
   }
-
   signale.await(`Sending transaction to pool`);
-  console.log(await tokenRegistryInstance.callStatic.burn(tokenId));
   const transaction = await tokenRegistryInstance.burn(tokenId);
-  console.log(transaction);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

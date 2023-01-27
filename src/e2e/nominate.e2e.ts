@@ -84,7 +84,7 @@ export const nominate = async (): Promise<void> => {
     };
     const command = generateNominateCommand(nominateParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "new beneficiary address is the same as the current beneficiary address");
+    checkFailure(results, "Destination wallet already has the rights as beneficiary");
   }
 
   //"should not be able to nominate unowned token"
@@ -98,7 +98,7 @@ export const nominate = async (): Promise<void> => {
     };
     const command = generateNominateCommand(nominateParameter, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   //"should not be able to nominate token as holder"
@@ -118,12 +118,11 @@ export const nominate = async (): Promise<void> => {
     };
     const command = generateNominateCommand(nominateParameter, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   //"should not be able to nominate non-existent token"
   {
-    const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
     const nominateParameter: TitleEscrowNominateBeneficiaryCommand = {
       ...defaultNominateBeneficiary,
       tokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -132,10 +131,10 @@ export const nominate = async (): Promise<void> => {
     };
     const command = generateNominateCommand(nominateParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Unminted Token");
   }
 
-  //"should not be able to nominate non-existent token registry"
+  // "should not be able to nominate non-existent token registry"
   {
     const nominateParameter: TitleEscrowNominateBeneficiaryCommand = {
       ...defaultNominateBeneficiary,
@@ -145,6 +144,6 @@ export const nominate = async (): Promise<void> => {
     };
     const command = generateNominateCommand(nominateParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 };

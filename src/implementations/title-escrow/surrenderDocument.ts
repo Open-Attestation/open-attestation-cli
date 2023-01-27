@@ -1,7 +1,7 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow } from "./helpers";
+import { connectToTitleEscrow, validateSurrender } from "./helpers";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
@@ -17,7 +17,8 @@ export const surrenderDocument = async ({
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-
+  const walletAddress = await wallet.getAddress();
+  await validateSurrender({titleEscrow, walletAddress})
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.surrender(),

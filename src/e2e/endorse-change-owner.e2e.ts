@@ -76,7 +76,7 @@ export const endorseChangeOwner = async (): Promise<void> => {
 
     const command = generateTransferOwnersCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   //"should not be able to endorse change owner from nominee title-escrow on token-registry"
@@ -90,7 +90,7 @@ export const endorseChangeOwner = async (): Promise<void> => {
 
     const command = generateTransferOwnersCommand(transferHolder, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   //"should not be able to endorse surrendered title-escrow on token-registry"
@@ -109,7 +109,7 @@ export const endorseChangeOwner = async (): Promise<void> => {
 
     const command = generateTransferOwnersCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Title Escrow has already been surrendered");
   }
 
   //"should not be able to endorse burnt title-escrow on token-registry"
@@ -128,14 +128,11 @@ export const endorseChangeOwner = async (): Promise<void> => {
 
     const command = generateTransferOwnersCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, "Title Escrow has already been shredded");
   }
 
   //"should not be able to endorse change owner on un-nominated title-escrow"
   {
-    console.info("Skipped Test");
-    console.info("should not be able to endorse change owner on un-nominated title-escrow");
-    return;
     const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferOwners: TitleEscrowEndorseTransferOfOwnersCommand = {
       tokenId: tokenId,
@@ -144,14 +141,11 @@ export const endorseChangeOwner = async (): Promise<void> => {
     };
     const command = generateTransferOwnersCommand(transferOwners, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "");
+    checkFailure(results, "Destination wallet has not been nominated");
   }
 
   //"should not be able to endorse change owner from holder title-escrow on token-registry"
   {
-    console.info("Skipped Test");
-    console.info("should not be able to endorse change owner from holder title-escrow on token-registry");
-    return;
     const { tokenRegistry, tokenId } = mintNominatedToken(owner.privateKey, receiver.ethAddress, tokenRegistryAddress);
     changeHolderToken(owner.privateKey, {
       ...defaultTransferOwners,
@@ -167,6 +161,6 @@ export const endorseChangeOwner = async (): Promise<void> => {
 
     const command = generateTransferOwnersCommand(transferHolder, thirdParty.privateKey);
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 };

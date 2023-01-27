@@ -5,7 +5,7 @@ import { getWalletOrSigner } from "../utils/wallet";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { connectToTokenRegistry } from "./helpers";
+import { connectToTokenRegistry, validateSurrenderMethod } from "./helpers";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -18,6 +18,7 @@ export const rejectSurrendered = async ({
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistryInstance: TradeTrustToken = await connectToTokenRegistry({ address, wallet });
+  await validateSurrenderMethod({tokenRegistry: tokenRegistryInstance, tokenId, wallet})
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await tokenRegistryInstance.estimateGas.restore(tokenId),

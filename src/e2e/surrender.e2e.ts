@@ -70,7 +70,7 @@ export const surrender = async (): Promise<void> => {
     };
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   // "Should not be able to surrender title-escrow as beneficiary"
@@ -90,7 +90,7 @@ export const surrender = async (): Promise<void> => {
     });
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   // "Should not be able to surrender title-escrow as holder"
@@ -110,7 +110,7 @@ export const surrender = async (): Promise<void> => {
     });
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   // "Should not be able to surrender invalid title-escrow"
@@ -124,7 +124,7 @@ export const surrender = async (): Promise<void> => {
     };
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Unminted Token");
   }
 
   // "Should not be able to surrender invalid token-registry"
@@ -138,6 +138,6 @@ export const surrender = async (): Promise<void> => {
     };
     const command = generateSurrenderCommand(surrenderTitleEscrow, receiver.privateKey);
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 };

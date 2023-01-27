@@ -24,5 +24,5 @@ awaitForDuration(acceptSurrender);
 
 awaitForDuration(nominate);
 awaitForDuration(changeHolder);
-awaitForDuration(endorseTransfer);
 awaitForDuration(endorseChangeOwner);
+awaitForDuration(endorseTransfer);

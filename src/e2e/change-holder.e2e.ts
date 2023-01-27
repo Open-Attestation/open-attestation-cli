@@ -79,7 +79,7 @@ export const changeHolder = async (): Promise<void> => {
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Unminted Token");
   }
 
   //should not be able to transfer holder of title-escrow on invalid token-registry"
@@ -92,7 +92,7 @@ export const changeHolder = async (): Promise<void> => {
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 
   //beneficiary should not be able to transfer holder of title-escrow"
@@ -117,14 +117,11 @@ export const changeHolder = async (): Promise<void> => {
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     // Beneficiary attempts to transfer Holder without permission
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
-  //should not be able to transfer holder of surrendered title-escrow"
+  // should not be able to transfer holder of surrendered title-escrow"
   {
-    console.info("Skipped Test");
-    console.info("should not be able to transfer holder of surrendered title-escrow");
-    return;
     const { tokenRegistry, tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       ...defaultTransferHolder,
@@ -134,14 +131,11 @@ export const changeHolder = async (): Promise<void> => {
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Title Escrow has already been surrendered");
   }
 
   //should not be able to transfer holder of burnt title-escrow"
   {
-    console.info("Skipped Test");
-    console.info("should not be able to transfer holder of burnt title-escrow");
-    return;
     const { tokenRegistry, tokenId } = mintBurntToken(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       ...defaultTransferHolder,
@@ -151,6 +145,6 @@ export const changeHolder = async (): Promise<void> => {
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Title Escrow has already been shredded");
   }
 };

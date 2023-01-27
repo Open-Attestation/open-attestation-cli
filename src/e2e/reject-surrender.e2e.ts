@@ -39,7 +39,7 @@ export const rejectSurrender = async (): Promise<void> => {
       owner.privateKey
     );
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Unminted Token");
   }
 
   //"should not be able to reject surrender title-escrow on invalid token-registry"
@@ -50,7 +50,7 @@ export const rejectSurrender = async (): Promise<void> => {
       owner.privateKey
     );
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 
   //"should not be able to accept un-owned/held surrendered title-escrow on invalid token-registry"
@@ -61,7 +61,7 @@ export const rejectSurrender = async (): Promise<void> => {
       receiver.privateKey
     );
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   //"should not be able to accept un-surrendered title-escrow on token-registry"
@@ -72,6 +72,6 @@ export const rejectSurrender = async (): Promise<void> => {
       owner.privateKey
     );
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkFailure(results, "Title Escrow has not been surrendered");
   }
 };

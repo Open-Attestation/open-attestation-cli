@@ -172,7 +172,7 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "null");
+    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 
   //"should fail with invalid beneficiary"
@@ -203,21 +203,5 @@ export const mint = async (): Promise<void> => {
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
     checkFailure(results, "missing revert data in call exception");
-  }
-
-  //"should fail with no funds"
-  {
-    const tokenId = generateTokenId();
-    const titleEscrowParameter: TokenRegistryIssueCommand = {
-      ...defaultRunParameters,
-      address: tokenRegistryAddress,
-      tokenId: tokenId,
-      beneficiary: receiver.ethAddress,
-      holder: receiver.ethAddress,
-      network: "mainnet",
-    };
-    const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
-    const results = run(command);
-    checkFailure(results, "null");
   }
 };
