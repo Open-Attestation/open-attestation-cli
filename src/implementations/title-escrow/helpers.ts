@@ -7,6 +7,7 @@ import {
   TradeTrustToken__factory,
 } from "@govtechsg/token-registry/contracts";
 import { Wallet, constants, Contract } from "ethers";
+import { isAddress } from "ethers/lib/utils";
 import signale from "signale";
 import { ConnectedSigner } from "../utils/wallet";
 
@@ -178,6 +179,9 @@ export const validateTransferHolder = async ({
   to,
   walletAddress,
 }: validateTransferArgs): Promise<void> => {
+  if (!isAddress(walletAddress)) {
+    ("Destination Holder is not a valid address");
+  }
   await validateActiveTitleEscrow(titleEscrow);
   const haveRights = await hasTransferRights(titleEscrow, walletAddress, [EscrowRoles.holder]);
   if (!haveRights) throw new Error(`Wallet lack the rights for the transfer operation`);
@@ -190,6 +194,9 @@ export const validateTransferBeneficiary = async ({
   to,
   walletAddress,
 }: validateTransferArgs): Promise<void> => {
+  if (!isAddress(walletAddress)) {
+    ("Destination Beneficiary is not a valid address");
+  }
   await validateActiveTitleEscrow(titleEscrow);
   const haveRights = await hasTransferRights(titleEscrow, walletAddress, [EscrowRoles.beneficiary, EscrowRoles.holder]);
   if (!haveRights) throw new Error(`Wallet lack the rights for the transfer operation`);
@@ -204,6 +211,9 @@ export const validateNominateBeneficiary = async ({
   to,
   titleEscrow,
 }: validateTransferArgs): Promise<void> => {
+  if (!isAddress(walletAddress)) {
+    ("Destination Nominee is not a valid address");
+  }
   await validateActiveTitleEscrow(titleEscrow);
   const haveRights = await hasTransferRights(titleEscrow, walletAddress, [EscrowRoles.beneficiary]);
   if (!haveRights) throw new Error(`Wallet lack the rights for the transfer operation`);

@@ -37,6 +37,7 @@ describe("title-escrow", () => {
     mockGetBeneficiary.mockReturnValue(mockedBeneficiary);
     mockGetHolder.mockReturnValue(mockedHolder);
     mockedConnectERC721.mockReturnValue({
+      supportsInterface: jest.fn().mockReturnValue(true),
       ownerOf: mockedOwnerOf,
       callStatic: {
         genesis: jest.fn().mockResolvedValue(0),

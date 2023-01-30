@@ -3,15 +3,16 @@ import { Wallet } from "ethers";
 
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 import { addAddressPrefix } from "../../utils";
+import { getMockTokenRegistry, mergeMockSmartContract } from "../testsHelpers";
 import { issueToTokenRegistry } from "./issue";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
 const deployParams: TokenRegistryIssueCommand = {
-  beneficiary: "0xabcd",
-  holder: "0xabce",
-  tokenId: "0xzyxw",
-  address: "0x1234",
+  address: "0x0000000000000000000000000000000000000001",
+  beneficiary: "0x0x0000000000000000000000000000000000000002",
+  holder: "0x0000000000000000000000000000000000000003",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
   network: "goerli",
   dryRun: false,
 };
@@ -31,20 +32,24 @@ describe("token-registry", () => {
       wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
 
-    const mockTTERC721Contract = {
+    const mockBaseTokenRegistry = getMockTokenRegistry({});
+    const mockCustomTokenRegistry = {
       mint: mockedIssue,
       callStatic: {
-        genesis: jest.fn().mockResolvedValue(0),
         mint: mockCallStaticSafeMint,
       },
     };
+    const mockTokenRegistry = mergeMockSmartContract({
+      base: mockBaseTokenRegistry,
+      override: mockCustomTokenRegistry,
+    });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
       mockedTradeTrustTokenFactory.mockClear();
       mockCallStaticSafeMint.mockClear();
       mockedConnectERC721.mockReset();
-      mockedConnectERC721.mockResolvedValue(mockTTERC721Contract);
+      mockedConnectERC721.mockResolvedValue(mockTokenRegistry);
     });
 
     it("should pass in the correct params and return the deployed instance", async () => {
