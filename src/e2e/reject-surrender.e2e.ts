@@ -7,7 +7,7 @@ import { checkE2ESurrenderRejectSuccess } from "./utils/helpers";
 import { getSigner, retrieveTitleEscrowOwner } from "./utils/contract-checks";
 import { isAddress } from "web3-utils";
 
-export const rejectSurrender = async (): Promise<void> => {
+export const rejectE2ESurrender = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   const defaultTitleEscrow = {

@@ -12,7 +12,7 @@ import {
   mintE2ETokenRegistry,
 } from "./utils/helpers";
 
-export const nominate = async (): Promise<void> => {
+export const nominateE2E = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   //"should be able to nominate title-escrow on token-registry"

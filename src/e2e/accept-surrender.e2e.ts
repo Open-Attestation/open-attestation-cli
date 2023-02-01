@@ -10,7 +10,7 @@ import { BurnAddress, defaultRunParameters, EmptyTokenID, owner, receiver } from
 import { getSigner, retrieveTitleEscrowOwner } from "./utils/contract-checks";
 import { run } from "./utils/shell";
 
-export const acceptSurrender = async (): Promise<void> => {
+export const acceptE2Esurrender = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
   // const errors: Error[] = [];
   const defaultTitleEscrow = {

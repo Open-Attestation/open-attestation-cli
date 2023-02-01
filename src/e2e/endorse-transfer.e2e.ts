@@ -16,7 +16,7 @@ import { run } from "./utils/shell";
 import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
 import { BigNumber } from "ethers";
 
-export const endorseTransfer = async (): Promise<void> => {
+export const endorseE2ETransfer = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   //"should be able to endorse transfer title-escrow on token-registry"

@@ -16,7 +16,7 @@ import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
 import { BigNumber } from "ethers";
 
 // "endorse change owner title-escrow"
-export const endorseChangeOwner = async (): Promise<void> => {
+export const endorseE2EChangeOwner = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   const defaultTransferOwners = {

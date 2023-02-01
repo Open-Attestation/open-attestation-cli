@@ -13,7 +13,7 @@ import {
   checkE2EMintSuccess,
 } from "./utils/helpers";
 
-export const mint = async (): Promise<void> => {
+export const mintE2EToken = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   //"should be able to mint title-escrow on token-registry"

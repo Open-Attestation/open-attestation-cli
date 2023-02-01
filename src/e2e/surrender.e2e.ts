@@ -19,7 +19,7 @@ const defaultTitleEscrow = {
   holder: owner.ethAddress,
 };
 
-export const surrender = async (): Promise<void> => {
+export const surrenderE2EToken = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   // "should be able to surrender title-escrow"

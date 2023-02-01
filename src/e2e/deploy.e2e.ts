@@ -6,7 +6,7 @@ import { generateDeployDocumentStoreCommand, generateDeployTokenRegistryCommand 
 import { getSigner, retrieveTokenInfo, rolesCheck } from "./utils/contract-checks";
 import { checkE2ETokenRegistrySuccess, defaultE2ETokenRegistryParams } from "./utils/helpers";
 
-export const deployTokenRegistry = async (): Promise<void> => {
+export const deployE2ETokenRegistry = async (): Promise<void> => {
   //should be able to deploy token-registry"
   {
     const tokenRegistryParameter: DeployTokenRegistryCommand = {
@@ -42,7 +42,7 @@ export const deployTokenRegistry = async (): Promise<void> => {
   }
 };
 
-export const deployDocumentStore = async (): Promise<void> => {
+export const deployE2EDocumentStore = async (): Promise<void> => {
   //should be able to deploy document-store
   {
     const documentStoreParameters: DeployDocumentStoreCommand = {

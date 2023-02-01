@@ -16,7 +16,7 @@ import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
 import { BigNumber } from "ethers";
 
 // "transfer holder title-escrow"
-export const changeHolder = async (): Promise<void> => {
+export const changeE2EHolder = async (): Promise<void> => {
   const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   //should be able to transfer holder title-escrow on token-registry"
