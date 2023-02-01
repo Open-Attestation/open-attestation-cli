@@ -15,8 +15,6 @@ const deployParams: DocumentStoreTransferOwnershipCommand = {
   dryRun: false,
 };
 
-// TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
-// ideally must setup ganache, and run the function over it
 describe("document-store", () => {
   // increase timeout because ethers is throttling
   jest.setTimeout(30000);

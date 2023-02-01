@@ -20,7 +20,8 @@ export const transferOwners = async ({
 }: TitleEscrowEndorseTransferOfOwnersCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-  await validateEndorseChangeOwners({ newHolder, newOwner, titleEscrow });
+  const walletAddress = await wallet.getAddress();
+  await validateEndorseChangeOwners({ newHolder, newOwner, titleEscrow, walletAddress });
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder),
