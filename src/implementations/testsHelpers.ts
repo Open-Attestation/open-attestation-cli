@@ -1,5 +1,4 @@
-import { TradeTrustToken } from "@govtechsg/token-registry/dist/contracts";
-import { BaseContract, BigNumber, constants } from "ethers";
+import { BaseContract, BigNumber, constants, providers } from "ethers";
 
 export const AddressZero = constants.AddressZero;
 export const BurnAddress = "0x000000000000000000000000000000000000dEaD";
@@ -40,7 +39,16 @@ export interface ValidContractMockParameters {
   supportInterfaceValue?: boolean | Error;
 }
 
-export const getMockContract = ({ supportInterfaceValue = true }: ValidContractMockParameters) => {
+interface MockContractInterface {
+  supportInterface: jest.Mock;
+  callStatic: {
+    supportInterface: jest.Mock;
+  };
+}
+
+export const getMockContract = ({
+  supportInterfaceValue = true,
+}: ValidContractMockParameters): MockContractInterface => {
   const supportInterface = mockResolve(supportInterfaceValue);
   return {
     supportInterface,
@@ -53,19 +61,32 @@ export const getMockContract = ({ supportInterfaceValue = true }: ValidContractM
 export interface TokenRegistryMockParameters extends ValidContractMockParameters {
   ownerOfValue?: string | Error;
   address?: string;
-  titleEscrowAddress?: string;
+  titleEscrowFactoryAddress?: string;
+}
+
+interface MockTokenRegistryInterface {
+  ownerOf: jest.Mock;
+  genesis: jest.Mock;
+  titleEscrowFactory: jest.Mock;
+  supportInterfaces: jest.Mock;
+  callStatic: {
+    ownerOf: jest.Mock;
+    genesis: jest.Mock;
+    titleEscrowFactory: jest.Mock;
+    supportInterfaces: jest.Mock;
+  };
 }
 
 export const getMockTokenRegistry = ({
   ownerOfValue = AddressZero,
   supportInterfaceValue = true,
   address = AddressZero,
-  titleEscrowAddress = AddressZero,
-}: TokenRegistryMockParameters): jest.Mock<TradeTrustToken> => {
+  titleEscrowFactoryAddress = AddressZero,
+}: TokenRegistryMockParameters): MockTokenRegistryInterface => {
   const validContract = getMockContract({ supportInterfaceValue });
   const ownerOf = mockResolve(ownerOfValue);
   const genesis = mockResolve(BigNumber.from(0));
-  const titleEscrowFactory = mockResolve(titleEscrowAddress);
+  const titleEscrowFactory = mockResolve(titleEscrowFactoryAddress);
   const contractFunctions = {
     ownerOf,
     genesis,
@@ -83,10 +104,19 @@ export interface TokenRegistryMockParameters extends ValidContractMockParameters
   getAddressValue?: string | Error;
 }
 
+interface MockTitleEscrowFactoryInterface {
+  getAddress: jest.Mock;
+  supportInterfaces: jest.Mock;
+  callStatic: {
+    getAddress: jest.Mock;
+    supportInterfaces: jest.Mock;
+  };
+}
+
 export const getMockTitleEscrowFactory = ({
   getAddressValue = AddressZero,
   supportInterfaceValue = true,
-}: TokenRegistryMockParameters): jest.Mock<TradeTrustToken> => {
+}: TokenRegistryMockParameters): MockTitleEscrowFactoryInterface => {
   const validContract = getMockContract({ supportInterfaceValue });
   const getAddress = mockResolve(getAddressValue);
   const contractFunctions = {
@@ -106,20 +136,35 @@ export interface TitleEscrowMockParameters extends ValidContractMockParameters {
   activeValue?: boolean | Error;
 }
 
+interface MockTitleEscrowInterface {
+  active: jest.Mock;
+  beneficiary: jest.Mock;
+  holder: jest.Mock;
+  nominee: jest.Mock;
+  supportInterfaces: jest.Mock;
+  callStatic: {
+    active: jest.Mock;
+    beneficiary: jest.Mock;
+    holder: jest.Mock;
+    nominee: jest.Mock;
+    supportInterfaces: jest.Mock;
+  };
+}
+
 export const getMockTitleEscrow = ({
   beneficiaryValue = AddressZero,
   holderValue = AddressZero,
   nomineeValue = AddressZero,
   activeValue = true,
   supportInterfaceValue = true,
-}: TitleEscrowMockParameters) => {
+}: TitleEscrowMockParameters): MockTitleEscrowInterface => {
   const validContract = getMockContract({ supportInterfaceValue });
-  const activeContract = mockResolve(activeValue);
+  const active = mockResolve(activeValue);
   const beneficiary = mockResolve(beneficiaryValue);
   const holder = mockResolve(holderValue);
   const nominee = mockResolve(nomineeValue);
   const contractFunctions = {
-    activeContract,
+    active,
     beneficiary,
     holder,
     nominee,
@@ -131,11 +176,20 @@ export const getMockTitleEscrow = ({
   return mergeMockSmartContract({ base: validContract, override: mockTitleEscrow });
 };
 
+export const initMockGetCode = (fn?: jest.Mock): void => {
+  if (!fn) {
+    const fn = jest.fn();
+    fn.mockResolvedValue(`0x`);
+  }
+  jest.spyOn(providers.BaseProvider.prototype, "getCode").mockImplementation(fn);
+};
 export interface WalletMockParameters {
   codeValue?: string | Error;
 }
 
-export const getValidWalletContract = ({ codeValue = `0x` }: WalletMockParameters) => {
+export const getValidWalletContract = ({
+  codeValue = `0x`,
+}: WalletMockParameters): { provider: { getCode: jest.Mock } } => {
   const getCode = mockResolve(codeValue);
   return {
     provider: {
@@ -150,7 +204,6 @@ export interface MergeObjectParameters {
 }
 
 export const mergeMockSmartContract = ({ base, override }: MergeObjectParameters): any => {
-  // Sowie
   override = mergeMockBaseContract(base, override, "functions");
   override = mergeMockBaseContract(base, override, "callStatic");
   override = mergeMockBaseContract(base, override, "estimateGas");

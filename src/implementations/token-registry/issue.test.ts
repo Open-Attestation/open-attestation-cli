@@ -3,7 +3,7 @@ import { Wallet } from "ethers";
 
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 import { addAddressPrefix } from "../../utils";
-import { getMockTokenRegistry, mergeMockSmartContract } from "../testsHelpers";
+import { getMockTokenRegistry, initMockGetCode, mergeMockSmartContract } from "../testsHelpers";
 import { issueToTokenRegistry } from "./issue";
 
 jest.mock("@govtechsg/token-registry/contracts");
@@ -43,6 +43,8 @@ describe("token-registry", () => {
       base: mockBaseTokenRegistry,
       override: mockCustomTokenRegistry,
     });
+
+    initMockGetCode();
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;

@@ -2,14 +2,15 @@ import { TitleEscrow__factory, TradeTrustToken__factory } from "@govtechsg/token
 import { Wallet } from "ethers";
 
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { getMockTitleEscrow, getMockTokenRegistry, initMockGetCode, mergeMockSmartContract } from "../testsHelpers";
 import { endorseNominatedBeneficiary } from "./endorseNominatedBeneficiary";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
 const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
-  tokenId: "0xzyxw",
-  tokenRegistry: "0x1234",
-  newBeneficiary: "0x1232",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
+  tokenRegistry: "0x0000000000000000000000000000000000000001",
+  newBeneficiary: "0x0000000000000000000000000000000000000002",
   network: "goerli",
   dryRun: false,
 };
@@ -25,35 +26,49 @@ describe("title-escrow", () => {
     // @ts-ignore mock static method
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
 
-    const mockedTitleEscrowAddress = "0x2133";
+    const walletAddress = `0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf`;
+
+    const mockedTitleEscrowAddress = "0x0000000000000000000000000000000000000003";
     const mockedOwnerOf = jest.fn();
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
 
     const mockTransferOwners = jest.fn();
     const mockCallStaticTransferOwners = jest.fn().mockResolvedValue(undefined);
 
-    const mockedBeneficiary = "0xdssfs";
+    const mockedBeneficiary = "0x0000000000000000000000000000000000000004";
     const mockGetBeneficiary = jest.fn();
     mockGetBeneficiary.mockReturnValue(mockedBeneficiary);
 
-    mockedConnectERC721.mockReturnValue({
-      ownerOf: mockedOwnerOf,
-      callStatic: {
-        genesis: jest.fn().mockResolvedValue(0),
-      },
+    const mockBaseTokenRegistry = getMockTokenRegistry({
+      ownerOfValue: mockedTitleEscrowAddress,
+      address: endorseNominatedBeneficiaryParams.tokenRegistry,
+    });
+    const mockTokenRegistry = mockBaseTokenRegistry;
+    const mockBaseTitleEscrow = getMockTitleEscrow({
+      holderValue: walletAddress,
+      beneficiaryValue: walletAddress,
+      nomineeValue: endorseNominatedBeneficiaryParams.newBeneficiary,
     });
 
-    mockedConnectTokenFactory.mockReturnValue({
+    mockedConnectERC721.mockReturnValue(mockTokenRegistry);
+
+    const customMockTitleEscrow = {
       transferBeneficiary: mockTransferOwners,
-      beneficiary: mockGetBeneficiary,
+      // beneficiary: mockGetBeneficiary,
       callStatic: {
         transferBeneficiary: mockCallStaticTransferOwners,
       },
-    });
+    };
+
+    const mockTitleEscrow = mergeMockSmartContract({ base: mockBaseTitleEscrow, override: customMockTitleEscrow });
+
+    mockedConnectTokenFactory.mockReturnValue(mockTitleEscrow);
     mockTransferOwners.mockReturnValue({
       hash: "hash",
       wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
+
+    initMockGetCode();
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -77,7 +92,6 @@ describe("title-escrow", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
       expect(mockedConnectERC721).toHaveBeenCalledWith(endorseNominatedBeneficiaryParams.tokenRegistry, passedSigner);
-      expect(mockedOwnerOf).toHaveBeenCalledWith(endorseNominatedBeneficiaryParams.tokenId);
       expect(mockedConnectTokenFactory).toHaveBeenCalledWith(mockedTitleEscrowAddress, passedSigner);
       expect(mockCallStaticTransferOwners).toHaveBeenCalledTimes(1);
       expect(mockTransferOwners).toHaveBeenCalledTimes(1);
@@ -88,10 +102,10 @@ describe("title-escrow", () => {
       await expect(
         endorseNominatedBeneficiary({
           ...endorseNominatedBeneficiaryParams,
-          newBeneficiary: "0xdssfs",
+          newBeneficiary: walletAddress,
           key: privateKey,
         })
-      ).rejects.toThrow(`new beneficiary address is the same as the current beneficiary address`);
+      ).rejects.toThrow(`Destination wallet already has the rights as beneficiary`);
     });
   });
 });

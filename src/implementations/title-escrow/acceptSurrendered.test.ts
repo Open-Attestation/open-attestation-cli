@@ -4,13 +4,13 @@ import {
   TradeTrustToken__factory,
 } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
-
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import {
   AddressZero,
   getMockTitleEscrow,
   getMockTitleEscrowFactory,
   getMockTokenRegistry,
+  initMockGetCode,
   mergeMockSmartContract,
 } from "../testsHelpers";
 import { acceptSurrendered } from "./acceptSurrendered";
@@ -47,7 +47,7 @@ describe("title-escrow", () => {
     const mockBaseTokenRegistry = getMockTokenRegistry({
       ownerOfValue: tokenRegistryAddress,
       address: tokenRegistryAddress,
-      titleEscrowAddress: AddressZero,
+      titleEscrowFactoryAddress: AddressZero,
     });
     let mockTokenRegistry = mockBaseTokenRegistry;
     const mockTitleEscrowFactory = getMockTitleEscrowFactory({});
@@ -64,11 +64,10 @@ describe("title-escrow", () => {
       const mockCustomTokenRegistry = {
         burn: mockBurnToken,
         callStatic: {
-          genesis: jest.fn().mockResolvedValue(0),
           burn: mockCallStaticBurnToken,
         },
       };
-
+      initMockGetCode();
       mockTokenRegistry = mergeMockSmartContract({ base: mockBaseTokenRegistry, override: mockCustomTokenRegistry });
       mockedConnectERC721.mockReturnValue(mockTokenRegistry);
       mockedConnectTitleEscrow.mockReturnValue(mockTitleEscrow);
