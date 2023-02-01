@@ -1,13 +1,13 @@
 import { TitleEscrowTransferHolderCommand } from "../commands/title-escrow/title-escrow-command.type";
 import {
-  changeHolderToken,
-  checkChangeHolderSuccess,
-  checkFailure,
-  defaultTransferHolder,
-  deployTokenRegistry,
-  mintBurntToken,
-  mintSurrenderToken,
-  mintTokenRegistry,
+  changeHolderE2EToken,
+  checkE2EChangeHolderSuccess,
+  checkE2EFailure,
+  defaultE2ETransferHolder,
+  deployE2ETokenRegistry,
+  mintBurntE2EToken,
+  mintSurrenderE2EToken,
+  mintE2ETokenRegistry,
 } from "./utils/helpers";
 import { generateChangeHolderCommand } from "./utils/commands";
 import { BurnAddress, EmptyTokenID, owner, receiver } from "./utils/constants";
@@ -17,19 +17,19 @@ import { BigNumber } from "ethers";
 
 // "transfer holder title-escrow"
 export const changeHolder = async (): Promise<void> => {
-  const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
+  const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   //should be able to transfer holder title-escrow on token-registry"
   {
-    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry, tokenId } = mintE2ETokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkChangeHolderSuccess(results);
+    checkE2EChangeHolderSuccess(results);
 
     const signer = await getSigner(transferHolder.network, receiver.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(signer, transferHolder.tokenRegistry, transferHolder.tokenId);
@@ -46,19 +46,19 @@ export const changeHolder = async (): Promise<void> => {
 
   //holder should be able to transfer holder of title-escrow"
   {
-    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry, tokenId } = mintE2ETokenRegistry(owner.privateKey, tokenRegistryAddress);
     // Transfer Holder to Receiver
     const initialHolder: TitleEscrowTransferHolderCommand = {
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
       newHolder: receiver.ethAddress,
     };
-    changeHolderToken(owner.privateKey, initialHolder);
+    changeHolderE2EToken(owner.privateKey, initialHolder);
     // Transfer Holder to Receiver
     // Holder attempts to transfer Holder with permission
     const transferHolder: TitleEscrowTransferHolderCommand = {
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
       newHolder: owner.ethAddress,
@@ -66,50 +66,50 @@ export const changeHolder = async (): Promise<void> => {
     const command = generateChangeHolderCommand(transferHolder, receiver.privateKey);
     // Holder attempts to transfer Holder with permission
     const results = run(command);
-    checkChangeHolderSuccess(results);
+    checkE2EChangeHolderSuccess(results);
   }
 
   //should not be able to transfer holder of invalid title-escrow on token-registry"
   {
-    const { tokenRegistry } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry } = mintE2ETokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       tokenId: EmptyTokenID,
       tokenRegistry: tokenRegistry,
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "Unminted Token");
+    checkE2EFailure(results, "Unminted Token");
   }
 
   //should not be able to transfer holder of title-escrow on invalid token-registry"
   {
-    const { tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenId } = mintE2ETokenRegistry(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
       tokenId: tokenId,
       tokenRegistry: BurnAddress,
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
+    checkE2EFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 
   //beneficiary should not be able to transfer holder of title-escrow"
   {
-    const { tokenRegistry, tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry, tokenId } = mintE2ETokenRegistry(owner.privateKey, tokenRegistryAddress);
     // Transfer Holder to Receiver
     const initialHolder: TitleEscrowTransferHolderCommand = {
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
       newHolder: receiver.ethAddress,
     };
-    changeHolderToken(owner.privateKey, initialHolder);
+    changeHolderE2EToken(owner.privateKey, initialHolder);
     // Transfer Holder to Receiver
     // Beneficiary attempts to transfer Holder without permission
     const transferHolder: TitleEscrowTransferHolderCommand = {
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
       newHolder: owner.ethAddress,
@@ -117,34 +117,34 @@ export const changeHolder = async (): Promise<void> => {
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     // Beneficiary attempts to transfer Holder without permission
     const results = run(command);
-    checkFailure(results, "Wallet lack the rights for the transfer operation");
+    checkE2EFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   // should not be able to transfer holder of surrendered title-escrow"
   {
-    const { tokenRegistry, tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry, tokenId } = mintSurrenderE2EToken(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
       newHolder: owner.ethAddress,
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "Title Escrow has already been surrendered");
+    checkE2EFailure(results, "Title Escrow has already been surrendered");
   }
 
   //should not be able to transfer holder of burnt title-escrow"
   {
-    const { tokenRegistry, tokenId } = mintBurntToken(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry, tokenId } = mintBurntE2EToken(owner.privateKey, tokenRegistryAddress);
     const transferHolder: TitleEscrowTransferHolderCommand = {
-      ...defaultTransferHolder,
+      ...defaultE2ETransferHolder,
       tokenId: tokenId,
       tokenRegistry: tokenRegistry,
       newHolder: owner.ethAddress,
     };
     const command = generateChangeHolderCommand(transferHolder, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "Title Escrow has already been shredded");
+    checkE2EFailure(results, "Title Escrow has already been shredded");
   }
 };

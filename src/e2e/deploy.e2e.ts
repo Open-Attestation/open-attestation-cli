@@ -4,7 +4,7 @@ import { isAddress } from "web3-utils";
 import { defaultRunParameters, EndStatus, owner } from "./utils/constants";
 import { generateDeployDocumentStoreCommand, generateDeployTokenRegistryCommand } from "./utils/commands";
 import { getSigner, retrieveTokenInfo, rolesCheck } from "./utils/contract-checks";
-import { checkTokenRegistrySuccess, defaultTokenRegistry } from "./utils/helpers";
+import { checkE2ETokenRegistrySuccess, defaultE2ETokenRegistryParams } from "./utils/helpers";
 
 export const deployTokenRegistry = async (): Promise<void> => {
   //should be able to deploy token-registry"
@@ -12,12 +12,12 @@ export const deployTokenRegistry = async (): Promise<void> => {
     const tokenRegistryParameter: DeployTokenRegistryCommand = {
       registryName: "Test Token",
       registrySymbol: "TKN",
-      ...defaultTokenRegistry,
+      ...defaultE2ETokenRegistryParams,
     };
 
     const command = generateDeployTokenRegistryCommand(tokenRegistryParameter, owner.privateKey);
     const results = run(command);
-    const tokenRegistryAddress = checkTokenRegistrySuccess(results);
+    const tokenRegistryAddress = checkE2ETokenRegistrySuccess(results);
     const signer = getSigner(defaultRunParameters.network, owner.privateKey);
     const tokenInfo = await retrieveTokenInfo(signer, tokenRegistryAddress);
     if (!(tokenInfo.name === tokenRegistryParameter.registryName)) {

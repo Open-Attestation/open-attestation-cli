@@ -19,7 +19,7 @@
     "test": "jest --ci",
     "test:coverage": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
-    "e2e-test": "ts-node src/e2e/all.ts",
+    "e2e-test": "ts-node src/e2e/index.ts",
     "lint": "eslint . --ext .ts --max-warnings 0",
     "lint:fix": "eslint . --ext .ts --fix",
     "benchmark:make-certs": "./scripts/makeCerts.sh 20000",

@@ -3,7 +3,7 @@ import { AddressLength, EndStatus, TokenIdLength } from "../constants";
 import { extractStatus } from "../shell";
 import { isTokenId } from "../token-management";
 
-export const checkEndorseOwner = (results: string): { beneficiary: string; holder: string; tokenId: string } => {
+export const checkE2EEndorseOwner = (results: string): { beneficiary: string; holder: string; tokenId: string } => {
   const statusLine = extractStatus(results, EndStatus.success, "Transferable record with hash ");
   if (statusLine.length <= 0) throw new Error("Minting failed");
   const titleEscrowAddressLine = statusLine[0].lineContent;

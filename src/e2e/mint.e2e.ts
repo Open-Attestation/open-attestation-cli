@@ -5,10 +5,16 @@ import { TokenRegistryIssueCommand } from "../commands/token-registry/token-regi
 import { generateMintTitleEscrowCommand } from "./utils/commands";
 import { getSigner, retrieveTitleEscrow } from "./utils/contract-checks";
 import { BigNumber } from "ethers";
-import { deployTokenRegistry, validateMintData, MintData, checkFailure, checkMintSuccess } from "./utils/helpers";
+import {
+  deployE2ETokenRegistry,
+  validateE2EMintData,
+  E2EMintData,
+  checkE2EFailure,
+  checkE2EMintSuccess,
+} from "./utils/helpers";
 
 export const mint = async (): Promise<void> => {
-  const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
+  const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
 
   //"should be able to mint title-escrow on token-registry"
   {
@@ -22,8 +28,8 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    const mintResults = checkMintSuccess(results);
-    validateMintData(titleEscrowParameter as MintData, mintResults);
+    const mintResults = checkE2EMintSuccess(results);
+    validateE2EMintData(titleEscrowParameter as E2EMintData, mintResults);
 
     const signer = await getSigner(titleEscrowParameter.network, owner.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(
@@ -56,8 +62,8 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    const mintResults = checkMintSuccess(results);
-    validateMintData(titleEscrowParameter as MintData, mintResults);
+    const mintResults = checkE2EMintSuccess(results);
+    validateE2EMintData(titleEscrowParameter as E2EMintData, mintResults);
 
     const signer = await getSigner(titleEscrowParameter.network, receiver.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(
@@ -90,8 +96,8 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    const mintResults = checkMintSuccess(results);
-    validateMintData(titleEscrowParameter as MintData, mintResults);
+    const mintResults = checkE2EMintSuccess(results);
+    validateE2EMintData(titleEscrowParameter as E2EMintData, mintResults);
 
     const signer = await getSigner(titleEscrowParameter.network, receiver.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(
@@ -124,8 +130,8 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    const mintResults = checkMintSuccess(results);
-    validateMintData(titleEscrowParameter as MintData, mintResults);
+    const mintResults = checkE2EMintSuccess(results);
+    validateE2EMintData(titleEscrowParameter as E2EMintData, mintResults);
 
     const signer = await getSigner(titleEscrowParameter.network, receiver.privateKey);
     const titleEscrowInfo = await retrieveTitleEscrow(
@@ -157,7 +163,7 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "invalid BigNumber string");
+    checkE2EFailure(results, "invalid BigNumber string");
   }
 
   //"should fail with invalid token registry"
@@ -172,7 +178,7 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
+    checkE2EFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 
   //"should fail with invalid beneficiary"
@@ -187,7 +193,7 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkE2EFailure(results, "missing revert data in call exception");
   }
 
   //"should fail with invalid holder"
@@ -202,6 +208,6 @@ export const mint = async (): Promise<void> => {
     };
     const command = generateMintTitleEscrowCommand(titleEscrowParameter, owner.privateKey);
     const results = run(command);
-    checkFailure(results, "missing revert data in call exception");
+    checkE2EFailure(results, "missing revert data in call exception");
   }
 };

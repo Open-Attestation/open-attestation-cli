@@ -1,4 +1,3 @@
-// import { NonceManager } from "@ethersproject/experimental";
 import { constants } from "@govtechsg/token-registry";
 export const { contractAddress } = constants;
 

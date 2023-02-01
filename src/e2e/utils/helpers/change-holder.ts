@@ -5,12 +5,12 @@ import { AddressLength, defaultRunParameters, EndStatus, receiver, TokenIdLength
 import { extractStatus, run } from "../shell";
 import { isTokenId } from "../token-management";
 
-export const defaultTransferHolder = {
+export const defaultE2ETransferHolder = {
   ...defaultRunParameters,
   newHolder: receiver.ethAddress,
 };
 
-export const checkChangeHolderSuccess = (results: string): { newHolder: string; tokenId: string } => {
+export const checkE2EChangeHolderSuccess = (results: string): { newHolder: string; tokenId: string } => {
   const statusLine = extractStatus(results, EndStatus.success, "Transferable record with hash ");
   if (statusLine.length <= 0) throw new Error("Change Holder failed");
   const titleEscrowAddressLine = statusLine[0].lineContent;
@@ -29,8 +29,8 @@ export const checkChangeHolderSuccess = (results: string): { newHolder: string; 
   };
 };
 
-export const changeHolderToken = (privateKey: string, transferHolder: TitleEscrowTransferHolderCommand): void => {
+export const changeHolderE2EToken = (privateKey: string, transferHolder: TitleEscrowTransferHolderCommand): void => {
   const command = generateChangeHolderCommand(transferHolder, privateKey);
   const results = run(command);
-  checkChangeHolderSuccess(results);
+  checkE2EChangeHolderSuccess(results);
 };

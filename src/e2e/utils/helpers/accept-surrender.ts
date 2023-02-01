@@ -3,29 +3,29 @@ import { generateAcceptSurrenderCommand } from "../commands";
 import { defaultRunParameters, EndStatus, TokenIdLength } from "../constants";
 import { extractStatus, run } from "../shell";
 import { isTokenId } from "../token-management";
-import { mintSurrenderToken, surrenderToken } from "./surrender";
+import { mintSurrenderE2EToken, surrenderE2EToken } from "./surrender";
 
-export const mintBurntToken = (
+export const mintBurntE2EToken = (
   privateKey: string,
   tokenRegistryAddress?: string
 ): { tokenId: string; tokenRegistry: string } => {
-  const { tokenId, tokenRegistry } = mintSurrenderToken(privateKey, tokenRegistryAddress);
-  burnSurrenderedToken(privateKey, { tokenRegistry, tokenId, ...defaultRunParameters });
+  const { tokenId, tokenRegistry } = mintSurrenderE2EToken(privateKey, tokenRegistryAddress);
+  burnSurrenderedE2EToken(privateKey, { tokenRegistry, tokenId, ...defaultRunParameters });
   return { tokenId, tokenRegistry };
 };
 
-export const burnSurrenderedToken = (privateKey: string, acceptSurrender: BaseTitleEscrowCommand): void => {
+export const burnSurrenderedE2EToken = (privateKey: string, acceptSurrender: BaseTitleEscrowCommand): void => {
   const command = generateAcceptSurrenderCommand(acceptSurrender, privateKey);
   const results = run(command);
-  checkSurrenderAcceptSuccess(results);
+  checkE2ESurrenderAcceptSuccess(results);
 };
 
-export const burnToken = (privateKey: string, acceptSurrender: BaseTitleEscrowCommand): void => {
-  surrenderToken(privateKey, acceptSurrender);
-  burnSurrenderedToken(privateKey, acceptSurrender);
+export const burnE2EToken = (privateKey: string, acceptSurrender: BaseTitleEscrowCommand): void => {
+  surrenderE2EToken(privateKey, acceptSurrender);
+  burnSurrenderedE2EToken(privateKey, acceptSurrender);
 };
 
-export const checkSurrenderAcceptSuccess = (results: string): { tokenId: string } => {
+export const checkE2ESurrenderAcceptSuccess = (results: string): { tokenId: string } => {
   const statusLine = extractStatus(results, EndStatus.success, "Surrendered transferable record with hash ");
   if (statusLine.length <= 0) throw new Error("Surrender Reject failed");
   const titleEscrowAddressLine = statusLine[0].lineContent;

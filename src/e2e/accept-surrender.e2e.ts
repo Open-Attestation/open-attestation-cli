@@ -1,9 +1,9 @@
 import {
-  checkFailure,
-  checkSurrenderAcceptSuccess,
-  deployTokenRegistry,
-  mintSurrenderToken,
-  mintTokenRegistry,
+  checkE2EFailure,
+  checkE2ESurrenderAcceptSuccess,
+  deployE2ETokenRegistry,
+  mintSurrenderE2EToken,
+  mintE2ETokenRegistry,
 } from "./utils/helpers";
 import { generateAcceptSurrenderCommand } from "./utils/commands";
 import { BurnAddress, defaultRunParameters, EmptyTokenID, owner, receiver } from "./utils/constants";
@@ -11,7 +11,7 @@ import { getSigner, retrieveTitleEscrowOwner } from "./utils/contract-checks";
 import { run } from "./utils/shell";
 
 export const acceptSurrender = async (): Promise<void> => {
-  const tokenRegistryAddress = deployTokenRegistry(owner.privateKey);
+  const tokenRegistryAddress = deployE2ETokenRegistry(owner.privateKey);
   // const errors: Error[] = [];
   const defaultTitleEscrow = {
     ...defaultRunParameters,
@@ -21,7 +21,7 @@ export const acceptSurrender = async (): Promise<void> => {
 
   //"should be able to accept-surrender title-escrow on token-registry"
   {
-    const { tokenRegistry, tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry, tokenId } = mintSurrenderE2EToken(owner.privateKey, tokenRegistryAddress);
     const command = generateAcceptSurrenderCommand({ tokenRegistry, tokenId, ...defaultTitleEscrow }, owner.privateKey);
     const signer = await getSigner(defaultTitleEscrow.network, owner.privateKey);
     let titleEscrowOwner: string = await retrieveTitleEscrowOwner(signer, tokenRegistry, tokenId);
@@ -31,50 +31,50 @@ export const acceptSurrender = async (): Promise<void> => {
     titleEscrowOwner = await retrieveTitleEscrowOwner(signer, tokenRegistry, tokenId);
     if (!(titleEscrowOwner === "0x000000000000000000000000000000000000dEaD"))
       throw new Error(`!(titleEscrowOwner === "0x000000000000000000000000000000000000dEaD")`);
-    checkSurrenderAcceptSuccess(results);
+    checkE2ESurrenderAcceptSuccess(results);
   }
 
   //"should not be able to accept surrender invalid title-escrow on token-registry"
   {
-    const { tokenRegistry } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
+    const { tokenRegistry } = mintSurrenderE2EToken(owner.privateKey, tokenRegistryAddress);
     const command = generateAcceptSurrenderCommand(
       { tokenRegistry, tokenId: EmptyTokenID, ...defaultTitleEscrow },
       owner.privateKey
     );
     const results = run(command);
-    checkFailure(results, "Unminted Token");
+    checkE2EFailure(results, "Unminted Token");
   }
 
   //"should not be able to accept surrender title-escrow on invalid token-registry"
   {
-    const { tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
+    const { tokenId } = mintSurrenderE2EToken(owner.privateKey, tokenRegistryAddress);
     const command = generateAcceptSurrenderCommand(
       { tokenRegistry: BurnAddress, tokenId, ...defaultTitleEscrow },
       owner.privateKey
     );
     const results = run(command);
-    checkFailure(results, `Address ${BurnAddress} is not a valid Contract`);
+    checkE2EFailure(results, `Address ${BurnAddress} is not a valid Contract`);
   }
 
   //"should not be able to accept un-owned/held surrendered title-escrow on invalid token-registry"
   {
-    const { tokenId } = mintSurrenderToken(owner.privateKey, tokenRegistryAddress);
+    const { tokenId } = mintSurrenderE2EToken(owner.privateKey, tokenRegistryAddress);
     const command = generateAcceptSurrenderCommand(
       { tokenRegistry: tokenRegistryAddress, tokenId, ...defaultTitleEscrow },
       receiver.privateKey
     );
     const results = run(command);
-    checkFailure(results, "Wallet lack the rights for the transfer operation");
+    checkE2EFailure(results, "Wallet lack the rights for the transfer operation");
   }
 
   //"should not be able to accept un-surrendered title-escrow on token-registry"
   {
-    const { tokenId } = mintTokenRegistry(owner.privateKey, tokenRegistryAddress);
+    const { tokenId } = mintE2ETokenRegistry(owner.privateKey, tokenRegistryAddress);
     const command = generateAcceptSurrenderCommand(
       { tokenRegistry: tokenRegistryAddress, tokenId, ...defaultTitleEscrow },
       owner.privateKey
     );
     const results = run(command);
-    checkFailure(results, "Title Escrow has not been surrendered");
+    checkE2EFailure(results, "Title Escrow has not been surrendered");
   }
 };

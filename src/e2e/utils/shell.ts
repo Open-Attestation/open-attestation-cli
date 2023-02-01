@@ -30,7 +30,7 @@ export const extractStatus = (results: string, expectedStatus: EndStatusType, ex
   return lineInfo;
 };
 
-export const printLines = (lines: LineInfo[]): void => {
+const printLines = (lines: LineInfo[]): void => {
   lines.sort((a: LineInfo, b: LineInfo): number => {
     return a.lineNumber - b.lineNumber;
   });
@@ -39,7 +39,7 @@ export const printLines = (lines: LineInfo[]): void => {
   }
 };
 
-export const extractLine = (result: string, query: string): LineInfo[] | void => {
+const extractLine = (result: string, query: string): LineInfo[] | void => {
   const splitResults = result.trim().split("\n");
   const matchedLines = [];
   for (let count = 0; count < splitResults.length; count++) {
@@ -57,21 +57,22 @@ export const extractLine = (result: string, query: string): LineInfo[] | void =>
 };
 
 // https://github.com/chalk/strip-ansi/blob/main/index.js
-export function stripAnsi(ansiString: string): string {
+const stripAnsi = (ansiString: string): string => {
   if (typeof ansiString !== "string") {
-    throw new TypeError(`Expected a \`string\`, got \`${typeof ansiString}\``);
+    const errorMessage = `Expected a \`string\`, got \`${typeof ansiString}\``;
+    throw new TypeError(errorMessage);
   }
   return ansiString.replace(ansiRegex(), "");
-}
+};
 
 // https://github.com/chalk/ansi-regex/blob/main/index.js
-export function ansiRegex({ onlyFirst = false } = {}): RegExp {
+const ansiRegex = ({ onlyFirst = false } = {}): RegExp => {
   const pattern = [
     "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
     "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-nq-uy=><~]))",
   ].join("|");
 
   return new RegExp(pattern, onlyFirst ? undefined : "g");
-}
+};
 
-export { shell, ShellString };
+// export { shell, ShellString };

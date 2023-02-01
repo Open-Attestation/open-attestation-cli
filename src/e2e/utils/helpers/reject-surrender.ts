@@ -2,7 +2,7 @@ import { EndStatus, TokenIdLength } from "../constants";
 import { extractStatus } from "../shell";
 import { isTokenId } from "../token-management";
 
-export const checkSurrenderRejectSuccess = (results: string): { tokenId: string } => {
+export const checkE2ESurrenderRejectSuccess = (results: string): { tokenId: string } => {
   const statusLine = extractStatus(results, EndStatus.success, "Surrendered transferable record with hash ");
   if (statusLine.length <= 0) throw new Error("Surrender Reject failed");
   const titleEscrowAddressLine = statusLine[0].lineContent;
