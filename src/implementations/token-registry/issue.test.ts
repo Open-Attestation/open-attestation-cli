@@ -31,7 +31,7 @@ describe("token-registry", () => {
       wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
 
-    const mockTTERC721Contract = {
+    const mockTtErc721Contract = {
       mint: mockedIssue,
       callStatic: {
         mint: mockCallStaticSafeMint,
@@ -43,7 +43,7 @@ describe("token-registry", () => {
       mockedTradeTrustTokenFactory.mockClear();
       mockCallStaticSafeMint.mockClear();
       mockedConnectERC721.mockReset();
-      mockedConnectERC721.mockResolvedValue(mockTTERC721Contract);
+      mockedConnectERC721.mockResolvedValue(mockTtErc721Contract);
     });
 
     it("should pass in the correct params and return the deployed instance", async () => {
