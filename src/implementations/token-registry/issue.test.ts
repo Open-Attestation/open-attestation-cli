@@ -86,5 +86,14 @@ describe("token-registry", () => {
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
     });
+
+    it("should allow errors to bubble up", async () => {
+      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
+      mockedConnectERC721.mockImplementation(() => {
+        throw new Error("An Error");
+      });
+      await expect(issueToTokenRegistry(deployParams)).rejects.toThrow("An Error");
+    });
+
   });
 });
