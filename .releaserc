@@ -3,7 +3,7 @@
     "@semantic-release/npm",
     {
       "path": "@semantic-release/exec",
-      "cmd": "pkg ./package.json --out-path dist/@govtechsg"
+      "cmd": "pkg ./package.json --out-path dist/@puayhiang"
     }
   ],
   "publish": [
@@ -12,17 +12,17 @@
       "path": "@semantic-release/github",
       "assets": [
         {
-          "path": "./dist/@govtechsg/open-attestation-cli-linux",
+          "path": "./dist/@puayhiang/open-attestation-cli-linux",
           "name": "open-attestation-linux",
           "label": "open-attestation-linux"
         },
         {
-          "path": "./dist/@govtechsg/open-attestation-cli-macos",
+          "path": "./dist/@puayhiang/open-attestation-cli-macos",
           "name": "open-attestation-macos",
           "label": "open-attestation-macos"
         },
         {
-          "path": "./dist/@govtechsg/open-attestation-cli-win.exe",
+          "path": "./dist/@puayhiang/open-attestation-cli-win.exe",
           "name": "open-attestation-win.exe",
           "label": "open-attestation-win.exe"
         }

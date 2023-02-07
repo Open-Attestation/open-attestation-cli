@@ -1,6 +1,6 @@
 {
-  "name": "@govtechsg/open-attestation-cli",
-  "version": "0.0.0-development",
+  "name": "@puayhiang/open-attestation-cli",
+  "version": "1.58.1",
   "description": "",
   "main": "index.ts",
   "types": "dist/types/index.d.ts",
@@ -26,7 +26,7 @@
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
     "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
-    "pkg": "pkg ./package.json --out-path dist/@govtechsg"
+    "pkg": "pkg ./package.json --out-path dist/@puayhiang"
   },
   "author": "",
   "devDependencies": {
