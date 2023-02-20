@@ -94,6 +94,5 @@ describe("token-registry", () => {
       });
       await expect(issueToTokenRegistry(deployParams)).rejects.toThrow("An Error");
     });
-
   });
 });
