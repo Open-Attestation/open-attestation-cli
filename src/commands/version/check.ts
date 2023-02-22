@@ -19,7 +19,7 @@ export const handler = async (): Promise<void> => {
       `Please visit https://github.com/open-attestation/open-attestation-cli/releases or upgrade your package using the npm package manager`
     );
     info(
-      `You could also download the latest version of OpenAttestation CLI using the open-attestation-cli upgrade command`
+      `You could also download the latest version of OpenAttestation CLI using the open-attestation upgrade command`
     );
   } else {
     success(`The current version of OpenAttestation CLI ${version} is the latest version`);

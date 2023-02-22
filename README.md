@@ -77,6 +77,8 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | [Surrender document (Title Escrow)](#surrender-document)                   | ✔           | ✔      | ✔       |
 | [Reject surrendered document (Title Escrow)](#reject-surrendered-document) | ✔           | ✔      | ✔       |
 | [Accept surrendered document (Title Escrow)](#accept-surrendered-document) | ✔           | ✔      | ✔       |
+| [Version Check](#version-check)                                            | -           | -      | -       |
+| [Version Upgrade](#version-upgrade)                                        | -           | -      | -       |
 
 ### Wrapping documents
 
@@ -703,6 +705,44 @@ Example - with private key set in `OA_PRIVATE_KEY` environment variable (recomme
 open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
+```
+
+
+#### Version Check
+
+This command will check if the current application is the most recent release.
+
+```bash
+open-attestation version check
+```
+
+Example
+
+```bash
+open-attestation version check
+
+ℹ  info      The latest version of OpenAttestation CLI is v1.57.1, you are currently on v1.57.0
+ℹ  info      Please visit https://github.com/open-attestation/open-attestation-cli/releases or upgrade your package using the npm package manager
+ℹ  info      You could also download the latest version of OpenAttestation CLI using the open-attestation upgrade command
+```
+
+#### Version Upgrade
+
+This command download the latest release if the current application is not the latest.
+
+```bash
+open-attestation version upgrade [options]
+```
+
+Example - with download folder set to 'bin' subfolder
+
+```bash
+open-attestation version upgrade --path ./bin/
+
+ℹ  info      The latest version of OpenAttestation CLI is v1.57.1, you are currently on v1.57.0
+ℹ  info      Downloading OpenAttestation CLI...
+…  awaiting  Downloading [====================] [100/100%]
+✔  success   OpenAttestation CLI has been successfully downloaded into ./bin/v1.57.1-open-attestation-macos
 ```
 
 ## Help
