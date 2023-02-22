@@ -3,7 +3,12 @@ const version = process.env.npm_package_version;
 import { platform } from "os";
 import { error, success, info } from "signale";
 
-import { downloadFile, getLatestRelease, getReleaseAsset, GithubDownloadInfo } from "./utils";
+import {
+  downloadFile,
+  getLatestRelease,
+  getReleaseAsset,
+  GithubDownloadInfo,
+} from "../../implementations/utils/github-version";
 
 export const command = "upgrade [options]";
 

@@ -1,4 +1,4 @@
-import { getLatestRelease, getReleaseAsset, GithubAssetsSchema } from "./utils";
+import { getLatestRelease, getReleaseAsset, GithubAssetsSchema } from "./github-version";
 
 describe("version Check", () => {
   it("should be able to get the latest release", async () => {

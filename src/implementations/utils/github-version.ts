@@ -1,11 +1,11 @@
-import { request } from "../dns/txt-record/create";
+import { request } from "./web-request";
 
 import fs from "fs";
 import fetch, { Response } from "node-fetch";
 import util from "util";
 import { pipeline } from "stream";
 
-import { progress as defaultProgress } from "../../implementations/utils/progress";
+import { progress as defaultProgress } from "./progress";
 import { error } from "signale";
 
 const ReleaseAPI = "https://api.github.com/repos/open-attestation/open-attestation-cli/releases/latest";

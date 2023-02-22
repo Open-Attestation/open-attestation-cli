@@ -1,6 +1,6 @@
 import { Argv } from "yargs";
 const version = process.env.npm_package_version;
-import { request } from "../dns/txt-record/create";
+import { request } from "../../implementations/utils/web-request";
 import { success, info } from "signale";
 
 export const command = "check [options]";
