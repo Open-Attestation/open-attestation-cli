@@ -5,12 +5,10 @@ import { BigNumber } from "ethers";
 import { TransactionRequest } from "@ethersproject/providers";
 
 export const dryRunMode = async ({
-  gasPriceScale,
   transaction,
   estimatedGas,
   network,
 }: {
-  gasPriceScale: number;
   network: string;
   transaction?: TransactionRequest;
   estimatedGas?: BigNumber;
@@ -61,10 +59,7 @@ For each mode the following information will be shown:
 - ${highlight(
       "tx price (eth)"
     )}: the price of the transaction in ethereum. This is the amount payed for the transaction (outside of dry-run). You can directly use that amount to convert it to your currency using any currency converter supporting ethereum.
-- ${highlight(
-      "gas price scale"
-    )}: this is an estimation of the value you must set for the '--gas-price-scale' parameter. Keep in mind that two successive runs will likely produce 2 different values as the gas price is fluctuating.
-
+  
 Get more information about gas: https://ethereum.stackexchange.com/questions/3/what-is-meant-by-the-term-gas\n\n`
   );
 
@@ -74,14 +69,13 @@ Get more information about gas: https://ethereum.stackexchange.com/questions/3/w
       utils.formatEther(_estimatedGas.mul(gasPrice))
     )} eth based on the selected gas price`
   );
-  const scaledGasPrice = utils.parseUnits(Math.round(gasPriceAsGwei * gasPriceScale).toString(), "gwei");
+  const scaledGasPrice = utils.parseUnits(Math.round(gasPriceAsGwei).toString(), "gwei");
   console.table({
     current: {
       time: "N/A",
       "gas price (gwei)": Number(formatGwei(scaledGasPrice)),
       "tx price (gwei)": formatGwei(_estimatedGas.mul(scaledGasPrice)),
       "tx price (eth)": utils.formatEther(_estimatedGas.mul(scaledGasPrice)),
-      "gas price scale": Number(gasPriceScale),
     },
     fastest: {
       time: "< 30 s",

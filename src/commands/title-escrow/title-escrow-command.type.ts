@@ -5,15 +5,15 @@ export type BaseTitleEscrowCommand = NetworkAndWalletSignerOption &
     tokenRegistry: string;
     tokenId: string;
   };
-export type TitleEscrowChangeHolderCommand = BaseTitleEscrowCommand & {
-  to: string;
+export type TitleEscrowTransferHolderCommand = BaseTitleEscrowCommand & {
+  newHolder: string;
 };
 
-export type TitleEscrowEndorseChangeOfOwnerCommand = BaseTitleEscrowCommand & {
+export type TitleEscrowEndorseTransferOfOwnersCommand = BaseTitleEscrowCommand & {
   newHolder: string;
   newOwner: string;
 };
 
-export type TitleEscrowNominateChangeOfOwnerCommand = BaseTitleEscrowCommand & {
-  newOwner: string;
+export type TitleEscrowNominateBeneficiaryCommand = BaseTitleEscrowCommand & {
+  newBeneficiary: string;
 };

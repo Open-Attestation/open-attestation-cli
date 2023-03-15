@@ -1,34 +1,37 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow } from "./helpers";
-import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { connectToTitleEscrow, validateNominateBeneficiary } from "./helpers";
+import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
+
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 
-const { trace } = getLogger("title-escrow:surrenderDocument");
+const { trace } = getLogger("title-escrow:nominateChangeOfOwner");
 
-export const surrenderDocument = async ({
+export const nominateBeneficiary = async ({
   tokenRegistry: address,
   tokenId,
+  newBeneficiary,
   network,
   dryRun,
   ...rest
-}: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
+}: TitleEscrowNominateBeneficiaryCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-
   if (dryRun) {
+    await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.surrender(),
+      estimatedGas: await titleEscrow.estimateGas.nominate(newBeneficiary),
       network,
     });
     process.exit(0);
   }
 
   signale.await(`Sending transaction to pool`);
-  await titleEscrow.callStatic.surrender();
-  const transaction = await titleEscrow.surrender();
+  await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
+  await titleEscrow.callStatic.nominate(newBeneficiary);
+  const transaction = await titleEscrow.nominate(newBeneficiary);
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

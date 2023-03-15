@@ -118,7 +118,6 @@ export const getTokenRegistryAddress = async (
     encryptedWalletPath,
     passedOnWallet,
     network,
-    gasPriceScale: 1,
     dryRun: false,
     registryName: "Token Registry",
     registrySymbol: "TR",
@@ -137,7 +136,6 @@ export const getDocumentStoreAddress = async (
     encryptedWalletPath,
     passedOnWallet,
     network,
-    gasPriceScale: 1,
     dryRun: false,
     storeName: "Document Store",
   });
