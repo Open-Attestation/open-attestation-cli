@@ -49,8 +49,6 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | -------------------------------------------------------------------------- | ----------- | ------ | ------- |
 | [Create config](#config-create-configuration-file)                         | ❎          | ✔️     | ❎      |
 | [Deploy document store](#deploy-new-document-store)                        | ✔           | ✔      | ✔       |
-| [Deploy title escrow](#deploy-new-title-escrow)                            | ✔           | ✔      | ✔       |
-| [Deploy title escrow creator](#title-escrow)                               | ✔           | ✔      | ✔       |
 | [Deploy token registry](#deploy-new-token-registry)                        | ✔           | ✔      | ✔       |
 | [Dns txt create](#dns-txt-record)                                          | ❎          | ❎     | ❎      |
 | [Dns txt get](#dns-txt-record)                                             | ❎          | ❎     | ❎      |
@@ -246,14 +244,14 @@ open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypte
 ✔  success   Decrypted document saved to: decrypted.json
 ```
 
-### Token registry
+### Token Registry
 
-#### Deploy new token registry
+#### Deploy new Token Registry
 
-Deploys a token registry contract on the blockchain
+Deploys a token registry contract on the blockchain. Factory Contract that have been deployed using token-registry can be used with the factory address flag. To deploy a standalone token registry, please refer to [Token-Registry](https://github.com/Open-Attestation/token-registry) deployment.
 
 ```bash
-open-attestation deploy token-registry <registry-name> <registry-symbol> [options]
+open-attestation deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
@@ -264,28 +262,12 @@ open-attestation deploy token-registry "My Sample Token" MST --network goerli
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
-#### Deploy new title escrow
-
-Deploys a title escrow contract on the blockchain
-
-```bash
-open-attestation deploy title-escrow --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --beneficiary <BENEFICIARY_ADDRESS> --holder <HOLDER_ADDRESS>
-```
-
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
-
-```bash
-open-attestation deploy title-escrow --network goerli --address 0x4B127b8d5e53872d403ce43414afeb1db67B1842 --beneficiary 0x6FFeD6E6591b808130a9b248fEA32101b5220eca --holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca
-
-✔  success   Title escrow deployed at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
-```
-
 #### Issue document to token registry
 
 `Issue` a hash to a token registry deployed on the blockchain. The `tokenId` option would be used to indicate the document hash, and the `to` option to indicate the title escrow address the document is mapped to.
 
 ```bash
-open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --beneficiary <BENEFICIARY> --holder <HOLDER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
@@ -298,6 +280,11 @@ open-attestation token-registry mint --network goerli --address 0x6133f580aE903b
 ```
 
 `mint` can be used instead of issue and will be strictly equivalent.
+
+#### Token Registry Roles
+
+Interfaces for the Assignment and Revocation of roles are available on the Token Registry repository.
+
 
 ### Document Store
 
@@ -597,13 +584,13 @@ open-attestation transaction cancel --transaction-hash 0x000 --network goerli --
 This command will allow the owner of a transferable record to change its holder.
 
 ```bash
-open-attestation title-escrow change-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --to <TO> [options]
+open-attestation title-escrow change-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newHolder <NEW_HOLDER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow change-holder --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+open-attestation title-escrow change-holder --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newHolder 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully changed to holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
@@ -631,15 +618,15 @@ This command will allow the holder of the transferable record to endorse the tra
 **This command will fail if there is no approved owner or holder record on the transferable record.**
 
 ```bash
-open-attestation title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+open-attestation title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newBeneficiary <NEW_OWNER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow endorse-transfer-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990
+open-attestation title-escrow endorse-transfer-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newBeneficiary 0x2f60375e8144e16Adf1979936301D8341D58C36C
 
-✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to approved owner at 0x2f60375e8144e16Adf1979936301D8341D58C36C and approved holder at 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to approved beneficiary at 0x2f60375e8144e16Adf1979936301D8341D58C36C
 ```
 
 #### Endorse Change of Owner

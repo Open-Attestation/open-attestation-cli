@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
-import { nominateChangeOfOwner } from "../../implementations/title-escrow/nominateChangeOfOwner";
-import { TitleEscrowNominateChangeOfOwnerCommand } from "./title-escrow-command.type";
+import { nominateBeneficiary } from "../../implementations/title-escrow/nominateBeneficiary";
+import { TitleEscrowNominateBeneficiaryCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
@@ -27,26 +27,27 @@ export const builder = (yargs: Argv): Argv =>
           type: "string",
           demandOption: true,
         })
-        .option("newOwner", {
-          description: "Address of the new owner of the transferable record",
+        .option("newBeneficiary", {
+          alias: "newOwner",
+          description: "Address of the beneficiary of the transferable record",
           type: "string",
           demandOption: true,
         })
     )
   );
 
-export const handler = async (args: TitleEscrowNominateChangeOfOwnerCommand): Promise<void> => {
+export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
-      `Connecting to the registry ${args.tokenRegistry} and attempting to nominate the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newOwner}`
+      `Connecting to the registry ${args.tokenRegistry} and attempting to nominate the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newBeneficiary}`
     );
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const { transactionHash } = await nominateChangeOfOwner(args);
+    const { transactionHash } = await nominateBeneficiary(args);
     success(
-      `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newOwner}`
+      `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newBeneficiary}`
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {

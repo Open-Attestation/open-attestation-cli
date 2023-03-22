@@ -12,6 +12,8 @@ export const command = "token-registry <registry-name> <registry-symbol> [option
 
 export const describe = "Deploys a token registry contract on the blockchain";
 
+// Refer to @govtechsg/token-registry tasks/deploy-token.ts
+
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndWalletSignerOption(
@@ -23,6 +25,18 @@ export const builder = (yargs: Argv): Argv =>
         .positional("registry-symbol", {
           description: "Symbol of the token (typically 3 characters)",
           normalize: true,
+        })
+        .option("factory-address", {
+          description: "Address of Token Registry factory (Optional)",
+          type: "string",
+        })
+        .option("token-implementation-address", {
+          description: "Address of Token Implementation (Optional)",
+          type: "string",
+        })
+        .option("deployer-address", {
+          description: "Address of Deployer (Optional)",
+          type: "string",
         })
     )
   );
@@ -36,7 +50,7 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
     );
-    return tokenRegistry.contractAddress;
+    return await tokenRegistry.contractAddress;
   } catch (e) {
     error(getErrorMessage(e));
   }

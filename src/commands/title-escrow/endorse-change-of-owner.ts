@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
-import { endorseChangeOfOwner } from "../../implementations/title-escrow/endorseChangeOfOwner";
-import { TitleEscrowEndorseChangeOfOwnerCommand } from "./title-escrow-command.type";
+import { transferOwners } from "../../implementations/title-escrow/transferOwners";
+import { TitleEscrowEndorseTransferOfOwnersCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
@@ -28,6 +28,7 @@ export const builder = (yargs: Argv): Argv =>
           demandOption: true,
         })
         .option("newOwner", {
+          alias: "newBeneficiary",
           description: "Address of the new owner of the transferable record",
           type: "string",
           demandOption: true,
@@ -40,7 +41,7 @@ export const builder = (yargs: Argv): Argv =>
     )
   );
 
-export const handler = async (args: TitleEscrowEndorseChangeOfOwnerCommand): Promise<void> => {
+export const handler = async (args: TitleEscrowEndorseTransferOfOwnersCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
@@ -49,7 +50,7 @@ export const handler = async (args: TitleEscrowEndorseChangeOfOwnerCommand): Pro
     warn(
       `Please note that you have to be both the holder and owner of the transferable record, otherwise this command will fail.`
     );
-    const { transactionHash } = await endorseChangeOfOwner(args);
+    const { transactionHash } = await transferOwners(args);
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to new owner with address ${args.newOwner} and new holder with address: ${args.newHolder}`
     );

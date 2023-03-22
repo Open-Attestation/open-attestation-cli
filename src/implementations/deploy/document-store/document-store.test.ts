@@ -11,7 +11,6 @@ const deployParams: DeployDocumentStoreCommand = {
   owner: "0x1234",
   network: "goerli",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  gasPriceScale: 1,
   dryRun: false,
 };
 
@@ -38,7 +37,6 @@ describe("document-store", () => {
       await deployDocumentStore({
         storeName: "Test",
         network: "goerli",
-        gasPriceScale: 1,
         dryRun: false,
       });
 
@@ -51,7 +49,6 @@ describe("document-store", () => {
         storeName: "Test",
         network: "goerli",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
-        gasPriceScale: 1,
         dryRun: false,
       });
 
@@ -68,7 +65,6 @@ describe("document-store", () => {
       expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
       expect(mockedDeploy.mock.calls[0][1]).toStrictEqual(deployParams.owner);
       // price should be any length string of digits
-      expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
     });
 
@@ -82,7 +78,6 @@ describe("document-store", () => {
         deployDocumentStore({
           storeName: "Test",
           network: "goerli",
-          gasPriceScale: 1,
           dryRun: false,
         })
       ).rejects.toThrow(
@@ -96,7 +91,6 @@ describe("document-store", () => {
       await deployDocumentStore({
         storeName: "Test",
         network: "goerli",
-        gasPriceScale: 1,
         dryRun: false,
       });
 

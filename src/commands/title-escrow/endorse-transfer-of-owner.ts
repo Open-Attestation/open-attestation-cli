@@ -1,8 +1,8 @@
 import { Argv } from "yargs";
 import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
-import { endorseTransferOfOwner } from "../../implementations/title-escrow/endorseTransferOfOwner";
-import { BaseTitleEscrowCommand as TitleEscrowEndorseTransferOfOwnerCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { endorseNominatedBeneficiary } from "../../implementations/title-escrow/endorseNominatedBeneficiary";
+import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
 
@@ -28,10 +28,16 @@ export const builder = (yargs: Argv): Argv =>
           type: "string",
           demandOption: true,
         })
+        .option("newBeneficiary", {
+          alias: ["to", "newOwner"],
+          description: "Address of the beneficiary of the transferable record",
+          type: "string",
+          demandOption: true,
+        })
     )
   );
 
-export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): Promise<void> => {
+export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
@@ -40,9 +46,9 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnerCommand): P
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const { transactionReceipt, approvedHolder, approvedOwner } = await endorseTransferOfOwner(args);
+    const { transactionReceipt, nominatedBeneficiary } = await endorseNominatedBeneficiary(args);
     success(
-      `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to approved owner at ${approvedOwner}  and approved holder at ${approvedHolder}`
+      `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to approved beneficiary at ${nominatedBeneficiary}`
     );
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionReceipt.transactionHash}`
