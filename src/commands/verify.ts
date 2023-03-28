@@ -10,6 +10,7 @@ import {
 import { readOpenAttestationFile } from "../implementations/utils/disk";
 import { withNetworkOption } from "./shared";
 import { getSupportedNetwork } from "./networks";
+import { versionCheck } from "../implementations/utils/github-version";
 
 export const command = "verify [options]";
 
@@ -33,6 +34,7 @@ export const builder = (yargs: Argv): Argv =>
       })
   );
 export const handler = async ({ document, network, verbose }: VerifyCommand): Promise<void> => {
+  await versionCheck();
   const show = (status: boolean, successMessage: string, errorMessage: string): void => {
     if (status) {
       signale.success(successMessage);

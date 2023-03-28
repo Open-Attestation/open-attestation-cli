@@ -5,6 +5,7 @@ import { transferHolder } from "../../implementations/title-escrow/transferHolde
 import { TitleEscrowTransferHolderCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
+import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("title-escrow:change-holder");
 
@@ -38,6 +39,7 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: TitleEscrowTransferHolderCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  await versionCheck();
   try {
     info(
       `Connecting to the registry ${args.tokenRegistry} and attempting to change the holder of the transferable record ${args.tokenId} to ${args.newHolder}`

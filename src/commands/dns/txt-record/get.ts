@@ -9,6 +9,7 @@ import {
   OpenAttestationDNSTextRecord,
 } from "@govtechsg/dnsprove";
 import { getErrorMessage } from "../../../utils";
+import { versionCheck } from "../../../implementations/utils/github-version";
 
 const { trace } = getLogger("dns:txt-record");
 
@@ -32,6 +33,7 @@ export const handler = async (
   args: DnsGetTxtRecordCommand
 ): Promise<(OpenAttestationDNSTextRecord | OpenAttestationDnsDidRecord)[]> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  await versionCheck();
   try {
     const allRecords: (OpenAttestationDNSTextRecord | OpenAttestationDnsDidRecord)[] = [];
 

@@ -3,6 +3,7 @@ import { withPrivateKeyOption } from "./shared";
 import signale from "signale";
 import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attestation";
 import { sign, SignCommand } from "../implementations/sign";
+import { versionCheck } from "../implementations/utils/github-version";
 
 export const command = "sign <raw-documents-path>";
 
@@ -37,6 +38,7 @@ export const builder = (yargs: Argv): Argv =>
   );
 
 export const handler = async (args: SignCommand): Promise<void> => {
+  await versionCheck();
   try {
     await sign(args);
     signale.success(`Signed documents saved to ${args.outputDir}`);

@@ -5,6 +5,7 @@ import { endorseNominatedBeneficiary } from "../../implementations/title-escrow/
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
+import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("title-escrow:endorse-transfer-of-owner");
 
@@ -39,6 +40,7 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  await versionCheck();
   try {
     info(
       `Connecting to the registry ${args.tokenRegistry} and attempting to endorse the change of owner of the transferable record ${args.tokenId} to approved owner and approved holder`

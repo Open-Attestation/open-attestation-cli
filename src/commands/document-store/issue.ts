@@ -5,6 +5,7 @@ import { issueToDocumentStore } from "../../implementations/document-store/issue
 import { DocumentStoreIssueCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
+import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -33,6 +34,7 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DocumentStoreIssueCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  await versionCheck();
   try {
     info(`Issuing ${args.hash} to document store ${args.address}`);
     const { transactionHash } = await issueToDocumentStore({

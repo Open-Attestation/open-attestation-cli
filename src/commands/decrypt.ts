@@ -1,5 +1,6 @@
 import { Argv } from "yargs";
 import { decrypt, DecryptCommand } from "../implementations/decrypt";
+import { versionCheck } from "../implementations/utils/github-version";
 
 export const command = "decrypt <input> <output> <key>";
 
@@ -20,6 +21,7 @@ export const builder = (yargs: Argv): Argv =>
       normalize: true,
     });
 
-export const handler = (args: DecryptCommand): void => {
+export const handler = async (args: DecryptCommand): Promise<void> => {
+  await versionCheck();
   return decrypt(args);
 };

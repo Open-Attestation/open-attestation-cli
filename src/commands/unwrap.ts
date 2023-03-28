@@ -2,6 +2,7 @@ import { Argv } from "yargs";
 import signale from "signale";
 import { unwrap } from "../implementations/unwrap";
 import { isDir, Output } from "../implementations/utils/disk";
+import { versionCheck } from "../implementations/utils/github-version";
 interface UnwrapCommand {
   wrappedDocumentsPath: string;
   outputDir?: string;
@@ -39,6 +40,7 @@ export const builder = (yargs: Argv): Argv =>
     });
 
 export const handler = async (args: UnwrapCommand): Promise<void | undefined> => {
+  await versionCheck();
   try {
     const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.StdOut;
     const outputPath = args.outputDir || args.outputFile; // undefined when we use std out

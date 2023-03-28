@@ -5,6 +5,7 @@ import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
 import { DeployTokenRegistryCommand } from "./deploy.types";
+import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -43,6 +44,7 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DeployTokenRegistryCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
+  await versionCheck();
   try {
     info(`Deploying token registry ${args.registryName}`);
     const tokenRegistry = await deployTokenRegistry(args);

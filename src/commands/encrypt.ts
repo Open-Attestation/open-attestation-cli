@@ -1,5 +1,6 @@
 import { Argv } from "yargs";
 import { encrypt } from "../implementations/encrypt";
+import { versionCheck } from "../implementations/utils/github-version";
 
 export interface EncryptCommand {
   wrappedFile: string;
@@ -21,6 +22,7 @@ export const builder = (yargs: Argv): Argv =>
       normalize: true,
     });
 
-export const handler = (args: EncryptCommand): void => {
+export const handler = async (args: EncryptCommand): Promise<void> => {
+  await versionCheck();
   return encrypt(args.wrappedFile, args.encryptedFile);
 };
