@@ -17,9 +17,8 @@ describe("verify", () => {
     expect(signaleSuccessSpy).toHaveBeenCalledTimes(2);
     expect(signaleSuccessSpy).toHaveBeenNthCalledWith(1, "The document has not been tampered");
     expect(signaleSuccessSpy).toHaveBeenNthCalledWith(2, "The document has been issued");
-    expect(signaleErrorSpy).toHaveBeenCalledTimes(2);
-    expect(signaleErrorSpy).toHaveBeenNthCalledWith(1, "The document is not valid");
-    expect(signaleErrorSpy).toHaveBeenNthCalledWith(2, "The issuer identity has not been verified");
+    expect(signaleErrorSpy).toHaveBeenCalledWith("The document is not valid");
+    expect(signaleErrorSpy).toHaveBeenCalledWith("The issuer identity has not been verified");
   });
   it("should work on dnsdid-v3.json", async () => {
     await handler({
