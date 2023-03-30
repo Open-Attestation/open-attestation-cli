@@ -22,6 +22,6 @@ export const builder = (yargs: Argv): Argv =>
       normalize: true,
     });
 
-export const handler = async (args: FilterCommand): Promise<void> => {
+export const handler = (args: FilterCommand): void => {
   return filter(args.source, args.destination, args.fields);
 };
