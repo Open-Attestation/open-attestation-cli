@@ -1,6 +1,5 @@
 import signale, { error, info } from "signale";
 import { Argv } from "yargs";
-import { versionCheck } from "../../implementations/utils/github-version";
 import { create } from "../../implementations/wallet/create";
 import { getLogger } from "../../logger";
 import { getErrorMessage, highlight } from "../../utils";
@@ -22,7 +21,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: CreateWalletCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     info(`Creating a new wallet`);
     const outputPath = await create(args);

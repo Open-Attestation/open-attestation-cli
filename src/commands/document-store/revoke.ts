@@ -5,7 +5,6 @@ import { revokeToDocumentStore } from "../../implementations/document-store/revo
 import { DocumentStoreRevokeCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -34,7 +33,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DocumentStoreRevokeCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     info(`Revoking ${args.hash} to document store ${args.address}`);
     const { transactionHash } = await revokeToDocumentStore({

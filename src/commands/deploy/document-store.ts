@@ -5,7 +5,6 @@ import { deployDocumentStore } from "../../implementations/deploy/document-store
 import { DeployDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, highlight } from "../../utils";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -30,7 +29,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DeployDocumentStoreCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     info(`Deploying document store ${args.storeName}`);
     const documentStore = await deployDocumentStore(args);

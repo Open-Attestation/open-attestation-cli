@@ -4,7 +4,6 @@ import { getLogger } from "../../../logger";
 import { DnsCreateTxtRecordCommand } from "./dns-command.type";
 import { getErrorMessage, highlight } from "../../../utils";
 import { request } from "../../../implementations/utils/web-request";
-import { versionCheck } from "../../../implementations/utils/github-version";
 
 const { trace } = getLogger("dns:txt-record");
 
@@ -43,7 +42,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DnsCreateTxtRecordCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   if (!args.publicKey && !(args.address && args.networkId)) {
     signale.error("You need to provided a public key or an address with a networkId");
     return;

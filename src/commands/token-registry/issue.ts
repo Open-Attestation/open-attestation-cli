@@ -5,7 +5,6 @@ import { issueToTokenRegistry } from "../../implementations/token-registry/issue
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -43,7 +42,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: TokenRegistryIssueCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     info(
       `Issuing ${args.tokenId} to the initial recipient ${args.beneficiary} and initial holder ${args.holder} in the registry ${args.address}`

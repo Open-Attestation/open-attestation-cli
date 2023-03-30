@@ -1,6 +1,5 @@
 import { Argv } from "yargs";
 import { filter } from "../implementations/filter";
-import { versionCheck } from "../implementations/utils/github-version";
 
 interface FilterCommand {
   source: string;
@@ -24,6 +23,5 @@ export const builder = (yargs: Argv): Argv =>
     });
 
 export const handler = async (args: FilterCommand): Promise<void> => {
-  await versionCheck();
   return filter(args.source, args.destination, args.fields);
 };

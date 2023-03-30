@@ -5,7 +5,6 @@ import { getErrorMessage, highlight } from "../../utils";
 import { withPrivateKeyOption } from "../shared";
 import { EncryptWalletCommand } from "./wallet.type";
 import { encrypt } from "../../implementations/wallet/encrypt";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("wallet:encrypt");
 
@@ -25,7 +24,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: EncryptWalletCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     const outputPath = await encrypt(args);
     signale.success(`Wallet successfully saved into ${highlight(outputPath)}`);

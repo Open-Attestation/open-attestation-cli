@@ -3,7 +3,6 @@ import inquirer from "inquirer";
 import { error, info, success } from "signale";
 import { Argv } from "yargs";
 import { create } from "../../implementations/config/create";
-import { versionCheck } from "../../implementations/utils/github-version";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { supportedNetwork } from "../networks";
@@ -33,7 +32,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   if (!fs.existsSync(args.outputDir)) {
     fs.mkdirSync(args.outputDir);
   }

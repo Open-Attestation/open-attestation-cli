@@ -4,7 +4,6 @@ import { wrap } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir, Output } from "../implementations/utils/disk";
 import { SchemaId } from "@govtechsg/open-attestation";
-import { versionCheck } from "../implementations/utils/github-version";
 
 interface WrapCommand {
   rawDocumentsPath: string;
@@ -89,7 +88,6 @@ export const builder = (yargs: Argv): Argv =>
     });
 
 export const handler = async (args: WrapCommand): Promise<string | undefined> => {
-  await versionCheck();
   try {
     const outputPathType = args.outputDir ? Output.Directory : args.outputFile ? Output.File : Output.StdOut;
     const outputPath = args.outputDir || args.outputFile; // undefined when we use std out

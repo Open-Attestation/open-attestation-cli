@@ -5,7 +5,6 @@ import { DocumentStoreTransferOwnershipCommand } from "./document-store-command.
 import { transferDocumentStoreOwnershipToWallet } from "../../implementations/document-store/transfer-ownership";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -34,7 +33,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DocumentStoreTransferOwnershipCommand): Promise<string | undefined> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     info(`Transferring ownership to wallet ${args.newOwner}`);
     const { transactionHash } = await transferDocumentStoreOwnershipToWallet({

@@ -5,7 +5,6 @@ import { cancelTransaction } from "../../implementations/transaction/transaction
 import { TransactionCancelCommand } from "./transaction-command.type";
 import { withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage } from "../../utils";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("transaction:cancel");
 
@@ -37,7 +36,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: TransactionCancelCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     await cancelTransaction(args);
   } catch (e) {

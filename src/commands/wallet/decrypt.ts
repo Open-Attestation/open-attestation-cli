@@ -5,7 +5,6 @@ import { getErrorMessage, highlight } from "../../utils";
 import { DecryptWalletCommand } from "./wallet.type";
 import { getWalletOrSigner } from "../../implementations/utils/wallet";
 import inquirer from "inquirer";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("wallet:decrypt");
 
@@ -28,7 +27,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: DecryptWalletCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     if (!args.yes) {
       signale.warn(

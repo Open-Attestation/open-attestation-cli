@@ -5,7 +5,6 @@ import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared"
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
 import { surrenderDocument } from "../../implementations/title-escrow/surrenderDocument";
 import { getErrorMessage, getEtherscanAddress } from "../../utils";
-import { versionCheck } from "../../implementations/utils/github-version";
 
 const { trace } = getLogger("title-escrow:surrender-document");
 
@@ -33,7 +32,6 @@ export const builder = (yargs: Argv): Argv =>
 
 export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
-  await versionCheck();
   try {
     info(`Surrendering document`);
     const transaction = await surrenderDocument(args);
