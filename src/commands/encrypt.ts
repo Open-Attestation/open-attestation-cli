@@ -21,6 +21,6 @@ export const builder = (yargs: Argv): Argv =>
       normalize: true,
     });
 
-export const handler = async (args: EncryptCommand): Promise<void> => {
+export const handler = (args: EncryptCommand): void => {
   return encrypt(args.wrappedFile, args.encryptedFile);
 };

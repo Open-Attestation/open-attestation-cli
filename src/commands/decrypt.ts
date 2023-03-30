@@ -20,6 +20,6 @@ export const builder = (yargs: Argv): Argv =>
       normalize: true,
     });
 
-export const handler = async (args: DecryptCommand): Promise<void> => {
+export const handler = (args: DecryptCommand): void => {
   return decrypt(args);
 };
