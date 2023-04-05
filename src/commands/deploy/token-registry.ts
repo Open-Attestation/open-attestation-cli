@@ -59,7 +59,6 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistryAddress}`);
     return tokenRegistryAddress;
   } catch (e) {
-    throw e;
-    // error(getErrorMessage(e));
+    error(getErrorMessage(e));
   }
 };
