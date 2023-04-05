@@ -26,22 +26,27 @@ export const builder = (yargs: Argv): Argv =>
           description: "Symbol of the token (typically 3 characters)",
           normalize: true,
         })
-        .option("factory", {
-          description: "Address of Token Registry factory (Optional)",
-          type: "string",
-        })
         .option("standalone", {
-          description: "Use Standalone Deployer (Optional)",
+          description: "Use Standalone Deployer, used with Title Escrow Factory (Optional)",
           type: "boolean",
         })
+        .option("factory", {
+          description: "Address of Title Escrow Factory (Optional)",
+          type: "string",
+          alias: "factory-address",
+        })
         .option("token", {
-          description: "Address of Token Implementation (Optional)",
+          description: "Address of Token Implementation (Custom)",
           type: "string",
+          alias: "token-implementation-address",
         })
+        .hide("token")
         .option("deployer", {
-          description: "Address of Deployer (Optional)",
+          description: "Address of Deployer (Custom)",
           type: "string",
+          alias: "deployer-address",
         })
+        .hide("deployer")
     )
   );
 
@@ -54,6 +59,7 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistryAddress}`);
     return tokenRegistryAddress;
   } catch (e) {
-    error(getErrorMessage(e));
+    throw e;
+    // error(getErrorMessage(e));
   }
 };

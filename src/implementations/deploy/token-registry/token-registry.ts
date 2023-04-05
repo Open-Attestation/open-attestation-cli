@@ -5,11 +5,13 @@ import {
   getDefaultContractAddress,
   getEventFromReceipt,
   isSupportedTitleEscrowFactory,
+  isValidAddress,
 } from "./helpers";
-import signale from "signale";
+import { info } from "signale";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
 import { getWalletOrSigner } from "../../utils/wallet";
+import { dryRunMode } from "../../utils/dryRun";
 
 const { trace } = getLogger("deploy:token-registry");
 
@@ -17,15 +19,14 @@ export const deployTokenRegistry = async ({
   registryName,
   registrySymbol,
   factory: factoryAddress,
+  token: implAddress,
+  deployer: deployerContractAddress,
   standalone,
   network,
   dryRun,
   passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
 }: DeployTokenRegistryCommand): Promise<string> => {
-  if (dryRun) {
-    throw new Error(`Dry Run command is not supported`);
-  }
   const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployerAddress = await wallet.getAddress();
@@ -33,15 +34,15 @@ export const deployTokenRegistry = async ({
     throw new Error(`Invalid chain ID: ${chainId}`);
   }
   const {
-    TitleEscrowFactory: defaultTitleEscrowFactory,
-    TokenImplementation: defaultTokenImplementation,
-    Deployer: defaultDeployer,
+    TitleEscrowFactory: defaultTitleEscrowFactoryAddress,
+    TokenImplementation: defaultTokenImplementationContractAddress,
+    Deployer: defaultDeployerContractAddress,
   } = getDefaultContractAddress(chainId);
 
   trace(`[Deployer] ${deployerAddress}`);
 
-  if (!factoryAddress) {
-    factoryAddress = defaultTitleEscrowFactory;
+  if (!factoryAddress || !isValidAddress(factoryAddress)) {
+    factoryAddress = defaultTitleEscrowFactoryAddress;
     if (!factoryAddress) {
       throw new Error(`Network ${chainId} currently is not supported. Supply a factory address.`);
     }
@@ -54,21 +55,34 @@ export const deployTokenRegistry = async ({
   }
   trace("[Status] Title Escrow Factory interface check is OK.");
 
+  info(`Using ${factoryAddress} as Title Escrow factory.`);
   if (!standalone) {
-    const deployerContractAddress = defaultDeployer;
-    const implAddress = defaultTokenImplementation;
+    if (!isValidAddress(deployerContractAddress)) {
+      deployerContractAddress = defaultDeployerContractAddress;
+    }
+    if (!isValidAddress(implAddress)) {
+      implAddress = defaultTokenImplementationContractAddress;
+    }
     if (!deployerContractAddress || !implAddress) {
       throw new Error(`Network ${chainId} currently is not supported. Use --standalone instead.`);
     }
 
     const deployerContract = TDocDeployer__factory.connect(deployerContractAddress, wallet);
-    signale.info(`Using ${defaultTitleEscrowFactory} as Title Escrow factory.`);
 
     const initParam = encodeInitParams({
       name: registryName,
       symbol: registrySymbol,
       deployer: deployerAddress,
     });
+
+    if (dryRun) {
+      const estimatedGas = await deployerContract.estimateGas.deploy(implAddress, initParam);
+      await dryRunMode({
+        estimatedGas,
+        network,
+      });
+      process.exit(0);
+    }
     const tx = await deployerContract.deploy(implAddress, initParam);
     trace(`[Transaction] Pending ${tx.hash}`);
     const receipt = await tx.wait();
@@ -80,6 +94,16 @@ export const deployTokenRegistry = async ({
   } else {
     // Standalone deployment
     const tokenFactory = new TradeTrustToken__factory(wallet);
+
+    if (dryRun) {
+      const transactionRequest = tokenFactory.getDeployTransaction(registryName, registrySymbol, factoryAddress);
+      const estimatedGas = await wallet.estimateGas(transactionRequest);
+      await dryRunMode({
+        estimatedGas,
+        network,
+      });
+      process.exit(0);
+    }
     const token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress);
     const registryAddress = token.address;
     return registryAddress;

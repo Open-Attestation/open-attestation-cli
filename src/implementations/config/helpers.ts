@@ -122,9 +122,8 @@ export const getTokenRegistryAddress = async (
     registryName: "Token Registry",
     registrySymbol: "TR",
   });
-  const { contractAddress } = tokenRegistry;
-  success(`Token registry deployed, address: ${highlight(contractAddress)}`);
-  return contractAddress;
+  success(`Token registry deployed, address: ${highlight(tokenRegistry)}`);
+  return tokenRegistry;
 };
 
 export const getDocumentStoreAddress = async (
