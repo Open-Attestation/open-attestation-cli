@@ -1,11 +1,13 @@
 import { ethers } from "ethers";
-import { constants } from "@govtechsg/token-registry";
-import { isAddress } from "ethers/lib/utils";
+import { constants, utils } from "@govtechsg/token-registry";
+import { TitleEscrow, TitleEscrowFactory } from "@govtechsg/token-registry/dist/contracts";
+
+const { contractInterfaceId: CONTRACT_INTERFACE_ID, contractAddress: CONTRACT_ADDRESS } = constants;
 
 export interface DeployContractAddress {
-  titleEscrowFactory: string;
-  tokenImplementation: string;
-  deployer: string;
+  TitleEscrowFactory?: string;
+  TokenImplementation?: string;
+  Deployer?: string;
 }
 
 export interface Params {
@@ -14,35 +16,62 @@ export interface Params {
   deployer: string;
 }
 
-export const encodeInitParams = ({ name, symbol, deployer }: Params): string => {
-  return ethers.utils.defaultAbiCoder.encode(["string", "string", "address"], [name, symbol, deployer]);
+export const { encodeInitParams, getEventFromReceipt } = utils;
+
+export const getDefaultContractAddress = (chainId: number): DeployContractAddress => {
+  const { TitleEscrowFactory, TokenImplementation, Deployer } = CONTRACT_ADDRESS;
+  const chainTitleEscrowFactory = TitleEscrowFactory[chainId];
+  const chainTokenImplementation = TokenImplementation[chainId];
+  const chainDeployer = Deployer[chainId];
+  return {
+    TitleEscrowFactory: chainTitleEscrowFactory,
+    TokenImplementation: chainTokenImplementation,
+    Deployer: chainDeployer,
+  };
 };
 
-export const retrieveFactoryAddress = (
-  chainId: number,
-  inputAddress?: DeployContractAddress
-): DeployContractAddress => {
-  const { contractAddress } = constants;
+// export const deployContract = async <TContract extends Contract, DeployerFactory extends ContractFactory>({
+//   deployerAddress,
+//   DeployerFactory,
+//   params,
+//   wallet,
+// }: {
+//   deployerAddress: string;
+//   DeployerFactory: DeployerFactory;
+//   params: any[];
+//   wallet: Wallet | ConnectedSigner;
+// }): Promise<TContract> => {
+//   // new DeployerFactory();
+//   // const contractFactory = new DeployerFactory(deployerAddress, contractInterface, wallet);
+//   const contractFactory = new Contract(deployerAddress, contractInterface, wallet);
+//   console.log(contractFactory)
+//   const contract = (await contractFactory.deploy(...params)) as TContract;
 
-  if (!chainId) {
-    throw new Error(`Invalid chain ID: ${chainId}`);
-  }
+//   const tx = contract.deployTransaction;
+//   trace(`[Transaction] Pending ${tx.hash}`);
 
-  const titleEscrowFactory = inputAddress?.titleEscrowFactory || contractAddress.TitleEscrowFactory[chainId] || "";
-  const tokenImplementation = inputAddress?.tokenImplementation || contractAddress.TokenImplementation[chainId] || "";
-  const deployer = inputAddress?.deployer || contractAddress.Deployer[chainId] || "";
+//   await contract.deployed();
+//   trace(`[Address] Deployed to ${contract.address}`);
 
-  if (!isAddress(tokenImplementation) || !isAddress(deployer)) {
-    throw new Error(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);
-  }
+//   return contract;
+// };
 
-  if (!isAddress(titleEscrowFactory)) {
-    throw new Error(`ChainId ${chainId} currently is not supported. Supply a factory address.`);
-  }
+export const isSupportedTitleEscrowFactory = async (
+  factoryAddress: string,
+  provider?: ethers.providers.Provider
+): Promise<boolean> => {
+  const titleEscrowFactoryContract = new ethers.Contract(
+    factoryAddress,
+    ["function implementation() view returns (address)"],
+    provider ?? ethers.getDefaultProvider()
+  ) as TitleEscrowFactory;
+  const implAddr = await titleEscrowFactoryContract.implementation();
 
-  return {
-    titleEscrowFactory,
-    tokenImplementation,
-    deployer,
-  } as DeployContractAddress;
+  const implContract = new ethers.Contract(
+    implAddr,
+    ["function supportsInterface(bytes4 interfaceId) view returns (bool)"],
+    provider ?? ethers.getDefaultProvider()
+  ) as TitleEscrow;
+  const { TitleEscrow: titleEscrowInterfaceId } = CONTRACT_INTERFACE_ID;
+  return implContract.supportsInterface(titleEscrowInterfaceId);
 };

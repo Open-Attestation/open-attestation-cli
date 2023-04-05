@@ -18,23 +18,27 @@ export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndWalletSignerOption(
       yargs
-        .positional("registry-name", {
+        .positional("name", {
           description: "Name of the token",
           normalize: true,
         })
-        .positional("registry-symbol", {
+        .positional("symbol", {
           description: "Symbol of the token (typically 3 characters)",
           normalize: true,
         })
-        .option("factory-address", {
+        .option("factory", {
           description: "Address of Token Registry factory (Optional)",
           type: "string",
         })
-        .option("token-implementation-address", {
+        .option("standalone", {
+          description: "Use Standalone Deployer (Optional)",
+          type: "boolean",
+        })
+        .option("token", {
           description: "Address of Token Implementation (Optional)",
           type: "string",
         })
-        .option("deployer-address", {
+        .option("deployer", {
           description: "Address of Deployer (Optional)",
           type: "string",
         })
@@ -45,12 +49,10 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Deploying token registry ${args.registryName}`);
-    const tokenRegistry = await deployTokenRegistry(args);
-    success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
-    info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
-    );
-    return await tokenRegistry.contractAddress;
+    const tokenRegistryAddress = await deployTokenRegistry(args);
+    success(`Token registry deployed at ${tokenRegistryAddress}`);
+    info(`Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistryAddress}`);
+    return tokenRegistryAddress;
   } catch (e) {
     error(getErrorMessage(e));
   }
