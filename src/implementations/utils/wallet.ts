@@ -60,7 +60,7 @@ export const getWalletOrSigner = async ({
       secretAccessKey: options.secretAccessKey, // credentials for your IAM user with KMS access
       region: options.region,
       keyId: options.kmsKeyId,
-      sessionToken: options.sessionToken
+      sessionToken: options.sessionToken,
     };
 
     const signer = new AwsKmsSigner(kmsCredentials).connect(provider);
