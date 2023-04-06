@@ -26,7 +26,7 @@ export const deployTokenRegistry = async ({
   dryRun,
   passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
-}: DeployTokenRegistryCommand): Promise<string> => {
+}: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
   const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployerAddress = await wallet.getAddress();
@@ -90,7 +90,7 @@ export const deployTokenRegistry = async ({
       receipt,
       deployerContract.interface.getEventTopic("Deployment")
     ).args.deployed;
-    return registryAddress;
+    return { contractAddress: registryAddress };
   } else {
     // Standalone deployment
     const tokenFactory = new TradeTrustToken__factory(wallet);
@@ -106,6 +106,6 @@ export const deployTokenRegistry = async ({
     }
     const token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress);
     const registryAddress = token.address;
-    return registryAddress;
+    return { contractAddress: registryAddress };
   }
 };
