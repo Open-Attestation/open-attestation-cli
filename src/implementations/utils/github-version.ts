@@ -9,13 +9,13 @@ export const versionCheck = async (): Promise<void> => {
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const { nextUpdateMessageDisplayTimestamp } = readFromOAConfig();
   const development = environment === "development";
-  if(currentTimestamp < nextUpdateMessageDisplayTimestamp || development) return;
+  if (currentTimestamp < nextUpdateMessageDisplayTimestamp || development) return;
 
   const latest = await getLatestReleaseVersion();
   if (latest !== version) {
     warn(`The latest version of OpenAttestation CLI is ${latest}, you are currently on ${version}`);
   }
-  writeToOAConfig({'nextUpdateMessageDisplayTimestamp': currentTimestamp + checksFrequency})
+  writeToOAConfig({ nextUpdateMessageDisplayTimestamp: currentTimestamp + checksFrequency });
   return;
 };
 
