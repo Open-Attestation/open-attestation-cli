@@ -14,7 +14,8 @@ export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
     registryName: string;
     registrySymbol: string;
     passedOnWallet?: Wallet | ConnectedSigner;
-    factoryAddress?: string;
-    tokenImplementationAddress?: string;
-    deployerAddress?: string;
+    standalone?: boolean;
+    factory?: string;
+    token?: string;
+    deployer?: string;
   };

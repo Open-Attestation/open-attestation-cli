@@ -18,26 +18,35 @@ export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
     withNetworkAndWalletSignerOption(
       yargs
-        .positional("registry-name", {
+        .positional("name", {
           description: "Name of the token",
           normalize: true,
         })
-        .positional("registry-symbol", {
+        .positional("symbol", {
           description: "Symbol of the token (typically 3 characters)",
           normalize: true,
         })
-        .option("factory-address", {
-          description: "Address of Token Registry factory (Optional)",
-          type: "string",
+        .option("standalone", {
+          description: "Use Standalone Deployer, used with Title Escrow Factory (Optional)",
+          type: "boolean",
         })
-        .option("token-implementation-address", {
-          description: "Address of Token Implementation (Optional)",
+        .option("factory", {
+          description: "Address of Title Escrow Factory (Optional)",
           type: "string",
+          alias: "factory-address",
         })
-        .option("deployer-address", {
-          description: "Address of Deployer (Optional)",
+        .option("token", {
+          description: "Address of Token Implementation (Custom)",
           type: "string",
+          alias: "token-implementation-address",
         })
+        .hide("token")
+        .option("deployer", {
+          description: "Address of Deployer (Custom)",
+          type: "string",
+          alias: "deployer-address",
+        })
+        .hide("deployer")
     )
   );
 
@@ -45,12 +54,14 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Deploying token registry ${args.registryName}`);
-    const tokenRegistry = await deployTokenRegistry(args);
-    success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
+    const tokenRegistryAddress = await deployTokenRegistry(args);
+    success(`Token registry deployed at ${tokenRegistryAddress.contractAddress}`);
     info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
+      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${
+        tokenRegistryAddress.contractAddress
+      }`
     );
-    return await tokenRegistry.contractAddress;
+    return tokenRegistryAddress.contractAddress;
   } catch (e) {
     error(getErrorMessage(e));
   }

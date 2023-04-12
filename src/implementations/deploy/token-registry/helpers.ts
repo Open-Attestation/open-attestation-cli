@@ -1,11 +1,14 @@
 import { ethers } from "ethers";
-import { constants } from "@govtechsg/token-registry";
+import { constants, utils } from "@govtechsg/token-registry";
+import { TitleEscrow, TitleEscrowFactory } from "@govtechsg/token-registry/dist/contracts";
 import { isAddress } from "ethers/lib/utils";
 
+const { contractInterfaceId: CONTRACT_INTERFACE_ID, contractAddress: CONTRACT_ADDRESS } = constants;
+
 export interface DeployContractAddress {
-  titleEscrowFactory: string;
-  tokenImplementation: string;
-  deployer: string;
+  TitleEscrowFactory?: string;
+  TokenImplementation?: string;
+  Deployer?: string;
 }
 
 export interface Params {
@@ -14,35 +17,45 @@ export interface Params {
   deployer: string;
 }
 
-export const encodeInitParams = ({ name, symbol, deployer }: Params): string => {
-  return ethers.utils.defaultAbiCoder.encode(["string", "string", "address"], [name, symbol, deployer]);
+export const { getEventFromReceipt } = utils;
+
+export const encodeInitParams = (params: { name: string; symbol: string; deployer: string }): string => {
+  return utils.encodeInitParams(params);
 };
 
-export const retrieveFactoryAddress = (
-  chainId: number,
-  inputAddress?: DeployContractAddress
-): DeployContractAddress => {
-  const { contractAddress } = constants;
-
-  if (!chainId) {
-    throw new Error(`Invalid chain ID: ${chainId}`);
-  }
-
-  const titleEscrowFactory = inputAddress?.titleEscrowFactory || contractAddress.TitleEscrowFactory[chainId] || "";
-  const tokenImplementation = inputAddress?.tokenImplementation || contractAddress.TokenImplementation[chainId] || "";
-  const deployer = inputAddress?.deployer || contractAddress.Deployer[chainId] || "";
-
-  if (!isAddress(tokenImplementation) || !isAddress(deployer)) {
-    throw new Error(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);
-  }
-
-  if (!isAddress(titleEscrowFactory)) {
-    throw new Error(`ChainId ${chainId} currently is not supported. Supply a factory address.`);
-  }
-
+export const getDefaultContractAddress = (chainId: number): DeployContractAddress => {
+  const { TitleEscrowFactory, TokenImplementation, Deployer } = CONTRACT_ADDRESS;
+  const chainTitleEscrowFactory = TitleEscrowFactory[chainId];
+  const chainTokenImplementation = TokenImplementation[chainId];
+  const chainDeployer = Deployer[chainId];
   return {
-    titleEscrowFactory,
-    tokenImplementation,
-    deployer,
-  } as DeployContractAddress;
+    TitleEscrowFactory: chainTitleEscrowFactory,
+    TokenImplementation: chainTokenImplementation,
+    Deployer: chainDeployer,
+  };
+};
+
+export const isSupportedTitleEscrowFactory = async (
+  factoryAddress: string,
+  provider?: ethers.providers.Provider
+): Promise<boolean> => {
+  const titleEscrowFactoryContract = new ethers.Contract(
+    factoryAddress,
+    ["function implementation() view returns (address)"],
+    provider ?? ethers.getDefaultProvider()
+  ) as TitleEscrowFactory;
+  const implAddr = await titleEscrowFactoryContract.implementation();
+
+  const implContract = new ethers.Contract(
+    implAddr,
+    ["function supportsInterface(bytes4 interfaceId) view returns (bool)"],
+    provider ?? ethers.getDefaultProvider()
+  ) as TitleEscrow;
+  const { TitleEscrow: titleEscrowInterfaceId } = CONTRACT_INTERFACE_ID;
+  return implContract.supportsInterface(titleEscrowInterfaceId);
+};
+
+export const isValidAddress = (address?: string): boolean => {
+  if (!address) return false;
+  return isAddress(address);
 };
