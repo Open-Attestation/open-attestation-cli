@@ -1,7 +1,7 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateNominateBeneficiary } from "./helpers";
+import { connectToTitleEscrow, validateTransferBeneficiary } from "./helpers";
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
@@ -23,7 +23,8 @@ export const endorseNominatedBeneficiary = async ({
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const nominatedBeneficiary = newBeneficiary;
-  await validateNominateBeneficiary({ beneficiaryNominee: nominatedBeneficiary, titleEscrow });
+  const walletAddress = await wallet.getAddress();
+  await validateTransferBeneficiary({ to: nominatedBeneficiary, titleEscrow, walletAddress });
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary),

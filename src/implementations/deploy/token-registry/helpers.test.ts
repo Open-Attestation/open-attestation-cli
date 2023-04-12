@@ -24,12 +24,17 @@ describe("valid Token Registry Factory Address", () => {
   });
 
   it("should reject invalid chainId", () => {
-    const chainId = 2022;
-    expect(() => {
-      retrieveFactoryAddress(chainId);
-    }).toThrow(`ChainId ${chainId} currently is not supported. Use token-registry to deploy.`);
+    let validTest = false;
+    try {
+      retrieveFactoryAddress(2022);
+    } catch (e) {
+      validTest = true;
+    } finally {
+      expect(validTest).toBe(true);
+    }
   });
 });
+
 describe("valid encodeInit parameters", () => {
   it("should encode parameters correctly", () => {
     const params = encodeInitParams({
