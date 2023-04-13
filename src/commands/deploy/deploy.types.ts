@@ -19,3 +19,8 @@ export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
     token?: string;
     deployer?: string;
   };
+
+export type DeployTitleEscrowFactoryCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    passedOnWallet?: Wallet | ConnectedSigner;
+  };
