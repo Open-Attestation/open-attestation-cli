@@ -1,4 +1,3 @@
-
 import { join } from "path";
 import { Wallet } from "ethers";
 import { DeployTitleEscrowFactoryCommand } from "../../../commands/deploy/deploy.types";
@@ -25,7 +24,7 @@ describe("title escrow factory", () => {
       mockedTitleEscrowFactory.mockReset();
       mockedDeploy.mockReset();
       mockedDeploy.mockResolvedValue({
-        deployTransaction: { hash: "hash", blockNumber: 1, },
+        deployTransaction: { hash: "hash", blockNumber: 1 },
         deployed: () => Promise.resolve(),
         address: "contractAddress",
       });
