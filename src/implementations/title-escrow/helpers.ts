@@ -11,8 +11,23 @@ import { ConnectedSigner } from "../utils/wallet";
 interface ConnectToTitleEscrowArgs {
   tokenId: string;
   address: string;
-  wallet: Wallet | ConnectedSigner;
+  wallet: UserWallet;
 }
+interface ConnectToTokenRegistryArgs {
+  address: string;
+  wallet: UserWallet;
+}
+
+type UserWallet = Wallet | ConnectedSigner;
+
+export const assertAddressIsSmartContract = async (
+  address: string,
+  account: Wallet | ConnectedSigner
+): Promise<void> => {
+  const code = await account.provider.getCode(address);
+  const isContract = code !== "0x" && code !== "0x0"; // Ganache uses 0x0 instead
+  if (!isContract) throw new Error(`Address ${address} is not a valid Contract`);
+};
 
 export const connectToTitleEscrow = async ({
   tokenId,
@@ -22,6 +37,18 @@ export const connectToTitleEscrow = async ({
   const tokenRegistry: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
   const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
   return await TitleEscrow__factory.connect(titleEscrowAddress, wallet);
+};
+
+export const connectToTokenRegistry = async ({
+  address,
+  wallet,
+}: ConnectToTokenRegistryArgs): Promise<TradeTrustToken> => {
+  await assertAddressIsSmartContract(address, wallet);
+  const tokenRegistryInstance: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
+  // const isTokenRegistry = await supportsInterface(tokenRegistryInstance, "0x8a198f04")
+  // if(!isTokenRegistry) throw new Error(`Address ${address} is not a supported token registry contract`)
+  await tokenRegistryInstance.callStatic.genesis();
+  return tokenRegistryInstance;
 };
 
 interface validateEndorseChangeOwnerArgs {

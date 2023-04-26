@@ -2,13 +2,14 @@ import { TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { AddressZero, getMockTokenRegistry, initMockGetCode, mergeMockSmartContract } from "../testsHelper";
 import { acceptSurrendered } from "./acceptSurrendered";
 
 jest.mock("@govtechsg/token-registry/contracts");
 
 const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
-  tokenRegistry: "0x1122",
-  tokenId: "0x12345",
+  tokenRegistry: "0x0000000000000000000000000000000000000001",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
   network: "goerli",
   dryRun: false,
 };
@@ -21,6 +22,13 @@ describe("title-escrow", () => {
     const mockedConnectERC721: jest.Mock = mockedTradeTrustTokenFactory.connect;
     const mockBurnToken = jest.fn();
     const mockCallStaticBurnToken = jest.fn().mockResolvedValue(undefined);
+    const tokenRegistryAddress = acceptSurrenderedDocumentParams.tokenRegistry;
+    const mockBaseTokenRegistry = getMockTokenRegistry({
+      ownerOfValue: tokenRegistryAddress,
+      address: tokenRegistryAddress,
+      titleEscrowFactoryAddress: AddressZero,
+    });
+    let mockTokenRegistry = mockBaseTokenRegistry;
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -31,13 +39,15 @@ describe("title-escrow", () => {
         hash: "hash",
         wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
-
-      mockedConnectERC721.mockReturnValue({
+      const mockCustomTokenRegistry = {
         burn: mockBurnToken,
         callStatic: {
           burn: mockCallStaticBurnToken,
         },
-      });
+      };
+      initMockGetCode();
+      mockTokenRegistry = mergeMockSmartContract({ base: mockBaseTokenRegistry, override: mockCustomTokenRegistry });
+      mockedConnectERC721.mockReturnValue(mockTokenRegistry);
       mockBurnToken.mockClear();
       mockCallStaticBurnToken.mockClear();
     });
