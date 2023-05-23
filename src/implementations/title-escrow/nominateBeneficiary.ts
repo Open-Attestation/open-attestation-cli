@@ -19,17 +19,16 @@ export const nominateBeneficiary = async ({
 }: TitleEscrowNominateBeneficiaryCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  const walletAddress = await wallet.getAddress();
+  await validateNominateBeneficiary({ to: newBeneficiary, titleEscrow, walletAddress });
   if (dryRun) {
-    await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.nominate(newBeneficiary),
       network,
     });
     process.exit(0);
   }
-
   signale.await(`Sending transaction to pool`);
-  await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
   await titleEscrow.callStatic.nominate(newBeneficiary);
   const transaction = await titleEscrow.nominate(newBeneficiary);
   trace(`Tx hash: ${transaction.hash}`);

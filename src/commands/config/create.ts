@@ -6,6 +6,7 @@ import { create } from "../../implementations/config/create";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { supportedNetwork } from "../networks";
+import { withWalletOption } from "../shared";
 import { CreateConfigCommand } from "./config.type";
 
 const { trace } = getLogger("config:create");
@@ -15,20 +16,14 @@ export const command = "create [options]";
 export const describe = "Create a config file";
 
 export const builder = (yargs: Argv): Argv =>
-  yargs
-    .option("output-dir", {
+  withWalletOption(
+    yargs.option("output-dir", {
       alias: "od",
       description: "Write output to a directory",
       type: "string",
       demandOption: true,
     })
-    // encrypted wallet path is referenced from command.shared.ts as we need additional properties for this instance.
-    .option("encrypted-wallet-path", {
-      type: "string",
-      description: "Path to wallet.json file",
-      normalize: true,
-      demandOption: true,
-    });
+  );
 
 export const handler = async (args: CreateConfigCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);

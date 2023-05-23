@@ -1,7 +1,7 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow } from "./helpers";
+import { connectToTitleEscrow, validateTransferHolder } from "./helpers";
 import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
@@ -19,6 +19,12 @@ export const transferHolder = async ({
 }: TitleEscrowTransferHolderCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  const walletAddress = await wallet.getAddress();
+  await validateTransferHolder({
+    walletAddress,
+    titleEscrow,
+    to,
+  });
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.transferHolder(to),
