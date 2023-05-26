@@ -69,7 +69,7 @@ export const deployTokenRegistry = async ({
     console.error(`Network ${chainId} does not support "quick-start" mode. Defaulting to --standalone mode.`);
     standalone = true;
   }
-  
+
   if (!standalone) {
     if (!deployerContractAddress || !implAddress) {
       throw new Error(`Network ${chainId} currently is not supported. Use --standalone instead.`);

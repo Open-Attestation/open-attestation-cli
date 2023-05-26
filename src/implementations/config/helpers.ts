@@ -114,7 +114,7 @@ export const getTokenRegistryAddress = async (
   passedOnWallet: Wallet | ConnectedSigner,
   network: NetworkCmdName
 ): Promise<string> => {
-  const tokenRegistry = await deployTokenRegistry({
+  const { contractAddress } = await deployTokenRegistry({
     encryptedWalletPath,
     passedOnWallet,
     network,
@@ -122,8 +122,8 @@ export const getTokenRegistryAddress = async (
     registryName: "Token Registry",
     registrySymbol: "TR",
   });
-  success(`Token registry deployed, address: ${highlight(tokenRegistry)}`);
-  return tokenRegistry.contractAddress;
+  success(`Token registry deployed, address: ${highlight(contractAddress)}`);
+  return contractAddress;
 };
 
 export const getDocumentStoreAddress = async (
