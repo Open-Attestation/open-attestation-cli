@@ -121,6 +121,7 @@ export const getTokenRegistryAddress = async (
     dryRun: false,
     registryName: "Token Registry",
     registrySymbol: "TR",
+    configDeploy: true,
   });
   success(`Token registry deployed, address: ${highlight(contractAddress)}`);
   return contractAddress;

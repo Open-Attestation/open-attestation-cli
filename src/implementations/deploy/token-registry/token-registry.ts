@@ -22,6 +22,7 @@ export const deployTokenRegistry = async ({
   token: implAddress,
   deployer: deployerContractAddress,
   standalone,
+  configDeploy,
   network,
   dryRun,
   passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
@@ -65,7 +66,7 @@ export const deployTokenRegistry = async ({
     implAddress = defaultTokenImplementationContractAddress;
   }
 
-  if ((!deployerContractAddress || !implAddress) && !standalone) {
+  if ((!deployerContractAddress || !implAddress) && configDeploy) {
     console.error(`Network ${chainId} does not support "quick-start" mode. Defaulting to --standalone mode.`);
     standalone = true;
   }

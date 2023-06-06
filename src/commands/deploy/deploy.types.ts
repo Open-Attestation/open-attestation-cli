@@ -18,6 +18,7 @@ export type DeployTokenRegistryCommand = NetworkAndWalletSignerOption &
     factory?: string;
     token?: string;
     deployer?: string;
+    configDeploy?: boolean;
   };
 
 export type DeployTitleEscrowFactoryCommand = NetworkAndWalletSignerOption &
