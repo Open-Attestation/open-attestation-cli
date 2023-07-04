@@ -11,7 +11,7 @@ jest.mock("@govtechsg/document-store");
 const deployParams: DocumentStoreTransferOwnershipCommand = {
   newOwner: "0xabcd",
   address: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
 };
@@ -77,7 +77,7 @@ describe("document-store", () => {
       await transferDocumentStoreOwnershipToWallet({
         newOwner: "0xabcd",
         address: "0x1234",
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
       });
 
@@ -88,7 +88,7 @@ describe("document-store", () => {
       await transferDocumentStoreOwnershipToWallet({
         newOwner: "0xabcd",
         address: "0x1234",
-        network: "goerli",
+        network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
       });

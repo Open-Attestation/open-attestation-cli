@@ -9,7 +9,7 @@ jest.mock("@govtechsg/document-store");
 const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",
   owner: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
 };
@@ -36,7 +36,7 @@ describe("document-store", () => {
 
       await deployDocumentStore({
         storeName: "Test",
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
       });
 
@@ -47,7 +47,7 @@ describe("document-store", () => {
     it("should take in the key from key file", async () => {
       await deployDocumentStore({
         storeName: "Test",
-        network: "goerli",
+        network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
       });
@@ -77,7 +77,7 @@ describe("document-store", () => {
       await expect(
         deployDocumentStore({
           storeName: "Test",
-          network: "goerli",
+          network: "sepolia",
           dryRun: false,
         })
       ).rejects.toThrow(
@@ -90,7 +90,7 @@ describe("document-store", () => {
 
       await deployDocumentStore({
         storeName: "Test",
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
       });
 

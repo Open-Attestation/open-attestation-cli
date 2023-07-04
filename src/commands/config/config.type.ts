@@ -7,3 +7,10 @@ export interface CreateConfigCommand {
   configTemplatePath: string;
   configTemplateUrl: string;
 }
+
+export enum SelectNetwork {
+  Local = "local",
+  Goerli = "goerli (deprecated)",
+  Sepolia = "sepolia",
+  Mumbai = "mumbai (polygon)",
+}

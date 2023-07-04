@@ -4,9 +4,8 @@ import { error, info, success } from "signale";
 import { Argv } from "yargs";
 import { create } from "../../implementations/config/create";
 import { getLogger } from "../../logger";
-import { highlight } from "../../utils";
-import { supportedNetwork } from "../networks";
-import { CreateConfigCommand } from "./config.type";
+import { convertNetworkToNetworkCmdName, highlight } from "../../utils";
+import { CreateConfigCommand, SelectNetwork } from "./config.type";
 
 const { trace } = getLogger("config:create");
 
@@ -60,13 +59,14 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       args.configTemplatePath = configTemplatePath;
     }
 
+    const networks = [SelectNetwork.Local, SelectNetwork.Goerli, SelectNetwork.Sepolia, SelectNetwork.Mumbai];
     const { network } = await inquirer.prompt({
       type: "list",
       name: "network",
       message: "Select Network",
-      choices: Object.keys(supportedNetwork),
+      choices: networks,
     });
-    args.network = network;
+    args.network = convertNetworkToNetworkCmdName(network);
 
     const outputPath = await create(args);
     success(`Config file successfully created and saved in ${highlight(outputPath)}`);

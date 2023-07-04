@@ -11,7 +11,7 @@ jest.mock("@govtechsg/document-store");
 const deployParams: DocumentStoreRevokeCommand = {
   hash: "0xabcd",
   address: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
 };
@@ -74,7 +74,7 @@ describe("document-store", () => {
       await revokeToDocumentStore({
         hash: "0xabcd",
         address: "0x1234",
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
       });
 
@@ -86,7 +86,7 @@ describe("document-store", () => {
       await revokeToDocumentStore({
         hash: "0xabcd",
         address: "0x1234",
-        network: "goerli",
+        network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
       });
@@ -107,7 +107,7 @@ describe("document-store", () => {
         revokeToDocumentStore({
           hash: "0xabcd",
           address: "0x1234",
-          network: "goerli",
+          network: "sepolia",
           dryRun: false,
         })
       ).rejects.toThrow(

@@ -48,7 +48,7 @@ describe("create config file", () => {
   beforeEach(() => {
     folder = tmp.dirSync();
     args = {
-      network: NetworkCmdName.Goerli,
+      network: NetworkCmdName.Sepolia,
       outputDir: folder.name,
       encryptedWalletPath: "src/implementations/config/__tests__/wallet.json",
       configTemplatePath: "",
@@ -102,12 +102,12 @@ describe("create config file", () => {
 
     args.configTemplateUrl = "https://example.com";
 
-    const RinkebyArgs = { ...args, network: NetworkCmdName.Goerli };
+    const Args = { ...args, network: NetworkCmdName.Sepolia };
 
-    await createConfig(RinkebyArgs);
+    await createConfig(Args);
     const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
 
-    expect(JSON.parse(configFileAsString).network).toStrictEqual(NetworkCmdName.Goerli);
+    expect(JSON.parse(configFileAsString).network).toStrictEqual(NetworkCmdName.Sepolia);
   });
 
   it("should throw an error when detected config file with wrong form type", async () => {
