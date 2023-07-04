@@ -44,7 +44,7 @@ export const getErrorMessage = function (error: unknown): string {
   }
 };
 
-export const convertNetworkToNetworkCmdName = (selectedNetwork: SelectNetwork) => {
+export const convertNetworkToNetworkCmdName = (selectedNetwork: SelectNetwork): NetworkCmdName => {
   const network = {
     [SelectNetwork.Local]: NetworkCmdName.Local,
     [SelectNetwork.Goerli]: NetworkCmdName.Goerli,
