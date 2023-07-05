@@ -1,7 +1,5 @@
 import chalk from "chalk";
 import { getSupportedNetwork } from "./commands/networks";
-import { TestNetwork } from "./commands/config/config.type";
-import { NetworkCmdName } from "./commands/networks";
 
 export const getEtherscanAddress = ({ network }: { network: string }): string => getSupportedNetwork(network).explorer;
 
@@ -42,14 +40,4 @@ export const getErrorMessage = function (error: unknown): string {
   } else {
     return extractErrorMessage(error);
   }
-};
-
-export const convertNetworkToNetworkCmdName = (selectedNetwork: TestNetwork): NetworkCmdName => {
-  const network = {
-    [TestNetwork.Local]: NetworkCmdName.Local,
-    [TestNetwork.Goerli]: NetworkCmdName.Goerli,
-    [TestNetwork.Sepolia]: NetworkCmdName.Sepolia,
-    [TestNetwork.Mumbai]: NetworkCmdName.Maticmum,
-  };
-  return network[selectedNetwork];
 };
