@@ -8,7 +8,7 @@ export interface CreateConfigCommand {
   configTemplateUrl: string;
 }
 
-export enum SelectNetwork {
+export enum TestNetwork {
   Local = "local",
   Goerli = "goerli (deprecated)",
   Sepolia = "sepolia",

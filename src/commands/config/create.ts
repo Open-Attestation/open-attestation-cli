@@ -5,7 +5,7 @@ import { Argv } from "yargs";
 import { create } from "../../implementations/config/create";
 import { getLogger } from "../../logger";
 import { convertNetworkToNetworkCmdName, highlight } from "../../utils";
-import { CreateConfigCommand, SelectNetwork } from "./config.type";
+import { CreateConfigCommand, TestNetwork } from "./config.type";
 
 const { trace } = getLogger("config:create");
 
@@ -59,7 +59,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       args.configTemplatePath = configTemplatePath;
     }
 
-    const networks = [SelectNetwork.Local, SelectNetwork.Goerli, SelectNetwork.Sepolia, SelectNetwork.Mumbai];
+    const networks = [TestNetwork.Local, TestNetwork.Goerli, TestNetwork.Sepolia, TestNetwork.Mumbai];
     const { network } = await inquirer.prompt({
       type: "list",
       name: "network",
