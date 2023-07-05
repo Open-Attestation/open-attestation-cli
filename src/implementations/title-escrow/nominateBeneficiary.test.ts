@@ -10,7 +10,7 @@ const nominateBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
   newBeneficiary: "0fosui",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   dryRun: false,
 };
 

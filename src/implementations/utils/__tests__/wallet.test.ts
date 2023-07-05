@@ -20,17 +20,17 @@ describe("wallet", () => {
   });
   it("should return the wallet when providing the key using environment variable", async () => {
     process.env.OA_PRIVATE_KEY = privateKey;
-    const wallet = await getWalletOrSigner({ network: "goerli" });
+    const wallet = await getWalletOrSigner({ network: "sepolia" });
     expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing the key using key option", async () => {
-    const wallet = await getWalletOrSigner({ network: "goerli", key: privateKey });
+    const wallet = await getWalletOrSigner({ network: "sepolia", key: privateKey });
     expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing the key using key-file option", async () => {
-    const wallet = await getWalletOrSigner({ network: "goerli", keyFile: path.resolve(__dirname, "./key.file") });
+    const wallet = await getWalletOrSigner({ network: "sepolia", keyFile: path.resolve(__dirname, "./key.file") });
     expect(await wallet.getAddress()).toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
@@ -38,7 +38,7 @@ describe("wallet", () => {
     promptMock.mockReturnValue({ password: "password123" });
 
     const wallet = await getWalletOrSigner({
-      network: "goerli",
+      network: "sepolia",
       encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
       progress: () => void 0, // shut up progress bar
     });
@@ -50,14 +50,14 @@ describe("wallet", () => {
 
     await expect(
       getWalletOrSigner({
-        network: "goerli",
+        network: "sepolia",
         encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
         progress: () => void 0, // shut up progress bar
       })
     ).rejects.toStrictEqual(new Error("invalid password"));
   });
   it("should throw an error when no option is provided", async () => {
-    await expect(getWalletOrSigner({ network: "goerli" })).rejects.toStrictEqual(
+    await expect(getWalletOrSigner({ network: "sepolia" })).rejects.toStrictEqual(
       new Error(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       )

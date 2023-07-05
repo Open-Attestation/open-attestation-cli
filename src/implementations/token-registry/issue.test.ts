@@ -12,7 +12,7 @@ const deployParams: TokenRegistryIssueCommand = {
   holder: "0xabce",
   tokenId: "0xzyxw",
   address: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   dryRun: false,
 };
 

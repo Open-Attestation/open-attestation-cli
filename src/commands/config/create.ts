@@ -5,8 +5,8 @@ import { Argv } from "yargs";
 import { create } from "../../implementations/config/create";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
-import { supportedNetwork } from "../networks";
-import { CreateConfigCommand } from "./config.type";
+import { CreateConfigCommand, TestNetwork } from "./config.type";
+import { NetworkCmdName } from "../networks";
 
 const { trace } = getLogger("config:create");
 
@@ -60,13 +60,14 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       args.configTemplatePath = configTemplatePath;
     }
 
+    const networks = [TestNetwork.Local, TestNetwork.Goerli, TestNetwork.Sepolia, TestNetwork.Mumbai];
     const { network } = await inquirer.prompt({
       type: "list",
       name: "network",
       message: "Select Network",
-      choices: Object.keys(supportedNetwork),
+      choices: networks,
     });
-    args.network = network;
+    args.network = convertNetworkToNetworkCmdName(network);
 
     const outputPath = await create(args);
     success(`Config file successfully created and saved in ${highlight(outputPath)}`);
@@ -75,4 +76,14 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       error(e.message);
     }
   }
+};
+
+const convertNetworkToNetworkCmdName = (selectedNetwork: TestNetwork): NetworkCmdName => {
+  const network = {
+    [TestNetwork.Local]: NetworkCmdName.Local,
+    [TestNetwork.Goerli]: NetworkCmdName.Goerli,
+    [TestNetwork.Sepolia]: NetworkCmdName.Sepolia,
+    [TestNetwork.Mumbai]: NetworkCmdName.Maticmum,
+  };
+  return network[selectedNetwork];
 };
