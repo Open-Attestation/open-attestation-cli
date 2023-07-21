@@ -1,5 +1,5 @@
 {
-  "network": "goerli",
+  "network": "sepolia",
   "wallet": {
     "type": "ENCRYPTED_JSON",
     "encryptedJson": "{\"address\":\"709731d94d65b078496937655582401157c8a640\",\"id\":\"90167e7e-af5c-44b1-a6a3-2525300d1032\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"02004e981623b906938a205c24805bef\"},\"ciphertext\":\"06568387223b88fe860bfed23442966124fe38e463fdb5501a0a0f8b9d1519db\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"56b3c1e89f4d8a3f76564d4e6f64e832e46729c881764328a4509a2e96c052fe\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"7611744a709d7cac37379617e8ddd9f134658b7a99b09f55eeaa50b4af6e0d39\"},\"x-ethers\":{\"client\":\"ethers.js\",\"gethFilename\":\"UTC--2021-02-01T06-07-08.0Z--709731d94d65b078496937655582401157c8a640\",\"mnemonicCounter\":\"f2706de1481a3541e7b49885f9a21fa7\",\"mnemonicCiphertext\":\"7eb14f3487659d100e5dddac1cef72dd\",\"path\":\"m/44'/60'/0'/0/0\",\"locale\":\"en\",\"version\":\"0.1\"}}"
@@ -47,8 +47,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chainId": "5",
-          "chain": "ETH"
+          "chain": "ETH",
+          "chainId": "5"
         }
       },
       "schema": {
@@ -186,8 +186,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chainId": "5",
-          "chain": "ETH"
+          "chain": "ETH",
+          "chainId": "5"
         }
       },
       "schema": {
@@ -618,6 +618,113 @@
       "extension": "tt"
     },
     {
+      "name": "TradeTrust Covering Letter v3",
+      "type": "VERIFIABLE_DOCUMENT",
+      "defaults": {
+        "version": "https://schema.openattestation.com/3.0/schema.json",
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://schemata.openattestation.com/io/tradetrust/cover-letter/1.0/cover-letter-context.json",
+          "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json"
+        ],
+        "type": ["VerifiableCredential", "OpenAttestationCredential"],
+        "issuanceDate": "2010-01-01T19:23:24Z",
+        "openAttestationMetadata": {
+          "template": {
+            "type": "EMBEDDED_RENDERER",
+            "name": "COVERING_LETTER",
+            "url": "https://generic-templates.tradetrust.io"
+          },
+          "proof": {
+            "type": "OpenAttestationProofMethod",
+            "method": "DOCUMENT_STORE",
+            "value": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
+            "revocation": {
+              "type": "NONE"
+            }
+          },
+          "identityProof": {
+            "type": "DNS-TXT",
+            "identifier": "alert-cyan-stoat.sandbox.openattestation.com"
+          }
+        },
+        "credentialSubject": {},
+        "issuer": {
+          "id": "https://example.com",
+          "name": "DEMO DOCUMENT STORE",
+          "type": "OpenAttestationIssuer"
+        },
+        "network": {
+          "chain": "ETH",
+          "chainId": "5"
+        }
+      },
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "logo": {
+            "type": "string",
+            "title": "Cover Letter Logo"
+          },
+          "title": {
+            "type": "string",
+            "title": "Document Title"
+          },
+          "remarks": {
+            "type": "string",
+            "title": "Remarks"
+          },
+          "backgroundColor": {
+            "type": "string",
+            "title": "Background Color"
+          },
+          "titleColor": {
+            "type": "string",
+            "title": "Title Color"
+          },
+          "remarksColor": {
+            "type": "string",
+            "title": "Remarks Color"
+          }
+        }
+      },
+      "attachments": {
+        "allow": true
+      },
+      "uiSchema": {
+        "logo": {
+          "ui:widget": "file",
+          "ui:options": {
+            "text": "Upload Cover Letter Logo",
+            "accept": ".png, .jpeg, .jpg"
+          }
+        },
+        "remarks": {
+          "ui:widget": "textarea"
+        },
+        "backgroundColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#ffffff"
+          }
+        },
+        "titleColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#4e4e50"
+          }
+        },
+        "remarksColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#4e4e50"
+          }
+        }
+      },
+      "extension": "tt"
+    },
+    {
       "name": "TradeTrust Invoice v3 (DNS-DID)",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
@@ -655,8 +762,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chainId": "5",
-          "chain": "ETH"
+          "chain": "ETH",
+          "chainId": "5"
         }
       },
       "schema": {
@@ -833,8 +940,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chainId": "5",
-          "chain": "ETH"
+          "chain": "ETH",
+          "chainId": "5"
         }
       },
       "schema": {
