@@ -28,7 +28,7 @@ describe("document-store", () => {
 
       await cancelTransaction({
         transactionHash: "0x456bba58226f03e3fb7d72b5143ceecfb6bfb66b00586929f6d60890ec264c2c",
-        network: "goerli",
+        network: "sepolia",
         keyFile: path.resolve(__dirname, "./key.file"),
       });
       expect(signaleInfoSpy).toHaveBeenNthCalledWith(1, "Transaction detail retrieved. Nonce: 10, Gas-price: 3");

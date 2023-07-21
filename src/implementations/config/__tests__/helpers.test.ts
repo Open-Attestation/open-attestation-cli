@@ -30,13 +30,13 @@ describe("getConfigFile", () => {
 describe("getConfigWithUpdatedNetwork", () => {
   it("should update config file with network for V2", () => {
     expect(
-      getConfigWithUpdatedNetwork({ configFile: ConfigFileV2 as ConfigFile, network: NetworkCmdName.Goerli }).network
-    ).toStrictEqual(NetworkCmdName.Goerli);
+      getConfigWithUpdatedNetwork({ configFile: ConfigFileV2 as ConfigFile, network: NetworkCmdName.Sepolia }).network
+    ).toStrictEqual(NetworkCmdName.Sepolia);
   });
   it("should update config file with network for V3", () => {
     expect(
-      getConfigWithUpdatedNetwork({ configFile: ConfigFileV3 as ConfigFile, network: NetworkCmdName.Goerli }).network
-    ).toStrictEqual(NetworkCmdName.Goerli);
+      getConfigWithUpdatedNetwork({ configFile: ConfigFileV3 as ConfigFile, network: NetworkCmdName.Sepolia }).network
+    ).toStrictEqual(NetworkCmdName.Sepolia);
   });
 });
 
@@ -64,7 +64,7 @@ describe("getConfigWithUpdatedForms", () => {
     const config = getConfigWithUpdatedForms({
       configFile: configWithWallet as ConfigFile,
       chain: {
-        id: "5",
+        id: "11155111",
         currency: "ETH",
       },
       documentStoreAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
@@ -84,7 +84,7 @@ describe("getConfigWithUpdatedForms", () => {
     const config = getConfigWithUpdatedForms({
       configFile: configWithWallet as ConfigFile,
       chain: {
-        id: "5",
+        id: "11155111",
         currency: "ETH",
       },
       documentStoreAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",

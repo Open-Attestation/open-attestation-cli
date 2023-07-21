@@ -23,7 +23,7 @@ export const create = async ({
   fs.writeFileSync(outputPath, json);
 
   signale.info(`Wallet with public address ${highlight(wallet.address)} successfully created.`);
-  signale.info(`Find more details at ${getEtherscanAddress({ network: "goerli" })}/address/${wallet.address}`);
+  signale.info(`Find more details at ${getEtherscanAddress({ network: "sepolia" })}/address/${wallet.address}`);
 
   return outputPath;
 };

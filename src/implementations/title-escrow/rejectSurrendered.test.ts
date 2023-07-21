@@ -9,7 +9,7 @@ jest.mock("@govtechsg/token-registry/contracts");
 const rejectSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
   tokenId: "0x12345",
-  network: "goerli",
+  network: "sepolia",
   dryRun: false,
 };
 
