@@ -71,8 +71,8 @@ describe("deploy Token Registry", () => {
   it("should pass in the correct params with standalone and return the deployed instance", async () => {
     const deployStandalone = {
       standalone: true,
-      ...deployParams
-    }
+      ...deployParams,
+    };
     await deployTokenRegistry(deployStandalone);
 
     const expectedInitParams = encodeInitParams({
@@ -90,7 +90,7 @@ describe("deploy Token Registry", () => {
   });
 
   it("should pass in the correct params with unspecified standalone and return the deployed instance", async () => {
-    let deployParamsUnspecified = deployParams;
+    const deployParamsUnspecified = deployParams;
     delete deployParamsUnspecified.standalone;
     await deployTokenRegistry(deployParamsUnspecified);
 
