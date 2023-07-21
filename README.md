@@ -34,12 +34,13 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 
 ## Supported networks
 
-| Network | Chain ID | Type       |
-| ------- | -------- | ---------- |
-| mainnet | 1        | Production |
-| goerli  | 5        | Test       |
-| polygon | 137      | Production |
-| mumbai  | 80001    | Test       |
+| Network            | Chain ID | Type       |
+| ------------------ | -------- | ---------- |
+| mainnet            | 1        | Production |
+| sepolia            | 11155111 | Test       |
+| Goerli(Deprecated) | 5        | Test       |
+| polygon            | 137      | Production |
+| mumbai             | 80001    | Test       |
 
 ---
 
@@ -257,7 +258,7 @@ open-attestation deploy token-registry <registry-name> <registry-symbol> --facto
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy token-registry "My Sample Token" MST --network goerli
+open-attestation deploy token-registry "My Sample Token" MST --network sepolia
 
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
@@ -273,7 +274,7 @@ open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGIS
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation token-registry mint --network goerli --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+open-attestation token-registry mint --network sepolia --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 
 ✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 0x6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
@@ -284,7 +285,6 @@ open-attestation token-registry mint --network goerli --address 0x6133f580aE903b
 #### Token Registry Roles
 
 Interfaces for the Assignment and Revocation of roles are available on the Token Registry repository.
-
 
 ### Document Store
 
@@ -299,7 +299,7 @@ open-attestation deploy document-store <store-name> [options]
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy document-store "My Name" --network goerli
+open-attestation deploy document-store "My Name" --network sepolia
 
 ✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
@@ -307,7 +307,7 @@ open-attestation deploy document-store "My Name" --network goerli
 By default, the owner of the document store will be the deployer. You can specify a different owner using the `--owner` option:
 
 ```bash
-open-attestation deploy document-store "My Name" --owner 0x1234 --network goerli
+open-attestation deploy document-store "My Name" --owner 0x1234 --network sepolia
 ```
 
 #### Issue document to document store
@@ -321,7 +321,7 @@ open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store issue --network goerli --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+open-attestation document-store issue --network sepolia --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -337,7 +337,7 @@ open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store revoke --network goerli --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+open-attestation document-store revoke --network sepolia --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -353,7 +353,7 @@ open-attestation document-store transfer-ownership --address <DOCUMENT_STORE_ADD
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network goerli
+open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network sepolia
 
 ✔  success   Ownership of document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 has been transferred to new wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
 ```
@@ -363,7 +363,7 @@ open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e5
 Verify if a document is valid.
 
 ```bash
-open-attestation verify --document ./examples/wrapped-documents/example.0.json --network goerli
+open-attestation verify --document ./examples/wrapped-documents/example.0.json --network sepolia
 
 …  awaiting  Verifying examples/wrapped-documents/example.0.json
 ✔  success   The document is valid
@@ -468,22 +468,22 @@ Example:
 
 ```bash
 # Using encrypted-wallet-path option
-open-attestation deploy document-store "My Name" --network goerli --encrypted-wallet-path /path/to/wallet.json
+open-attestation deploy document-store "My Name" --network sepolia --encrypted-wallet-path /path/to/wallet.json
 # Then you will be prompted to type your password to decrypt the wallet
 ? Wallet password [input is hidden]
 
 # Using environment variable
 export OA_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
-open-attestation deploy document-store "My Name" --network goerli
+open-attestation deploy document-store "My Name" --network sepolia
 unset OA_PRIVATE_KEY
 
 # Using private key stored in file
 echo -n 0000000000000000000000000000000000000000000000000000000000000002 >> ./examples/sample-key
-open-attestation deploy document-store "My Name" --network goerli --key-file ./examples/sample-key
+open-attestation deploy document-store "My Name" --network sepolia --key-file ./examples/sample-key
 rm ./examples/sample-key
 
 # Providing the key to the command
-open-attestation deploy document-store "My Name" --network goerli --key 0000000000000000000000000000000000000000000000000000000000000003
+open-attestation deploy document-store "My Name" --network sepolia --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
 ### Config (Create configuration file)
@@ -528,7 +528,7 @@ open-attestation config create --output-dir ./example-configs --encrypted-wallet
 ? Wallet password [hidden]
 ? Using a config template URL? Yes
 ? Please enter the config template URL https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v3.json
-? Select Network goerli
+? Select Network sepolia
 ```
 
 #### Method 2: Using config-template-path option
@@ -547,7 +547,7 @@ open-attestation config create --output-dir ./example-configs --encrypted-wallet
 ? Wallet password [hidden]
 ? Using a config template URL? No
 ? Please enter the config template path </path/to>/config.json
-? Select Network goerli
+? Select Network sepolia
 ```
 
 ### Cancel pending transaction
@@ -570,11 +570,11 @@ open-attestation transaction cancel --nonce <pending transaction nonce> --gas-pr
 Examples:
 
 ```
-open-attestation transaction cancel --nonce 1 --gas-price 300 --network goerli --encrypted-wallet-path /path/to/wallet
+open-attestation transaction cancel --nonce 1 --gas-price 300 --network sepolia --encrypted-wallet-path /path/to/wallet
 ```
 
 ```
-open-attestation transaction cancel --transaction-hash 0x000 --network goerli --encrypted-wallet-path /path/to/wallet
+open-attestation transaction cancel --transaction-hash 0x000 --network sepolia --encrypted-wallet-path /path/to/wallet
 ```
 
 ### Title Escrow
@@ -657,7 +657,7 @@ open-attestation title-escrow surrender --token-registry <TOKEN_REGISTRY_ADDRESS
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
+open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been surrendered.
 ```
@@ -673,7 +673,7 @@ open-attestation title-escrow reject-surrendered --token-registry <TOKEN_REGISTR
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
+open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
 ```
@@ -689,7 +689,7 @@ open-attestation title-escrow accept-surrendered --token-registry <TOKEN_REGISTR
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network goerli
+open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
 ```

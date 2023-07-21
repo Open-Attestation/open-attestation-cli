@@ -7,7 +7,7 @@ import { deployTitleEscrowFactory } from "./title-escrow-factory";
 jest.mock("@govtechsg/token-registry/contracts");
 
 const deployParams: DeployTitleEscrowFactoryCommand = {
-  network: "goerli",
+  network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
 };
@@ -34,7 +34,7 @@ describe("title escrow factory", () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
       await deployTitleEscrowFactory({
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
       });
 
@@ -44,7 +44,7 @@ describe("title escrow factory", () => {
 
     it("should take in the key from key file", async () => {
       await deployTitleEscrowFactory({
-        network: "goerli",
+        network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
       });
@@ -71,7 +71,7 @@ describe("title escrow factory", () => {
     it("should throw when keys are not found anywhere", async () => {
       await expect(
         deployTitleEscrowFactory({
-          network: "goerli",
+          network: "sepolia",
           dryRun: false,
         })
       ).rejects.toThrow(

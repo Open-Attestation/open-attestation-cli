@@ -47,8 +47,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chain": "ETH",
-          "chainId": "5"
+          "chainId": "11155111",
+          "chain": "ETH"
         }
       },
       "schema": {
@@ -186,8 +186,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chain": "ETH",
-          "chainId": "5"
+          "chainId": "11155111",
+          "chain": "ETH"
         }
       },
       "schema": {
@@ -762,8 +762,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chain": "ETH",
-          "chainId": "5"
+          "chainId": "11155111",
+          "chain": "ETH"
         }
       },
       "schema": {
@@ -940,8 +940,8 @@
           "type": "OpenAttestationIssuer"
         },
         "network": {
-          "chain": "ETH",
-          "chainId": "5"
+          "chainId": "11155111",
+          "chain": "ETH"
         }
       },
       "schema": {

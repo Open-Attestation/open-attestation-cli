@@ -7,7 +7,7 @@ import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contra
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
   registrySymbol: "Tst",
-  network: "goerli",
+  network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
 };
@@ -78,7 +78,7 @@ describe("deploy Token Registry", () => {
       deployTokenRegistry({
         registryName: "Test",
         registrySymbol: "Tst",
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
       })
     ).rejects.toThrow(
