@@ -618,6 +618,113 @@
       "extension": "tt"
     },
     {
+      "name": "TradeTrust Covering Letter v3",
+      "type": "VERIFIABLE_DOCUMENT",
+      "defaults": {
+        "version": "https://schema.openattestation.com/3.0/schema.json",
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          "https://schemata.openattestation.com/io/tradetrust/cover-letter/1.0/cover-letter-context.json",
+          "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json"
+        ],
+        "type": ["VerifiableCredential", "OpenAttestationCredential"],
+        "issuanceDate": "2010-01-01T19:23:24Z",
+        "openAttestationMetadata": {
+          "template": {
+            "type": "EMBEDDED_RENDERER",
+            "name": "COVERING_LETTER",
+            "url": "https://generic-templates.tradetrust.io"
+          },
+          "proof": {
+            "type": "OpenAttestationProofMethod",
+            "method": "DOCUMENT_STORE",
+            "value": "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd",
+            "revocation": {
+              "type": "NONE"
+            }
+          },
+          "identityProof": {
+            "type": "DNS-TXT",
+            "identifier": "alert-cyan-stoat.sandbox.openattestation.com"
+          }
+        },
+        "credentialSubject": {},
+        "issuer": {
+          "id": "https://example.com",
+          "name": "DEMO DOCUMENT STORE",
+          "type": "OpenAttestationIssuer"
+        },
+        "network": {
+          "chain": "ETH",
+          "chainId": "11155111"
+        }
+      },
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "logo": {
+            "type": "string",
+            "title": "Cover Letter Logo"
+          },
+          "title": {
+            "type": "string",
+            "title": "Document Title"
+          },
+          "remarks": {
+            "type": "string",
+            "title": "Remarks"
+          },
+          "backgroundColor": {
+            "type": "string",
+            "title": "Background Color"
+          },
+          "titleColor": {
+            "type": "string",
+            "title": "Title Color"
+          },
+          "remarksColor": {
+            "type": "string",
+            "title": "Remarks Color"
+          }
+        }
+      },
+      "attachments": {
+        "allow": true
+      },
+      "uiSchema": {
+        "logo": {
+          "ui:widget": "file",
+          "ui:options": {
+            "text": "Upload Cover Letter Logo",
+            "accept": ".png, .jpeg, .jpg"
+          }
+        },
+        "remarks": {
+          "ui:widget": "textarea"
+        },
+        "backgroundColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#ffffff"
+          }
+        },
+        "titleColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#4e4e50"
+          }
+        },
+        "remarksColor": {
+          "ui:widget": "color",
+          "ui:options": {
+            "emptyValue": "#4e4e50"
+          }
+        }
+      },
+      "extension": "tt"
+    },
+    {
       "name": "TradeTrust Invoice v3 (DNS-DID)",
       "type": "VERIFIABLE_DOCUMENT",
       "defaults": {
