@@ -41,6 +41,8 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | Goerli(Deprecated) | 5        | Test       |
 | polygon            | 137      | Production |
 | mumbai             | 80001    | Test       |
+| xdc                | 50       | Production |
+| xdcapothem         | 51       | Test       |
 
 ---
 
