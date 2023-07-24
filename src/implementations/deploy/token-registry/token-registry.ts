@@ -56,13 +56,21 @@ export const deployTokenRegistry = async ({
   trace("[Status] Title Escrow Factory interface check is OK.");
 
   info(`Using ${factoryAddress} as Title Escrow factory.`);
+
+  // Blockchains where deployers are not supported.
+  if (!isValidAddress(deployerContractAddress)) {
+    deployerContractAddress = defaultDeployerContractAddress;
+  }
+  if (!isValidAddress(implAddress)) {
+    implAddress = defaultTokenImplementationContractAddress;
+  }
+
+  if (standalone !== false && (!deployerContractAddress || !implAddress)) {
+    console.error(`Network ${chainId} does not support "quick-start" mode. Defaulting to --standalone mode.`);
+    standalone = true;
+  }
+
   if (!standalone) {
-    if (!isValidAddress(deployerContractAddress)) {
-      deployerContractAddress = defaultDeployerContractAddress;
-    }
-    if (!isValidAddress(implAddress)) {
-      implAddress = defaultTokenImplementationContractAddress;
-    }
     if (!deployerContractAddress || !implAddress) {
       throw new Error(`Network ${chainId} currently is not supported. Use --standalone instead.`);
     }

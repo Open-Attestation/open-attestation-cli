@@ -29,6 +29,7 @@ export const builder = (yargs: Argv): Argv =>
         .option("standalone", {
           description: "Use Standalone Deployer, used with Title Escrow Factory (Optional)",
           type: "boolean",
+          default: false,
         })
         .option("factory", {
           description: "Address of Title Escrow Factory (Optional)",

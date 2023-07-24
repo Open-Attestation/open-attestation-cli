@@ -10,6 +10,7 @@ const deployParams: DeployTokenRegistryCommand = {
   network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
+  standalone: false,
 };
 
 describe("deploy Token Registry", () => {
@@ -52,6 +53,46 @@ describe("deploy Token Registry", () => {
 
   it("should pass in the correct params and return the deployed instance", async () => {
     await deployTokenRegistry(deployParams);
+
+    const expectedInitParams = encodeInitParams({
+      name: deployParams.registryName,
+      symbol: deployParams.registrySymbol,
+      deployer: "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+    });
+
+    expect(mockedDeploy.mock.calls[0][0]).toEqual("0xC78BA1a49663Ef8b920F36B036E91Ab40D8F26D6");
+    expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
+
+    // price should be any length string of digits
+    // expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+    // expect(instance.contractAddress).toBe("contractAddress"); // TODO
+  });
+
+  it("should pass in the correct params with standalone and return the deployed instance", async () => {
+    const deployStandalone = {
+      standalone: true,
+      ...deployParams,
+    };
+    await deployTokenRegistry(deployStandalone);
+
+    const expectedInitParams = encodeInitParams({
+      name: deployParams.registryName,
+      symbol: deployParams.registrySymbol,
+      deployer: "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
+    });
+
+    expect(mockedDeploy.mock.calls[0][0]).toEqual("0xC78BA1a49663Ef8b920F36B036E91Ab40D8F26D6");
+    expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
+
+    // price should be any length string of digits
+    // expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
+    // expect(instance.contractAddress).toBe("contractAddress"); // TODO
+  });
+
+  it("should pass in the correct params with unspecified standalone and return the deployed instance", async () => {
+    const deployParamsUnspecified = deployParams;
+    delete deployParamsUnspecified.standalone;
+    await deployTokenRegistry(deployParamsUnspecified);
 
     const expectedInitParams = encodeInitParams({
       name: deployParams.registryName,
