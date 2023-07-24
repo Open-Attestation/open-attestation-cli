@@ -1,6 +1,6 @@
 import { providers } from "ethers";
 
-export type networkCurrency = "ETH" | "MATIC";
+export type networkCurrency = "ETH" | "MATIC" | "XDC";
 
 type SupportedNetwork = {
   explorer: string;
@@ -17,6 +17,8 @@ export enum NetworkCmdName {
   Sepolia = "sepolia",
   Matic = "matic",
   Maticmum = "maticmum",
+  XDC = "xdc",
+  XDCApothem = "xdcapothem",
 }
 
 const defaultInfuraProvider =
@@ -73,6 +75,20 @@ export const supportedNetwork: {
     networkId: 80001,
     networkName: "maticmum",
     currency: "MATIC",
+  },
+  [NetworkCmdName.XDC]: {
+    explorer: "https://xdcscan.io",
+    provider: jsonRpcProvider("https://erpc.xinfin.network"),
+    networkId: 50,
+    networkName: "xdc",
+    currency: "XDC",
+  },
+  [NetworkCmdName.XDCApothem]: {
+    explorer: "https://apothem.xdcscan.io",
+    provider: jsonRpcProvider("https://erpc.apothem.network"),
+    networkId: 51,
+    networkName: "xdcapothem",
+    currency: "XDC",
   },
 };
 
