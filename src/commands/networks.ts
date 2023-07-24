@@ -1,6 +1,6 @@
 import { providers } from "ethers";
 
-export type networkCurrency = "ETH" | "MATIC";
+export type networkCurrency = "ETH" | "MATIC" | "XDC";
 
 type SupportedNetwork = {
   explorer: string;
