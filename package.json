@@ -23,6 +23,8 @@
     "benchmark:run": "./scripts/benchmark.sh",
     "benchmark:clean": "rm -rf ./benchmark",
     "benchmark:full": "npm run benchmark:make-certs && npm run benchmark:run && npm run benchmark:clean",
+    "snyk-protect": "SNYK_TOKEN=$SNYK_TOKEN snyk protect",
+    "prepare": "npm run snyk-protect",
     "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
     "pkg": "npx pkg ./package.json --out-path dist/@govtechsg"
   },
