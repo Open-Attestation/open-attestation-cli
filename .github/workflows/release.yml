@@ -29,8 +29,6 @@ jobs:
         with:
           node-version: 14.x
       - run: npm ci
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - run: npm run build
       - uses: codfish/semantic-release-action@v2
         id: semantic
