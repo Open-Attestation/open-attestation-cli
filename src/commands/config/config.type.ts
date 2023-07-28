@@ -13,4 +13,6 @@ export enum TestNetwork {
   Goerli = "goerli (deprecated)",
   Sepolia = "sepolia",
   Mumbai = "mumbai (polygon)",
+  XDCApothem = "XDC Apothem Network",
+
 }
