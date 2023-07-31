@@ -1,28 +1,8 @@
-import {
-  TitleEscrow,
-  TitleEscrow__factory,
-  TradeTrustToken,
-  TradeTrustToken__factory,
-} from "@govtechsg/token-registry/contracts";
-import { Wallet, constants } from "ethers";
+import { TitleEscrow } from "@govtechsg/token-registry/contracts";
+import { constants } from "ethers";
 import signale from "signale";
-import { ConnectedSigner } from "../utils/wallet";
 
-interface ConnectToTitleEscrowArgs {
-  tokenId: string;
-  address: string;
-  wallet: Wallet | ConnectedSigner;
-}
-
-export const connectToTitleEscrow = async ({
-  tokenId,
-  address,
-  wallet,
-}: ConnectToTitleEscrowArgs): Promise<TitleEscrow> => {
-  const tokenRegistry: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
-  const titleEscrowAddress = await tokenRegistry.ownerOf(tokenId);
-  return await TitleEscrow__factory.connect(titleEscrowAddress, wallet);
-};
+export { connectToTitleEscrow, connectToTitleEscrowAddress } from "../utils/connect";
 
 interface validateEndorseChangeOwnerArgs {
   newHolder: string;

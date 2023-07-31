@@ -9,8 +9,8 @@ jest.mock("@govtechsg/token-registry/contracts");
 const endorseChangeOwnersParams: TitleEscrowEndorseTransferOfOwnersCommand = {
   newHolder: "0xabcd",
   newOwner: "0fosui",
-  tokenId: "0xzyxw",
-  tokenRegistry: "0x1234",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
+  tokenRegistry: "0x0000000000000000000000000000000000000001",
   network: "sepolia",
   dryRun: false,
 };
@@ -29,7 +29,7 @@ describe("title-escrow", () => {
     const mockedOwnerOf = jest.fn();
     const mockTransferOwners = jest.fn();
     const mockCallStaticTransferOwners = jest.fn().mockResolvedValue(undefined);
-    const mockedTitleEscrowAddress = "0x2133";
+    const mockedTitleEscrowAddress = "0x0000000000000000000000000000000000000002";
     const mockedBeneficiary = "0xdssfs";
     const mockedHolder = "0xdsfls";
     const mockGetBeneficiary = jest.fn();

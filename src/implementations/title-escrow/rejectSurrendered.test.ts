@@ -7,8 +7,8 @@ import { rejectSurrendered } from "./rejectSurrendered";
 jest.mock("@govtechsg/token-registry/contracts");
 
 const rejectSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
-  tokenRegistry: "0x1122",
-  tokenId: "0x12345",
+  tokenRegistry: "0x0000000000000000000000000000000000000001",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
   network: "sepolia",
   dryRun: false,
 };
@@ -49,7 +49,7 @@ describe("title-escrow", () => {
         wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
       });
       mockTransferEvent.mockReturnValue({
-        address: "0x1122",
+        address: "0x0000000000000000000000000000000000000002",
         topics: ["0x00000", null, null, "0x12345"],
       });
       mockQueryFilter.mockReturnValue([

@@ -7,8 +7,8 @@ import { endorseNominatedBeneficiary } from "./endorseNominatedBeneficiary";
 jest.mock("@govtechsg/token-registry/contracts");
 
 const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
-  tokenId: "0xzyxw",
-  tokenRegistry: "0x1234",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
+  tokenRegistry: "0x0000000000000000000000000000000000000001",
   newBeneficiary: "0x1232",
   network: "sepolia",
   dryRun: false,
@@ -25,7 +25,7 @@ describe("title-escrow", () => {
     // @ts-ignore mock static method
     const mockedConnectTokenFactory: jest.Mock = mockedTokenFactory.connect;
 
-    const mockedTitleEscrowAddress = "0x2133";
+    const mockedTitleEscrowAddress = "0x0000000000000000000000000000000000000002";
     const mockedOwnerOf = jest.fn();
     mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
 

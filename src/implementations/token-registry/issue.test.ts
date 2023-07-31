@@ -10,8 +10,8 @@ jest.mock("@govtechsg/token-registry/contracts");
 const deployParams: TokenRegistryIssueCommand = {
   beneficiary: "0xabcd",
   holder: "0xabce",
-  tokenId: "0xzyxw",
-  address: "0x1234",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
+  address: "0x0000000000000000000000000000000000000001",
   network: "sepolia",
   dryRun: false,
 };
