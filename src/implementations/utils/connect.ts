@@ -10,10 +10,7 @@ import { ConnectedSigner } from "../utils/wallet";
 
 type UserWallet = Wallet | ConnectedSigner;
 
-export const connectToTokenRegistry = async (
-  address: string,
-  wallet: UserWallet,
-): Promise<TradeTrustToken> => {
+export const connectToTokenRegistry = async (address: string, wallet: UserWallet): Promise<TradeTrustToken> => {
   const validAddress = isAddress(address);
   if (!validAddress) throw new Error(`Invalid token registry address: ${address}`);
   const tokenRegistryInstance: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
@@ -25,7 +22,7 @@ const addressCheck = (maybeAddress: string): void => {
 };
 
 const tokenIdCheck = (maybeTokenId: string): void => {
-  const validHex = /^(0x|0X)?[a-fA-F0-9]+$/.test(maybeTokenId)
+  const validHex = /^(0x|0X)?[a-fA-F0-9]+$/.test(maybeTokenId);
   if (!validHex) throw new Error(`Invalid token id: ${maybeTokenId}`);
 };
 
@@ -40,7 +37,7 @@ export const connectToTitleEscrow = async ({
   address,
   wallet,
 }: ConnectToTitleEscrowArgs): Promise<TitleEscrow> => {
-  const tokenRegistry: TradeTrustToken = await connectToTokenRegistry( address, wallet );
+  const tokenRegistry: TradeTrustToken = await connectToTokenRegistry(address, wallet);
   const titleEscrowAddress = await getTitleEscrowAddress(tokenRegistry, tokenId);
   return await connectToTitleEscrowAddress(titleEscrowAddress, wallet);
 };
@@ -54,4 +51,4 @@ export const connectToTitleEscrowAddress = async (address: string, wallet: UserW
 const getTitleEscrowAddress = async (tokenRegistry: TradeTrustToken, tokenId: string): Promise<string> => {
   tokenIdCheck(tokenId);
   return await tokenRegistry.ownerOf(tokenId);
-}
+};
