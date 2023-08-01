@@ -90,7 +90,7 @@ const convertNetworkToNetworkCmdName = (selectedNetwork: TestNetwork): NetworkCm
     [TestNetwork.Goerli]: NetworkCmdName.Goerli,
     [TestNetwork.Sepolia]: NetworkCmdName.Sepolia,
     [TestNetwork.Mumbai]: NetworkCmdName.Maticmum,
-    [TestNetwork.Apothem]: NetworkCmdName.Apothem,
+    [TestNetwork.Apothem]: NetworkCmdName.XDCApothem,
   };
   return network[selectedNetwork];
 };
