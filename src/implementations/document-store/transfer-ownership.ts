@@ -1,4 +1,4 @@
-import { DocumentStoreFactory, OwnableFactory } from "@govtechsg/document-store";
+import { OwnableFactory } from "@govtechsg/document-store";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-store/document-store-command.type";
