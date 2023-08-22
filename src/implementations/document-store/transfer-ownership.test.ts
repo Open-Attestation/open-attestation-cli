@@ -1,7 +1,7 @@
 import { transferDocumentStoreOwnershipToWallet } from "./transfer-ownership";
 
 import { Wallet } from "ethers";
-import { DocumentStoreFactory } from "@govtechsg/document-store";
+import { OwnableFactory } from "@govtechsg/document-store";
 import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-store/document-store-command.type";
 import { addAddressPrefix } from "../../utils";
 import { join } from "path";
@@ -22,7 +22,7 @@ describe("document-store", () => {
   // increase timeout because ethers is throttling
   jest.setTimeout(30000);
   describe("transferDocumentStoreOwnershipToWallet", () => {
-    const mockedDocumentStoreFactory: jest.Mock<DocumentStoreFactory> = DocumentStoreFactory as any;
+    const mockedDocumentStoreFactory: jest.Mock<OwnableFactory> = OwnableFactory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnect: jest.Mock = mockedDocumentStoreFactory.connect;
