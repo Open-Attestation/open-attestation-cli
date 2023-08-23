@@ -1,6 +1,6 @@
 import { DocumentStore } from "@govtechsg/document-store";
 
-export const getRoleString = async (documentStore: DocumentStore, role: string) => {
+export const getRoleString = async (documentStore: DocumentStore, role: string): Promise<string> => {
   switch (role) {
     case "admin":
       return await documentStore.DEFAULT_ADMIN_ROLE();
