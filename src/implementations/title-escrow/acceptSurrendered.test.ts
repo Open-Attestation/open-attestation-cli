@@ -7,8 +7,8 @@ import { acceptSurrendered } from "./acceptSurrendered";
 jest.mock("@govtechsg/token-registry/contracts");
 
 const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
-  tokenRegistry: "0x1122",
-  tokenId: "0x12345",
+  tokenRegistry: "0x0000000000000000000000000000000000000001",
+  tokenId: "0x0000000000000000000000000000000000000000000000000000000000000001",
   network: "sepolia",
   dryRun: false,
 };
