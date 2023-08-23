@@ -1,12 +1,16 @@
-import { TDocDeployer, TDocDeployer__factory } from "@govtechsg/token-registry/contracts";
-import { getWalletOrSigner } from "../../utils/wallet";
-import signale from "signale";
-import { getLogger } from "../../../logger";
-import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
-import { BigNumber, ethers } from "ethers";
+import { TDocDeployer__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
-import { utils } from "@govtechsg/token-registry";
-import { DeployContractAddress, encodeInitParams, retrieveFactoryAddress } from "./helpers";
+import {
+  encodeInitParams,
+  getDefaultContractAddress,
+  getEventFromReceipt,
+  isSupportedTitleEscrowFactory,
+  isValidAddress,
+} from "./helpers";
+import { info } from "signale";
+import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { getLogger } from "../../../logger";
+import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/abstract-provider";
 import { calculateMaxFee, scaleBigNumber } from "../../../utils";
@@ -15,62 +19,111 @@ const { trace } = getLogger("deploy:token-registry");
 export const deployTokenRegistry = async ({
   registryName,
   registrySymbol,
-  factoryAddress,
-  tokenImplementationAddress,
-  deployerAddress,
+  factory: factoryAddress,
+  token: implAddress,
+  deployer: deployerContractAddress,
+  standalone,
   network,
   maxPriorityFeePerGasScale,
   dryRun,
+  passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
-}: DeployTokenRegistryCommand): Promise<TransactionReceipt & { contractAddress: string }> => {
-  const wallet = await getWalletOrSigner({ network, ...rest });
+}: DeployTokenRegistryCommand): Promise<{ transaction: TransactionReceipt; contractAddress: string }> => {
+  const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
-  const deployContractAddressInput: DeployContractAddress = {
-    titleEscrowFactory: factoryAddress || "",
-    tokenImplementation: tokenImplementationAddress || "",
-    deployer: deployerAddress || "",
-  };
-  const deployContractAddress: DeployContractAddress = retrieveFactoryAddress(chainId, deployContractAddressInput);
+  const deployerAddress = await wallet.getAddress();
+  if (!chainId) {
+    throw new Error(`Invalid chain ID: ${chainId}`);
+  }
+  const {
+    TitleEscrowFactory: defaultTitleEscrowFactoryAddress,
+    TokenImplementation: defaultTokenImplementationContractAddress,
+    Deployer: defaultDeployerContractAddress,
+  } = getDefaultContractAddress(chainId);
 
-  const factory = new ethers.Contract(
-    deployContractAddress.deployer,
-    TDocDeployer__factory.createInterface(),
-    wallet
-  ) as TDocDeployer;
-  signale.info(`Using ${deployContractAddress.titleEscrowFactory} as Title Escrow factory.`);
+  trace(`[Deployer] ${deployerAddress}`);
 
-  const initParam = encodeInitParams({
-    name: registryName,
-    symbol: registrySymbol,
-    deployer: await wallet.getAddress(),
-  });
-
-  if (dryRun) {
-    const estimatedGas: BigNumber = await factory.estimateGas.deploy(
-      deployContractAddress.tokenImplementation,
-      initParam
-    );
-    await dryRunMode({
-      estimatedGas,
-      network,
-    });
-    process.exit(0);
+  if (!factoryAddress || !isValidAddress(factoryAddress)) {
+    factoryAddress = defaultTitleEscrowFactoryAddress;
+    if (!factoryAddress) {
+      throw new Error(`Network ${chainId} currently is not supported. Supply a factory address.`);
+    }
+    trace(`[Status] Using ${factoryAddress} as Title Escrow factory.`);
   }
 
-  signale.await(`Sending transaction to pool`);
+  const supportedTitleEscrowFactory = await isSupportedTitleEscrowFactory(factoryAddress, wallet.provider);
+  if (!supportedTitleEscrowFactory) {
+    throw new Error(`Title Escrow Factory ${factoryAddress} is not supported.`);
+  }
+  trace("[Status] Title Escrow Factory interface check is OK.");
+
+  info(`Using ${factoryAddress} as Title Escrow factory.`);
+
+  // Blockchains where deployers are not supported.
+  if (!isValidAddress(deployerContractAddress)) {
+    deployerContractAddress = defaultDeployerContractAddress;
+  }
+  if (!isValidAddress(implAddress)) {
+    implAddress = defaultTokenImplementationContractAddress;
+  }
+
+  if (standalone !== false && (!deployerContractAddress || !implAddress)) {
+    console.error(`Network ${chainId} does not support "quick-start" mode. Defaulting to --standalone mode.`);
+    standalone = true;
+  }
+
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
 
-  const transaction = await factory.deploy(deployContractAddress.tokenImplementation, initParam, {
-    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-  });
-  trace(`Tx hash: ${transaction.hash}`);
-  trace(`Block Number: ${transaction.blockNumber}`);
-  signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
-  const receipt = await transaction.wait();
-  const registryAddress = utils.getEventFromReceipt<DeploymentEvent>(
-    receipt,
-    factory.interface.getEventTopic("Deployment")
-  ).args.deployed;
-  return { ...receipt, contractAddress: registryAddress };
+  if (!standalone) {
+    if (!deployerContractAddress || !implAddress) {
+      throw new Error(`Network ${chainId} currently is not supported. Use --standalone instead.`);
+    }
+
+    const deployerContract = TDocDeployer__factory.connect(deployerContractAddress, wallet);
+
+    const initParam = encodeInitParams({
+      name: registryName,
+      symbol: registrySymbol,
+      deployer: deployerAddress,
+    });
+
+    if (dryRun) {
+      const estimatedGas = await deployerContract.estimateGas.deploy(implAddress, initParam);
+      await dryRunMode({
+        estimatedGas,
+        network,
+      });
+      process.exit(0);
+    }
+    const tx = await deployerContract.deploy(implAddress, initParam, {
+      maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+      maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    });
+    trace(`[Transaction] Pending ${tx.hash}`);
+    const receipt = await tx.wait();
+    const registryAddress = getEventFromReceipt<DeploymentEvent>(
+      receipt,
+      deployerContract.interface.getEventTopic("Deployment")
+    ).args.deployed;
+    return { transaction: receipt, contractAddress: registryAddress };
+  } else {
+    // Standalone deployment
+    const tokenFactory = new TradeTrustToken__factory(wallet);
+
+    if (dryRun) {
+      const transactionRequest = tokenFactory.getDeployTransaction(registryName, registrySymbol, factoryAddress);
+      const estimatedGas = await wallet.estimateGas(transactionRequest);
+      await dryRunMode({
+        estimatedGas,
+        network,
+      });
+      process.exit(0);
+    }
+    const token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress, {
+      maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+      maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    });
+    const registryAddress = token.address;
+    return { transaction: await token.deployTransaction.wait(), contractAddress: registryAddress };
+  }
 };

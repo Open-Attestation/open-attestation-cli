@@ -1,37 +1,17 @@
-import { encodeInitParams, retrieveFactoryAddress } from "./helpers";
 import { isAddress } from "ethers/lib/utils";
+import { encodeInitParams, getDefaultContractAddress } from "./helpers";
 
 describe("valid Token Registry Factory Address", () => {
   it("should return deployer address", () => {
-    const address = retrieveFactoryAddress(5, undefined);
+    const { TitleEscrowFactory, TokenImplementation, Deployer } = getDefaultContractAddress(5);
 
-    expect(isAddress(address.titleEscrowFactory)).toBe(true);
-    expect(isAddress(address.tokenImplementation)).toBe(true);
-    expect(isAddress(address.deployer)).toBe(true);
-  });
+    expect(TitleEscrowFactory).toBeDefined();
+    expect(TokenImplementation).toBeDefined();
+    expect(Deployer).toBeDefined();
 
-  it("should return provided deployer address", () => {
-    const suppliedAddress = {
-      titleEscrowFactory: "0xd6C249d0756059E21Ef4Aef4711B69b76927BEA7",
-      tokenImplementation: "",
-      deployer: "",
-    };
-    const address = retrieveFactoryAddress(5, suppliedAddress);
-
-    expect(address.titleEscrowFactory).toBe(suppliedAddress.titleEscrowFactory);
-    expect(isAddress(address.tokenImplementation)).toBe(true);
-    expect(isAddress(address.deployer)).toBe(true);
-  });
-
-  it("should reject invalid chainId", () => {
-    let validTest = false;
-    try {
-      retrieveFactoryAddress(2022);
-    } catch (e) {
-      validTest = true;
-    } finally {
-      expect(validTest).toBe(true);
-    }
+    expect(isAddress(TitleEscrowFactory || "")).toBe(true);
+    expect(isAddress(TokenImplementation || "")).toBe(true);
+    expect(isAddress(Deployer || "")).toBe(true);
   });
 });
 

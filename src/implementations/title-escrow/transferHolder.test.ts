@@ -1,4 +1,4 @@
-import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
+import { TitleEscrow__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
@@ -10,14 +10,14 @@ const transferHolderParams: TitleEscrowTransferHolderCommand = {
   newHolder: "0xabcd",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
 
 describe("title-escrow", () => {
   describe("change holder of transferable record", () => {
-    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
+    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustToken__factory> = TradeTrustToken__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;

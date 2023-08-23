@@ -26,6 +26,7 @@ export type AwsKmsSignerOption = {
   secretAccessKey: string;
   region: string;
   kmsKeyId: string;
+  sessionToken: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -89,7 +90,7 @@ export const withPrivateKeyOption = (yargs: Argv): Argv =>
 export const withWalletOption = (yargs: Argv): Argv =>
   yargs.option("encrypted-wallet-path", {
     type: "string",
-    description: "Path to file containing private key of owner account",
+    description: "Path to wallet.json file",
     normalize: true,
   });
 
@@ -106,6 +107,11 @@ export const withAwsKmsSignerOption = (yargs: Argv): Argv =>
     .option("region", {
       type: "string",
       description: "AWS region. Example: us-east-2",
+    })
+    .option("session-token", {
+      type: "string",
+      description:
+        "AWS Session token. Example: IQoJb3JpZ2luX2VjEDsaDmFwLXNvdXRoZWFzdC0xIkcwRQIgR7ap3CSpkQ0U1IA1KYebxXB5pmpvHd59pTZRsmXzC5MCIQCij0GELbTj8R30Wcho1NgZq3q/dSLoFm2gD9WOFRxamiqeAggkEAMaDDczMzQ4NzYyMjk4MiIMiXeHIetiIMVm85SUKvsBTlIStOhlYNlNJmQHeiumoWXztNuksDK9/pEpam5ZALdi9TI6PJkSuAq+vd7c+ecMC7gN0Fs8sCkM5AjgG7x/WE+81tcOBq/oNF71drfViT5w7/mcBoElSEVUUjQx1oKWfcBLWD/tXu0593hPOi2dHdoG83/6KEgyaNrkpWQdTLK5zUTmtDYLsyoKwZEbGEulUK11WCfbCctJWtlk9RXHdDgbgDP2PzJpeuET4CV21GMX1jsnMeeRNhFX5dqy3+FMIjsAFiWGuE0Q7Fnyjrb/YQVG5BL3LqvYdJGI4HUT/fKtQrWS+skxCm1divsLAhl9+Z0GQ8WDgR3W4akwjt64oQY6nQFjnkWLSBf+OXpkWi1IzPPAqx09srAJiNmz8J+7kdHSLjr5IrKh1hzimxtVNkPX+22ahdmE5m4o5oJm1lgZSLmfYdmvifK76E8y247deFRl4Q0Z+75PDjriw1i4QJcg+USGcFJN6O/dOw5S4if/eYbPaoRBLQOAMYBYjr4aZ3TuMmMHNgMRLBKtQ8fVPpslU2L6XOPRkVR1RejSbII5",
     })
     .option("kms-key-id", {
       type: "string",

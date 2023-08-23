@@ -5,7 +5,7 @@ import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from ".
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { TradeTrustERC721__factory } from "@govtechsg/token-registry/dist/contracts";
+import { TradeTrustToken__factory } from "@govtechsg/token-registry/dist/contracts";
 import { calculateMaxFee, scaleBigNumber } from "../../utils";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
@@ -19,7 +19,7 @@ export const acceptSurrendered = async ({
   ...rest
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const tokenRegistryInstance = await TradeTrustERC721__factory.connect(address, wallet);
+  const tokenRegistryInstance = await TradeTrustToken__factory.connect(address, wallet);
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   await tokenRegistryInstance.callStatic.burn(tokenId, {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),

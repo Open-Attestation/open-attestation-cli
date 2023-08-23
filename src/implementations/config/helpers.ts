@@ -1,11 +1,28 @@
 import { utils, v2, v3 } from "@govtechsg/open-attestation";
+import { updateFormV2, updateFormV3 } from "@govtechsg/tradetrust-config";
 import fetch from "node-fetch";
-import { info, success } from "signale";
-import { highlight } from "../../utils";
-import { ConfigFile, Form, Dns } from "./types";
-import { readFile } from "../../implementations/utils/disk";
+import { success } from "signale";
+import { NetworkCmdName, supportedNetwork, networkCurrency } from "../../commands/networks";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
+import { readFile } from "../../implementations/utils/disk";
+import { highlight } from "../../utils";
+import { ConfigFile, Dns, Form } from "./types";
+import { Wallet } from "ethers";
+import { ConnectedSigner } from "../../implementations/utils/wallet";
+
+interface ConfigWithNetwork {
+  configFile: ConfigFile;
+  network: NetworkCmdName;
+}
+
+export const getConfigWithUpdatedNetwork = ({ configFile, network }: ConfigWithNetwork): ConfigFile => {
+  const networkName = supportedNetwork[network].networkName;
+  return {
+    ...configFile,
+    network: networkName,
+  };
+};
 
 interface UpdatedWallet {
   configFile: ConfigFile;
@@ -21,6 +38,10 @@ export const getConfigWithUpdatedWallet = ({ configFile, walletStr }: UpdatedWal
 
 interface UpdatedForms {
   configFile: ConfigFile;
+  chain: {
+    id: string;
+    currency: networkCurrency;
+  };
   documentStoreAddress: string;
   tokenRegistryAddress: string;
   dnsVerifiable: Dns;
@@ -30,6 +51,7 @@ interface UpdatedForms {
 
 export const getConfigWithUpdatedForms = ({
   configFile,
+  chain,
   documentStoreAddress,
   tokenRegistryAddress,
   dnsVerifiable,
@@ -40,7 +62,8 @@ export const getConfigWithUpdatedForms = ({
 
   const updatedForms = forms.map((form: Form) => {
     if (utils.isRawV3Document(form.defaults)) {
-      utils.updateFormV3({
+      updateFormV3({
+        chain,
         wallet,
         form,
         documentStoreAddress,
@@ -50,7 +73,8 @@ export const getConfigWithUpdatedForms = ({
         dnsTransferableRecord: dnsTransferableRecord || "",
       });
     } else {
-      utils.updateFormV2({
+      updateFormV2({
+        chain,
         wallet,
         form,
         documentStoreAddress,
@@ -85,26 +109,33 @@ export const getConfigFile = async (configTemplatePath: string, configTemplateUr
   throw new Error("Config template reference not provided.");
 };
 
-export const getTokenRegistryAddress = async (encryptedWalletPath: string): Promise<string> => {
-  info(`Enter password to continue deployment of Token Registry`);
-  const tokenRegistry = await deployTokenRegistry({
+export const getTokenRegistryAddress = async (
+  encryptedWalletPath: string,
+  passedOnWallet: Wallet | ConnectedSigner,
+  network: NetworkCmdName
+): Promise<string> => {
+  const { contractAddress } = await deployTokenRegistry({
     encryptedWalletPath,
-    network: "goerli",
+    passedOnWallet,
+    network,
+    dryRun: false,
     maxPriorityFeePerGasScale: 1,
     registryName: "Token Registry",
     registrySymbol: "TR",
-    dryRun: false,
   });
-  const { contractAddress } = tokenRegistry;
   success(`Token registry deployed, address: ${highlight(contractAddress)}`);
   return contractAddress;
 };
 
-export const getDocumentStoreAddress = async (encryptedWalletPath: string): Promise<string> => {
-  info(`Enter password to continue deployment of Document Store`);
+export const getDocumentStoreAddress = async (
+  encryptedWalletPath: string,
+  passedOnWallet: Wallet | ConnectedSigner,
+  network: NetworkCmdName
+): Promise<string> => {
   const documentStore = await deployDocumentStore({
     encryptedWalletPath,
-    network: "goerli",
+    passedOnWallet,
+    network,
     dryRun: false,
     maxPriorityFeePerGasScale: 1,
     storeName: "Document Store",

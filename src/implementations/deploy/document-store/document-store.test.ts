@@ -8,7 +8,8 @@ jest.mock("@govtechsg/document-store");
 
 const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",
-  network: "goerli",
+  owner: "0x1234",
+  network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   maxPriorityFeePerGasScale: 1,
   dryRun: false,
@@ -36,7 +37,7 @@ describe("document-store", () => {
 
       await deployDocumentStore({
         storeName: "Test",
-        network: "goerli",
+        network: "sepolia",
         dryRun: false,
         maxPriorityFeePerGasScale: 1,
       });
@@ -48,7 +49,7 @@ describe("document-store", () => {
     it("should take in the key from key file", async () => {
       await deployDocumentStore({
         storeName: "Test",
-        network: "goerli",
+        network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
         maxPriorityFeePerGasScale: 1,
@@ -65,6 +66,7 @@ describe("document-store", () => {
 
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedDeploy.mock.calls[0][0]).toStrictEqual(deployParams.storeName);
+      expect(mockedDeploy.mock.calls[0][1]).toStrictEqual(deployParams.owner);
       // price should be any length string of digits
       expect(mockedDeploy.mock.calls[0][1].maxPriorityFeePerGas.toString()).toStrictEqual(expect.stringMatching(/\d+/));
       expect(instance.contractAddress).toBe("contractAddress");
@@ -79,13 +81,28 @@ describe("document-store", () => {
       await expect(
         deployDocumentStore({
           storeName: "Test",
-          network: "goerli",
+          network: "sepolia",
           dryRun: false,
           maxPriorityFeePerGasScale: 1,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
+    });
+
+    it("should default the owner as the deployer", async () => {
+      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
+
+      await deployDocumentStore({
+        maxPriorityFeePerGasScale: 1,
+        storeName: "Test",
+        network: "sepolia",
+        dryRun: false,
+      });
+
+      const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
+      const addr = await passedSigner.getAddress();
+      expect(mockedDeploy.mock.calls[0][1]).toStrictEqual(addr);
     });
   });
 });

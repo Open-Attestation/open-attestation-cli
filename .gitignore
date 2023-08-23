@@ -14,3 +14,8 @@ yarn.lock
 key
 /.vscode/
 /vc-test-suite
+.DS_Store
+
+# create config related
+wallet.json
+example-configs

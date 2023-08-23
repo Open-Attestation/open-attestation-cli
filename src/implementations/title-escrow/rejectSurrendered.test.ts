@@ -1,4 +1,4 @@
-import { TitleEscrow__factory, TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
+import { TitleEscrow__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
@@ -9,17 +9,17 @@ jest.mock("@govtechsg/token-registry/contracts");
 const rejectSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
   tokenId: "0x12345",
-  network: "goerli",
+  network: "sepolia",
   maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
 
 describe("title-escrow", () => {
   describe("rejects surrendered transferable record", () => {
-    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
+    const mockedTradeTrustTokenFactory: jest.Mock<TradeTrustToken__factory> = TradeTrustToken__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
-    const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;
+    const mockedConnectERC721: jest.Mock = mockedTradeTrustTokenFactory.connect;
     const mockedTitleEscrowFactory: jest.Mock<TitleEscrow__factory> = TitleEscrow__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -38,7 +38,7 @@ describe("title-escrow", () => {
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
-      mockedTradeTrustERC721Factory.mockReset();
+      mockedTradeTrustTokenFactory.mockReset();
       mockedConnectERC721.mockReset();
       mockedTitleEscrowFactory.mockReset();
       mockedConnectTitleEscrowFactory.mockReset();
@@ -85,7 +85,6 @@ describe("title-escrow", () => {
         ...rejectSurrenderedDocumentParams,
         key: privateKey,
       });
-      mockRestoreTitle;
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);

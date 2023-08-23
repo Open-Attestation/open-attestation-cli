@@ -46,9 +46,9 @@ export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Prom
     warn(
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const transaction = await endorseNominatedBeneficiary(args);
-    displayTransactionPrice(transaction);
-    const { transactionHash } = transaction;
+    const { transactionReceipt, nominatedBeneficiary } = await endorseNominatedBeneficiary(args);
+    displayTransactionPrice(transactionReceipt);
+    const { transactionHash } = transactionReceipt;
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to approved beneficiary at ${args.newBeneficiary}`
     );

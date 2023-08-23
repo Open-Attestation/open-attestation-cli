@@ -1,7 +1,7 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateEndorseChangeOwner as validateEndorseChangeOwners } from "./helpers";
+import { connectToTitleEscrow, validateEndorseChangeOwner } from "./helpers";
 import { TitleEscrowEndorseTransferOfOwnersCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
@@ -22,7 +22,7 @@ export const transferOwners = async ({
 }: TitleEscrowEndorseTransferOfOwnersCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-  await validateEndorseChangeOwners({ newHolder, newOwner, titleEscrow });
+  await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
   const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.provider.getFeeData();
   await titleEscrow.callStatic.transferOwners(newOwner, newHolder, {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),

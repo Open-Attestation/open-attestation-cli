@@ -18,7 +18,10 @@ export const endorseNominatedBeneficiary = async ({
   maxPriorityFeePerGasScale,
   dryRun,
   ...rest
-}: TitleEscrowNominateBeneficiaryCommand): Promise<TransactionReceipt> => {
+}: TitleEscrowNominateBeneficiaryCommand): Promise<{
+  transactionReceipt: TransactionReceipt;
+  nominatedBeneficiary: string;
+}> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const nominatedBeneficiary = newBeneficiary;
@@ -44,5 +47,9 @@ export const endorseNominatedBeneficiary = async ({
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
-  return transaction.wait();
+  const transactionReceipt = await transaction.wait();
+  return {
+    transactionReceipt,
+    nominatedBeneficiary: nominatedBeneficiary,
+  };
 };

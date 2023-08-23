@@ -1,13 +1,14 @@
 import fs from "fs";
 import { prompt } from "inquirer";
 import tmp from "tmp";
+import { CreateConfigCommand } from "../../../commands/config/config.type";
+import { handler as createTempDNS } from "../../../commands/dns/txt-record/create";
+import { NetworkCmdName } from "../../../commands/networks";
 import { deployDocumentStore } from "../../deploy/document-store/document-store";
 import { deployTokenRegistry } from "../../deploy/token-registry/token-registry";
-import { handler as createTempDNS } from "../../../commands/dns/txt-record/create";
-import { CreateConfigCommand } from "../../../commands/config/config.type";
 import { create as createConfig } from "../create";
+import expectedConfigFileOutput from "./expected-config-file-output-v2.json";
 import inputConfigFile from "./input-config-file.json";
-import expectedConfigFileOutput from "./expected-config-file-output.json";
 
 const mockInputConfigFile = inputConfigFile;
 
@@ -47,6 +48,7 @@ describe("create config file", () => {
   beforeEach(() => {
     folder = tmp.dirSync();
     args = {
+      network: NetworkCmdName.Sepolia,
       outputDir: folder.name,
       encryptedWalletPath: "src/implementations/config/__tests__/wallet.json",
       configTemplatePath: "",
@@ -90,7 +92,28 @@ describe("create config file", () => {
     expect(JSON.parse(configFileAsString)).toStrictEqual(expectedConfigFileOutput);
   });
 
+  it("should create a config file with the correct network", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
+    mockDeployDocumentStore.mockReturnValue({ contractAddress: "0xC378aBE13cf18a64fB2f913647bd4Fe054C9eaEd" });
+    mockDeployTokenRegistry.mockReturnValue({ contractAddress: "0x620c1DC991E3E2585aFbaA61c762C0369D70C89D" });
+    mockCreateTempDNS.mockReturnValue("alert-cyan-stoat.sandbox.openattestation.com");
+
+    args.configTemplateUrl = "https://example.com";
+
+    const Args = { ...args, network: NetworkCmdName.Sepolia };
+
+    await createConfig(Args);
+    const configFileAsString = fs.readFileSync(`${folder.name}/config.json`, "utf-8");
+
+    expect(JSON.parse(configFileAsString).network).toStrictEqual(NetworkCmdName.Sepolia);
+  });
+
   it("should throw an error when detected config file with wrong form type", async () => {
+    promptMock.mockReturnValue({
+      password: "password",
+    });
     args.configTemplatePath = "src/implementations/config/__tests__/error-config-file.json";
 
     await expect(createConfig(args)).rejects.toHaveProperty(

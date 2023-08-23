@@ -1,4 +1,4 @@
-import { TradeTrustERC721__factory } from "@govtechsg/token-registry/contracts";
+import { TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
@@ -12,7 +12,7 @@ const deployParams: TokenRegistryIssueCommand = {
   holder: "0xabce",
   tokenId: "0xzyxw",
   address: "0x1234",
-  network: "goerli",
+  network: "sepolia",
   maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
@@ -20,7 +20,7 @@ const deployParams: TokenRegistryIssueCommand = {
 describe("token-registry", () => {
   describe("issue", () => {
     jest.setTimeout(30000);
-    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustERC721__factory> = TradeTrustERC721__factory as any;
+    const mockedTradeTrustERC721Factory: jest.Mock<TradeTrustToken__factory> = TradeTrustToken__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
     const mockedConnectERC721: jest.Mock = mockedTradeTrustERC721Factory.connect;
@@ -32,7 +32,7 @@ describe("token-registry", () => {
       wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
     });
 
-    const mockTTERC721Contract = {
+    const mockTtErc721Contract = {
       mint: mockedIssue,
       callStatic: {
         mint: mockCallStaticSafeMint,
@@ -44,7 +44,7 @@ describe("token-registry", () => {
       mockedTradeTrustERC721Factory.mockClear();
       mockCallStaticSafeMint.mockClear();
       mockedConnectERC721.mockReset();
-      mockedConnectERC721.mockResolvedValue(mockTTERC721Contract);
+      mockedConnectERC721.mockResolvedValue(mockTtErc721Contract);
     });
 
     it("should pass in the correct params and return the deployed instance", async () => {
@@ -86,6 +86,14 @@ describe("token-registry", () => {
       await expect(issueToTokenRegistry(deployParams)).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
       );
+    });
+
+    it("should allow errors to bubble up", async () => {
+      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
+      mockedConnectERC721.mockImplementation(() => {
+        throw new Error("An Error");
+      });
+      await expect(issueToTokenRegistry(deployParams)).rejects.toThrow("An Error");
     });
   });
 });
