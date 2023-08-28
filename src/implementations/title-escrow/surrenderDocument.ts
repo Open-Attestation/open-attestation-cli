@@ -5,6 +5,7 @@ import { connectToTitleEscrow } from "./helpers";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:surrenderDocument");
 
@@ -17,7 +18,6 @@ export const surrenderDocument = async ({
 }: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
-
   if (dryRun) {
     await dryRunMode({
       estimatedGas: await titleEscrow.estimateGas.surrender(),
@@ -25,10 +25,10 @@ export const surrenderDocument = async ({
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await titleEscrow.callStatic.surrender({ ...gasFees });
   signale.await(`Sending transaction to pool`);
-  await titleEscrow.callStatic.surrender();
-  const transaction = await titleEscrow.surrender();
+  const transaction = await titleEscrow.surrender({ ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

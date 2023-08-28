@@ -2,8 +2,7 @@ import { Argv } from "yargs";
 import signale, { error, success } from "signale";
 import { getLogger } from "../../../logger";
 import { DnsCreateTxtRecordCommand } from "./dns-command.type";
-import { getErrorMessage, highlight } from "../../../utils";
-import { request } from "../../../implementations/utils/web-request";
+import { getErrorMessage, highlight, request } from "../../../utils";
 
 const { trace } = getLogger("dns:txt-record");
 

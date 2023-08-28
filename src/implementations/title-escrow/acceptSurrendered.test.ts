@@ -10,6 +10,7 @@ const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",
   tokenId: "0x12345",
   network: "sepolia",
+  maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
 

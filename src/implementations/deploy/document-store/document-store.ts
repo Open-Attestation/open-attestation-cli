@@ -2,8 +2,10 @@ import { DocumentStoreFactory } from "@govtechsg/document-store";
 import signale from "signale";
 import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 import { getLogger } from "../../../logger";
-import { dryRunMode } from "../../utils/dryRun";
 import { getWalletOrSigner } from "../../utils/wallet";
+import { dryRunMode } from "../../utils/dryRun";
+import { TransactionReceipt } from "@ethersproject/abstract-provider";
+import { getGasFees } from "../../../utils";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -12,9 +14,9 @@ export const deployDocumentStore = async ({
   owner,
   network,
   dryRun,
-  passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
+  passedOnWallet,
   ...rest
-}: DeployDocumentStoreCommand): Promise<{ contractAddress: string }> => {
+}: DeployDocumentStoreCommand): Promise<TransactionReceipt> => {
   const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const ownerAddress = owner ?? (await wallet.getAddress());
   if (dryRun) {
@@ -25,8 +27,9 @@ export const deployDocumentStore = async ({
     process.exit(0);
   }
   const factory = new DocumentStoreFactory(wallet);
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
   signale.await(`Sending transaction to pool`);
-  const transaction = await factory.deploy(storeName, ownerAddress);
+  const transaction = await factory.deploy(storeName, ownerAddress, { ...gasFees });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
   trace(`Block Number: ${transaction.deployTransaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.deployTransaction.hash} to be mined`);

@@ -6,6 +6,7 @@ import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escr
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:nominateChangeOfOwner");
 
@@ -19,6 +20,7 @@ export const nominateBeneficiary = async ({
 }: TitleEscrowNominateBeneficiaryCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
   if (dryRun) {
     await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
     await dryRunMode({
@@ -27,11 +29,10 @@ export const nominateBeneficiary = async ({
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await titleEscrow.callStatic.nominate(newBeneficiary, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
-  await titleEscrow.callStatic.nominate(newBeneficiary);
-  const transaction = await titleEscrow.nominate(newBeneficiary);
+  const transaction = await titleEscrow.nominate(newBeneficiary, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

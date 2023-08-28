@@ -1,8 +1,9 @@
 import signale from "signale";
 import { TransactionCancelCommand } from "../../commands/transaction/transaction-command.type";
 import { getWalletOrSigner } from "../utils/wallet";
-import { BigNumber } from "ethers";
+import { scaleBigNumber } from "../../utils";
 import { getErrorMessage } from "../../utils";
+import { BigNumber } from "ethers";
 
 /*
   The trick to “cancel” your pending transaction is by replacing the transaction with
@@ -29,7 +30,7 @@ export const cancelTransaction = async ({
         `Transaction detail retrieved. Nonce: ${currentTransaction.nonce}, Gas-price: ${currentTransaction.gasPrice}`
       );
       transactionNonce = currentTransaction.nonce.toString();
-      transactionGasPrice = currentTransaction.gasPrice?.mul(2).toString();
+      transactionGasPrice = scaleBigNumber(currentTransaction.gasPrice, 2).toString();
     }
 
     if (transactionNonce && transactionGasPrice) {

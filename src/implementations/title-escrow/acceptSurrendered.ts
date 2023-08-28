@@ -6,6 +6,7 @@ import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from ".
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { TradeTrustToken__factory } from "@govtechsg/token-registry/dist/contracts";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -25,10 +26,10 @@ export const acceptSurrendered = async ({
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await tokenRegistryInstance.callStatic.burn(tokenId, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  await tokenRegistryInstance.callStatic.burn(tokenId);
-  const transaction = await tokenRegistryInstance.burn(tokenId);
+  const transaction = await tokenRegistryInstance.burn(tokenId, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

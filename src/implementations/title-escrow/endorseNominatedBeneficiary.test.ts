@@ -11,6 +11,7 @@ const endorseNominatedBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand =
   tokenRegistry: "0x1234",
   newBeneficiary: "0x1232",
   network: "sepolia",
+  maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
 

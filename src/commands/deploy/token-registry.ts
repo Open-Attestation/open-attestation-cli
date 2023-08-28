@@ -3,9 +3,8 @@ import { deployTokenRegistry } from "../../implementations/deploy/token-registry
 import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getErrorMessage, getEtherscanAddress } from "../../utils";
+import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
 import { DeployTokenRegistryCommand } from "./deploy.types";
-
 const { trace } = getLogger("deploy:token-registry");
 
 export const command = "token-registry <registry-name> <registry-symbol> [options]";
@@ -55,14 +54,13 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Deploying token registry ${args.registryName}`);
-    const tokenRegistryAddress = await deployTokenRegistry(args);
-    success(`Token registry deployed at ${tokenRegistryAddress.contractAddress}`);
+    const tokenRegistry = await deployTokenRegistry(args);
+    displayTransactionPrice(tokenRegistry.transaction);
+    success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
     info(
-      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${
-        tokenRegistryAddress.contractAddress
-      }`
+      `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
     );
-    return tokenRegistryAddress.contractAddress;
+    return tokenRegistry.contractAddress;
   } catch (e) {
     error(getErrorMessage(e));
   }

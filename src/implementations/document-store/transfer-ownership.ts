@@ -5,6 +5,7 @@ import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-s
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -16,19 +17,18 @@ export const transferDocumentStoreOwnershipToWallet = async ({
   ...rest
 }: DocumentStoreTransferOwnershipCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const documentStore = await DocumentStoreFactory.connect(address, wallet);
   if (dryRun) {
-    const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       estimatedGas: await documentStore.estimateGas.transferOwnership(newOwner),
       network,
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await documentStore.callStatic.transferOwnership(newOwner, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  const documentStore = await DocumentStoreFactory.connect(address, wallet);
-  await documentStore.callStatic.transferOwnership(newOwner);
-  const transaction = await documentStore.transferOwnership(newOwner);
+  const transaction = await documentStore.transferOwnership(newOwner, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
