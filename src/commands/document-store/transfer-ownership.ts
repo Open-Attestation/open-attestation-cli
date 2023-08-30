@@ -4,9 +4,7 @@ import { getLogger } from "../../logger";
 import { DocumentStoreTransferOwnershipCommand } from "./document-store-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, addAddressPrefix } from "../../utils";
-import { grantDocumentStoreRole } from "../../implementations/document-store/grant-role";
-import { revokeDocumentStoreRole } from "../../implementations/document-store/revoke-role";
-import { getWalletOrSigner } from "../../implementations/utils/wallet";
+import { transferDocumentStoreOwnership } from "../../implementations/document-store/transfer-ownership";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -37,25 +35,19 @@ export const handler = async (args: DocumentStoreTransferOwnershipCommand): Prom
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(`Transferring ownership to wallet ${args.newOwner}`);
-    const account = addAddressPrefix(args.newOwner);
-    const role = "admin";
-    const { transactionHash: grantTransactionHash } = await grantDocumentStoreRole({
+    const { address, newOwner } = args;
+    const { grantTransaction, revokeTransaction } = await transferDocumentStoreOwnership({
       ...args,
       // add 0x automatically in front of the hash if it's not provided
-      account,
-      role,
+      newOwner: addAddressPrefix(newOwner),
+      address: addAddressPrefix(address),
     });
 
-    const wallet = await getWalletOrSigner({ ...args });
-    const walletAddress = await wallet.getAddress();
+    const grantTransactionHash = (await grantTransaction).transactionHash;
+    const revokeTransactionHash = (await revokeTransaction).transactionHash;
 
-    const { transactionHash: revokeTransactionHash } = await revokeDocumentStoreRole({
-      ...args,
-      account: addAddressPrefix(walletAddress),
-      role,
-    });
+    success(`Ownership of document store ${args.address} has been transferred to wallet ${args.newOwner}`);
 
-    success(`Ownership of document store ${args.address} has been transferred to new wallet ${args.newOwner}`);
     info(
       `Find more details at ${getEtherscanAddress({
         network: args.network,
