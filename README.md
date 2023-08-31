@@ -529,7 +529,7 @@ open-attestation config create --output-dir ./example-configs --encrypted-wallet
 ℹ  info      Creating a new config file
 ? Wallet password [hidden]
 ? Using a config template URL? Yes
-? Please enter the config template URL https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/config-reference-v3.json
+? Please enter the config template URL https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/reference/config-v2.json
 ? Select Network sepolia
 ```
 
