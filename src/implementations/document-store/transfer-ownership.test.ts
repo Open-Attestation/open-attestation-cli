@@ -9,10 +9,10 @@ jest.mock("@govtechsg/document-store");
 
 const deployParams: DocumentStoreTransferOwnershipCommand = {
   newOwner: "0xabcd",
-  //   role: "issuer",
   address: "0x1234",
   network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
+  maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
 
@@ -95,6 +95,7 @@ describe("document-store", () => {
         address: "0x1234",
         network: "sepolia",
         dryRun: false,
+        maxPriorityFeePerGasScale: 1,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -107,6 +108,7 @@ describe("document-store", () => {
         network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
+        maxPriorityFeePerGasScale: 1,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];

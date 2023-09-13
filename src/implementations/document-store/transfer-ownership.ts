@@ -5,6 +5,7 @@ import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-s
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 import { getRoleString } from "./document-store-roles";
 import { BigNumber } from "ethers";
 import { getEtherscanAddress } from "../../utils";
@@ -22,8 +23,8 @@ export const transferDocumentStoreOwnership = async ({
   revokeTransaction: Promise<TransactionReceipt>;
 }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const ownerAddress = await wallet.getAddress();
   const documentStore = await DocumentStoreFactory.connect(address, wallet);
+  const ownerAddress = await wallet.getAddress();
   const roleString = await getRoleString(documentStore, "admin");
   if (dryRun) {
     const grantRoleGas: BigNumber = await documentStore.estimateGas.grantRole(roleString, newOwner);
@@ -34,15 +35,16 @@ export const transferDocumentStoreOwnership = async ({
     });
     process.exit(0);
   }
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
   signale.await(`Sending transaction to pool`);
-  await documentStore.callStatic.grantRole(roleString, newOwner);
-  const grantTransaction = await documentStore.grantRole(roleString, newOwner);
+  await documentStore.callStatic.grantRole(roleString, newOwner, { ...gasFees });
+  const grantTransaction = await documentStore.grantRole(roleString, newOwner, { ...gasFees });
   success(`Document store ${address}'s ownership has been granted to wallet ${newOwner}`);
   info(`Transaction details at: ${getEtherscanAddress({ network: network })}/tx/${grantTransaction.hash}`);
   trace(`Tx hash: ${grantTransaction.hash}`);
   trace(`Block Number: ${grantTransaction.blockNumber}`);
-  await documentStore.callStatic.revokeRole(roleString, ownerAddress);
-  const revokeTransaction = await documentStore.revokeRole(roleString, ownerAddress);
+  await documentStore.callStatic.revokeRole(roleString, ownerAddress, { ...gasFees });
+  const revokeTransaction = await documentStore.revokeRole(roleString, ownerAddress, { ...gasFees });
   success(`Document store ${address}'s ownership has been revoked from wallet ${ownerAddress}`);
   info(`Transaction details at: ${getEtherscanAddress({ network: network })}/tx/${revokeTransaction.hash}`);
   trace(`Tx hash: ${revokeTransaction.hash}`);

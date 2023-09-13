@@ -1,8 +1,14 @@
-import { ethers, utils } from "ethers";
-import fetch from "node-fetch";
-import { green, highlight, red } from "../../utils";
+import { constants, utils } from "ethers";
+import { getSpotRate, green, highlight, red } from "../../utils";
 import { BigNumber } from "ethers";
 import { TransactionRequest } from "@ethersproject/providers";
+import { convertWeiFiatDollars } from "../../utils";
+import { getSupportedNetwork } from "../../commands/networks";
+
+export interface FeeDataType {
+  maxFeePerGas: BigNumber | null;
+  maxPriorityFeePerGas: BigNumber | null;
+}
 
 export const dryRunMode = async ({
   transaction,
@@ -15,95 +21,90 @@ export const dryRunMode = async ({
 }): Promise<void> => {
   // estimated gas or a transaction must be provided, if a transaction is provided let's estimate the gas automatically
   // the transaction is run on the provided network
+  const provider = getSupportedNetwork(network ?? "mainnet").provider();
   let _estimatedGas = estimatedGas;
   if (!estimatedGas && transaction) {
-    const provider = ethers.getDefaultProvider(network);
     _estimatedGas = await provider.estimateGas(transaction);
   }
   if (!_estimatedGas) {
     throw new Error("Please provide estimatedGas or transaction");
   }
 
-  // get gas price on mainnet
-  const { fast, fastest, safeLow, average } = await fetch("https://ethgasstation.info/api/ethgasAPI.json").then(
-    async (response) => {
-      if (response.ok) return response.json();
-      else {
-        throw new Error(`Unable to get gas price - ${response.statusText}`);
-      }
-    }
-  );
-  const gasPrice = await ethers.getDefaultProvider().getGasPrice();
-  const gasPriceAsGwei = Number(utils.formatUnits(gasPrice, "gwei"));
-  // the return value will be used in BigNumber operations subsequently
-  // but BigNumbers can only have integer values, hence rounding off here
-  // https://github.com/ethers-io/ethers.js/issues/488
-  const convertGasApiToGwei = (value: number): number => Math.round(value / 10);
-  const convertGasApiToWei = (value: number): BigNumber => utils.parseUnits(Math.round(value / 10).toString(), "gwei");
-  const formatGwei = (value: BigNumber): string => utils.formatUnits(value, "gwei");
+  const blockNumber = await provider.getBlockNumber();
+  const feeData = await provider.getFeeData();
+  const zero = constants.Zero;
+  const { maxFeePerGas, gasPrice, maxPriorityFeePerGas } = {
+    maxFeePerGas: BigNumber.from(feeData.maxFeePerGas) || zero,
+    gasPrice: BigNumber.from(feeData.gasPrice) || zero,
+    maxPriorityFeePerGas: BigNumber.from(feeData.maxPriorityFeePerGas) || zero,
+  };
 
-  console.log(red("\n\n/!\\ Welcome to the dry run mode. Please read the information below to understand the table"));
+  const gasCost = gasPrice.mul(_estimatedGas);
+  const maxCost = maxFeePerGas.mul(_estimatedGas);
+  const maxPriorityCost = maxPriorityFeePerGas.mul(_estimatedGas);
+
+  const spotRateETHUSD = await getSpotRate("ETH", "USD");
+  const spotRateETHSGD = await getSpotRate("ETH", "SGD");
+  const spotRateMATICUSD = await getSpotRate("MATIC", "USD");
+  const spotRateMATICSGD = await getSpotRate("MATIC", "SGD");
+  const estimatedFeeUSD = convertWeiFiatDollars(gasCost, spotRateETHUSD);
+
   console.log(
-    `\nThe table below display information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you better help you to choose a gas price depending on your needs:
-- ${highlight("current")} mode display information depending on the current information provided to the cli.
-- ${highlight("fastest")} mode display information in order to run a transaction in less than 30s.
-- ${highlight("fast")} mode display information in order to run a transaction in less than 2 mins.
-- ${highlight("average")} mode display information in order to run a transaction in less than 5 mins.
-- ${highlight("safe")} mode display information in order to run a transaction in less than 30 mins.
-    
-For each mode the following information will be shown:
-- ${highlight("gas price (gwei)")}: the gas price in gwei used for the transaction.
-- ${highlight(
-      "tx price (gwei)"
-    )}: the price of the transaction in gwei. This is the amount payed for the transaction (outside of dry-run)
-- ${highlight(
-      "tx price (eth)"
-    )}: the price of the transaction in ethereum. This is the amount payed for the transaction (outside of dry-run). You can directly use that amount to convert it to your currency using any currency converter supporting ethereum.
-  
-Get more information about gas: https://ethereum.stackexchange.com/questions/3/what-is-meant-by-the-term-gas\n\n`
+    red("\n\n/!\\ Welcome to the fee table. Please read the information below to understand the transaction fee")
+  );
+  console.log(
+    `\nThe table below display information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you better help you to choose a gas price depending on your needs:\n`
   );
 
-  console.log(green("Information about the transaction:"));
-  console.log(
-    `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
-      utils.formatEther(_estimatedGas.mul(gasPrice))
-    )} eth based on the selected gas price`
-  );
-  const scaledGasPrice = utils.parseUnits(Math.round(gasPriceAsGwei).toString(), "gwei");
+  console.log(green("Information about the network:"));
+  console.log(`Costs based on block number: ${highlight(blockNumber)}`);
   console.table({
     current: {
-      time: "N/A",
-      "gas price (gwei)": Number(formatGwei(scaledGasPrice)),
-      "tx price (gwei)": formatGwei(_estimatedGas.mul(scaledGasPrice)),
-      "tx price (eth)": utils.formatEther(_estimatedGas.mul(scaledGasPrice)),
+      "block number": blockNumber,
+      "gas price (gwei)": utils.formatUnits(gasPrice, "gwei"),
+      "max priority fee per gas (gwei)": utils.formatUnits(maxPriorityFeePerGas, "gwei"),
+      "max fee per gas (gwei)": utils.formatUnits(maxFeePerGas, "gwei"),
     },
-    fastest: {
-      time: "< 30 s",
-      "gas price (gwei)": convertGasApiToGwei(fastest),
-      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(fastest))),
-      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(fastest))),
-      "gas price scale": Number((convertGasApiToGwei(fastest) / gasPriceAsGwei).toFixed(2)),
+  });
+
+  console.log(green("Information about the transaction:"));
+
+  console.log(
+    `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
+      `US$${estimatedFeeUSD}`
+    )} based on prevailing gas price.`
+  );
+
+  console.table({
+    GWEI: {
+      "gas cost": utils.formatUnits(gasCost, "gwei"),
+      "priority fee price": utils.formatUnits(maxPriorityCost, "gwei"),
+      "max fee price": utils.formatUnits(maxCost, "gwei"),
     },
-    fast: {
-      time: "< 2 mins",
-      "gas price (gwei)": convertGasApiToGwei(fast),
-      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(fast))),
-      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(fast))),
-      "gas price scale": Number((convertGasApiToGwei(fast) / gasPriceAsGwei).toFixed(2)),
+    ETH: {
+      "gas cost": utils.formatUnits(gasCost, "ether"),
+      "priority fee price": utils.formatUnits(maxPriorityCost, "ether"),
+      "max fee price": utils.formatUnits(maxCost, "ether"),
     },
-    average: {
-      time: "< 5 mins",
-      "gas price (gwei)": convertGasApiToGwei(average),
-      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(average))),
-      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(average))),
-      "gas price scale": Number((convertGasApiToGwei(average) / gasPriceAsGwei).toFixed(2)),
+    ETHUSD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateETHUSD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateETHUSD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateETHUSD),
     },
-    safe: {
-      time: "< 30 mins",
-      "gas price (gwei)": convertGasApiToGwei(safeLow),
-      "tx price (gwei)": formatGwei(_estimatedGas.mul(convertGasApiToWei(safeLow))),
-      "tx price (eth)": utils.formatEther(_estimatedGas.mul(convertGasApiToWei(safeLow))),
-      "gas price scale": Number((convertGasApiToGwei(safeLow) / gasPriceAsGwei).toFixed(2)),
+    ETHSGD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateETHSGD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateETHSGD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateETHSGD),
+    },
+    MATICUSD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateMATICUSD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateMATICUSD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateMATICUSD),
+    },
+    MATICSGD: {
+      "gas cost": convertWeiFiatDollars(gasCost, spotRateMATICSGD),
+      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateMATICSGD),
+      "max fee price": convertWeiFiatDollars(maxCost, spotRateMATICSGD),
     },
   });
   console.log(red("Please read the information above to understand the table"));

@@ -6,6 +6,7 @@ import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/ti
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:transferHolder");
 
@@ -26,10 +27,10 @@ export const transferHolder = async ({
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await titleEscrow.callStatic.transferHolder(to, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  await titleEscrow.callStatic.transferHolder(to);
-  const transaction = await titleEscrow.transferHolder(to);
+  const transaction = await titleEscrow.transferHolder(to, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

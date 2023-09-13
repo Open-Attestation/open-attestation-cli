@@ -6,6 +6,7 @@ import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { getRoleString } from "./document-store-roles";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("document-store:transfer-ownership");
 
@@ -27,9 +28,10 @@ export const revokeDocumentStoreRole = async ({
     });
     process.exit(0);
   }
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await documentStore.callStatic.revokeRole(roleString, account, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  await documentStore.callStatic.revokeRole(roleString, account);
-  const transaction = await documentStore.revokeRole(roleString, account);
+  const transaction = await documentStore.revokeRole(roleString, account, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

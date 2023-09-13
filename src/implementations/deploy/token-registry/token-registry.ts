@@ -12,7 +12,8 @@ import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.type
 import { getLogger } from "../../../logger";
 import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
-
+import { TransactionReceipt } from "@ethersproject/abstract-provider";
+import { getGasFees } from "../../../utils";
 const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
@@ -26,7 +27,7 @@ export const deployTokenRegistry = async ({
   dryRun,
   passedOnWallet, // passedOnWallet variable will only be used if we are calling it from create.
   ...rest
-}: DeployTokenRegistryCommand): Promise<{ contractAddress: string }> => {
+}: DeployTokenRegistryCommand): Promise<{ transaction: TransactionReceipt; contractAddress: string }> => {
   const wallet = passedOnWallet ? passedOnWallet : await getWalletOrSigner({ network, ...rest });
   const chainId = await wallet.getChainId();
   const deployerAddress = await wallet.getAddress();
@@ -70,6 +71,8 @@ export const deployTokenRegistry = async ({
     standalone = true;
   }
 
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+
   if (!standalone) {
     if (!deployerContractAddress || !implAddress) {
       throw new Error(`Network ${chainId} currently is not supported. Use --standalone instead.`);
@@ -91,14 +94,14 @@ export const deployTokenRegistry = async ({
       });
       process.exit(0);
     }
-    const tx = await deployerContract.deploy(implAddress, initParam);
+    const tx = await deployerContract.deploy(implAddress, initParam, { ...gasFees });
     trace(`[Transaction] Pending ${tx.hash}`);
     const receipt = await tx.wait();
     const registryAddress = getEventFromReceipt<DeploymentEvent>(
       receipt,
       deployerContract.interface.getEventTopic("Deployment")
     ).args.deployed;
-    return { contractAddress: registryAddress };
+    return { transaction: receipt, contractAddress: registryAddress };
   } else {
     // Standalone deployment
     const tokenFactory = new TradeTrustToken__factory(wallet);
@@ -112,8 +115,8 @@ export const deployTokenRegistry = async ({
       });
       process.exit(0);
     }
-    const token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress);
+    const token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress, { ...gasFees });
     const registryAddress = token.address;
-    return { contractAddress: registryAddress };
+    return { transaction: await token.deployTransaction.wait(), contractAddress: registryAddress };
   }
 };

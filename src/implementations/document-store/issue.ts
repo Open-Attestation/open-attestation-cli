@@ -5,6 +5,7 @@ import { DocumentStoreIssueCommand } from "../../commands/document-store/documen
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("document-store:issue");
 
@@ -16,20 +17,18 @@ export const issueToDocumentStore = async ({
   ...rest
 }: DocumentStoreIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const documentStore = await DocumentStoreFactory.connect(address, wallet);
   if (dryRun) {
-    const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       estimatedGas: await documentStore.estimateGas.issue(hash),
       network,
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await documentStore.callStatic.issue(hash, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  const documentStore = await DocumentStoreFactory.connect(address, wallet);
-  await documentStore.callStatic.issue(hash);
-
-  const transaction = await documentStore.issue(hash);
+  const transaction = await documentStore.issue(hash, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

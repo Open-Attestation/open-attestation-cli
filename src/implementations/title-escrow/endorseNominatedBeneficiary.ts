@@ -6,6 +6,7 @@ import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escr
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:endorseTransferOfOwner");
 
@@ -31,10 +32,10 @@ export const endorseNominatedBeneficiary = async ({
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
-  const transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary);
+  const transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

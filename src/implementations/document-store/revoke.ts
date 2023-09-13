@@ -4,6 +4,7 @@ import { getLogger } from "../../logger";
 import { DocumentStoreRevokeCommand } from "../../commands/document-store/document-store-command.type";
 import { getWalletOrSigner } from "../utils/wallet";
 import { dryRunMode } from "../utils/dryRun";
+import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("document-store:revoke");
 
@@ -15,19 +16,18 @@ export const revokeToDocumentStore = async ({
   ...rest
 }: DocumentStoreRevokeCommand): Promise<{ transactionHash: string }> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
+  const documentStore = await DocumentStoreFactory.connect(address, wallet);
   if (dryRun) {
-    const documentStore = await DocumentStoreFactory.connect(address, wallet);
     await dryRunMode({
       estimatedGas: await documentStore.estimateGas.revoke(hash),
       network,
     });
     process.exit(0);
   }
-
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  await documentStore.callStatic.revoke(hash, { ...gasFees });
   signale.await(`Sending transaction to pool`);
-  const documentStore = await DocumentStoreFactory.connect(address, wallet);
-  await documentStore.callStatic.revoke(hash);
-  const transaction = await documentStore.revoke(hash);
+  const transaction = await documentStore.revoke(hash, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
