@@ -17,3 +17,10 @@ export type DocumentStoreTransferOwnershipCommand = NetworkAndWalletSignerOption
     address: string;
     newOwner: string;
   };
+
+export type DocumentStoreRoleCommand = NetworkAndWalletSignerOption &
+  GasOption & {
+    address: string;
+    account: string;
+    role: string;
+  };
