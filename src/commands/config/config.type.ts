@@ -14,4 +14,5 @@ export enum TestNetwork {
   Sepolia = "sepolia",
   Mumbai = "mumbai (polygon)",
   Apothem = "apothem (xdc)",
+  Hedera = "hedera (testnet)"
 }

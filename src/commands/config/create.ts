@@ -66,6 +66,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       TestNetwork.Sepolia,
       TestNetwork.Mumbai,
       TestNetwork.Apothem,
+      TestNetwork.Hedera
     ];
     const { network } = await inquirer.prompt({
       type: "list",
@@ -91,6 +92,7 @@ const convertNetworkToNetworkCmdName = (selectedNetwork: TestNetwork): NetworkCm
     [TestNetwork.Sepolia]: NetworkCmdName.Sepolia,
     [TestNetwork.Mumbai]: NetworkCmdName.Maticmum,
     [TestNetwork.Apothem]: NetworkCmdName.XDCApothem,
+    [TestNetwork.Hedera]: NetworkCmdName.HederaTestnet,
   };
   return network[selectedNetwork];
 };
