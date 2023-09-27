@@ -43,7 +43,8 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | mumbai             | 80001    | Test       |
 | xdc                | 50       | Production |
 | xdcapothem         | 51       | Test       |
-
+| hederamainet       | 295      | Production |
+| hederatestnet      | 296      | Test       |
 ---
 
 ## Usage
@@ -322,6 +323,14 @@ Example - with private key set in `OA_PRIVATE_KEY` environment variable (recomme
 open-attestation deploy token-registry "My Sample Token" MST --network sepolia
 
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
+```
+
+Example - Hedera network using Title Escrow address.
+
+```bash
+open-attestation deploy token-registry "KrypCEBL" KRYE -n hederatestnet -f key.txt --factory-address 0xde5aBf7B2416b99cba15021E3CF35A2a56ac83c1 --standalone
+
+✔  success   Token registry deployed at 0x67f98aB5E2836223bCFC3e5c03D701AeB3a8A30a
 ```
 
 #### Issue document to token registry
