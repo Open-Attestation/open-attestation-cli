@@ -66,7 +66,7 @@ export const getGasFees = async ({ provider, gasPriceScale, fixedPrice }: GetGas
   } else if (fixedPrice) {
     gasPrice = scaleBigNumber(oneGwei, fixedPrice);
   } else {
-    gasPrice = scaleBigNumber(oneGwei, 15);
+    gasPrice = scaleBigNumber(oneGwei, 150);
   }
   return {
     gasPrice,
