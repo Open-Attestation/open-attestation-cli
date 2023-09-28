@@ -47,7 +47,6 @@ export const dryRunMode = async ({
   const spotRateETHSGD = await getSpotRate("ETH", "SGD");
   const spotRateMATICUSD = await getSpotRate("MATIC", "USD");
   const spotRateMATICSGD = await getSpotRate("MATIC", "SGD");
-  const estimatedFeeUSD = convertWeiFiatDollars(gasCost, spotRateETHUSD);
 
   console.log(
     red("\n\n/!\\ Welcome to the fee table. Please read the information below to understand the transaction fee")
@@ -69,11 +68,7 @@ export const dryRunMode = async ({
 
   console.log(green("Information about the transaction:"));
 
-  console.log(
-    `Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas, which will cost approximately ${highlight(
-      `US$${estimatedFeeUSD}`
-    )} based on prevailing gas price.`
-  );
+  console.log(`Estimated gas required: ${highlight(_estimatedGas.toNumber())} gas.`);
 
   console.table({
     GWEI: {
@@ -98,13 +93,9 @@ export const dryRunMode = async ({
     },
     MATICUSD: {
       "gas cost": convertWeiFiatDollars(gasCost, spotRateMATICUSD),
-      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateMATICUSD),
-      "max fee price": convertWeiFiatDollars(maxCost, spotRateMATICUSD),
     },
     MATICSGD: {
       "gas cost": convertWeiFiatDollars(gasCost, spotRateMATICSGD),
-      "priority fee price": convertWeiFiatDollars(maxPriorityCost, spotRateMATICSGD),
-      "max fee price": convertWeiFiatDollars(maxCost, spotRateMATICSGD),
     },
   });
   console.log(red("Please read the information above to understand the table"));

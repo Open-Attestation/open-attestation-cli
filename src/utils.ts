@@ -5,6 +5,7 @@ import { BigNumber, Overrides, constants, utils } from "ethers";
 import fetch, { RequestInit } from "node-fetch";
 import { Provider } from "@ethersproject/abstract-provider";
 import { GasPriceScale } from "./commands/shared";
+import { TransactionTypes } from "ethers/lib/utils";
 
 export const getEtherscanAddress = ({ network }: { network: string }): string => getSupportedNetwork(network).explorer;
 
@@ -58,12 +59,20 @@ interface GetGasFeesArgs extends GasPriceScale {
   provider: Provider;
 }
 
-export const getGasFees = async ({ provider, maxPriorityFeePerGasScale }: GetGasFeesArgs): Promise<Overrides> => {
-  const { maxFeePerGas, maxPriorityFeePerGas } = await provider.getFeeData();
-  return {
-    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-  };
+export const getGasFees = async ({ provider, priorityScale }: GetGasFeesArgs): Promise<Overrides> => {
+  const chainId = await provider.getNetwork().then((n) => n.chainId);
+  const { maxFeePerGas, maxPriorityFeePerGas, gasPrice } = await provider.getFeeData();
+  if (!gasPrice) throw new Error(`no gas price`);
+  // switch to legacy gas price for polygon mainnet
+  if (chainId === 137) {
+    return { gasPrice: scaleBigNumber(gasPrice, priorityScale), type: TransactionTypes.legacy };
+  } else {
+    return {
+      maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, priorityScale),
+      maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, priorityScale),
+      type: TransactionTypes.eip1559,
+    };
+  }
 };
 
 export const calculateMaxFee = (

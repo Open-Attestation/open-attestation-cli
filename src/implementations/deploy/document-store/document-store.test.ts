@@ -11,7 +11,7 @@ const deployParams: DeployDocumentStoreCommand = {
   owner: "0x1234",
   network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  maxPriorityFeePerGasScale: 1,
+  priorityScale: 1,
   dryRun: false,
 };
 
@@ -39,7 +39,7 @@ describe("document-store", () => {
         storeName: "Test",
         network: "sepolia",
         dryRun: false,
-        maxPriorityFeePerGasScale: 1,
+        priorityScale: 1,
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -52,7 +52,7 @@ describe("document-store", () => {
         network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
-        maxPriorityFeePerGasScale: 1,
+        priorityScale: 1,
       });
 
       const passedSigner: Wallet = mockedDocumentStoreFactory.mock.calls[0][0];
@@ -83,7 +83,7 @@ describe("document-store", () => {
           storeName: "Test",
           network: "sepolia",
           dryRun: false,
-          maxPriorityFeePerGasScale: 1,
+          priorityScale: 1,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
@@ -94,7 +94,7 @@ describe("document-store", () => {
       process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
 
       await deployDocumentStore({
-        maxPriorityFeePerGasScale: 1,
+        priorityScale: 1,
         storeName: "Test",
         network: "sepolia",
         dryRun: false,

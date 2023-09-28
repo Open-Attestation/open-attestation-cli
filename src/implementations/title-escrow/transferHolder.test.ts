@@ -11,7 +11,7 @@ const transferHolderParams: TitleEscrowTransferHolderCommand = {
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "sepolia",
-  maxPriorityFeePerGasScale: 1,
+  priorityScale: 1,
   dryRun: false,
 };
 
