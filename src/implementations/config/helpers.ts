@@ -119,7 +119,7 @@ export const getTokenRegistryAddress = async (
     passedOnWallet,
     network,
     dryRun: false,
-    maxPriorityFeePerGasScale: 1,
+    gasPriceScale: 1,
     registryName: "Token Registry",
     registrySymbol: "TR",
   });
@@ -137,7 +137,7 @@ export const getDocumentStoreAddress = async (
     passedOnWallet,
     network,
     dryRun: false,
-    maxPriorityFeePerGasScale: 1,
+    gasPriceScale: 1,
     storeName: "Document Store",
   });
   const { contractAddress } = documentStore;

@@ -58,30 +58,11 @@ interface GetGasFeesArgs extends GasPriceScale {
   provider: Provider;
 }
 
-export const getGasFees = async ({ provider, maxPriorityFeePerGasScale }: GetGasFeesArgs): Promise<Overrides> => {
+export const getGasFees = async ({ provider, gasPriceScale }: GetGasFeesArgs): Promise<Overrides> => {
   const { gasPrice } = await provider.getFeeData();
   return {
-    gasPrice: scaleBigNumber(gasPrice, maxPriorityFeePerGasScale),
+    gasPrice: scaleBigNumber(gasPrice, gasPriceScale),
   };
-};
-
-export const calculateMaxFee = (
-  maxFee: BigNumber | null | undefined,
-  priorityFee: BigNumber | null | undefined,
-  scale: number
-): BigNumber => {
-  if (maxFee === null || typeof maxFee === "undefined") {
-    throw new Error("Max Fee not specified");
-  }
-  if (priorityFee === null || typeof priorityFee === "undefined") {
-    throw new Error("Priority Fee not specified");
-  }
-  if (scale === 1) {
-    return maxFee;
-  }
-
-  const priorityFeeChange = scaleBigNumber(priorityFee, scale).sub(priorityFee);
-  return maxFee.add(priorityFeeChange);
 };
 
 export const displayTransactionPrice = async (transaction: TransactionReceiptFees): Promise<void> => {

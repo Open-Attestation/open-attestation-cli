@@ -9,7 +9,7 @@ const deployParams: DeployTokenRegistryCommand = {
   registrySymbol: "Tst",
   network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
-  maxPriorityFeePerGasScale: 1,
+  gasPriceScale: 1,
   dryRun: false,
   standalone: false,
 };
@@ -122,7 +122,7 @@ describe("deploy Token Registry", () => {
         registrySymbol: "Tst",
         network: "sepolia",
         dryRun: false,
-        maxPriorityFeePerGasScale: 1.0,
+        gasPriceScale: 1.0,
       })
     ).rejects.toThrow(
       "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"

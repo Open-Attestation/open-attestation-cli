@@ -1,5 +1,5 @@
 import { BigNumber, constants } from "ethers";
-import { calculateMaxFee, convertWeiFiatDollars, scaleBigNumber } from "./utils";
+import { convertWeiFiatDollars, scaleBigNumber } from "./utils";
 
 describe("utils", () => {
   describe("scaleBigNumber", () => {
@@ -15,13 +15,6 @@ describe("utils", () => {
     it("should be able to scale multiplier < 0", () => {
       const results: BigNumber = scaleBigNumber(BigNumber.from(10), -0.5);
       expect(results.eq(BigNumber.from(-5))).toBe(true);
-    });
-  });
-
-  describe("calculateMaxFee", () => {
-    it("should return valid max fee", () => {
-      const results: BigNumber = calculateMaxFee(BigNumber.from(20), BigNumber.from(10), 1.2);
-      expect(results.eq(BigNumber.from(22))).toBe(true);
     });
   });
 

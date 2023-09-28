@@ -10,7 +10,7 @@ const deployParams: DeployTitleEscrowFactoryCommand = {
   network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
-  maxPriorityFeePerGasScale: 1.0,
+  gasPriceScale: 1.0,
 };
 
 describe("title escrow factory", () => {
@@ -37,7 +37,7 @@ describe("title escrow factory", () => {
       await deployTitleEscrowFactory({
         network: "sepolia",
         dryRun: false,
-        maxPriorityFeePerGasScale: 1.0,
+        gasPriceScale: 1.0,
       });
 
       const passedSigner: Wallet = mockedTitleEscrowFactory.mock.calls[0][0];
@@ -49,7 +49,7 @@ describe("title escrow factory", () => {
         network: "sepolia",
         keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
-        maxPriorityFeePerGasScale: 1.0,
+        gasPriceScale: 1.0,
       });
 
       const passedSigner: Wallet = mockedTitleEscrowFactory.mock.calls[0][0];
@@ -76,7 +76,7 @@ describe("title escrow factory", () => {
         deployTitleEscrowFactory({
           network: "sepolia",
           dryRun: false,
-          maxPriorityFeePerGasScale: 1.0,
+          gasPriceScale: 1.0,
         })
       ).rejects.toThrow(
         "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"

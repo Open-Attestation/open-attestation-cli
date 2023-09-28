@@ -15,7 +15,7 @@ const deployParams: DocumentStoreRoleCommand = {
   network: "sepolia",
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   dryRun: false,
-  maxPriorityFeePerGasScale: 1,
+  gasPriceScale: 1,
 };
 
 // TODO the following test is very fragile and might break on every interface change of DocumentStoreFactory
@@ -88,7 +88,7 @@ describe("document-store", () => {
         network: "sepolia",
         dryRun: false,
         role: "admin",
-        maxPriorityFeePerGasScale: 1,
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
@@ -102,7 +102,7 @@ describe("document-store", () => {
         keyFile: join(__dirname, "..", "..", "..", "examples", "sample-key"),
         dryRun: false,
         role: "admin",
-        maxPriorityFeePerGasScale: 1,
+        gasPriceScale: 1,
       });
 
       const passedSigner: Wallet = mockedConnect.mock.calls[0][1];
