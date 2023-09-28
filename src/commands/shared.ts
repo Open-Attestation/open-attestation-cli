@@ -46,6 +46,7 @@ export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmsSig
 
 export interface GasPriceScale {
   gasPriceScale: number;
+  fixedPrice?: number;
 }
 export interface GasOption extends GasPriceScale {
   dryRun: boolean;
@@ -68,6 +69,11 @@ export const withGasPriceOption = (yargs: Argv): Argv =>
       default: 1,
       demandOption: false,
       description: "Scale for estimated priority fees (gasPriceScale * estimated Gas Price)",
+    })
+    .option("fixedPrice", {
+      type: "number",
+      demandOption: false,
+      description: "Fixed gas price to use",
     })
     .option("dry-run", {
       alias: "dr",

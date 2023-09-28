@@ -28,8 +28,8 @@ export const revokeDocumentStoreRole = async ({
     });
     process.exit(0);
   }
+  await documentStore.callStatic.revokeRole(roleString, account);
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  await documentStore.callStatic.revokeRole(roleString, account, { ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await documentStore.revokeRole(roleString, account, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);

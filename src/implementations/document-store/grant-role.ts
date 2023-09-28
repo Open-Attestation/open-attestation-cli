@@ -28,8 +28,8 @@ export const grantDocumentStoreRole = async ({
     });
     process.exit(0);
   }
+  await documentStore.callStatic.grantRole(roleString, account);
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  await documentStore.callStatic.grantRole(roleString, account, { ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await documentStore.grantRole(roleString, account, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);

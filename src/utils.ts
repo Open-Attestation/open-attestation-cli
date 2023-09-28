@@ -58,10 +58,18 @@ interface GetGasFeesArgs extends GasPriceScale {
   provider: Provider;
 }
 
-export const getGasFees = async ({ provider, gasPriceScale }: GetGasFeesArgs): Promise<Overrides> => {
-  const { gasPrice } = await provider.getFeeData();
+export const getGasFees = async ({ provider, gasPriceScale, fixedPrice }: GetGasFeesArgs): Promise<Overrides> => {
+  let { gasPrice } = await provider.getFeeData();
+  const oneGwei = BigNumber.from("1000000000");
+  if (gasPriceScale) {
+    gasPrice = scaleBigNumber(gasPrice, gasPriceScale);
+  } else if (fixedPrice) {
+    gasPrice = scaleBigNumber(oneGwei, fixedPrice);
+  } else {
+    gasPrice = scaleBigNumber(oneGwei, 15);
+  }
   return {
-    gasPrice: scaleBigNumber(gasPrice, gasPriceScale),
+    gasPrice,
   };
 };
 

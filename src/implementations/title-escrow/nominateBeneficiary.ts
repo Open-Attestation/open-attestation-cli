@@ -29,8 +29,8 @@ export const nominateBeneficiary = async ({
     });
     process.exit(0);
   }
+  await titleEscrow.callStatic.nominate(newBeneficiary);
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  await titleEscrow.callStatic.nominate(newBeneficiary, { ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await titleEscrow.nominate(newBeneficiary, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);

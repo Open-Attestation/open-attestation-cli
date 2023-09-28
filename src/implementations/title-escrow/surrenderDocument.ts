@@ -25,8 +25,8 @@ export const surrenderDocument = async ({
     });
     process.exit(0);
   }
+  await titleEscrow.callStatic.surrender();
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  await titleEscrow.callStatic.surrender({ ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await titleEscrow.surrender({ ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);

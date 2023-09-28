@@ -25,8 +25,8 @@ export const rejectSurrendered = async ({
     });
     process.exit(0);
   }
+  await tokenRegistryInstance.callStatic.restore(tokenId);
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  await tokenRegistryInstance.callStatic.restore(tokenId, { ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await tokenRegistryInstance.restore(tokenId, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);

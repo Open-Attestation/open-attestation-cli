@@ -25,8 +25,8 @@ export const issueToDocumentStore = async ({
     });
     process.exit(0);
   }
+  await documentStore.callStatic.issue(hash);
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  await documentStore.callStatic.issue(hash, { ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await documentStore.issue(hash, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
