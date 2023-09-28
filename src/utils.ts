@@ -59,10 +59,9 @@ interface GetGasFeesArgs extends GasPriceScale {
 }
 
 export const getGasFees = async ({ provider, maxPriorityFeePerGasScale }: GetGasFeesArgs): Promise<Overrides> => {
-  const { maxFeePerGas, maxPriorityFeePerGas } = await provider.getFeeData();
+  const { gasPrice } = await provider.getFeeData();
   return {
-    maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
-    maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
+    gasPrice: scaleBigNumber(gasPrice, maxPriorityFeePerGasScale),
   };
 };
 

@@ -61,49 +61,14 @@ priority \* previous block priority fee
 
 Example:
 
-| Priority | Previous block priority fee | Priority Fee to use |
-| -------- | --------------------------- | ------------------- |
-| 1        | 1                           | 1 \* 1 = 1          |
-| 1.2      | 1                           | 1.2 \* 1 = 1.2      |
-| 2        | 1                           | 2 \* 1 = 2          |
-| 1        | 10                          | 1 \* 10 = 10        |
-| 1.2      | 10                          | 1.2 \* 10 = 12      |
-| 2        | 10                          | 2 \* 10 = 20        |
-
-#### Fee Information
-
-To display an estimated price of a transaction use the option of `dry-run` on your command.
-
-Example:
-
-```bash
-open-attestation deploy document-store "My Name" --network sepolia --dry-run
-
-/!\ Welcome to the fee table. Please read the information below to understand the transaction fee
-
-The table below display information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you better help you to choose a gas price depending on your needs:
-
-Information about the network:
-Costs based on block number: 4275264
-┌─────────┬──────────────┬──────────────────┬─────────────────────────────────┬────────────────────────┐
-│ (index) │ block number │ gas price (gwei) │ max priority fee per gas (gwei) │ max fee per gas (gwei) │
-├─────────┼──────────────┼──────────────────┼─────────────────────────────────┼────────────────────────┤
-│ current │   4275264    │  '0.629067134'   │              '2.5'              │     '3.758131382'      │
-└─────────┴──────────────┴──────────────────┴─────────────────────────────────┴────────────────────────┘
-Information about the transaction:
-Estimated gas required: 869810 gas, which will cost approximately US$0.86837 based on prevailing gas price.
-┌──────────┬───────────────────────┬────────────────────┬───────────────────────┐
-│ (index)  │       gas cost        │ priority fee price │     max fee price     │
-├──────────┼───────────────────────┼────────────────────┼───────────────────────┤
-│   GWEI   │   '547168.88382454'   │    '2174525.0'     │  '3268860.25737742'   │
-│   ETH    │ '0.00054716888382454' │   '0.002174525'    │ '0.00326886025737742' │
-│  ETHUSD  │        0.86837        │      3.45105       │        5.18781        │
-│  ETHSGD  │        1.18247        │      4.69931       │        7.06426        │
-│ MATICUSD │        0.00027        │      0.00109       │        0.00165        │
-│ MATICSGD │        0.00037        │      0.00149       │        0.00225        │
-└──────────┴───────────────────────┴────────────────────┴───────────────────────┘
-Please read the information above to understand the table
-```
+| Priority | Previous block gas fee | Gas Fee to use |
+| -------- | ---------------------- | -------------- |
+| 1        | 1                      | 1 \* 1 = 1     |
+| 1.2      | 1                      | 1.2 \* 1 = 1.2 |
+| 2        | 1                      | 2 \* 1 = 2     |
+| 1        | 10                     | 1 \* 10 = 10   |
+| 1.2      | 10                     | 1.2 \* 10 = 12 |
+| 2        | 10                     | 2 \* 10 = 20   |
 
 #### List of features with the required options
 
