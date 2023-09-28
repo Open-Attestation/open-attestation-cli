@@ -45,7 +45,7 @@ export const isWalletOption = (option: any): option is WalletOption => {
 export type WalletOrSignerOption = Partial<PrivateKeyOption> | Partial<AwsKmsSignerOption> | Partial<WalletOption>;
 
 export interface GasPriceScale {
-  gasPriceScale: number;
+  gasPriceScale?: number;
   fixedPrice?: number;
 }
 export interface GasOption extends GasPriceScale {
@@ -66,7 +66,6 @@ export const withGasPriceOption = (yargs: Argv): Argv =>
     .option("priority", {
       alias: "gasPriceScale",
       type: "number",
-      default: 1,
       demandOption: false,
       description: "Scale for estimated priority fees (gasPriceScale * estimated Gas Price)",
     })
