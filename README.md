@@ -38,7 +38,6 @@ npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 | ------------------ | -------- | ---------- |
 | mainnet            | 1        | Production |
 | sepolia            | 11155111 | Test       |
-| Goerli(Deprecated) | 5        | Test       |
 | polygon            | 137      | Production |
 | mumbai             | 80001    | Test       |
 | xdc                | 50       | Production |

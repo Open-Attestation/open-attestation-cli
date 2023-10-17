@@ -10,7 +10,6 @@ export interface CreateConfigCommand {
 
 export enum TestNetwork {
   Local = "local",
-  Goerli = "goerli (deprecated)",
   Sepolia = "sepolia",
   Mumbai = "mumbai (polygon)",
   Apothem = "apothem (xdc)",

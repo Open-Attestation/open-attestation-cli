@@ -13,7 +13,6 @@ type SupportedNetwork = {
 export enum NetworkCmdName {
   Local = "local",
   Mainnet = "mainnet",
-  Goerli = "goerli",
   Sepolia = "sepolia",
   Matic = "matic",
   Maticmum = "maticmum",
@@ -46,13 +45,6 @@ export const supportedNetwork: {
     provider: defaultInfuraProvider("homestead"),
     networkId: 1,
     networkName: "homestead",
-    currency: "ETH",
-  },
-  [NetworkCmdName.Goerli]: {
-    explorer: "https://goerli.etherscan.io",
-    provider: defaultInfuraProvider("goerli"),
-    networkId: 5,
-    networkName: "goerli",
     currency: "ETH",
   },
   [NetworkCmdName.Sepolia]: {
