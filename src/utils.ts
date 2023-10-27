@@ -1,10 +1,11 @@
 import chalk from "chalk";
-import { getSupportedNetwork } from "./commands/networks";
+import { getSupportedNetwork, getSupportedNetworkNameFromId } from "./commands/networks";
 import { info } from "signale";
-import { BigNumber, Overrides, constants, utils } from "ethers";
+import { BigNumber, Overrides, constants, utils, ethers } from "ethers";
 import fetch, { RequestInit } from "node-fetch";
 import { Provider } from "@ethersproject/abstract-provider";
 import { GasPriceScale } from "./commands/shared";
+import type { GasStationFeeData } from "./common/gas-station";
 
 export const getEtherscanAddress = ({ network }: { network: string }): string => getSupportedNetwork(network).explorer;
 
@@ -59,11 +60,22 @@ interface GetGasFeesArgs extends GasPriceScale {
 }
 
 export const getGasFees = async ({ provider, maxPriorityFeePerGasScale }: GetGasFeesArgs): Promise<Overrides> => {
-  const { maxFeePerGas, maxPriorityFeePerGas } = await provider.getFeeData();
+  const feeData = await getFeeData(provider);
+  const { maxFeePerGas, maxPriorityFeePerGas } = feeData;
+
   return {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
   };
+};
+
+export const getFeeData = async (provider: ethers.providers.Provider): Promise<GasStationFeeData> => {
+  const networkName = getSupportedNetworkNameFromId((await provider.getNetwork()).chainId);
+  const gasStation = getSupportedNetwork(networkName)?.gasStation;
+
+  const feeData = gasStation && (await gasStation());
+
+  return feeData || (await provider.getFeeData());
 };
 
 export const calculateMaxFee = (
