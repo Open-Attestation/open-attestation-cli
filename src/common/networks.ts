@@ -1,6 +1,6 @@
 import { providers } from "ethers";
-import type { GasStationFunction } from "../common/gas-station";
-import { gasStation } from "../common/gas-station";
+import type { GasStationFunction } from "./gas-station";
+import { gasStation } from "./gas-station";
 
 export type networkCurrency = "ETH" | "MATIC" | "XDC";
 

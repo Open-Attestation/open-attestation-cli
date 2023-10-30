@@ -6,7 +6,7 @@ import { create } from "../../implementations/config/create";
 import { getLogger } from "../../logger";
 import { highlight } from "../../utils";
 import { CreateConfigCommand, TestNetwork } from "./config.type";
-import { NetworkCmdName } from "../networks";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("config:create");
 

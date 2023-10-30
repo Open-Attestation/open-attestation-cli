@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getSupportedNetwork, getSupportedNetworkNameFromId } from "./commands/networks";
+import { getSupportedNetwork, getSupportedNetworkNameFromId } from "./common/networks";
 import { info } from "signale";
 import { BigNumber, Overrides, constants, utils, ethers } from "ethers";
 import fetch, { RequestInit } from "node-fetch";

@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { gasStation } from "../common/gas-station";
 import { BigNumber } from "ethers";
-import { getSupportedNetwork } from "../commands/networks";
+import { getSupportedNetwork } from "../common/networks";
 import { getFeeData } from "../utils";
 
 const mockData = {
@@ -17,7 +17,7 @@ const mockData = {
 
 jest.mock("node-fetch");
 
-jest.mock("../commands/networks", () => ({
+jest.mock("../common/networks", () => ({
   getSupportedNetworkNameFromId: jest.fn(),
   getSupportedNetwork: jest.fn(),
 }));

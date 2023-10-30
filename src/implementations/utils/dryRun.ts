@@ -3,7 +3,7 @@ import { getSpotRate, green, highlight, red } from "../../utils";
 import { BigNumber } from "ethers";
 import { TransactionRequest } from "@ethersproject/providers";
 import { convertWeiFiatDollars } from "../../utils";
-import { getSupportedNetwork } from "../../commands/networks";
+import { getSupportedNetwork } from "../../common/networks";
 
 export interface FeeDataType {
   maxFeePerGas: BigNumber | null;
