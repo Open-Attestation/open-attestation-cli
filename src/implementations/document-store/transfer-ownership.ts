@@ -36,6 +36,8 @@ export const transferDocumentStoreOwnership = async ({
     process.exit(0);
   }
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   signale.await(`Sending transaction to pool`);
   await documentStore.callStatic.grantRole(roleString, newOwner, { ...gasFees });
   const grantTransaction = await documentStore.grantRole(roleString, newOwner, { ...gasFees });
