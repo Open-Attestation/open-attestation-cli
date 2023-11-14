@@ -5,14 +5,15 @@ export type GasStationFunction = (gasStationUrl: string) => () => Promise<GasSta
 export type GasStationFeeData = { maxPriorityFeePerGas: BigNumber | null; maxFeePerGas: BigNumber | null };
 
 export const gasStation: GasStationFunction =
-  (gasStationUrl: string) => async (): Promise<GasStationFeeData | undefined> => {
+  (gasStationUrl: string, decimals = 9) =>
+  async (): Promise<GasStationFeeData | undefined> => {
     try {
       if (!gasStationUrl) return undefined;
       const res = await fetch(gasStationUrl);
       const data = await res.json();
       return {
-        maxPriorityFeePerGas: safeParseUnits(data.standard.maxPriorityFee.toString(), 9),
-        maxFeePerGas: safeParseUnits(data.standard.maxFee.toString(), 9),
+        maxPriorityFeePerGas: safeParseUnits(data.standard.maxPriorityFee.toString(), decimals),
+        maxFeePerGas: safeParseUnits(data.standard.maxFee.toString(), decimals),
       };
     } catch (e) {
       throw new Error("Failed to fetch gas station");
