@@ -1,4 +1,4 @@
-import { NetworkCmdName } from "../../../commands/networks";
+import { NetworkCmdName } from "../../../common/networks";
 import {
   getConfigFile,
   getConfigWithUpdatedForms,

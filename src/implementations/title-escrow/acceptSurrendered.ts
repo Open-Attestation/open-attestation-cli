@@ -27,6 +27,8 @@ export const acceptSurrendered = async ({
     process.exit(0);
   }
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   await tokenRegistryInstance.callStatic.burn(tokenId, { ...gasFees });
   signale.await(`Sending transaction to pool`);
   const transaction = await tokenRegistryInstance.burn(tokenId, { ...gasFees });

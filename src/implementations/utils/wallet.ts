@@ -15,7 +15,7 @@ import { readFile } from "./disk";
 import inquirer from "inquirer";
 import { progress as defaultProgress } from "./progress";
 import { AwsKmsSigner } from "ethers-aws-kms-signer";
-import { getSupportedNetwork } from "../../commands/networks";
+import { getSupportedNetwork } from "../../common/networks";
 
 const getKeyFromFile = (file?: string): undefined | string => {
   return file ? readFileSync(file).toString().trim() : undefined;

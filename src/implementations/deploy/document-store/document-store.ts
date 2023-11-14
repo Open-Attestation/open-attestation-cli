@@ -28,6 +28,8 @@ export const deployDocumentStore = async ({
   }
   const factory = new DocumentStoreFactory(wallet);
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   signale.await(`Sending transaction to pool`);
   const transaction = await factory.deploy(storeName, ownerAddress, { ...gasFees });
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);
