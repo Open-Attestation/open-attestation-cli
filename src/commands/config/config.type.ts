@@ -1,4 +1,4 @@
-import { NetworkCmdName } from "../networks";
+import { NetworkCmdName } from "../../common/networks";
 
 export interface CreateConfigCommand {
   network: NetworkCmdName;

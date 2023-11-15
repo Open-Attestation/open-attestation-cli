@@ -16,7 +16,7 @@ import {
 } from "./helpers";
 import { Dns } from "./types";
 import { getWalletOrSigner } from "../utils/wallet";
-import { supportedNetwork } from "../../commands/networks";
+import { supportedNetwork } from "../../common/networks";
 
 const SANDBOX_ENDPOINT_URL = "https://sandbox.fyntech.io";
 

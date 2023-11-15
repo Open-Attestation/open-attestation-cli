@@ -1,5 +1,5 @@
 import { Argv } from "yargs";
-import { supportedNetwork } from "./networks";
+import { supportedNetwork } from "../common/networks";
 
 export interface NetworkOption {
   network: string;

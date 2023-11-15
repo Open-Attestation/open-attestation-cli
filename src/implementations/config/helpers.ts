@@ -2,14 +2,14 @@ import { utils, v2, v3 } from "@govtechsg/open-attestation";
 import { updateFormV2, updateFormV3 } from "@govtechsg/tradetrust-config";
 import fetch from "node-fetch";
 import { success } from "signale";
-import { NetworkCmdName, supportedNetwork, networkCurrency } from "../../commands/networks";
-import { deployDocumentStore } from "../../implementations/deploy/document-store";
-import { deployTokenRegistry } from "../../implementations/deploy/token-registry";
-import { readFile } from "../../implementations/utils/disk";
+import { NetworkCmdName, supportedNetwork, networkCurrency } from "../../common/networks";
+import { deployDocumentStore } from "../deploy/document-store";
+import { deployTokenRegistry } from "../deploy/token-registry";
+import { readFile } from "../utils/disk";
 import { highlight } from "../../utils";
 import { ConfigFile, Dns, Form } from "./types";
 import { Wallet } from "ethers";
-import { ConnectedSigner } from "../../implementations/utils/wallet";
+import { ConnectedSigner } from "../utils/wallet";
 
 interface ConfigWithNetwork {
   configFile: ConfigFile;

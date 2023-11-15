@@ -9,7 +9,7 @@ import {
 } from "@govtechsg/oa-verify";
 import { readOpenAttestationFile } from "../implementations/utils/disk";
 import { withNetworkOption } from "./shared";
-import { getSupportedNetwork } from "./networks";
+import { getSupportedNetwork } from "../common/networks";
 
 export const command = "verify [options]";
 
