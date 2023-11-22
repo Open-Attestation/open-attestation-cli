@@ -15,7 +15,7 @@ To install the binary, simply download the binary from the [CLI release page](ht
 Alternatively for Linux or MacOS users, if you have `npm` installed on your machine, you may install the cli using the following command:
 
 ```bash
-npm install -g @govtechsg/open-attestation-cli
+npm install -g @tradetrust-tt/tradetrust-cli
 ```
 
 The above command will install the open-attestation CLI to your machine. You will need to have node.js installed to be able to run the command.
@@ -23,7 +23,7 @@ The above command will install the open-attestation CLI to your machine. You wil
 You can also opt to use npx:
 
 ```bash
-npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
+npx -p @tradetrust-tt/tradetrust-cli open-attestation <arguments>
 ```
 
 > In all the guides, we will refer to the CLI as `open-attestation` when running a command. That means we will assume the CLI is available in your execution path. If it's not the case, you will to change `open-attestation` by the full path to the executable.
