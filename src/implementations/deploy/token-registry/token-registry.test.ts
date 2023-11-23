@@ -2,7 +2,7 @@ import { deployTokenRegistry } from "./token-registry";
 import { encodeInitParams } from "./helpers";
 import { Contract } from "ethers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
-import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
+import { DeploymentEvent } from "@tradetrust-tt/token-registry/dist/contracts/contracts/utils/TDocDeployer";
 
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",

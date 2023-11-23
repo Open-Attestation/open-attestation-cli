@@ -1,7 +1,7 @@
 import { PrivateKeyOption } from "../../commands/shared";
 import { getPrivateKey } from "../utils/wallet";
 import { documentsInDirectory, readOpenAttestationFile, writeDocumentToDisk } from "../utils/disk";
-import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attestation";
+import { signDocument, SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust-tt/tradetrust";
 import path from "path";
 import mkdirp from "mkdirp";
 

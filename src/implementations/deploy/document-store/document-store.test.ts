@@ -1,10 +1,10 @@
 import { deployDocumentStore } from "./document-store";
 import { join } from "path";
 import { Wallet } from "ethers";
-import { DocumentStoreFactory } from "@govtechsg/document-store";
+import { DocumentStoreFactory } from "@tradetrust-tt/document-store";
 import { DeployDocumentStoreCommand } from "../../../commands/deploy/deploy.types";
 
-jest.mock("@govtechsg/document-store");
+jest.mock("@tradetrust-tt/document-store");
 
 const deployParams: DeployDocumentStoreCommand = {
   storeName: "Test Document Store",

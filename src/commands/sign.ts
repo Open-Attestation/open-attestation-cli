@@ -1,7 +1,7 @@
 import { Argv } from "yargs";
 import { withPrivateKeyOption } from "./shared";
 import signale from "signale";
-import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attestation";
+import { SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust-tt/tradetrust";
 import { sign, SignCommand } from "../implementations/sign";
 
 export const command = "sign <raw-documents-path>";

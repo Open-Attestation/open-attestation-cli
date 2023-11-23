@@ -1,4 +1,4 @@
-import { DocumentStoreFactory } from "@govtechsg/document-store";
+import { DocumentStoreFactory } from "@tradetrust-tt/document-store";
 import signale, { success, info } from "signale";
 import { getLogger } from "../../logger";
 import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-store/document-store-command.type";

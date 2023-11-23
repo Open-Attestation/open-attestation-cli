@@ -9,7 +9,7 @@ import {
   utils,
   v3,
   wrapDocument,
-} from "@govtechsg/open-attestation";
+} from "@tradetrust-tt/tradetrust";
 import path from "path";
 import fetch from "node-fetch";
 import Ajv, { AnySchemaObject, ErrorObject, ValidateFunction } from "ajv";

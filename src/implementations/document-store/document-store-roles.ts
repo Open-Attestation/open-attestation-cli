@@ -1,4 +1,4 @@
-import { DocumentStore } from "@govtechsg/document-store";
+import { DocumentStore } from "@tradetrust-tt/document-store";
 
 export const getRoleString = async (documentStore: DocumentStore, role: string): Promise<string> => {
   switch (role) {

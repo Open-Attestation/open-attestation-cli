@@ -2,7 +2,7 @@
 import { appendProofToDocuments, merkleHashmap } from "../implementations/wrap";
 import { Output } from "../implementations/utils/disk";
 import fs from "fs";
-import { utils } from "@govtechsg/open-attestation";
+import { utils } from "@tradetrust-tt/tradetrust";
 
 jest.mock("fs");
 

@@ -1,11 +1,11 @@
-import { TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
+import { TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-registry-command.type";
 import { addAddressPrefix } from "../../utils";
 import { issueToTokenRegistry } from "./issue";
 
-jest.mock("@govtechsg/token-registry/contracts");
+jest.mock("@tradetrust-tt/token-registry/contracts");
 
 const deployParams: TokenRegistryIssueCommand = {
   beneficiary: "0xabcd",

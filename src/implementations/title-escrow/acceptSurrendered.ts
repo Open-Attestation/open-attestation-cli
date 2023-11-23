@@ -5,7 +5,7 @@ import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from ".
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { TradeTrustToken__factory } from "@govtechsg/token-registry/dist/contracts";
+import { TradeTrustToken__factory } from "@tradetrust-tt/token-registry/dist/contracts";
 import { getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");

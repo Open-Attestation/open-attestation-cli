@@ -1,11 +1,11 @@
 import { Wallet } from "ethers";
-import { DocumentStoreFactory } from "@govtechsg/document-store";
+import { DocumentStoreFactory } from "@tradetrust-tt/document-store";
 import { DocumentStoreTransferOwnershipCommand } from "../../commands/document-store/document-store-command.type";
 import { addAddressPrefix } from "../../utils";
 import { join } from "path";
 import { transferDocumentStoreOwnership } from "./transfer-ownership";
 
-jest.mock("@govtechsg/document-store");
+jest.mock("@tradetrust-tt/document-store");
 
 const deployParams: DocumentStoreTransferOwnershipCommand = {
   newOwner: "0xabcd",

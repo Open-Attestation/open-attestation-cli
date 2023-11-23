@@ -1,4 +1,4 @@
-import { utils, v2, v3 } from "@govtechsg/open-attestation";
+import { utils, v2, v3 } from "@tradetrust-tt/tradetrust";
 import { updateFormV2, updateFormV3 } from "@govtechsg/tradetrust-config";
 import fetch from "node-fetch";
 import { success } from "signale";

@@ -1,4 +1,4 @@
-import { utils, v2, v3 } from "@govtechsg/open-attestation";
+import { utils, v2, v3 } from "@tradetrust-tt/tradetrust";
 import fs from "fs";
 import path from "path";
 import { info } from "signale";

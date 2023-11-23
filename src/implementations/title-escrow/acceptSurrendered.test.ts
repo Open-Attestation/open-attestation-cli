@@ -1,10 +1,10 @@
-import { TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
+import { TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { acceptSurrendered } from "./acceptSurrendered";
 
-jest.mock("@govtechsg/token-registry/contracts");
+jest.mock("@tradetrust-tt/token-registry/contracts");
 
 const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
   tokenRegistry: "0x1122",

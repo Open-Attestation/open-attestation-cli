@@ -2,7 +2,7 @@ import { wrap } from "../src/implementations/wrap";
 import { Output } from "../src/implementations/utils/disk";
 import { performance } from "perf_hooks";
 import { existsSync, mkdirSync, rmdirSync, promises } from "fs";
-import { SchemaId } from "@govtechsg/open-attestation";
+import { SchemaId } from "@tradetrust-tt/tradetrust";
 import { join, parse } from "path";
 
 const DEFAULT_NUMBER_OF_FILE = 2;

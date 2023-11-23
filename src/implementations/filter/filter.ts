@@ -1,6 +1,6 @@
 import fs from "fs";
 import signale from "signale";
-import { obfuscateDocument, verifySignature } from "@govtechsg/open-attestation";
+import { obfuscateDocument, verifySignature } from "@tradetrust-tt/tradetrust";
 
 export const filter = (input: string, output: string, fields: string[]): void => {
   const documentJson = JSON.parse(fs.readFileSync(input, "utf8"));

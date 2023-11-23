@@ -1,4 +1,4 @@
-import { TradeTrustToken, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
+import { TradeTrustToken, TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";

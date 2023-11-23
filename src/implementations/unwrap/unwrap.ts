@@ -1,6 +1,6 @@
 import { documentsInDirectory, readOpenAttestationFile, writeOutput, Output } from "../utils/disk";
 import mkdirp from "mkdirp";
-import { getData, OpenAttestationDocument } from "@govtechsg/open-attestation";
+import { getData, OpenAttestationDocument } from "@tradetrust-tt/tradetrust";
 import path from "path";
 
 export const unwrapIndividualDocuments = async (

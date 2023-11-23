@@ -1,5 +1,5 @@
-import { TDocDeployer__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
-import { DeploymentEvent } from "@govtechsg/token-registry/dist/contracts/contracts/utils/TDocDeployer";
+import { TDocDeployer__factory, TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
+import { DeploymentEvent } from "@tradetrust-tt/token-registry/dist/contracts/contracts/utils/TDocDeployer";
 import {
   encodeInitParams,
   getDefaultContractAddress,

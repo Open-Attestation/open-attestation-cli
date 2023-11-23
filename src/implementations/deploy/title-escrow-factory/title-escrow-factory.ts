@@ -2,7 +2,7 @@ import { DeployTitleEscrowFactoryCommand } from "../../../commands/deploy/deploy
 import { getLogger } from "../../../logger";
 import { dryRunMode } from "../../utils/dryRun";
 import { getWalletOrSigner } from "../../utils/wallet";
-import { TitleEscrowFactory__factory } from "@govtechsg/token-registry/dist/contracts";
+import { TitleEscrowFactory__factory } from "@tradetrust-tt/token-registry/dist/contracts";
 
 const { trace } = getLogger("deploy:title-escrow-factory");
 

@@ -1,10 +1,10 @@
-import { TitleEscrow__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
+import { TitleEscrow__factory, TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { transferHolder } from "./transferHolder";
 
-jest.mock("@govtechsg/token-registry/contracts");
+jest.mock("@tradetrust-tt/token-registry/contracts");
 
 const transferHolderParams: TitleEscrowTransferHolderCommand = {
   newHolder: "0xabcd",

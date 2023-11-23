@@ -3,7 +3,7 @@ import { encodeInitParams, getDefaultContractAddress } from "./helpers";
 
 describe("valid Token Registry Factory Address", () => {
   it("should return deployer address", () => {
-    const { TitleEscrowFactory, TokenImplementation, Deployer } = getDefaultContractAddress(5);
+    const { TitleEscrowFactory, TokenImplementation, Deployer } = getDefaultContractAddress(1);
 
     expect(TitleEscrowFactory).toBeDefined();
     expect(TokenImplementation).toBeDefined();

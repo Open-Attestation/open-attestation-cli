@@ -11,7 +11,7 @@ export const command = "token-registry <registry-name> <registry-symbol> [option
 
 export const describe = "Deploys a token registry contract on the blockchain";
 
-// Refer to @govtechsg/token-registry tasks/deploy-token.ts
+// Refer to @tradetrust-tt/token-registry tasks/deploy-token.ts
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(

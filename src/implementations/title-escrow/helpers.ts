@@ -3,7 +3,7 @@ import {
   TitleEscrow__factory,
   TradeTrustToken,
   TradeTrustToken__factory,
-} from "@govtechsg/token-registry/contracts";
+} from "@tradetrust-tt/token-registry/contracts";
 import { Wallet, constants } from "ethers";
 import signale from "signale";
 import { ConnectedSigner } from "../utils/wallet";

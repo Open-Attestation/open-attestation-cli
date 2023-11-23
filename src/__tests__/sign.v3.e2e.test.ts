@@ -2,7 +2,7 @@ import { sign } from "../implementations/sign";
 import fs from "fs";
 import path from "path";
 import tmp from "tmp";
-import { SUPPORTED_SIGNING_ALGORITHM } from "@govtechsg/open-attestation";
+import { SUPPORTED_SIGNING_ALGORITHM } from "@tradetrust-tt/tradetrust";
 
 const fixtureFolderName = "fixture/3.0";
 const wrappedFileName1 = `${fixtureFolderName}/did-wrapped.json`;

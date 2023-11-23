@@ -7,7 +7,7 @@ import {
   getDocumentStoreRecords,
   OpenAttestationDnsDidRecord,
   OpenAttestationDNSTextRecord,
-} from "@govtechsg/dnsprove";
+} from "@tradetrust-tt/dnsprove";
 import { getErrorMessage } from "../../../utils";
 
 const { trace } = getLogger("dns:txt-record");

@@ -1,10 +1,10 @@
-import { TitleEscrow__factory, TradeTrustToken__factory } from "@govtechsg/token-registry/contracts";
+import { TitleEscrow__factory, TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
 import { Wallet } from "ethers";
 
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { nominateBeneficiary } from "./nominateBeneficiary";
 
-jest.mock("@govtechsg/token-registry/contracts");
+jest.mock("@tradetrust-tt/token-registry/contracts");
 
 const nominateBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
   newBeneficiary: "0fosui",

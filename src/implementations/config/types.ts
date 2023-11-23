@@ -1,4 +1,4 @@
-import { OpenAttestationDocument } from "@govtechsg/open-attestation";
+import { OpenAttestationDocument } from "@tradetrust-tt/tradetrust";
 
 type WalletEncryptedJson = {
   type: "ENCRYPTED_JSON";

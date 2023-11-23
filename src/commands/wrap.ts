@@ -3,7 +3,7 @@ import signale from "signale";
 import { wrap } from "../implementations/wrap";
 import { transformValidationErrors } from "../implementations/wrap/ajvErrorTransformer";
 import { isDir, Output } from "../implementations/utils/disk";
-import { SchemaId } from "@govtechsg/open-attestation";
+import { SchemaId } from "@tradetrust-tt/tradetrust";
 
 interface WrapCommand {
   rawDocumentsPath: string;

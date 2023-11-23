@@ -6,7 +6,7 @@ import {
   openAttestationVerifiers,
   openAttestationDidIdentityProof,
   verificationBuilder,
-} from "@govtechsg/oa-verify";
+} from "@tradetrust-tt/tt-verify";
 import { readOpenAttestationFile } from "../implementations/utils/disk";
 import { withNetworkOption } from "./shared";
 import { getSupportedNetwork } from "../common/networks";

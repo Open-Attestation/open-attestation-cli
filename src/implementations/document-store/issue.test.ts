@@ -1,11 +1,11 @@
 import { issueToDocumentStore } from "./issue";
 import { Wallet } from "ethers";
-import { DocumentStoreFactory } from "@govtechsg/document-store";
+import { DocumentStoreFactory } from "@tradetrust-tt/document-store";
 import { DocumentStoreIssueCommand } from "../../commands/document-store/document-store-command.type";
 import { addAddressPrefix } from "../../utils";
 import { join } from "path";
 
-jest.mock("@govtechsg/document-store");
+jest.mock("@tradetrust-tt/document-store");
 
 const deployParams: DocumentStoreIssueCommand = {
   hash: "0xabcd",
