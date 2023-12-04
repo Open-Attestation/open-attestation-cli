@@ -1,6 +1,6 @@
-# Open Attestation (CLI)
+# TradeTrust (CLI)
 
-This CLI tool in the [Open Attestation CLI](https://github.com/Open-Attestation/open-attestation-cli) repository turns .json documents into any open-attestation verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the json document and then creates a file with the data and proof of integrity.
+This CLI tool in the [TradeTrust CLI](https://github.com/tradetrust-tt/tradetrust-cli) repository turns .json documents into any open-attestation verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the json document and then creates a file with the data and proof of integrity.
 
 ## Installation
 
@@ -76,7 +76,7 @@ To display an estimated price of a transaction use the option of `dry-run` on yo
 Example:
 
 ```bash
-open-attestation deploy document-store "My Name" --network sepolia --dry-run
+tradetrust deploy document-store "My Name" --network sepolia --dry-run
 
 /!\ Welcome to the fee table. Please read the information below to understand the transaction fee
 
@@ -146,7 +146,7 @@ This command process all documents in the input directory. It will add the issua
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/example.0.json
+tradetrust wrap ./examples/raw-documents/example.0.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -156,7 +156,7 @@ The command will display the result in the console. If you need to save the file
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/example.0.json --output-file ./examples/wrapped-documents/example.0.json
+tradetrust wrap ./examples/raw-documents/example.0.json --output-file ./examples/wrapped-documents/example.0.json
 
 ✔  success   Batch Document Root: 0x5d318c8083aac18f8075ca2a2eac74b06f2cc37d6ccad680c7c80c9bb36f7be1
 ```
@@ -166,7 +166,7 @@ If you need to wrap a folder you will need to provide the `--output-dir` options
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents --output-dir ./examples/wrapped-documents
+tradetrust wrap ./examples/raw-documents --output-dir ./examples/wrapped-documents
 
 ✔  success   Batch Document Root: 0x5d318c8083aac18f8075ca2a2eac74b06f2cc37d6ccad680c7c80c9bb36f7be1
 ```
@@ -176,11 +176,11 @@ You can also provide an optional JSON schema document to perform extra check on 
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --schema ./examples/schema.json
+tradetrust wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --schema ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 
-open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ -s ./examples/schema.json
+tradetrust wrap ./examples/raw-documents/ ./examples/wrapped-documents/ -s ./examples/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -190,11 +190,11 @@ The JSON schema parameter also allow for http endpoint returning valid JSON sche
 Example:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
+tradetrust wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --schema https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 
-open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
+tradetrust wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ -s https://gist.githubusercontent.com/Nebulis/dd8198ab76443489e14121dad225d351/raw/693b50a1694942fb3cc6a8dcf5187cc7c75adb58/schema.json
 
 ✔  success  Batch Document Root: 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc
 ```
@@ -202,24 +202,24 @@ open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-
 You can also re-wrap a document by editing a wrapped document content and using the `--unwrap` option:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/example.0.json --output-file ./examples/wrapped-documents/example.0.json
+tradetrust wrap ./examples/raw-documents/example.0.json --output-file ./examples/wrapped-documents/example.0.json
 
 # edit the recipient name in ./tmp/wrapped-documents/example.0.json for instance for Your Name to Another Name
-open-attestation wrap ./examples/wrapped-documents/example.0.json --of ./examples/wrapped-documents/example.1.json --unwrap
+tradetrust wrap ./examples/wrapped-documents/example.0.json --of ./examples/wrapped-documents/example.1.json --unwrap
 ```
 
 You can disable the `--batched` option to wrap multiple documents individually (i.e. they will not have the same merkle root):
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --batched false
+tradetrust wrap ./examples/raw-documents/ --output-dir ./examples/wrapped-documents/ --batched false
 ✔  success   All documents have been individually wrapped
 ```
 
 By default the CLI will use open-attestation schema v2 but you can opt in for open-attestation schema v3 using `open-attestation-v3` option:
 
 ```bash
-open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --open-attestation-v3
-open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
+tradetrust wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --open-attestation-v3
+tradetrust wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
 > **_NOTE:_** For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](https://www.openattestation.com/docs/integrator-section/transferable-record/title-escrow).
@@ -231,7 +231,7 @@ This command processes a document in the input directory. It will unwrap the wra
 Example:
 
 ```bash
-open-attestation unwrap ./examples/v2/wrapped-documents/example.0.json
+tradetrust unwrap ./examples/v2/wrapped-documents/example.0.json
 
 ✔  success   The document has been unwrapped
 ```
@@ -241,7 +241,7 @@ The command will display the result in the console. If you need to save the file
 Example:
 
 ```bash
-open-attestation unwrap ./examples/v2/wrapped-documents/example.0.json --output-file ./examples/v2/raw-documents/example.0.json
+tradetrust unwrap ./examples/v2/wrapped-documents/example.0.json --output-file ./examples/v2/raw-documents/example.0.json
 
 ✔  success   The document has been unwrapped
 ```
@@ -251,7 +251,7 @@ If you need to unwrap a folder you will need to provide the `--output-dir` optio
 Example:
 
 ```bash
-open-attestation unwrap ./examples/v2/wrapped-documents --output-dir ./examples/v2/raw-documents
+tradetrust unwrap ./examples/v2/wrapped-documents --output-dir ./examples/v2/raw-documents
 
 ✔  success   The documents have been individually unwrapped into folder ./examples/v2/raw-documents
 ```
@@ -261,13 +261,13 @@ open-attestation unwrap ./examples/v2/wrapped-documents --output-dir ./examples/
 This allows document holders to generate valid documents which obfuscates certain fields. For example, sensitive information that you wish not to disclose.
 
 ```bash
-open-attestation filter <inputDocumentPath> <outputDocumentPath> [filters...]
+tradetrust filter <inputDocumentPath> <outputDocumentPath> [filters...]
 ```
 
 Example:
 
 ```bash
-open-attestation filter examples/wrapped-documents/example.0.json tmp/example.0.out.json key1
+tradetrust filter examples/wrapped-documents/example.0.json tmp/example.0.out.json key1
 
 ✔  success  Obfuscated document saved to: tmp/example.0.out.json
 ```
@@ -277,13 +277,13 @@ open-attestation filter examples/wrapped-documents/example.0.json tmp/example.0.
 This allows you to encrypt document in order to share and store them safely.
 
 ```bash
-open-attestation encrypt <inputDocumentPath> <outputEncryptedPath>
+tradetrust encrypt <inputDocumentPath> <outputEncryptedPath>
 ```
 
 Example:
 
 ```bash
-open-attestation encrypt ./examples/wrapped-documents/example.0.json ./tmp/encrypted.json
+tradetrust encrypt ./examples/wrapped-documents/example.0.json ./tmp/encrypted.json
 
 ✔  success   Encrypted document saved to: tmp/encrypted.json
 ⚠  warning   Here is the key to decrypt the document: don't lose it: 9bac5be27bac31d852fc1e48eb9d5249ec6ad7978da23377b5879f7a24994cb2
@@ -294,13 +294,13 @@ open-attestation encrypt ./examples/wrapped-documents/example.0.json ./tmp/encry
 This allows you to decrypt document encrypted using the method above.
 
 ```bash
-open-attestation decrypt <input> <output> <key>
+tradetrust decrypt <input> <output> <key>
 ```
 
 Example:
 
 ```bash
-open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypted.json 88da9b9cd61cfc1677ae7e79dba9b3aeba4b40c95f94c950759e76c6210b5402
+tradetrust decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypted.json 88da9b9cd61cfc1677ae7e79dba9b3aeba4b40c95f94c950759e76c6210b5402
 
 ✔  success   Decrypted document saved to: decrypted.json
 ```
@@ -312,29 +312,29 @@ open-attestation decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypte
 Deploys a token registry contract on the blockchain. Factory Contract that have been deployed using token-registry can be used with the factory address flag. To deploy a standalone token registry, please refer to [Token-Registry](https://github.com/Open-Attestation/token-registry) deployment.
 
 ```bash
-open-attestation deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
+tradetrust deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy token-registry "My Sample Token" MST --network sepolia
+tradetrust deploy token-registry "My Sample Token" MST --network sepolia
 
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
 
-#### Issue document to token registry
+#### Mint document to token registry
 
-`Issue` a hash to a token registry deployed on the blockchain. The `tokenId` option would be used to indicate the document hash, and the `to` option to indicate the title escrow address the document is mapped to.
+`Mint` a hash to a token registry deployed on the blockchain. The `tokenId` option would be used to indicate the document hash, and the `to` option to indicate the title escrow address the document is mapped to.
 
 ```bash
-open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --beneficiary <BENEFICIARY> --holder <HOLDER> [options]
+tradetrust token-registry mint --network <NETWORK> --address <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --beneficiary <BENEFICIARY> --holder <HOLDER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation token-registry mint --network sepolia --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+tradetrust token-registry mint --network sepolia --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 
 ✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 0x6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
@@ -353,13 +353,13 @@ Interfaces for the Assignment and Revocation of roles are available on the Token
 Deploys a document store contract on the blockchain
 
 ```bash
-open-attestation deploy document-store <store-name> [options]
+tradetrust deploy document-store <store-name> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation deploy document-store "My Name" --network sepolia
+tradetrust deploy document-store "My Name" --network sepolia
 
 ✔  success   Document store deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
 ```
@@ -367,7 +367,7 @@ open-attestation deploy document-store "My Name" --network sepolia
 By default, the owner of the document store will be the deployer. You can specify a different owner using the `--owner` option:
 
 ```bash
-open-attestation deploy document-store "My Name" --owner 0x1234 --network sepolia
+tradetrust deploy document-store "My Name" --owner 0x1234 --network sepolia
 ```
 
 #### Issue document to document store
@@ -375,13 +375,13 @@ open-attestation deploy document-store "My Name" --owner 0x1234 --network sepoli
 Issue a hash to a document store deployed on the blockchain
 
 ```bash
-open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
+tradetrust document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store issue --network sepolia --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+tradetrust document-store issue --network sepolia --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been issued on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -391,13 +391,13 @@ open-attestation document-store issue --network sepolia --address 0x19f89607b522
 Revoke a hash to a document store deployed on the blockchain
 
 ```bash
-open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
+tradetrust document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store revoke --network sepolia --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
+tradetrust document-store revoke --network sepolia --address 0x19f89607b52268D0A19543e48F790c65750869c6 --hash 0x43033b53a462036304f526aeaf3aaeea8d905997d6fde3bb1a02188eadbaaec1
 
 ✔  success   Document/Document Batch with hash 0x0c1a666aa55d17d26412bb57fbed96f40ec5a08e2f995a108faf45429ae3511f has been revoked on 0x19f89607b52268D0A19543e48F790c65750869c6
 ```
@@ -407,7 +407,7 @@ open-attestation document-store revoke --network sepolia --address 0x19f89607b52
 Grant role on document store deployed on the blockchain to a wallet
 
 ```bash
-open-attestation document-store grant-role --address <DOCUMENT_STORE_ADDRESS> --account <ACCOUNT_ADDRESS> --role <ROLE> [options]
+tradetrust document-store grant-role --address <DOCUMENT_STORE_ADDRESS> --account <ACCOUNT_ADDRESS> --role <ROLE> [options]
 ```
 
 Roles options: "admin", "issuer", "revoker"
@@ -415,7 +415,7 @@ Roles options: "admin", "issuer", "revoker"
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store grant-role --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --role admin --network sepolia
+tradetrust document-store grant-role --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --role admin --network sepolia
 
 ✔  success   Document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28's role of: admin has been granted to wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
 ```
@@ -427,13 +427,13 @@ Revoke role on document store deployed on the blockchain to a wallet
 Roles options: "admin", "issuer", "revoker"
 
 ```bash
-open-attestation document-store revoke-role --address <DOCUMENT_STORE_ADDRESS> --account <ACCOUNT_ADDRESS> --role <ROLE> [options]
+tradetrust document-store revoke-role --address <DOCUMENT_STORE_ADDRESS> --account <ACCOUNT_ADDRESS> --role <ROLE> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store revoke-role --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --role admin --network sepolia
+tradetrust document-store revoke-role --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --role admin --network sepolia
 
 ✔  success   Document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28's role of: admin has been revoked from wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
 ```
@@ -443,13 +443,13 @@ open-attestation document-store revoke-role --address 0x80732bF5CA47A85e599f3ac9
 Transfer ownership of a document store deployed on the blockchain to another wallet
 
 ```bash
-open-attestation document-store transfer-ownership --address <DOCUMENT_STORE_ADDRESS> --new-owner <HASH> [options]
+tradetrust document-store transfer-ownership --address <DOCUMENT_STORE_ADDRESS> --new-owner <HASH> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network sepolia
+tradetrust document-store transfer-ownership --address 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 --new-owner 0xf81ea9d2c0133de728d28b8d7f186bed61079997 --network sepolia
 
 ✔  success   Ownership of document store 0x80732bF5CA47A85e599f3ac9572F602c249C8A28 has been transferred to new wallet 0xf81ea9d2c0133de728d28b8d7f186bed61079997
 ```
@@ -459,7 +459,7 @@ open-attestation document-store transfer-ownership --address 0x80732bF5CA47A85e5
 Verify if a document is valid.
 
 ```bash
-open-attestation verify --document ./examples/wrapped-documents/example.0.json --network sepolia
+tradetrust verify --document ./examples/wrapped-documents/example.0.json --network sepolia
 
 …  awaiting  Verifying examples/wrapped-documents/example.0.json
 ✔  success   The document is valid
@@ -470,7 +470,7 @@ open-attestation verify --document ./examples/wrapped-documents/example.0.json -
 Sign on an OA document directly with a private key.
 
 ```bash
-open-attestation sign ./examples/unsigned-documents -f ./examples/sample-key -p did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller --output-dir ./examples/signed-documents
+tradetrust sign ./examples/unsigned-documents -f ./examples/sample-key -p did:ethr:0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69#controller --output-dir ./examples/signed-documents
 ```
 
 ### DNS TXT Record
@@ -478,14 +478,14 @@ open-attestation sign ./examples/unsigned-documents -f ./examples/sample-key -p 
 Create a temporary DNS TXT record in OpenAttestation sandbox
 
 ```bash
-open-attestation dns txt-record create --address 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc --networkId 10
+tradetrust dns txt-record create --address 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc --networkId 10
 ✔  success   Record created at exotic-blush-primate.sandbox.openattestation.com and will stay valid until Thu Jul 02 2020 13:51:34 GMT+0800 (Singapore Standard Time)
 ```
 
 Get the list of DNS TXT records associated to a domain
 
 ```bash
-open-attestation dns txt-record get --location resulting-magenta-locust.sandbox.openattestation.com
+tradetrust dns txt-record get --location resulting-magenta-locust.sandbox.openattestation.com
 ┌─────────┬────────────┬────────────┬───────┬──────────┬────────┐
 │ (index) │    type    │    net     │ netId │   addr   │ dnssec │
 ├─────────┼────────────┼────────────┼───────┼──────────┼────────┤
@@ -496,7 +496,7 @@ open-attestation dns txt-record get --location resulting-magenta-locust.sandbox.
 Filter the list of DNS TXT records associated to a domain on a specific network
 
 ```bash
-open-attestation dns txt-record get --location example.openattestation.com --networkId 3
+tradetrust dns txt-record get --location example.openattestation.com --networkId 3
 ┌─────────┬────────────┬────────────┬───────┬──────────────────────────────────────────────┬────────┐
 │ (index) │    type    │    net     │ netId │                     addr                     │ dnssec │
 ├─────────┼────────────┼────────────┼───────┼──────────────────────────────────────────────┼────────┤
@@ -513,7 +513,7 @@ open-attestation dns txt-record get --location example.openattestation.com --net
 Creating a wallet
 
 ```bash
-open-attestation wallet create --of ./tmp
+tradetrust wallet create --of ./tmp
 
 ℹ  info      Creating a new wallet
 ? Wallet password [hidden]
@@ -525,7 +525,7 @@ open-attestation wallet create --of ./tmp
 Encrypting a wallet (see [below](#providing-the-wallet) to find out how to provide the key)
 
 ```bash
-open-attestation wallet encrypt --of ./tmp
+tradetrust wallet encrypt --of ./tmp
 
 ℹ  info      Encrypting a wallet
 ? Wallet password [hidden]
@@ -538,7 +538,7 @@ open-attestation wallet encrypt --of ./tmp
 Decrypt a wallet to get information about it. Some information might be sensitive
 
 ```bash
-open-attestation wallet decrypt wallet.json
+tradetrust wallet decrypt wallet.json
 ⚠  warning   You are about to reveal the private key of your wallet. Please type the following word into the terminal to prove that you understand the risks: active-aqua-swordtail
 ? ack: active-aqua-swordtail
 ℹ  info      User consented to risks
@@ -564,22 +564,22 @@ Example:
 
 ```bash
 # Using encrypted-wallet-path option
-open-attestation deploy document-store "My Name" --network sepolia --encrypted-wallet-path /path/to/wallet.json
+tradetrust deploy document-store "My Name" --network sepolia --encrypted-wallet-path /path/to/wallet.json
 # Then you will be prompted to type your password to decrypt the wallet
 ? Wallet password [input is hidden]
 
 # Using environment variable
 export OA_PRIVATE_KEY=0000000000000000000000000000000000000000000000000000000000000001
-open-attestation deploy document-store "My Name" --network sepolia
+tradetrust deploy document-store "My Name" --network sepolia
 unset OA_PRIVATE_KEY
 
 # Using private key stored in file
 echo -n 0000000000000000000000000000000000000000000000000000000000000002 >> ./examples/sample-key
-open-attestation deploy document-store "My Name" --network sepolia --key-file ./examples/sample-key
+tradetrust deploy document-store "My Name" --network sepolia --key-file ./examples/sample-key
 rm ./examples/sample-key
 
 # Providing the key to the command
-open-attestation deploy document-store "My Name" --network sepolia --key 0000000000000000000000000000000000000000000000000000000000000003
+tradetrust deploy document-store "My Name" --network sepolia --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
 ### Config (Create configuration file)
@@ -609,7 +609,7 @@ Step 1: Generate a wallet.json file & add funds into wallet.json
 
 ```
 // If you already have a wallet.json that has sufficient funds in the specific network, you can skip step 1.
-open-attestation wallet create --output-file wallet.json
+tradetrust wallet create --output-file wallet.json
 ```
 
 Currently, we do not provide any faucet to dispense any funds into the wallet.json. You can search the web for some faucets.
@@ -617,7 +617,7 @@ Currently, we do not provide any faucet to dispense any funds into the wallet.js
 Step 2: Generate config file by passing in the generated wallet.json file and a config template url
 
 ```
-open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
+tradetrust config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
 
 // Please fill in the necessary information when prompted.
 ℹ  info      Creating a new config file
@@ -636,7 +636,7 @@ This step is the same as [Method 1](#method-1-using-config-template-url-option-r
 Step 2: Generate config file by passing in the generated wallet.json file and a existing config file
 
 ```
-open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
+tradetrust config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
 
 // Please fill in the necessary information when prompted.
 ℹ  info      Creating a new config file
@@ -660,17 +660,17 @@ You will need:
 - options to provide the wallet (https://github.com/Open-Attestation/open-attestation-cli#providing-the-wallet)
 
 ```
-open-attestation transaction cancel --nonce <pending transaction nonce> --gas-price <gas price> [option]
+tradetrust transaction cancel --nonce <pending transaction nonce> --gas-price <gas price> [option]
 ```
 
 Examples:
 
 ```
-open-attestation transaction cancel --nonce 1 --gas-price 300 --network sepolia --encrypted-wallet-path /path/to/wallet
+tradetrust transaction cancel --nonce 1 --gas-price 300 --network sepolia --encrypted-wallet-path /path/to/wallet
 ```
 
 ```
-open-attestation transaction cancel --transaction-hash 0x000 --network sepolia --encrypted-wallet-path /path/to/wallet
+tradetrust transaction cancel --transaction-hash 0x000 --network sepolia --encrypted-wallet-path /path/to/wallet
 ```
 
 ### Title Escrow
@@ -680,13 +680,13 @@ open-attestation transaction cancel --transaction-hash 0x000 --network sepolia -
 This command will allow the owner of a transferable record to change its holder.
 
 ```bash
-open-attestation title-escrow change-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newHolder <NEW_HOLDER> [options]
+tradetrust title-escrow change-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newHolder <NEW_HOLDER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow change-holder --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newHolder 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+tradetrust title-escrow change-holder --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newHolder 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully changed to holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
@@ -697,13 +697,13 @@ This command will allow the owner of the transferable record to nominate a new o
 **This command will fail if you are not the owner of the transferable record.**
 
 ```bash
-open-attestation title-escrow nominate-change-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> [options]
+tradetrust title-escrow nominate-change-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow nominate-change-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newOwner 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+tradetrust title-escrow nominate-change-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newOwner 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully nominated to new owner with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
@@ -714,13 +714,13 @@ This command will allow the holder of the transferable record to endorse the tra
 **This command will fail if there is no approved owner or holder record on the transferable record.**
 
 ```bash
-open-attestation title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newBeneficiary <NEW_OWNER> [options]
+tradetrust title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newBeneficiary <NEW_OWNER> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow endorse-transfer-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newBeneficiary 0x2f60375e8144e16Adf1979936301D8341D58C36C
+tradetrust title-escrow endorse-transfer-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newBeneficiary 0x2f60375e8144e16Adf1979936301D8341D58C36C
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to approved beneficiary at 0x2f60375e8144e16Adf1979936301D8341D58C36C
 ```
@@ -731,13 +731,13 @@ This command will allow the owner of the transferable record to endorse the chan
 **This command will fail if the provided holder and owner's addresses are the same as the current owner and current holder's addresses.**
 
 ```bash
-open-attestation title-escrow endorse-change-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> --newHolder <NEW_HOLDER_ADDRESS> [options]
+tradetrust title-escrow endorse-change-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> --newHolder <NEW_HOLDER_ADDRESS> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow endorse-change-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newOwner 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 --newHolder 0x2f60375e8144e16Adf1979936301D8341D58C36C
+tradetrust title-escrow endorse-change-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --newOwner 0xB26B4941941C51a4885E5B7D3A1B861E54405f90 --newHolder 0x2f60375e8144e16Adf1979936301D8341D58C36C
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to new owner with address 0x2f60375e8144e16Adf1979936301D8341D58C36C and new holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
@@ -747,13 +747,13 @@ open-attestation title-escrow endorse-change-owner --token-registry 0x4933e30eF8
 This command will allow the entity (who is both an owner and holder) to surrender it's transferable record to the token registry.
 
 ```bash
-open-attestation title-escrow surrender --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+tradetrust title-escrow surrender --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+tradetrust title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
 
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been surrendered.
 ```
@@ -763,13 +763,13 @@ open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A0
 This command will allow the token registry to reject a surrendered transferable record.
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+tradetrust title-escrow reject-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+tradetrust title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
 ```
@@ -779,13 +779,13 @@ open-attestation title-escrow reject-surrendered --token-registry 0x4933e30eF8A0
 This command will allow the token registry to accept a surrendered transferable record.
 
 ```bash
-open-attestation title-escrow accept-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+tradetrust title-escrow accept-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+tradetrust title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
 
 ✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
 
@@ -796,13 +796,13 @@ open-attestation title-escrow accept-surrendered --token-registry 0x4933e30eF8A0
 Run the command with `--help` to get additional information
 
 ```
-open-attestation deploy
-open-attestation document-store
-open-attestation encrypt
-open-attestation filter
-open-attestation verify
-open-attestation wrap
-open-attestation sign
+tradetrust deploy
+tradetrust document-store
+tradetrust encrypt
+tradetrust filter
+tradetrust verify
+tradetrust wrap
+tradetrust sign
 ```
 
 ## Development
