@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "@govtechsg/oa-encryption": "^1.3.3",
-    "@govtechsg/tradetrust-config": "^1.5.1",
+    "@tradetrust-tt/tradetrust-config": "^1.5.1",
     "@snyk/protect": "^1.1196.0",
     "@tradetrust-tt/dnsprove": "^2.8.1",
     "@tradetrust-tt/document-store": "^2.6.1",
