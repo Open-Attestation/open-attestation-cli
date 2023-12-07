@@ -42,6 +42,8 @@ npx -p @tradetrust-tt/tradetrust-cli tradetrust <arguments>
 | mumbai             | 80001    | Test       |
 | xdc                | 50       | Production |
 | xdcapothem         | 51       | Test       |
+| hederamainet       | 295      | Production |
+| hederatestnet      | 296      | Test       |
 
 ---
 
