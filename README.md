@@ -18,17 +18,17 @@ Alternatively for Linux or MacOS users, if you have `npm` installed on your mach
 npm install -g @tradetrust-tt/tradetrust-cli
 ```
 
-The above command will install the open-attestation CLI to your machine. You will need to have node.js installed to be able to run the command.
+The above command will install the TradeTrust CLI to your machine. You will need to have node.js installed to be able to run the command.
 
 You can also opt to use npx:
 
 ```bash
-npx -p @tradetrust-tt/tradetrust-cli open-attestation <arguments>
+npx -p @tradetrust-tt/tradetrust-cli tradetrust <arguments>
 ```
 
-> In all the guides, we will refer to the CLI as `open-attestation` when running a command. That means we will assume the CLI is available in your execution path. If it's not the case, you will to change `open-attestation` by the full path to the executable.
+> In all the guides, we will refer to the CLI as `tradetrust` when running a command. That means we will assume the CLI is available in your execution path. If it's not the case, you will to change `tradetrust` by the full path to the executable.
 
-> A configuration folder will be created in the `~/.config/open-attestation/`
+> A configuration folder will be created in the `~/.config/tradetrust/`
 
 ---
 

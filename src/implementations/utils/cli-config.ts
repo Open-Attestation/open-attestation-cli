@@ -1,7 +1,7 @@
 import { homedir } from "os";
 import fs from "fs";
 
-const fileDirectory = homedir + "/.config/open-attestation/";
+const fileDirectory = homedir + "/.config/tradetrust/";
 const fileName = "oacli-config.json";
 const configFilePath = fileDirectory + fileName;
 
