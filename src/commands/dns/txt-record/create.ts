@@ -33,7 +33,7 @@ export const builder = (yargs: Argv): Argv =>
     })
     .option("sandbox-endpoint", {
       description: "Sandbox address to create record at",
-      default: "https://sandbox.openattestation.com",
+      default: "https://sandbox.fyntech.io",
       alias: "t",
       demandOption: false,
       type: "string",
