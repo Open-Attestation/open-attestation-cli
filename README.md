@@ -481,13 +481,13 @@ Create a temporary DNS TXT record in OpenAttestation sandbox
 
 ```bash
 tradetrust dns txt-record create --address 0xf51030c5751a646284c898cff0f9d833c64a50d6f307b61f2c96c3c838b13bfc --networkId 10
-✔  success   Record created at exotic-blush-primate.sandbox.openattestation.com and will stay valid until Thu Jul 02 2020 13:51:34 GMT+0800 (Singapore Standard Time)
+✔  success   Record created at exotic-blush-primate.sandbox.fyntech.io and will stay valid until Thu Jul 02 2020 13:51:34 GMT+0800 (Singapore Standard Time)
 ```
 
 Get the list of DNS TXT records associated to a domain
 
 ```bash
-tradetrust dns txt-record get --location resulting-magenta-locust.sandbox.openattestation.com
+tradetrust dns txt-record get --location resulting-magenta-locust.sandbox.fyntech.io
 ┌─────────┬────────────┬────────────┬───────┬──────────┬────────┐
 │ (index) │    type    │    net     │ netId │   addr   │ dnssec │
 ├─────────┼────────────┼────────────┼───────┼──────────┼────────┤
