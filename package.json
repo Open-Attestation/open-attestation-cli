@@ -50,10 +50,10 @@
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "commitizen": "^4.3.0",
-    "eslint": "^7.26.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-jest": "^24.3.6",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jest": "^27.6.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "git-cz": "^4.7.6",
     "jest": "^29.7.0",
     "jest-mock": "^29.7.0",
@@ -123,8 +123,9 @@
       "plugin:prettier/recommended"
     ],
     "parserOptions": {
-      "ecmaVersion": 2018,
+      "ecmaVersion": 2020,
       "sourceType": "module",
+      "project": "./tsconfig.json",
       "ecmaFeatures": {
         "jsx": true
       }
@@ -147,7 +148,18 @@
       "jest/prefer-expect-assertions": "off",
       "jest/no-hooks": "off",
       "jest/prefer-strict-equal": "off",
-      "array-callback-return": "error"
+      "array-callback-return": "error",
+      "jest/unbound-method": "error",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "jest/no-conditional-in-test": "off",
+      "jest/no-confusing-set-timeout": "off",
+      "jest/prefer-expect-resolves": "off",
+      "jest/max-expects": "off",
+      "jest/prefer-to-be": "off",
+      "jest/require-hook": "off",
+      "jest/no-untyped-mock-factory": "off",
+      "jest/prefer-hooks-in-order": "off"
     }
   },
   "jest": {
@@ -166,7 +178,8 @@
     "testTimeout": 20000
   },
   "prettier": {
-    "printWidth": 120
+    "printWidth": 120,
+    "trailingComma": "es5"
   },
   "repository": {
     "type": "git",
