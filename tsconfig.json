@@ -13,7 +13,8 @@
     "jsx": "react",
     "sourceMap": true,
     "types": ["jest", "node"],
-    "allowJs": true
+    "allowJs": true,
+    "useUnknownInCatchVariables": false
   },
-  "include": ["src"]
+  "include": ["src", "performance-tests/**/*.ts"]
 }
