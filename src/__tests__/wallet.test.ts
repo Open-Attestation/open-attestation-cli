@@ -2,7 +2,7 @@ import chalk, { Level } from "chalk";
 import { prompt } from "inquirer";
 import path from "path";
 import signale from "signale";
-import { mocked } from 'jest-mock';
+import { mocked } from "jest-mock";
 import { handler as decrypt } from "../commands/wallet/decrypt";
 
 jest.mock("inquirer");
