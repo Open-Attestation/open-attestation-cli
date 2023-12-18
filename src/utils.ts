@@ -139,7 +139,7 @@ export const extractErrorMessage = (error: unknown): string => toErrorWithMessag
 
 export const getErrorMessage = function (error: unknown): string {
   if (error instanceof Error) {
-    return "reason" in error ? error["reason"] : error.message;
+    return "reason" in error ? (error["reason"] as string) : error.message;
   } else {
     return extractErrorMessage(error);
   }

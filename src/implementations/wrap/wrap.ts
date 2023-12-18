@@ -16,7 +16,11 @@ import Ajv, { AnySchemaObject, ErrorObject, ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
 
 class SchemaValidationError extends Error {
-  constructor(message: string, public validationErrors: ErrorObject[], public document: any) {
+  constructor(
+    message: string,
+    public validationErrors: ErrorObject[],
+    public document: any
+  ) {
     super(message);
   }
 }
