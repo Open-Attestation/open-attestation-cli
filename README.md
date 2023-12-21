@@ -87,7 +87,7 @@ The response looks like:
 ```bash
 /!\ Welcome to the fee table. Please read the information below to understand the transaction fee
 
-The table below display information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you better help you to choose a gas price depending on your needs:
+The table below display information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you choose a gas price depending on your needs:
 
 Information about the network:
 Costs based on block number: 4275264
@@ -115,7 +115,7 @@ Please read the information above to understand the table
 
 The following is a feature list and the options each feature requires.
 
-|                                                                            | Private Key | Wallet | Aws Kms |
+| Feature                                                                    | Private Key | Wallet | Aws Kms |
 | -------------------------------------------------------------------------- | ----------- | ------ | ------- |
 | [Create config](#creating-the-configuration-file)                         | ❎          | ✔️     | ❎      |
 | [Deploy document store](#deploying-a-new-document-store)                        | ✔           | ✔      | ✔       |
@@ -221,7 +221,7 @@ The response looks like:
 
 ##### HTTP endpoint in the `--schema` option 
 
-The `schema` parameter also allows an HTTP endpoint to return valid JSON schema:
+With the `schema` parameter, an HTTP endpoint will return a valid JSON schema.
 
 The following shows a command example containing an HTTP endpoint:
 
@@ -339,7 +339,7 @@ The response looks like:
 
 ### Document privacy filter
 
-The `filter` command lets the document holders generate valid documents and obfuscates certain fields, such as those fields containing sensitive information that you prefer not to disclose.
+Using the `filter` command, the document holders can generate valid documents and obfuscate certain fields, such as those fields containing sensitive information that they prefer not to disclose.
 
 The following shows the syntax of the `filter` command:
 
@@ -360,7 +360,7 @@ The response looks like:
 
 ### Encrypting a document
 
-The `encrypt` command helps you encrypt the documents, so that you can share and store them safely.
+With the `encrypt` command, you can encrypt the documents to share and store them safely.
 
 The following shows the syntax of the `encrypt` command:
 
@@ -382,7 +382,7 @@ The response looks like:
 
 ### Decrypting a document
 
-The `decrypt` command lets you decrypt documents that were encrypted using the [encrypt](#encrypting-a-document) method.
+Using the `decrypt` command, you can decrypt documents that were encrypted using the [encrypt](#encrypting-a-document) method.
 
 The following shows the syntax of the `decrypt` command:
 
@@ -733,7 +733,7 @@ The response looks like:
 
 #### Encrypting a wallet 
 
-The `wallet encrypt` command helps you encrypt a wallet.
+Using the `wallet encrypt` command, you can encrypt a wallet.
 
 >**Note:** If you want to provide the wallet private key, see the ["Providing the wallet"](#providing-the-wallet) section.
 
@@ -943,7 +943,7 @@ open-attestation transaction cancel --transaction-hash 0x000 --network sepolia -
 
 #### Changing the holder
 
-The `title-escrow change-holder` command lets the owner of a transferable record change its holder.
+Using the `title-escrow change-holder` command, the owner of a transferable record can change the holder.
 
 The following shows the command syntax:
 
@@ -967,7 +967,7 @@ The response looks like:
 
 #### Nominating the change of owner
 
-The `title-escrow nominate-change-owner` command helps the owner of the transferable record nominate a new owner.
+With the `title-escrow nominate-change-owner` command, the owner of the transferable record can nominate a new owner.
 
 >**Important:** This command will fail if you are not the owner of the transferable record.
 
@@ -995,7 +995,7 @@ The response looks like:
 
 #### Endorsing the transfer to owner
 
-The `title-escrow endorse-transfer-owner` command lets the transferable record holder endorse the transfer to an approved owner and holder.
+Using the `title-escrow endorse-transfer-owner` command, the transferable record holder can endorse the transfer to an approved owner and holder.
 
 >**Important:** This command will fail if there is no approved owner or holder information on the transferable record.
 
@@ -1022,7 +1022,7 @@ The response looks like:
 
 #### Endorsing the change of owner
 
-The `title-escrow endorse-change-owner` command helps the transferable record owner endorse the change to a new owner and holder.
+Using the `title-escrow endorse-change-owner` command, the transferable record owner can endorse the change to a new owner and holder.
 
 >**Important:** This command will fail if the new holder and owner's addresses you provide are the same as the current owner and holder's addresses.
 
@@ -1046,7 +1046,7 @@ The response looks like:
 
 #### Surrendering a document
 
-The `title-escrow surrender` command helps the entity (who is both an owner and a holder) surrender the transferable record to the token registry.
+With the `title-escrow surrender` command, the entity (who is both an owner and a holder) can surrender the transferable record to the token registry.
 
 The following is the command syntax:
 
@@ -1069,7 +1069,7 @@ The response looks like:
 
 #### Rejecting a surrendered document
 
-The `title-escrow reject-surrendered` command helps the token registry reject a surrendered transferable record.
+With the `title-escrow reject-surrendered` command, the token registry can reject a surrendered transferable record.
 
 The following shows the command syntax:
 
@@ -1091,7 +1091,7 @@ The response looks like:
 
 #### Accepting a surrendered document
 
-The `title-escrow accept-surrendered` command lets the token registry accept a surrendered transferable record.
+Using the `title-escrow accept-surrendered` command, the token registry will be able to accept a surrendered transferable record.
 
 The following shows the command syntax:
 
@@ -1147,7 +1147,7 @@ To run performance testing for OA functionality, follow the instructions below.
 
 ### Wrap
 
-The `npm run benchmark` command helps you monitor the response time spent on wrapping a batch of documents.
+Using the `npm run benchmark` command, you can monitor the response time spent on wrapping a batch of documents.
 
 The default command (with no options) will test two documents without `base64` image in one iteration:
 
