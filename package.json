@@ -74,7 +74,7 @@
     "@snyk/protect": "^1.1196.0",
     "@tradetrust-tt/dnsprove": "^2.8.1",
     "@tradetrust-tt/document-store": "^2.6.1",
-    "@tradetrust-tt/token-registry": "^4.1.7",
+    "@tradetrust-tt/token-registry": "^4.5.0",
     "@tradetrust-tt/tradetrust": "^6.9.0",
     "@tradetrust-tt/tt-verify": "^8.4.0",
     "ajv": "^8.4.0",
