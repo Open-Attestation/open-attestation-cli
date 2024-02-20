@@ -1,10 +1,10 @@
 # OpenAttestation (CLI)
 
-This command line interface tool in the [OpenAttestation CLI](https://github.com/Open-Attestation/open-attestation-cli) repository turns `.json` documents into OpenAttestation verifiable documents. It applies OpenAttestation algorithm to produce a hash of the `.json` document, and then creates a file with the data and proof of integrity.
+This command line interface tool in the [OpenAttestation CLI](https://github.com/Open-Attestation/open-attestation-cli) repository turns `.json` documents into OpenAttestation verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the `.json` document, and then creates a file with the data and proof of integrity.
 
 ## Installation
 
-There are three ways to install the CLI, including binary, NPM, and NPX.
+There are two ways to install the CLI, including binary and NPM. Additionally, you can use NPX to execute the code in the package directly.
 
 ### Binary
 
@@ -22,16 +22,17 @@ npm install -g @govtechsg/open-attestation-cli
 
 The above command will install the open-attestation CLI to your machine. Be sure to have `node.js` installed, so that you can run the command.
 
-### NPX 
-You can also opt to use `npx` for the installation:
+### NPX
+
+If you only want to execute a few commands, you can also opt to use `npx` for the installation:
 
 ```bash
 npx -p @govtechsg/open-attestation-cli open-attestation <arguments>
 ```
 
-No matter which way you choose, once the installation process is complete, a configuration folder will be created in the `~/.config/open-attestation/` folder.
+Upon installation, a configuration folder will be created at `~/.config/open-attestation/`.
 
->**Important:** On this website, the CLI is referred to as `open-attestation` when you run a command. The assumption is the CLI is available in your execution path. If not, you must change `open-attestation` to reflect the full path to the executable.
+>**Important:** The CLI is referred to as `open-attestation` when you run a command. The assumption is the CLI is available in your execution path. If not, you must change `open-attestation` to reflect the full path to the executable.
 
 ---
 
@@ -221,7 +222,7 @@ The response looks like:
 
 ##### HTTP endpoint in the `--schema` option 
 
-With the `schema` parameter, an HTTP endpoint will return a valid JSON schema.
+The `schema` parameter also accepts a remote JSON schema.
 
 The following shows a command example containing an HTTP endpoint:
 
@@ -290,11 +291,11 @@ Alternatively, you can use the short form `--oav3` to replace `--open-attestatio
 open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
->**Note:** You should wrap Transferable Records individually, as each of them will be minted to a unique title escrow that represents the document's beneficiary and holder entities. For more information about title escrow, see [here](https://www.openattestation.com/docs/integrator-section/transferable-record/overview).
+>**Note:** Transferable Records must be wrapped individually as each of them will be minted to a unique title escrow that represents the document's beneficiary and holder entities. For more information about title escrow, see [here](https://www.openattestation.com/docs/integrator-section/transferable-record/overview).
 
 ### Unwrapping documents
 
-The `unwrap` command processes a document in the input directory. It will unwrap the document that has been wrapped to its raw document form, and display it in the console.
+The `unwrap` command processes a  wrapped document in the input directory. It will unwrap it to its raw document form, and display it in the console.
 
 The following shows a command example of `unwrap`:
 
@@ -414,7 +415,7 @@ The following shows the syntax of the `deploy token-registry` command:
 ```bash
 open-attestation deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -430,9 +431,11 @@ The response looks like:
 
 #### Issuing a document to token registry
 
-The `token-registry issue` command issues a hash to a token registry deployed on the blockchain. The `--tokenId` option indicates the document hash, and the `--to` option indicates the title escrow address to which the document is mapped.
+The `token-registry issue` command issues a hash to a token registry deployed on the blockchain. 
 
-<!--Flag: The syntax below didn't mention the `--to` option. The command example mentions `--to` option, but did not show how to use `--beneficiary` or `--holder` options.-->
+* The `--tokenId` option indicates the document hash
+* The `--beneficiary`  option indicates the beneficiary's wallet address
+* The `--holder` option indicates the document holder's wallet address
 
 The following shows the syntax of the `token-registry issue` command:
 
@@ -441,17 +444,20 @@ open-attestation token-registry issue --network <NETWORK> --address <TOKEN_REGIS
 ```
 >**Important:** In this command, you can use `mint` instead of `issue` and they will be strictly equivalent.
 
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
-The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
+In the example below: 
+* You will use 0x6FFeD6E6591b808130a9b248fEA32101b5220eca as beneficiary and holder.
+* You will need to replace the value above with a wallet address you control, to be able to perform different actions on the transferable records later.
+* The `key.txt` file stores the private key to token registry.
 
 ```bash
-open-attestation token-registry mint --network sepolia --address 0x6133f580aE903b8e79845340375cCfd78a45FF35 --tokenId 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c --to 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+open-attestation token-registry issue -a 0x8431012Bc040942B59e3C5bf428221eab0b2f723 --tokenId 0x0d9839a8034cb783d98bd57bcbaafb4dc3614c4193d2edf8a655c1ec6635b7ea --beneficiary 0x6FFeD6E6591b808130a9b248fEA32101b5220eca --holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca -n sepolia -f key.txt
 ```
 The response looks like:
 
 ```
-✔  success   Token with hash 0x10ee711d151bc2139473a57531f91d961b639affb876b350c31d031059cdcc2c has been issued on 0x6133f580aE903b8e79845340375cCfd78a45FF35 with the initial recipient being 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
+✔  success   Token with hash 0x0d9839a8034cb783d98bd57bcbaafb4dc3614c4193d2edf8a655c1ec6635b7ea has been issued on 0x1E63411DC2fCd6Fab5EE938622f5f6A390F48272 with the initial recipient being 0x6FFeD6E6591b808130a9b248fEA32101b5220eca and initial holder 0x6FFeD6E6591b808130a9b248fEA32101b5220eca
 ```
 
 #### Token Registry roles
@@ -469,7 +475,7 @@ The following shows the command syntax:
 ```bash
 open-attestation deploy document-store <store-name> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -500,7 +506,7 @@ The following shows the command syntax:
 ```bash
 open-attestation document-store issue --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable.
 
@@ -524,7 +530,7 @@ The following shows the command syntax:
 open-attestation document-store revoke --address <DOCUMENT_STORE_ADDRESS> --hash <HASH> [options]
 ```
 
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable.
 
@@ -554,7 +560,7 @@ The `--role` option accepts the following values:
 - `issuer`
 - `revoker`
 
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable.
 
@@ -584,7 +590,7 @@ The `--role` option accepts the following values:
 - `issuer`
 - `revoker`
 
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable.
  
@@ -608,7 +614,7 @@ The following shows the command syntax:
 ```bash
 open-attestation document-store transfer-ownership --address <DOCUMENT_STORE_ADDRESS> --new-owner <HASH> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -783,7 +789,7 @@ The response looks like:
 
 #### Providing the wallet
 
-When interacting with blockchain, you may need to provide a way to access your wallet. When the wallet is required, all functions will provide multiples ways for you to provide the wallet information:
+When interacting with blockchain, you need to provide a way to access your wallet. All functions that require this provide multiple ways for you to enter your wallet information:
 
 1. It is recommended to use the `--encrypted-wallet-path` option where you provide a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
 
@@ -824,16 +830,16 @@ open-attestation deploy document-store "My Name" --network sepolia --key 0000000
 
 The `config create` command generates a configuration file named `config.json` with sandbox DNS, document store, and token registry.
 
->**Note:** You need a `wallet.json` file with sufficient **funds** in the specified network for this command to work.
+>**Note:** You need a `wallet.json` file with sufficient **funds** in the specified network for this command to work. Currently, OpenAttestation does not provide any faucet to dispense funds into `wallet.json`. You can search online for some faucets.
 
 You can use the following options in this command:
 
 - `--output-dir` option specifies in which folder the configuration file will be created.
 - `--encrypted-wallet-path` option indicates a path to an [encrypted wallet](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt).
 
-- `--config-template-url` option provides a path to reference a configuration template file hosted on a public URL. To learn more, see [Method 1](#method-1-using-the-config-template-url-option-recommended).
+- `--config-template-url` option provides a path to reference a configuration template file hosted on a public URL.
 
-- `--config-template-path` option provides a path to reference a config template file locally. To learn more, see [Method 2](#method-2-using-the-config-template-path-option).
+- `--config-template-path` option provides a path to reference a config template file locally.
 
 There are two ways of using this command to generate a configuration file. Both ways will return a new configuration file with the sandbox DNS, updated document store, and updated token registry.
 
@@ -844,26 +850,19 @@ These are the reference config templates:
 - [V2 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/reference/config-v2.json)
 - [V3 config template](https://raw.githubusercontent.com/TradeTrust/tradetrust-config/master/build/reference/config-v3.json)
 
-Step 1. Generate a `wallet.json` file and add funds into `wallet.json`.
-
->**Note:** Skip Step 1 if you already have a `wallet.json` file with sufficient funds in the specified network.
-
-The following is a command example:
+Step 1. Make sure the `wallet.json` file has sufficient funds.
 
 ```bash
 open-attestation wallet create --output-file wallet.json
 ```
 
->**Note:** Currently, OpenAttestation does not provide any faucet to dispense funds into `wallet.json`. You can search online for some faucets.
-
-Step 2. Generate the configuration file by providing the `wallet.json` file you created and a URL to the configuration file template.
-
-The following is a command example:
+Step 2. Generate the configuration file by providing the `wallet.json` file and a URL to the configuration file template.
 
 ```
 open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
 ```
-The response looks like the following, in which you need to provide certain information:
+
+You need to provide certain information in the response:
 
 ```
 // Please fill in the necessary information when prompted.
@@ -876,26 +875,19 @@ The response looks like the following, in which you need to provide certain info
 
 #### Method 2: Using the `config-template-path` option
 
-Step 1. Generate a `wallet.json` file and add funds into `wallet.json`.
-
->**Note:** Skip Step 1 if you already have a `wallet.json` file with sufficient funds in the specified network.
-
-The following is a command example:
+Step 1. Make sure the `wallet.json` file has sufficient funds.
 
 ```bash
 open-attestation wallet create --output-file wallet.json
 ```
 
->**Note:** Currently, OpenAttestation does not provide any faucet to dispense funds into `wallet.json`. You can search online for some faucets.
-
-Step 2. Generate the configuration file by providing the `wallet.json` file you created and an existing configuration file.
-
-The following is a command example:
+Step 2. Generate the configuration file by providing the `wallet.json` file and an existing configuration file.
 
 ```bash
 open-attestation config create --output-dir ./example-configs --encrypted-wallet-path </path/to>/wallet.json
 ```
-The response looks like the following, in which you need to provide certain information:
+
+You need to provide certain information in the response:
 
 ```
 // Please fill in the necessary information when prompted.
@@ -951,7 +943,7 @@ The following shows the command syntax:
 open-attestation title-escrow change-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newHolder <NEW_HOLDER> [options]
 ```
 
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -977,7 +969,7 @@ The following shows the command syntax:
 open-attestation title-escrow nominate-change-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> [options]
 ```
 
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable.
  
@@ -1004,7 +996,7 @@ The following is the command syntax:
 ```bash
 open-attestation title-escrow endorse-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newBeneficiary <NEW_OWNER> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -1031,7 +1023,7 @@ The following is the command syntax:
 ```bash
 open-attestation title-escrow endorse-change-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --newOwner <NEW_OWNER_ADDRESS> --newHolder <NEW_HOLDER_ADDRESS> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -1053,7 +1045,7 @@ The following is the command syntax:
 ```bash
 open-attestation title-escrow surrender --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -1076,7 +1068,7 @@ The following shows the command syntax:
 ```bash
 open-attestation title-escrow reject-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
@@ -1098,7 +1090,7 @@ The following shows the command syntax:
 ```bash
 open-attestation title-escrow accept-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
-See more options [here](#providing-the-wallet).
+For more ways to provide the wallet, see [here](#providing-the-wallet).
 
 The following command is a recommended example with the private key set in the `OA_PRIVATE_KEY` environment variable. 
 
