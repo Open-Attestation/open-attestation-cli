@@ -70,13 +70,13 @@
   },
   "dependencies": {
     "@govtechsg/oa-encryption": "^1.3.3",
-    "@tradetrust-tt/tradetrust-config": "^1.5.1",
     "@snyk/protect": "^1.1196.0",
-    "@tradetrust-tt/dnsprove": "^2.8.1",
-    "@tradetrust-tt/document-store": "^2.6.1",
-    "@tradetrust-tt/token-registry": "^4.5.0",
+    "@tradetrust-tt/dnsprove": "^2.10.0",
+    "@tradetrust-tt/document-store": "^2.7.0",
+    "@tradetrust-tt/token-registry": "^4.6.0",
     "@tradetrust-tt/tradetrust": "^6.9.0",
-    "@tradetrust-tt/tt-verify": "^8.4.0",
+    "@tradetrust-tt/tradetrust-config": "^1.11.0",
+    "@tradetrust-tt/tt-verify": "^8.7.0",
     "ajv": "^8.4.0",
     "ajv-formats": "^2.1.0",
     "chalk": "^4.1.2",
@@ -163,7 +163,10 @@
       "jest-watch-typeahead/filename",
       "jest-watch-typeahead/testname"
     ],
-    "testTimeout": 20000
+    "testTimeout": 20000,
+    "moduleNameMapper": {
+      "^axios": "<rootDir>/node_modules/axios"
+    }
   },
   "prettier": {
     "printWidth": 120
