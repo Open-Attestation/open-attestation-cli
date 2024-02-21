@@ -2,7 +2,7 @@ import { providers } from "ethers";
 import type { GasStationFunction } from "./gas-station";
 import { gasStation } from "./gas-station";
 
-export type networkCurrency = "ETH" | "MATIC" | "XDC" | "HBAR";
+export type networkCurrency = "ETH" | "MATIC" | "XDC" | "HBAR" | "FREE";
 
 type SupportedNetwork = {
   explorer: string;
@@ -23,6 +23,7 @@ export enum NetworkCmdName {
   XDCApothem = "xdcapothem",
   HederaMainnet = "hederamainnet",
   HederaTestnet = "hederatestnet",
+  StabilityTestnet = "stabilitytestnet",
 }
 
 const defaultInfuraProvider =
@@ -102,6 +103,13 @@ export const supportedNetwork: {
     networkId: 296,
     networkName: NetworkCmdName.HederaTestnet,
     currency: "HBAR",
+  },
+  [NetworkCmdName.StabilityTestnet]: {
+    explorer: "https://stability-testnet.blockscout.com/",
+    provider: jsonRpcProvider("https://free.testnet.stabilityprotocol.com"),
+    networkId: 20180427,
+    networkName: NetworkCmdName.StabilityTestnet,
+    currency: "FREE",
   },
 };
 
