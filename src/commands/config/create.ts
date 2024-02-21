@@ -66,6 +66,7 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
       TestNetwork.Mumbai,
       TestNetwork.Apothem,
       TestNetwork.Hedera,
+      TestNetwork.StabilityTestnet,
     ];
     const { network } = await inquirer.prompt({
       type: "list",
