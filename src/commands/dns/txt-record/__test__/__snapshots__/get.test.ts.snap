@@ -13,7 +13,7 @@ exports[`get should return dns-txt 1`] = `
           "type": "openatts",
         },
         Object {
-          "addr": "0x2f45d8c2b55C935d3b9fBD41fCd9ABF790d5FA25",
+          "addr": "0x31376b6FB90c6C16320eE8A782E4bbbCC1a96B11",
           "dnssec": true,
           "net": "ethereum",
           "netId": "1",
@@ -21,6 +21,13 @@ exports[`get should return dns-txt 1`] = `
         },
         Object {
           "addr": "0x5FACf3cbd08AA4511Ff38D6DE64ee01A56272bBd",
+          "dnssec": true,
+          "net": "ethereum",
+          "netId": "1",
+          "type": "openatts",
+        },
+        Object {
+          "addr": "0xa1de31e1812e1111F227b44a083ADaB4429a4e96",
           "dnssec": true,
           "net": "ethereum",
           "netId": "1",
@@ -122,7 +129,7 @@ exports[`get should return dns-txt 2`] = `
           "type": "openatts",
         },
         Object {
-          "addr": "0x2f45d8c2b55C935d3b9fBD41fCd9ABF790d5FA25",
+          "addr": "0x31376b6FB90c6C16320eE8A782E4bbbCC1a96B11",
           "dnssec": true,
           "net": "ethereum",
           "netId": "1",
@@ -130,6 +137,13 @@ exports[`get should return dns-txt 2`] = `
         },
         Object {
           "addr": "0x5FACf3cbd08AA4511Ff38D6DE64ee01A56272bBd",
+          "dnssec": true,
+          "net": "ethereum",
+          "netId": "1",
+          "type": "openatts",
+        },
+        Object {
+          "addr": "0xa1de31e1812e1111F227b44a083ADaB4429a4e96",
           "dnssec": true,
           "net": "ethereum",
           "netId": "1",
