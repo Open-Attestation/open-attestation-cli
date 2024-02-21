@@ -20,8 +20,6 @@ export const versionCheck = async (): Promise<void> => {
 };
 
 export const getLatestReleaseVersion = async (): Promise<string> => {
-  const { name: latest } = await request(
-    "https://api.github.com/repos/open-attestation/open-attestation-cli/releases/latest"
-  );
+  const { name: latest } = await request("https://api.github.com/repos/tradetrust/tradetrust-cli/releases/latest");
   return latest;
 };
