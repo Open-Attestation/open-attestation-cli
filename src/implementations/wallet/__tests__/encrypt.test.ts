@@ -35,7 +35,7 @@ describe("create wallet", () => {
       expect.objectContaining({
         address: expect.any(String),
         id: expect.any(String),
-        Crypto: {
+        crypto: {
           cipher: "aes-128-ctr",
           cipherparams: {
             iv: expect.any(String),
