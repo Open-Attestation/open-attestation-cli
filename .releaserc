@@ -3,7 +3,7 @@
     "@semantic-release/npm",
     {
       "path": "@semantic-release/exec",
-      "cmd": "npx pkg ./package.json --out-path dist/@tradetrust-tt -t node12-linux-x64,node12-macos-x64,node12-win-x64"
+      "cmd": "npx pkg ./package.json --out-path dist/@tradetrust-tt -t node14-linux-x64,node14-macos-x64,node14-win-x64"
     }
   ],
   "publish": [
