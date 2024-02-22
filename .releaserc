@@ -3,7 +3,7 @@
     "@semantic-release/npm",
     {
       "path": "@semantic-release/exec",
-      "cmd": "npx pkg ./package.json --out-path dist/@govtechsg -t node12-linux-x64,node12-macos-x64,node12-win-x64"
+      "cmd": "npx pkg ./package.json --out-path dist/@tradetrust-tt -t node12-linux-x64,node12-macos-x64,node12-win-x64"
     }
   ],
   "publish": [
@@ -12,19 +12,19 @@
       "path": "@semantic-release/github",
       "assets": [
         {
-          "path": "./dist/@govtechsg/open-attestation-cli-linux",
-          "name": "open-attestation-linux",
-          "label": "open-attestation-linux"
+          "path": "./dist/@tradetrust-tt/tradetrust-cli-linux",
+          "name": "tradetrust-linux",
+          "label": "tradetrust-linux"
         },
         {
-          "path": "./dist/@govtechsg/open-attestation-cli-macos",
-          "name": "open-attestation-macos",
-          "label": "open-attestation-macos"
+          "path": "./dist/@tradetrust-tt/tradetrust-cli-macos",
+          "name": "tradetrust-macos",
+          "label": "tradetrust-macos"
         },
         {
-          "path": "./dist/@govtechsg/open-attestation-cli-win.exe",
-          "name": "open-attestation-win.exe",
-          "label": "open-attestation-win.exe"
+          "path": "./dist/@tradetrust-tt/tradetrust-cli-win.exe",
+          "name": "tradetrust-win.exe",
+          "label": "tradetrust-win.exe"
         }
       ]
     }
