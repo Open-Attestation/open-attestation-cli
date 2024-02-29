@@ -291,7 +291,7 @@ Alternatively, you can use the short form `--oav3` to replace `--open-attestatio
 open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
->**Note:** Transferable Records must be wrapped individually as each of them will be minted to a unique title escrow that represents the document's beneficiary and holder entities. For more information about title escrow, see [here](https://www.openattestation.com/docs/integrator-section/transferable-record/overview).
+>**Note:** Transferable Records must be wrapped individually as each of them will be minted to a unique title escrow that represents the document's beneficiary and holder entities. For more information about title escrow, see [here](https://www.openattestation.com/docs/transferable-section/overview-tr).
 
 ### Unwrapping documents
 
