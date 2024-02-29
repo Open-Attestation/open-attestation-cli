@@ -54,7 +54,7 @@ Upon installation, a configuration folder will be created at `~/.config/open-att
 
 ### Network fees
 
-For more information on network fees, see the [ ethereum documentation](https://ethereum.org/en/developers/docs/gas/).
+For more information on network fees, see the [Ethereum documentation](https://ethereum.org/en/developers/docs/gas/).
 
 #### Adjusting preset gas price
 
