@@ -38,14 +38,16 @@ Upon installation, a configuration folder will be created at `~/.config/open-att
 
 ## Supported networks
 
-| Network ID | Name                     | Network      | Type       |
-| ---------- | ------------------------ | ------------ | ---------- |
-| `1`        | Ethereum Mainnet         | `mainnet`    | Production |
-| `11155111` | Ethereum Testnet Sepolia | `sepolia`    | Test       |
-| `137`      | Polygon Mainnet          | `polygon`    | Production |
-| `80001`    | Polygon Testnet Mumbai   | `mumbai`     | Test       |
-| `50`       | XDC Network              | `xdc`        | Production |
-| `51`       | XDC Apothem Network      | `xdcapothem` | Test       |
+| Network ID | Name                     | Network         | Type       |
+|------------|--------------------------|-----------------|------------|
+| `1`        | Ethereum Mainnet         | `mainnet`       | Production |
+| `11155111` | Ethereum Testnet Sepolia | `sepolia`       | Test       |
+| `137`      | Polygon Mainnet          | `polygon`       | Production |
+| `80001`    | Polygon Testnet Mumbai   | `mumbai`        | Test       |
+| `50`       | XDC Network              | `xdc`           | Production |
+| `51`       | XDC Apothem Network      | `xdcapothem`    | Test       |
+| `295`      | Hedera Mainnet           | `hederamainnet` | Production |
+| `296`      | Hedera Testnet           | `hederatestnet` | Test       |
 
 
 ---
@@ -427,6 +429,17 @@ The response looks like:
 
 ```
 ✔  success   Token registry deployed at 0x4B127b8d5e53872d403ce43414afeb1db67B1842
+```
+
+Example - Hedera network using Title Escrow address.
+```bash
+open-attestation deploy token-registry "KrypCEBL" KRYE -n hederatestnet -f key.txt --factory-address 0xde5aBf7B2416b99cba15021E3CF35A2a56ac83c1 --standalone
+```
+
+The response looks like:
+
+```
+✔  success   Token registry deployed at 0x67f98aB5E2836223bCFC3e5c03D701AeB3a8A30a
 ```
 
 #### Issuing a document to token registry
