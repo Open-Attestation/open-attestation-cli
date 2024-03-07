@@ -21,7 +21,8 @@ const deployParamsHederaTestnet: DeployTokenRegistryCommand = {
   key: "0000000000000000000000000000000000000000000000000000000000000001",
   maxPriorityFeePerGasScale: 1,
   dryRun: false,
-  standalone: false,
+  standalone: true,
+  factory: "0x5B5F8d94782be18E22420f3276D5ef5a1bc65C53",
 };
 
 describe("deploy Token Registry", () => {
