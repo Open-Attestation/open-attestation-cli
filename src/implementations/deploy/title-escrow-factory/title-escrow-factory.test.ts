@@ -84,9 +84,9 @@ describe("title escrow factory", () => {
           network: "sepolia",
           dryRun: false,
           maxPriorityFeePerGasScale: 1.0,
-        })
+        }),
       ).rejects.toThrow(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
+        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information",
       );
     });
 
@@ -133,13 +133,13 @@ describe("title escrow factory", () => {
 
     it("should throw when keys are not found anywhere for hederatestnet", async () => {
       await expect(
-          deployTitleEscrowFactory({
-            network: "hederatestnet",
-            dryRun: false,
-            maxPriorityFeePerGasScale: 1.0,
-          })
+        deployTitleEscrowFactory({
+          network: "hederatestnet",
+          dryRun: false,
+          maxPriorityFeePerGasScale: 1.0,
+        }),
       ).rejects.toThrow(
-          "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
+        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information",
       );
     });
   });

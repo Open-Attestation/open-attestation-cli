@@ -94,7 +94,7 @@ describe("title-escrow", () => {
         transferOwners({
           ...endorseChangeOwnersParams,
           key: privateKey,
-        })
+        }),
       ).rejects.toThrow("new owner and new holder addresses are the same as the current owner and holder addresses");
     });
   });

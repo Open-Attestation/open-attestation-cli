@@ -88,7 +88,7 @@ describe("title-escrow", () => {
           ...endorseNominatedBeneficiaryParams,
           newBeneficiary: "0xdssfs",
           key: privateKey,
-        })
+        }),
       ).rejects.toThrow(`new beneficiary address is the same as the current beneficiary address`);
     });
   });
