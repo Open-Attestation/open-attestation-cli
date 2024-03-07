@@ -121,9 +121,9 @@ describe("issue document-store", () => {
         network: "hederatestnet",
         dryRun: false,
         maxPriorityFeePerGasScale: 1,
-      }),
+      })
     ).rejects.toThrow(
-      "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information",
+      "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
     );
   });
 
@@ -196,9 +196,9 @@ describe("issue document-store", () => {
         network: "hederatestnet",
         dryRun: false,
         maxPriorityFeePerGasScale: 1,
-      }),
+      })
     ).rejects.toThrow(
-      "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information",
+      "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
     );
   });
 });

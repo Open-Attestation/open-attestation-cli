@@ -89,7 +89,7 @@ describe("title-escrow", () => {
         nominateBeneficiary({
           ...nominateBeneficiaryParams,
           key: privateKey,
-        }),
+        })
       ).rejects.toThrow("new beneficiary address is the same as the current beneficiary address");
     });
   });

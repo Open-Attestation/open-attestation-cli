@@ -101,7 +101,7 @@ export const deployTokenRegistry = async ({
     const receipt = await tx.wait();
     const registryAddress = getEventFromReceipt<DeploymentEvent>(
       receipt,
-      deployerContract.interface.getEventTopic("Deployment"),
+      deployerContract.interface.getEventTopic("Deployment")
     ).args.deployed;
     return { transaction: receipt, contractAddress: registryAddress };
   } else {

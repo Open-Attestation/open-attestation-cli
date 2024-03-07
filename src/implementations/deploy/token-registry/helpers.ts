@@ -37,19 +37,19 @@ export const getDefaultContractAddress = (chainId: number): DeployContractAddres
 
 export const isSupportedTitleEscrowFactory = async (
   factoryAddress: string,
-  provider?: ethers.providers.Provider,
+  provider?: ethers.providers.Provider
 ): Promise<boolean> => {
   const titleEscrowFactoryContract = new ethers.Contract(
     factoryAddress,
     ["function implementation() view returns (address)"],
-    provider ?? ethers.getDefaultProvider(),
+    provider ?? ethers.getDefaultProvider()
   ) as TitleEscrowFactory;
   const implAddr = await titleEscrowFactoryContract.implementation();
 
   const implContract = new ethers.Contract(
     implAddr,
     ["function supportsInterface(bytes4 interfaceId) view returns (bool)"],
-    provider ?? ethers.getDefaultProvider(),
+    provider ?? ethers.getDefaultProvider()
   ) as TitleEscrow;
   const { TitleEscrow: titleEscrowInterfaceId } = CONTRACT_INTERFACE_ID;
   return implContract.supportsInterface(titleEscrowInterfaceId);
