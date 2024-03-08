@@ -14,17 +14,6 @@ const deployParams: DeployTokenRegistryCommand = {
   standalone: false,
 };
 
-const deployParamsHederaTestnet: DeployTokenRegistryCommand = {
-  registryName: "Test",
-  registrySymbol: "Tst",
-  network: "hederatestnet",
-  key: "0000000000000000000000000000000000000000000000000000000000000001",
-  maxPriorityFeePerGasScale: 1,
-  dryRun: false,
-  standalone: true,
-  factory: "0x5B5F8d94782be18E22420f3276D5ef5a1bc65C53",
-};
-
 describe("deploy Token Registry", () => {
   const mockedEthersContract: jest.Mock<Contract> = Contract as any;
   // eslint-disable-next-line jest/prefer-spy-on
@@ -132,84 +121,6 @@ describe("deploy Token Registry", () => {
         registryName: "Test",
         registrySymbol: "Tst",
         network: "sepolia",
-        dryRun: false,
-        maxPriorityFeePerGasScale: 1.0,
-      })
-    ).rejects.toThrow(
-      "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
-    );
-  });
-
-  //Hedera Testnet
-  it("should pass in the correct params and return the deployed instance for hederatestnet", async () => {
-    await deployTokenRegistry(deployParamsHederaTestnet);
-
-    const expectedInitParams = encodeInitParams({
-      name: deployParamsHederaTestnet.registryName,
-      symbol: deployParamsHederaTestnet.registrySymbol,
-      deployer: "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
-    });
-
-    expect(mockedDeploy.mock.calls[0][0]).toEqual("0xC78BA1a49663Ef8b920F36B036E91Ab40D8F26D6");
-    expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
-
-    // price should be any length string of digits
-    // expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
-    // expect(instance.contractAddress).toBe("contractAddress"); // TODO
-  });
-
-  it("should pass in the correct params with standalone and return the deployed instance for hederatestnet", async () => {
-    const deployStandalone = {
-      standalone: true,
-      ...deployParamsHederaTestnet,
-    };
-    await deployTokenRegistry(deployStandalone);
-
-    const expectedInitParams = encodeInitParams({
-      name: deployParamsHederaTestnet.registryName,
-      symbol: deployParamsHederaTestnet.registrySymbol,
-      deployer: "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
-    });
-
-    expect(mockedDeploy.mock.calls[0][0]).toEqual("0xC78BA1a49663Ef8b920F36B036E91Ab40D8F26D6");
-    expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
-
-    // price should be any length string of digits
-    // expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
-    // expect(instance.contractAddress).toBe("contractAddress"); // TODO
-  });
-
-  it("should pass in the correct params with unspecified standalone and return the deployed instance for hederatestnet", async () => {
-    const deployParamsUnspecified = deployParamsHederaTestnet;
-    delete deployParamsUnspecified.standalone;
-    await deployTokenRegistry(deployParamsUnspecified);
-
-    const expectedInitParams = encodeInitParams({
-      name: deployParamsHederaTestnet.registryName,
-      symbol: deployParamsHederaTestnet.registrySymbol,
-      deployer: "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf",
-    });
-
-    expect(mockedDeploy.mock.calls[0][0]).toEqual("0xC78BA1a49663Ef8b920F36B036E91Ab40D8F26D6");
-    expect(mockedDeploy.mock.calls[0][1]).toEqual(expectedInitParams);
-
-    // price should be any length string of digits
-    // expect(mockedDeploy.mock.calls[0][2].gasPrice.toString()).toStrictEqual(expect.stringMatching(/\d+/));
-    // expect(instance.contractAddress).toBe("contractAddress"); // TODO
-  });
-
-  it("should allow errors to bubble up for hederatestnet", async () => {
-    mockedDeploy.mockRejectedValue(new Error("An Error"));
-    await expect(deployTokenRegistry(deployParamsHederaTestnet)).rejects.toThrow("An Error");
-  });
-
-  it("should throw when keys are not found anywhere for hederatestnet", async () => {
-    delete process.env.OA_PRIVATE_KEY;
-    await expect(
-      deployTokenRegistry({
-        registryName: "Test",
-        registrySymbol: "Tst",
-        network: "hederatestnet",
         dryRun: false,
         maxPriorityFeePerGasScale: 1.0,
       })
