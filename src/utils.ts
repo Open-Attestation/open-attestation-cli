@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getSupportedNetwork, getSupportedNetworkNameFromId } from "./common/networks";
+import { NetworkCmdName, getSupportedNetwork, getSupportedNetworkNameFromId } from "./common/networks";
 import { info } from "signale";
 import { BigNumber, Overrides, constants, utils, ethers } from "ethers";
 import fetch, { RequestInit } from "node-fetch";
@@ -57,12 +57,22 @@ export const scaleBigNumber = (wei: BigNumber | null | undefined, multiplier: nu
 
 interface GetGasFeesArgs extends GasPriceScale {
   provider: Provider;
+  network: string;
 }
 
-export const getGasFees = async ({ provider, maxPriorityFeePerGasScale }: GetGasFeesArgs): Promise<Overrides> => {
+export const getGasFees = async ({
+  provider,
+  maxPriorityFeePerGasScale,
+  network,
+}: GetGasFeesArgs): Promise<Overrides> => {
   const feeData = await getFeeData(provider);
   const { maxFeePerGas, maxPriorityFeePerGas } = feeData;
-
+  if (network === NetworkCmdName.StabilityTestnet) {
+    return {
+      maxFeePerGas: 0,
+      maxPriorityFeePerGas: 0,
+    };
+  }
   return {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),

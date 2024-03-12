@@ -6,6 +6,7 @@ import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-r
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { getGasFees } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -27,12 +28,21 @@ export const issueToTokenRegistry = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
-  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId);
-  signale.await(`Sending transaction to pool`);
-  const transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, { ...gasFees });
+
+  let transaction;
+  if (network === NetworkCmdName.XDCApothem || network === NetworkCmdName.XDC) {
+    await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId);
+    signale.await(`Sending transaction to pool`);
+    transaction = await tokenRegistry.mint(beneficiary, holder, tokenId);
+  } else {
+    const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+    trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+    trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+    await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId);
+    signale.await(`Sending transaction to pool`);
+    transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, { ...gasFees });
+  }
+
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
