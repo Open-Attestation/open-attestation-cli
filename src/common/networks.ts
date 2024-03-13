@@ -115,6 +115,7 @@ export const supportedNetwork: {
     networkId: 101010,
     networkName: NetworkCmdName.Stability,
     currency: "FREE",
+    gasStation: gasStation("https://gtn.stabilityprotocol.com/gas-station"),
   },
   [NetworkCmdName.StabilityTestnet]: {
     explorer: "https://stability-testnet.blockscout.com/",
@@ -122,6 +123,7 @@ export const supportedNetwork: {
     networkId: 20180427,
     networkName: NetworkCmdName.StabilityTestnet,
     currency: "FREE",
+    gasStation: gasStation("https://free.testnet.stabilityprotocol.com/gas-station"),
   },
 };
 
