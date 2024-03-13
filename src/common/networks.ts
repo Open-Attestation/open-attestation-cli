@@ -24,6 +24,7 @@ export enum NetworkCmdName {
   HederaMainnet = "hederamainnet",
   HederaTestnet = "hederatestnet",
   StabilityTestnet = "stabilitytestnet",
+  Stability = "stability",
 }
 
 const defaultInfuraProvider =
@@ -35,6 +36,10 @@ const jsonRpcProvider =
   (url: string): (() => providers.Provider) =>
   () =>
     new providers.JsonRpcProvider(url);
+
+const getStabilityApiKey = () => {
+  return process.env.STABILITY_API_KEY || "test";
+};
 
 export const supportedNetwork: {
   [key in NetworkCmdName]: SupportedNetwork;
@@ -103,6 +108,13 @@ export const supportedNetwork: {
     networkId: 296,
     networkName: NetworkCmdName.HederaTestnet,
     currency: "HBAR",
+  },
+  [NetworkCmdName.Stability]: {
+    explorer: "https://stability.blockscout.com",
+    provider: jsonRpcProvider(`https://gtn.stabilityprotocol.com/zgt/${getStabilityApiKey()}`),
+    networkId: 101010,
+    networkName: NetworkCmdName.Stability,
+    currency: "FREE",
   },
   [NetworkCmdName.StabilityTestnet]: {
     explorer: "https://stability-testnet.blockscout.com/",
