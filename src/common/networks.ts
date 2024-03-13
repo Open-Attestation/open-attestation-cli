@@ -37,8 +37,8 @@ const jsonRpcProvider =
   () =>
     new providers.JsonRpcProvider(url);
 
-const getStabilityApiKey = () => {
-  return process.env.STABILITY_API_KEY || "test";
+const getStabilityApiKey = (): string => {
+  return process.env.STABILITY_API_KEY ?? "";
 };
 
 export const supportedNetwork: {
