@@ -24,7 +24,7 @@ export const revokeToDocumentStore = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
+  const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
   trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
   trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   await documentStore.callStatic.revoke(hash);
