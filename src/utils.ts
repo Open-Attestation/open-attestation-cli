@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { NetworkCmdName, getSupportedNetwork, getSupportedNetworkNameFromId } from "./common/networks";
+import { NetworkCmdName, getSupportedNetwork, getSupportedNetworkNameFromId, networkCurrency } from "./common/networks";
 import { info } from "signale";
 import { BigNumber, Overrides, constants, utils, ethers } from "ethers";
 import fetch, { RequestInit } from "node-fetch";
@@ -107,15 +107,35 @@ export const calculateMaxFee = (
   return maxFee.add(priorityFeeChange);
 };
 
-export const displayTransactionPrice = async (transaction: TransactionReceiptFees): Promise<void> => {
+//  workaround for issue in XDC that unable to estimate gas price,
+//  xdc returns undefined for maxFeePerGas and maxPriorityFeePerGas
+export const canEstimateGasPrice = (network: string): boolean => {
+  if (network === NetworkCmdName.XDC || network === NetworkCmdName.XDCApothem) {
+    return false;
+  }
+  return true;
+};
+// workaround for issue in XDC that unable to get gas fee after transaction
+export const canDisplayTransactionPrice = (network: string): boolean => {
+  if (
+    network === NetworkCmdName.XDC ||
+    network === NetworkCmdName.XDCApothem ||
+    network === NetworkCmdName.StabilityTestnet
+  ) {
+    return false;
+  }
+  return true;
+};
+
+export const displayTransactionPrice = async (
+  transaction: TransactionReceiptFees,
+  currency: networkCurrency
+): Promise<void> => {
   const totalWEI = transaction.effectiveGasPrice.mul(transaction.gasUsed);
-  const spotRateETH = await getSpotRate("ETH", "USD");
-  const totalETHUSD = convertWeiFiatDollars(totalWEI, spotRateETH);
-  const spotRateMATIC = await getSpotRate("MATIC", "USD");
-  const totalMATICUSD = convertWeiFiatDollars(totalWEI, spotRateMATIC);
-  info(
-    `Transaction fee of ${utils.formatEther(totalWEI)} eth / ~ ETH-USD ${totalETHUSD} or MATIC-USD ${totalMATICUSD}`
-  );
+  const spotRate = await getSpotRate(currency, "USD");
+  const totalUSD = convertWeiFiatDollars(totalWEI, spotRate);
+
+  info(`Transaction fee of ${utils.formatEther(totalWEI)} ${currency} / ~ ${currency}-USD ${totalUSD}`);
 };
 
 export const request = (url: string, options?: RequestInit): Promise<any> => {
@@ -130,8 +150,8 @@ export const request = (url: string, options?: RequestInit): Promise<any> => {
 };
 
 export const getSpotRate = async (crypto_currency = "ETH", fiat_currency = "USD"): Promise<number> => {
-  const spotRate = (await request(`https://api.coinbase.com/v2/prices/${crypto_currency}-${fiat_currency}/spot`)).data
-    .amount;
+  const URL = `https://api.coinbase.com/v2/prices/${crypto_currency}-${fiat_currency}/spot`;
+  const spotRate = (await request(URL)).data.amount;
   return spotRate;
 };
 

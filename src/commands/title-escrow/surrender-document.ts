@@ -4,7 +4,8 @@ import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
 import { surrenderDocument } from "../../implementations/title-escrow/surrenderDocument";
-import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { canDisplayTransactionPrice, displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName, supportedNetwork } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:surrender-document");
 
@@ -35,7 +36,11 @@ export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promis
   try {
     info(`Surrendering document`);
     const transaction = await surrenderDocument(args);
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+    if (canDisplayTransactionPrice(network)) {
+      const currency = supportedNetwork[network].currency;
+      displayTransactionPrice(transaction, currency);
+    }
     const { transactionHash } = transaction;
     success(`Transferable record with hash ${args.tokenId} has been surrendered.`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);

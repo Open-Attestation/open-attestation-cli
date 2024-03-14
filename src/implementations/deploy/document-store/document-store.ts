@@ -5,8 +5,7 @@ import { getLogger } from "../../../logger";
 import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/abstract-provider";
-import { getGasFees } from "../../../utils";
-import { NetworkCmdName } from "../../../common/networks";
+import { canEstimateGasPrice, getGasFees } from "../../../utils";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -30,15 +29,15 @@ export const deployDocumentStore = async ({
   const factory = new DocumentStoreFactory(wallet);
 
   let transaction: DocumentStore;
-  if (network === NetworkCmdName.XDCApothem || network === NetworkCmdName.XDC) {
-    signale.await(`Sending transaction to pool`);
-    transaction = await factory.deploy(storeName, ownerAddress);
-  } else {
+  if (canEstimateGasPrice(network)) {
     const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
     signale.await(`Sending transaction to pool`);
     transaction = await factory.deploy(storeName, ownerAddress, { ...gasFees });
+  } else {
+    signale.await(`Sending transaction to pool`);
+    transaction = await factory.deploy(storeName, ownerAddress);
   }
 
   trace(`Tx hash: ${transaction.deployTransaction.hash}`);

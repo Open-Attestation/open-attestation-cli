@@ -4,7 +4,14 @@ import { getLogger } from "../../logger";
 import { issueToTokenRegistry } from "../../implementations/token-registry/issue";
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { getErrorMessage, getEtherscanAddress, addAddressPrefix, displayTransactionPrice } from "../../utils";
+import {
+  getErrorMessage,
+  getEtherscanAddress,
+  addAddressPrefix,
+  displayTransactionPrice,
+  canDisplayTransactionPrice,
+} from "../../utils";
+import { NetworkCmdName, supportedNetwork } from "../../common/networks";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -50,7 +57,11 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
       ...args,
       tokenId: addAddressPrefix(args.tokenId),
     });
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+    if (canDisplayTransactionPrice(network)) {
+      const currency = supportedNetwork[network].currency;
+      displayTransactionPrice(transaction, currency);
+    }
     const { transactionHash } = transaction;
     success(
       `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.beneficiary} and initial holder ${args.holder}`

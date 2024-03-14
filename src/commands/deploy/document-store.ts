@@ -4,8 +4,14 @@ import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { displayTransactionPrice, getErrorMessage, getEtherscanAddress, highlight } from "../../utils";
-import { NetworkCmdName } from "../../common/networks";
+import {
+  canDisplayTransactionPrice,
+  displayTransactionPrice,
+  getErrorMessage,
+  getEtherscanAddress,
+  highlight,
+} from "../../utils";
+import { NetworkCmdName, supportedNetwork } from "../../common/networks";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -33,12 +39,10 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
   try {
     info(`Deploying document store ${args.storeName}`);
     const documentStore = await deployDocumentStore(args);
-    if (
-      args.network === NetworkCmdName.Mainnet ||
-      args.network === NetworkCmdName.Matic ||
-      args.network === NetworkCmdName.Sepolia
-    ) {
-      displayTransactionPrice(documentStore);
+    const network = args.network as NetworkCmdName;
+    if (canDisplayTransactionPrice(network)) {
+      const currency = supportedNetwork[network].currency;
+      displayTransactionPrice(documentStore, currency);
     }
     success(`Document store ${args.storeName} deployed at ${highlight(documentStore.contractAddress)}`);
     info(

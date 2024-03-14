@@ -4,7 +4,8 @@ import { getLogger } from "../../logger";
 import { transferHolder } from "../../implementations/title-escrow/transferHolder";
 import { TitleEscrowTransferHolderCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { canDisplayTransactionPrice, displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName, supportedNetwork } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:change-holder");
 
@@ -46,7 +47,12 @@ export const handler = async (args: TitleEscrowTransferHolderCommand): Promise<v
       `Please note that only current holders can change the holder of the transferable record, otherwise this command will fail.`
     );
     const transaction = await transferHolder(args);
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+    if (canDisplayTransactionPrice(network)) {
+      const currency = supportedNetwork[network].currency;
+      displayTransactionPrice(transaction, currency);
+    }
+
     const { transactionHash } = transaction;
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully changed to holder with address: ${args.newHolder}`

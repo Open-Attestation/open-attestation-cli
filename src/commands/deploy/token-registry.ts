@@ -3,8 +3,9 @@ import { deployTokenRegistry } from "../../implementations/deploy/token-registry
 import { error, info, success } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { canDisplayTransactionPrice, displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
 import { DeployTokenRegistryCommand } from "./deploy.types";
+import { NetworkCmdName, supportedNetwork } from "../../common/networks";
 const { trace } = getLogger("deploy:token-registry");
 
 export const command = "token-registry <registry-name> <registry-symbol> [options]";
@@ -55,7 +56,12 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
   try {
     info(`Deploying token registry ${args.registryName}`);
     const tokenRegistry = await deployTokenRegistry(args);
-    displayTransactionPrice(tokenRegistry.transaction);
+    const network = args.network as NetworkCmdName;
+    if (canDisplayTransactionPrice(network)) {
+      const currency = supportedNetwork[network].currency;
+      displayTransactionPrice(tokenRegistry.transaction, currency);
+    }
+
     success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`
