@@ -1,12 +1,12 @@
 # TradeTrust (CLI)
 
-This CLI tool in the [TradeTrust CLI](https://github.com/tradetrust-tt/tradetrust-cli) repository turns .json documents into any open-attestation verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the json document and then creates a file with the data and proof of integrity.
+This CLI tool in the [TradeTrust CLI](https://github.com/TradeTrust/tradetrust-cli) repository turns .json documents into any TradeTrust verifiable documents. It applies the OpenAttestation algorithm to produce a hash of the json document and then creates a file with the data and proof of integrity.
 
 ## Installation
 
 ### Binary
 
-To install the binary, simply download the binary from the [CLI release page](https://github.com/Open-Attestation/open-attestation-cli/releases) for your OS.
+To install the binary, simply download the binary from the [CLI release page](https://github.com/TradeTrust/tradetrust-cli/releases) for your OS.
 
 > We are aware that the size of the binaries must be reduced and we have tracked the issue in [Github](https://github.com/Open-Attestation/open-attestation-cli/issues/68). We hope to find a solution in a near future and any help is welcomed.
 
@@ -225,7 +225,7 @@ tradetrust wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --open-a
 tradetrust wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
-> **_NOTE:_** For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](https://www.openattestation.com/docs/integrator-section/transferable-record/title-escrow).
+> **_NOTE:_** For transferable records, you should wrap them individually as each of them would be minted to a unique title escrow that represents the beneficiary and holder entities of the document. For more information about title escrow, refer [here](https://docs.tradetrust.io/docs/topics/introduction/transferable-records/overview).
 
 ### Unwrapping documents
 
@@ -312,7 +312,7 @@ tradetrust decrypt ./src/__tests__/fixture/did-dns-encrypted.json decrypted.json
 
 #### Deploy new Token Registry
 
-Deploys a token registry contract on the blockchain. Factory Contract that have been deployed using token-registry can be used with the factory address flag. To deploy a standalone token registry, please refer to [Token-Registry](https://github.com/Open-Attestation/token-registry) deployment.
+Deploys a token registry contract on the blockchain. Factory Contract that have been deployed using token-registry can be used with the factory address flag. To deploy a standalone token registry, please refer to [Token-Registry](https://github.com/TradeTrust/token-registry) deployment.
 
 ```bash
 tradetrust deploy token-registry <registry-name> <registry-symbol> --factory-address <factory-address> [options]
@@ -660,7 +660,7 @@ You will need:
 - `--nonce` option specify which transaction to cancel.
 - `--gas-price` option, the gas price is required to be higher than the pending transaction.
 - `--transaction-hash` transaction hash option can be used as an alternative to nonce and gas-price option. Using this option will automatically increase the transaction gas price by 100%.
-- options to provide the wallet (https://github.com/Open-Attestation/open-attestation-cli#providing-the-wallet)
+- options to provide the wallet (https://github.com/TradeTrust/tradetrust-cli#providing-the-wallet)
 
 ```
 tradetrust transaction cancel --nonce <pending transaction nonce> --gas-price <gas price> [option]
@@ -824,7 +824,7 @@ npm run test
 
 ## Performance testing
 
-To run performance testing for OA functionality
+To run performance testing for TradeTrust functionality
 
 ### Wrap
 
