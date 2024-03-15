@@ -45,6 +45,7 @@ npx -p @tradetrust-tt/tradetrust-cli tradetrust <arguments>
 | hederamainet       | 295      | Production |
 | hederatestnet      | 296      | Test       |
 | stabilitytestnet   | 20180427 | Test       |
+| stability          | 101010   | Production |
 
 ---
 
