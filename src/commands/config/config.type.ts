@@ -12,6 +12,7 @@ export enum TestNetwork {
   Local = "local",
   Sepolia = "sepolia",
   Mumbai = "mumbai (polygon)",
+  Amoy = "amoy (polygon)",
   Apothem = "apothem (xdc)",
   Hedera = "hedera (testnet)",
   StabilityTestnet = "stability (testnet)",

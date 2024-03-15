@@ -34,18 +34,22 @@ npx -p @tradetrust-tt/tradetrust-cli tradetrust <arguments>
 
 ## Supported networks
 
-| Network            | Chain ID | Type       |
-| ------------------ | -------- | ---------- |
-| mainnet            | 1        | Production |
-| sepolia            | 11155111 | Test       |
-| polygon            | 137      | Production |
-| mumbai             | 80001    | Test       |
-| xdc                | 50       | Production |
-| xdcapothem         | 51       | Test       |
-| hederamainet       | 295      | Production |
-| hederatestnet      | 296      | Test       |
-| stabilitytestnet   | 20180427 | Test       |
-| stability          | 101010   | Production |
+| Network           | Network Name     | Chain ID | BlockChain  | Network Type |
+| ----------------- | ---------------- | -------- | ----------- | ------------ |
+| Local             | local            | 1337     | Local       | Local        |
+| Ethereum Mainnet  | mainnet          | 1        | Ethereum    | Mainnet      |
+| Sepolia           | sepolia          | 11155111 | Ethereum    | Testnet      |
+| Polygon Mainnet   | matic            | 137      | Polygon     | Mainnet      |
+| Mumbai            | maticmum         | 80001    | Polygon     | Testnet      |
+| Amoy              | amoy             | 80002    | Polygon     | Testnet      |
+| XDC Network       | xdc              | 50       | XDC Network | Mainnet      |
+| Apothem           | xdcapothem       | 51       | XDC Network | Testnet      |
+| Hedera Mainnet    | hederamainnet    | 295      | Hedera      | Mainnet      |
+| Hedera Testnet    | hederatestnet    | 296      | Hedera      | Testnet      |
+| Stability         | stability        | 101010   | Stability   | Mainnet      |
+| Stability Testnet | stabilitytestnet | 20180427 | Stability   | Testnet      |
+
+_Note: Network Name is the name used in the CLI --network options_
 
 ---
 
