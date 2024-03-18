@@ -4,8 +4,8 @@ import { getLogger } from "../../logger";
 import { nominateBeneficiary } from "../../implementations/title-escrow/nominateBeneficiary";
 import { TitleEscrowNominateBeneficiaryCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { canDisplayTransactionPrice, displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
-import { NetworkCmdName, supportedNetwork } from "../../common/networks";
+import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:nominate-change-of-owner");
 
@@ -48,10 +48,7 @@ export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Prom
     );
     const transaction = await nominateBeneficiary(args);
     const network = args.network as NetworkCmdName;
-    if (canDisplayTransactionPrice(network)) {
-      const currency = supportedNetwork[network].currency;
-      displayTransactionPrice(transaction, currency);
-    }
+    displayTransactionPrice(transaction, network);
     const { transactionHash } = transaction;
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newBeneficiary}`

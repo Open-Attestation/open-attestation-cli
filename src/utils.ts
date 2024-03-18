@@ -1,12 +1,12 @@
 import chalk from "chalk";
-import { NetworkCmdName, getSupportedNetwork, getSupportedNetworkNameFromId, networkCurrency } from "./common/networks";
+import { NetworkCmdName, getSupportedNetwork, getSupportedNetworkNameFromId } from "./common/networks";
 import { info } from "signale";
 import { BigNumber, Overrides, constants, utils, ethers } from "ethers";
 import fetch, { RequestInit } from "node-fetch";
 import { Provider } from "@ethersproject/abstract-provider";
 import { GasPriceScale } from "./commands/shared";
 import type { GasStationFeeData } from "./common/gas-station";
-
+import { supportedNetwork } from "./common/networks";
 export const getEtherscanAddress = ({ network }: { network: string }): string => getSupportedNetwork(network).explorer;
 
 export const addAddressPrefix = (address: string): string => (address.startsWith("0x") ? address : `0x${address}`);
@@ -107,21 +107,8 @@ export const calculateMaxFee = (
   return maxFee.add(priorityFeeChange);
 };
 
-//  workaround for issue in XDC that unable to estimate gas price,
-//  xdc returns undefined for maxFeePerGas and maxPriorityFeePerGas
 export const canEstimateGasPrice = (network: string): boolean => {
   if (network === NetworkCmdName.XDC || network === NetworkCmdName.XDCApothem) {
-    return false;
-  }
-  return true;
-};
-// workaround for issue in XDC that unable to get gas fee after transaction
-export const canDisplayTransactionPrice = (network: string): boolean => {
-  if (
-    network === NetworkCmdName.XDC ||
-    network === NetworkCmdName.XDCApothem ||
-    network === NetworkCmdName.StabilityTestnet
-  ) {
     return false;
   }
   return true;
@@ -129,8 +116,17 @@ export const canDisplayTransactionPrice = (network: string): boolean => {
 
 export const displayTransactionPrice = async (
   transaction: TransactionReceiptFees,
-  currency: networkCurrency
+  network: NetworkCmdName
 ): Promise<void> => {
+  // workaround for issue in XDC that unable to get gas fee after transaction
+  if (
+    network === NetworkCmdName.XDC ||
+    network === NetworkCmdName.XDCApothem ||
+    network === NetworkCmdName.StabilityTestnet
+  ) {
+    return;
+  }
+  const currency = supportedNetwork[network].currency;
   const totalWEI = transaction.effectiveGasPrice.mul(transaction.gasUsed);
   const spotRate = await getSpotRate(currency, "USD");
   const totalUSD = convertWeiFiatDollars(totalWEI, spotRate);
@@ -169,7 +165,7 @@ export const extractErrorMessage = (error: unknown): string => toErrorWithMessag
 
 export const getErrorMessage = function (error: unknown): string {
   if (error instanceof Error) {
-    return "reason" in error ? error["reason"] : error.message;
+    return "reason" in error ? (error["reason"] as string) : error.message;
   } else {
     return extractErrorMessage(error);
   }

@@ -150,9 +150,9 @@ export const handler = async (args: WrapCommand): Promise<string | undefined> =>
 
     return merkleRoot;
   } catch (err) {
-    signale.error(err.message);
-    if (err.validationErrors) {
-      for (const error of transformValidationErrors(err.validationErrors)) {
+    signale.error((err as Error).message);
+    if ((err as any).validationErrors) {
+      for (const error of transformValidationErrors((err as any).validationErrors)) {
         signale.error(error);
       }
     }

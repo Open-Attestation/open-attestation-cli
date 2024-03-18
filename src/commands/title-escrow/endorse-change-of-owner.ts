@@ -4,8 +4,8 @@ import { getLogger } from "../../logger";
 import { transferOwners } from "../../implementations/title-escrow/transferOwners";
 import { TitleEscrowEndorseTransferOfOwnersCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { canDisplayTransactionPrice, displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
-import { NetworkCmdName, supportedNetwork } from "../../common/networks";
+import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:endorse-change-of-owner");
 
@@ -54,10 +54,7 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnersCommand): 
     const transaction = await transferOwners(args);
     const network = args.network as NetworkCmdName;
 
-    if (canDisplayTransactionPrice(network)) {
-      const currency = supportedNetwork[network].currency;
-      displayTransactionPrice(transaction, currency);
-    }
+    displayTransactionPrice(transaction, network);
 
     const { transactionHash } = transaction;
     success(

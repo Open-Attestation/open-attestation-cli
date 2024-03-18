@@ -4,14 +4,8 @@ import { getLogger } from "../../logger";
 import { deployDocumentStore } from "../../implementations/deploy/document-store";
 import { DeployDocumentStoreCommand } from "./deploy.types";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import {
-  canDisplayTransactionPrice,
-  displayTransactionPrice,
-  getErrorMessage,
-  getEtherscanAddress,
-  highlight,
-} from "../../utils";
-import { NetworkCmdName, supportedNetwork } from "../../common/networks";
+import { displayTransactionPrice, getErrorMessage, getEtherscanAddress, highlight } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("deploy:document-store");
 
@@ -40,10 +34,9 @@ export const handler = async (args: DeployDocumentStoreCommand): Promise<string 
     info(`Deploying document store ${args.storeName}`);
     const documentStore = await deployDocumentStore(args);
     const network = args.network as NetworkCmdName;
-    if (canDisplayTransactionPrice(network)) {
-      const currency = supportedNetwork[network].currency;
-      displayTransactionPrice(documentStore, currency);
-    }
+
+    displayTransactionPrice(documentStore, network);
+
     success(`Document store ${args.storeName} deployed at ${highlight(documentStore.contractAddress)}`);
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${documentStore.contractAddress}`

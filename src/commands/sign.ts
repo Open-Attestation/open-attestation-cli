@@ -41,7 +41,7 @@ export const handler = async (args: SignCommand): Promise<void> => {
     await sign(args);
     signale.success(`Signed documents saved to ${args.outputDir}`);
   } catch (err) {
-    signale.error(err.message);
+    signale.error((err as Error).message);
     process.exit(1);
   }
 };
