@@ -6,7 +6,7 @@ import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escr
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { getGasFees } from "../../utils";
+import { canEstimateGasPrice, getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:endorseTransferOfOwner");
 
@@ -32,12 +32,20 @@ export const endorseNominatedBeneficiary = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
-  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
-  signale.await(`Sending transaction to pool`);
-  const transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, { ...gasFees });
+  let transaction;
+  if (canEstimateGasPrice(network)) {
+    const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+    trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+    trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
+    signale.await(`Sending transaction to pool`);
+    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, { ...gasFees });
+  } else {
+    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
+    signale.await(`Sending transaction to pool`);
+    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary);
+  }
+
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

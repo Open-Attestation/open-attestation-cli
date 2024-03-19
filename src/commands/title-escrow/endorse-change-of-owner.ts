@@ -5,6 +5,7 @@ import { transferOwners } from "../../implementations/title-escrow/transferOwner
 import { TitleEscrowEndorseTransferOfOwnersCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:endorse-change-of-owner");
 
@@ -51,7 +52,10 @@ export const handler = async (args: TitleEscrowEndorseTransferOfOwnersCommand): 
       `Please note that you have to be both the holder and owner of the transferable record, otherwise this command will fail.`
     );
     const transaction = await transferOwners(args);
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+
+    displayTransactionPrice(transaction, network);
+
     const { transactionHash } = transaction;
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to new owner with address ${args.newOwner} and new holder with address: ${args.newHolder}`

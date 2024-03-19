@@ -5,7 +5,7 @@ import { getWalletOrSigner } from "../utils/wallet";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { getGasFees } from "../../utils";
+import { canEstimateGasPrice, getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -25,12 +25,20 @@ export const rejectSurrendered = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
-  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await tokenRegistryInstance.callStatic.restore(tokenId);
-  signale.await(`Sending transaction to pool`);
-  const transaction = await tokenRegistryInstance.restore(tokenId, { ...gasFees });
+  let transaction;
+  if (canEstimateGasPrice(network)) {
+    const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+    trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+    trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+    await tokenRegistryInstance.callStatic.restore(tokenId);
+    signale.await(`Sending transaction to pool`);
+    transaction = await tokenRegistryInstance.restore(tokenId, { ...gasFees });
+  } else {
+    await tokenRegistryInstance.callStatic.restore(tokenId);
+    signale.await(`Sending transaction to pool`);
+    transaction = await tokenRegistryInstance.restore(tokenId);
+  }
+
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

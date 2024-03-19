@@ -13,7 +13,7 @@ import { getLogger } from "../../../logger";
 import { getWalletOrSigner } from "../../utils/wallet";
 import { dryRunMode } from "../../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/abstract-provider";
-import { getGasFees } from "../../../utils";
+import { canEstimateGasPrice, getGasFees } from "../../../utils";
 const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
@@ -39,7 +39,6 @@ export const deployTokenRegistry = async ({
     TokenImplementation: defaultTokenImplementationContractAddress,
     Deployer: defaultDeployerContractAddress,
   } = getDefaultContractAddress(chainId);
-
   trace(`[Deployer] ${deployerAddress}`);
 
   if (!factoryAddress || !isValidAddress(factoryAddress)) {
@@ -71,9 +70,13 @@ export const deployTokenRegistry = async ({
     standalone = true;
   }
 
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
-  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+  let gasFees;
+
+  if (canEstimateGasPrice(network)) {
+    gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+    trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+    trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+  }
 
   if (!standalone) {
     if (!deployerContractAddress || !implAddress) {
@@ -96,7 +99,12 @@ export const deployTokenRegistry = async ({
       });
       process.exit(0);
     }
-    const tx = await deployerContract.deploy(implAddress, initParam, { ...gasFees });
+    let tx;
+    if (canEstimateGasPrice(network)) {
+      tx = await deployerContract.deploy(implAddress, initParam, { ...gasFees });
+    } else {
+      tx = await deployerContract.deploy(implAddress, initParam);
+    }
     trace(`[Transaction] Pending ${tx.hash}`);
     const receipt = await tx.wait();
     const registryAddress = getEventFromReceipt<DeploymentEvent>(
@@ -107,7 +115,6 @@ export const deployTokenRegistry = async ({
   } else {
     // Standalone deployment
     const tokenFactory = new TradeTrustToken__factory(wallet);
-
     if (dryRun) {
       const transactionRequest = tokenFactory.getDeployTransaction(registryName, registrySymbol, factoryAddress);
       const estimatedGas = await wallet.estimateGas(transactionRequest);
@@ -115,9 +122,14 @@ export const deployTokenRegistry = async ({
         estimatedGas,
         network,
       });
-      process.exit(0);
+      process.exit();
     }
-    const token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress, { ...gasFees });
+    let token;
+    if (canEstimateGasPrice(network)) {
+      token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress, { ...gasFees });
+    } else {
+      token = await tokenFactory.deploy(registryName, registrySymbol, factoryAddress);
+    }
     const registryAddress = token.address;
     return { transaction: await token.deployTransaction.wait(), contractAddress: registryAddress };
   }

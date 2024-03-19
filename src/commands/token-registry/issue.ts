@@ -5,6 +5,7 @@ import { issueToTokenRegistry } from "../../implementations/token-registry/issue
 import { TokenRegistryIssueCommand } from "./token-registry-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { getErrorMessage, getEtherscanAddress, addAddressPrefix, displayTransactionPrice } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -50,7 +51,8 @@ export const handler = async (args: TokenRegistryIssueCommand): Promise<string |
       ...args,
       tokenId: addAddressPrefix(args.tokenId),
     });
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+    displayTransactionPrice(transaction, network);
     const { transactionHash } = transaction;
     success(
       `Token with hash ${args.tokenId} has been issued on ${args.address} with the initial recipient being ${args.beneficiary} and initial holder ${args.holder}`

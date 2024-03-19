@@ -87,7 +87,7 @@ const monitorWrapFeature = async (): Promise<void> => {
   } catch (e) {
     // Destroy Generated Files
     destroy();
-    console.error(e.message);
+    console.error((e as Error).message);
   }
 };
 monitorWrapFeature();

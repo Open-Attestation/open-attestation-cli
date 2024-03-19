@@ -6,7 +6,7 @@ import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from ".
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { TradeTrustToken__factory } from "@tradetrust-tt/token-registry/dist/contracts";
-import { getGasFees } from "../../utils";
+import { canEstimateGasPrice, getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:acceptSurrendered");
 
@@ -26,12 +26,20 @@ export const acceptSurrendered = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
-  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await tokenRegistryInstance.callStatic.burn(tokenId);
-  signale.await(`Sending transaction to pool`);
-  const transaction = await tokenRegistryInstance.burn(tokenId, { ...gasFees });
+  let transaction;
+  if (canEstimateGasPrice(network)) {
+    const gasFees = await getGasFees({ network, provider: wallet.provider, ...rest });
+    trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+    trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+    await tokenRegistryInstance.callStatic.burn(tokenId);
+    signale.await(`Sending transaction to pool`);
+    transaction = await tokenRegistryInstance.burn(tokenId, { ...gasFees });
+  } else {
+    await tokenRegistryInstance.callStatic.burn(tokenId);
+    signale.await(`Sending transaction to pool`);
+    transaction = await tokenRegistryInstance.burn(tokenId);
+  }
+
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

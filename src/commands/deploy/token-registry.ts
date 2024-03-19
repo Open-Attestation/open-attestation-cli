@@ -5,6 +5,7 @@ import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
 import { DeployTokenRegistryCommand } from "./deploy.types";
+import { NetworkCmdName } from "../../common/networks";
 const { trace } = getLogger("deploy:token-registry");
 
 export const command = "token-registry <registry-name> <registry-symbol> [options]";
@@ -55,7 +56,10 @@ export const handler = async (args: DeployTokenRegistryCommand): Promise<string 
   try {
     info(`Deploying token registry ${args.registryName}`);
     const tokenRegistry = await deployTokenRegistry(args);
-    displayTransactionPrice(tokenRegistry.transaction);
+    const network = args.network as NetworkCmdName;
+
+    displayTransactionPrice(tokenRegistry.transaction, network);
+
     success(`Token registry deployed at ${tokenRegistry.contractAddress}`);
     info(
       `Find more details at ${getEtherscanAddress({ network: args.network })}/address/${tokenRegistry.contractAddress}`

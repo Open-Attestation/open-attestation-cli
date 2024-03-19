@@ -5,6 +5,7 @@ import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared"
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
 import { rejectSurrendered } from "../../implementations/title-escrow/rejectSurrendered";
 import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:reject-surrendered");
 
@@ -35,7 +36,9 @@ export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promis
   try {
     info(`Rejecting surrendered document`);
     const transaction = await rejectSurrendered(args);
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+    displayTransactionPrice(transaction, network);
+
     const { transactionHash } = transaction;
     success(`Surrendered transferable record with hash ${args.tokenId} has been rejected.`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);

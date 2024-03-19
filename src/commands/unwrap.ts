@@ -70,7 +70,7 @@ export const handler = async (args: UnwrapCommand): Promise<void | undefined> =>
       }
     }
   } catch (err) {
-    signale.error(err.message);
+    signale.error((err as Error).message);
     process.exit(1);
   }
 };

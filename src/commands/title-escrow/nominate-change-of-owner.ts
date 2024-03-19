@@ -5,6 +5,7 @@ import { nominateBeneficiary } from "../../implementations/title-escrow/nominate
 import { TitleEscrowNominateBeneficiaryCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
+import { NetworkCmdName } from "../../common/networks";
 
 const { trace } = getLogger("title-escrow:nominate-change-of-owner");
 
@@ -46,7 +47,8 @@ export const handler = async (args: TitleEscrowNominateBeneficiaryCommand): Prom
       `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
     const transaction = await nominateBeneficiary(args);
-    displayTransactionPrice(transaction);
+    const network = args.network as NetworkCmdName;
+    displayTransactionPrice(transaction, network);
     const { transactionHash } = transaction;
     success(
       `Transferable record with hash ${args.tokenId}'s holder has been successfully nominated to new owner with address ${args.newBeneficiary}`

@@ -5,7 +5,7 @@ import { connectToTitleEscrow } from "./helpers";
 import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
-import { getGasFees } from "../../utils";
+import { canEstimateGasPrice, getGasFees } from "../../utils";
 
 const { trace } = getLogger("title-escrow:surrenderDocument");
 
@@ -25,12 +25,21 @@ export const surrenderDocument = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
-  trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
-  trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await titleEscrow.callStatic.surrender();
-  signale.await(`Sending transaction to pool`);
-  const transaction = await titleEscrow.surrender({ ...gasFees });
+  let transaction;
+
+  if (canEstimateGasPrice(network)) {
+    const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+    trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
+    trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
+    await titleEscrow.callStatic.surrender();
+    signale.await(`Sending transaction to pool`);
+    transaction = await titleEscrow.surrender({ ...gasFees });
+  } else {
+    await titleEscrow.callStatic.surrender();
+    signale.await(`Sending transaction to pool`);
+    transaction = await titleEscrow.surrender();
+  }
+
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);
