@@ -39,13 +39,13 @@ export const transferDocumentStoreOwnership = async ({
   trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
   trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   signale.await(`Sending transaction to pool`);
-  await documentStore.callStatic.grantRole(roleString, newOwner, { ...gasFees });
+  await documentStore.callStatic.grantRole(roleString, newOwner);
   const grantTransaction = await documentStore.grantRole(roleString, newOwner, { ...gasFees });
   success(`Document store ${address}'s ownership has been granted to wallet ${newOwner}`);
   info(`Transaction details at: ${getEtherscanAddress({ network: network })}/tx/${grantTransaction.hash}`);
   trace(`Tx hash: ${grantTransaction.hash}`);
   trace(`Block Number: ${grantTransaction.blockNumber}`);
-  await documentStore.callStatic.revokeRole(roleString, ownerAddress, { ...gasFees });
+  await documentStore.callStatic.revokeRole(roleString, ownerAddress);
   const revokeTransaction = await documentStore.revokeRole(roleString, ownerAddress, { ...gasFees });
   success(`Document store ${address}'s ownership has been revoked from wallet ${ownerAddress}`);
   info(`Transaction details at: ${getEtherscanAddress({ network: network })}/tx/${revokeTransaction.hash}`);

@@ -31,7 +31,7 @@ export const grantDocumentStoreRole = async ({
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
   trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
   trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await documentStore.callStatic.grantRole(roleString, account, { ...gasFees });
+  await documentStore.callStatic.grantRole(roleString, account);
   signale.await(`Sending transaction to pool`);
   const transaction = await documentStore.grantRole(roleString, account, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);

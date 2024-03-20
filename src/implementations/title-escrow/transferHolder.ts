@@ -30,7 +30,7 @@ export const transferHolder = async ({
   const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
   trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
   trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-  await titleEscrow.callStatic.transferHolder(to, { ...gasFees });
+  await titleEscrow.callStatic.transferHolder(to);
   signale.await(`Sending transaction to pool`);
   const transaction = await titleEscrow.transferHolder(to, { ...gasFees });
   trace(`Tx hash: ${transaction.hash}`);
