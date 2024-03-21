@@ -28,7 +28,7 @@ export const grantDocumentStoreRole = async ({
     });
     process.exit(0);
   }
-  const gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+  const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
   trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
   trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   await documentStore.callStatic.grantRole(roleString, account);

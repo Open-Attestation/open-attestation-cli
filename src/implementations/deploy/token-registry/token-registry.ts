@@ -73,7 +73,7 @@ export const deployTokenRegistry = async ({
   let gasFees;
 
   if (canEstimateGasPrice(network)) {
-    gasFees = await getGasFees({ provider: wallet.provider, network, ...rest });
+    gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
   }

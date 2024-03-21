@@ -57,22 +57,11 @@ export const scaleBigNumber = (wei: BigNumber | null | undefined, multiplier: nu
 
 interface GetGasFeesArgs extends GasPriceScale {
   provider: Provider;
-  network: string;
 }
 
-export const getGasFees = async ({
-  provider,
-  maxPriorityFeePerGasScale,
-  network,
-}: GetGasFeesArgs): Promise<Overrides> => {
+export const getGasFees = async ({ provider, maxPriorityFeePerGasScale }: GetGasFeesArgs): Promise<Overrides> => {
   const feeData = await getFeeData(provider);
   const { maxFeePerGas, maxPriorityFeePerGas } = feeData;
-  if (network === NetworkCmdName.StabilityTestnet) {
-    return {
-      maxFeePerGas: 0,
-      maxPriorityFeePerGas: 0,
-    };
-  }
   return {
     maxPriorityFeePerGas: scaleBigNumber(maxPriorityFeePerGas, maxPriorityFeePerGasScale),
     maxFeePerGas: calculateMaxFee(maxFeePerGas, maxPriorityFeePerGas, maxPriorityFeePerGasScale),
@@ -122,7 +111,8 @@ export const displayTransactionPrice = async (
   if (
     network === NetworkCmdName.XDC ||
     network === NetworkCmdName.XDCApothem ||
-    network === NetworkCmdName.StabilityTestnet
+    network === NetworkCmdName.StabilityTestnet ||
+    network === NetworkCmdName.Stability
   ) {
     return;
   }
