@@ -19,6 +19,7 @@ describe("deploy Token Registry", () => {
   // eslint-disable-next-line jest/prefer-spy-on
   mockedEthersContract.prototype.deploy = jest.fn();
   const mockedDeploy: jest.Mock = mockedEthersContract.prototype.deploy;
+
   // increase timeout because ethers is throttling
   jest.setTimeout(30000);
 
