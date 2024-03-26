@@ -38,10 +38,6 @@ const jsonRpcProvider =
   () =>
     new providers.JsonRpcProvider(url);
 
-const getStabilityApiKey = (): string => {
-  return process.env.STABILITY_API_KEY ?? "";
-};
-
 export const supportedNetwork: {
   [key in NetworkCmdName]: SupportedNetwork;
 } = {
@@ -119,7 +115,7 @@ export const supportedNetwork: {
   },
   [NetworkCmdName.Stability]: {
     explorer: "https://stability.blockscout.com",
-    provider: jsonRpcProvider(`https://gtn.stabilityprotocol.com/zgt/${getStabilityApiKey()}`),
+    provider: jsonRpcProvider(`https://gtn.stabilityprotocol.com/zgt/tradeTrust`),
     networkId: 101010,
     networkName: NetworkCmdName.Stability,
     currency: "FREE",
