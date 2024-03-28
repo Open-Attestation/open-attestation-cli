@@ -776,10 +776,6 @@ The response looks like:
 
 ```
 ⚠  warning   You are about to reveal the private key of your wallet. Please type "yes" (without quotes) into the terminal to prove that you understand the risks
-? ack: (node:3437) NOTE: We are formalizing our plans to enter AWS SDK for JavaScript (v2) into maintenance mode in 2023.
-Please migrate your code to use AWS SDK for JavaScript (v3).
-For more information, check the migration guide at https://a.co/7PzMCcy
-(Use `node --trace-warnings ...` to show where the warning was created)
 ? ack: yes
 ℹ  info      User consented to risks
 ? Wallet password [hidden]
