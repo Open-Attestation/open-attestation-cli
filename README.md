@@ -54,7 +54,7 @@ Upon installation, a configuration folder will be created at `~/.config/open-att
 
 ### Network fees
 
-For more information on network fees, see the [ ethereum documentation](https://ethereum.org/en/developers/docs/gas/).
+For more information on network fees, see the [Ethereum documentation](https://ethereum.org/en/developers/docs/gas/).
 
 #### Adjusting preset gas price
 
@@ -88,7 +88,7 @@ The response looks like:
 ```bash
 /!\ Welcome to the fee table. Please read the information below to understand the transaction fee
 
-The table below displays information about the cost of the transaction on the mainnet network, depending on the gas price selected. Multiple modes are displayed to help you choose a gas price depending on your needs:
+The table below displays information about the cost of the transaction on the Mainnet network, depending on the gas price selected. Multiple modes are displayed to help you choose a gas price depending on your needs:
 
 Information about the network:
 Costs based on block number: 4275264
@@ -291,7 +291,7 @@ Alternatively, you can use the short form `--oav3` to replace `--open-attestatio
 open-attestation wrap ./examples/raw-documents/ ./examples/wrapped-documents/ --oav3
 ```
 
->**Note:** Transferable Records must be wrapped individually as each of them will be minted to a unique title escrow that represents the document's beneficiary and holder entities. For more information about title escrow, see [here](https://www.openattestation.com/docs/integrator-section/transferable-record/overview).
+>**Note:** Transferable Records must be wrapped individually as each of them will be minted to a unique title escrow that represents the document's beneficiary and holder entities. For more information about title escrow, see [here](https://www.openattestation.com/docs/transferable-section/overview-tr).
 
 ### Unwrapping documents
 
@@ -775,8 +775,8 @@ open-attestation wallet decrypt wallet.json
 The response looks like:
 
 ```
-⚠  warning   You are about to reveal the private key of your wallet. Please type the following word into the terminal to prove that you understand the risks: active-aqua-swordtail
-? ack: active-aqua-swordtail
+⚠  warning   You are about to reveal the private key of your wallet. Please type "yes" (without quotes) into the terminal to prove that you understand the risks
+? ack: yes
 ℹ  info      User consented to risks
 ? Wallet password [hidden]
 …  awaiting  Decrypting Wallet [====================] [100/100%]
