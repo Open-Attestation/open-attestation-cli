@@ -75,14 +75,14 @@ export const supportedNetwork: {
   },
   [NetworkCmdName.XDC]: {
     explorer: "https://xdcscan.io",
-    provider: jsonRpcProvider("https://erpc.xinfin.network"),
+    provider: jsonRpcProvider("https://rpc.ankr.com/xdc"),
     networkId: 50,
     networkName: NetworkCmdName.XDC,
     currency: "XDC",
   },
   [NetworkCmdName.XDCApothem]: {
     explorer: "https://apothem.xdcscan.io",
-    provider: jsonRpcProvider("https://erpc.apothem.network"),
+    provider: jsonRpcProvider("https://rpc.ankr.com/xdc_testnet"),
     networkId: 51,
     networkName: NetworkCmdName.XDCApothem,
     currency: "XDC",
