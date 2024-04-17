@@ -11,6 +11,6 @@ export interface CreateConfigCommand {
 export enum TestNetwork {
   Local = "local",
   Sepolia = "sepolia",
-  Mumbai = "mumbai (polygon)",
+  Amoy = "amoy (polygon)",
   Apothem = "apothem (xdc)",
 }
