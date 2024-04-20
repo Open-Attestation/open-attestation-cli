@@ -40,7 +40,6 @@ npx -p @tradetrust-tt/tradetrust-cli tradetrust <arguments>
 | Ethereum Mainnet  | mainnet          | 1        | Ethereum    | Mainnet      |
 | Sepolia           | sepolia          | 11155111 | Ethereum    | Testnet      |
 | Polygon Mainnet   | matic            | 137      | Polygon     | Mainnet      |
-| Mumbai            | maticmum         | 80001    | Polygon     | Testnet      |
 | Amoy              | amoy             | 80002    | Polygon     | Testnet      |
 | XDC Network       | xdc              | 50       | XDC Network | Mainnet      |
 | Apothem           | xdcapothem       | 51       | XDC Network | Testnet      |

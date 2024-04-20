@@ -18,7 +18,6 @@ export enum NetworkCmdName {
   Mainnet = "mainnet",
   Sepolia = "sepolia",
   Matic = "matic",
-  Maticmum = "maticmum",
   Amoy = "amoy",
   XDC = "xdc",
   XDCApothem = "xdcapothem",
@@ -69,14 +68,6 @@ export const supportedNetwork: {
     networkName: NetworkCmdName.Matic,
     currency: "MATIC",
     gasStation: gasStation("https://gasstation.polygon.technology/v2"),
-  },
-  [NetworkCmdName.Maticmum]: {
-    explorer: "https://mumbai.polygonscan.com",
-    provider: defaultInfuraProvider("maticmum"),
-    networkId: 80001,
-    networkName: NetworkCmdName.Maticmum,
-    currency: "MATIC",
-    gasStation: gasStation("https://gasstation-testnet.polygon.technology/v2"),
   },
   [NetworkCmdName.Amoy]: {
     explorer: "https://www.oklink.com/amoy",
