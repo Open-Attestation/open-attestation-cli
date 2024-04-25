@@ -2,7 +2,7 @@ import { providers } from "ethers";
 import type { GasStationFunction } from "./gas-station";
 import { gasStation } from "./gas-station";
 
-export type networkCurrency = "ETH" | "MATIC" | "XDC";
+export type networkCurrency = "ETH" | "MATIC" | "XDC" | "CADL";
 
 type SupportedNetwork = {
   explorer: string;
@@ -21,6 +21,8 @@ export enum NetworkCmdName {
   Amoy = "amoy",
   XDC = "xdc",
   XDCApothem = "xdcapothem",
+  Camdl = "camdl",
+  CamdlTestnet = "camdl-testnet",
 }
 
 const defaultInfuraProvider =
@@ -86,6 +88,20 @@ export const supportedNetwork: {
     networkId: 51,
     networkName: NetworkCmdName.XDCApothem,
     currency: "XDC",
+  },
+  [NetworkCmdName.Camdl]: {
+    explorer: "https://explorer.camdl.gov.kh",
+    provider: jsonRpcProvider("https://rpc1.camdl.gov.kh"),
+    networkId: 95,
+    networkName: NetworkCmdName.Camdl,
+    currency: "CADL",
+  },
+  [NetworkCmdName.CamdlTestnet]: {
+    explorer: "https://explorer.testnet.camdl.gov.kh",
+    provider: jsonRpcProvider("https://rpc1.testnet.camdl.gov.kh"),
+    networkId: 395,
+    networkName: NetworkCmdName.CamdlTestnet,
+    currency: "CADL",
   },
 };
 
