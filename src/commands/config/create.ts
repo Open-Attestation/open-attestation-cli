@@ -63,7 +63,6 @@ export const handler = async (args: CreateConfigCommand): Promise<void> => {
     const networks = [
       TestNetwork.Local,
       TestNetwork.Sepolia,
-      TestNetwork.Mumbai,
       TestNetwork.Amoy,
       TestNetwork.Apothem,
       TestNetwork.Hedera,
@@ -90,7 +89,6 @@ const convertNetworkToNetworkCmdName = (selectedNetwork: TestNetwork): NetworkCm
   const network = {
     [TestNetwork.Local]: NetworkCmdName.Local,
     [TestNetwork.Sepolia]: NetworkCmdName.Sepolia,
-    [TestNetwork.Mumbai]: NetworkCmdName.Maticmum,
     [TestNetwork.Amoy]: NetworkCmdName.Amoy,
     [TestNetwork.Apothem]: NetworkCmdName.XDCApothem,
     [TestNetwork.Hedera]: NetworkCmdName.HederaTestnet,
