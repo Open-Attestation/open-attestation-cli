@@ -75,6 +75,7 @@ export const supportedNetwork: {
     networkId: 80002,
     networkName: NetworkCmdName.Amoy,
     currency: "MATIC",
+    gasStation: gasStation("https://gasstation-testnet.polygon.technology/amoy"),
   },
   [NetworkCmdName.XDC]: {
     explorer: "https://xdcscan.io",
