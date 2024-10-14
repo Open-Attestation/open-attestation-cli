@@ -43,7 +43,7 @@ Upon installation, a configuration folder will be created at `~/.config/open-att
 | `1`        | Ethereum Mainnet         | `mainnet`    | Production |
 | `11155111` | Ethereum Testnet Sepolia | `sepolia`    | Test       |
 | `137`      | Polygon Mainnet          | `polygon`    | Production |
-| `80002`    | Polygon Testnet Amoy     | `Amoy`       | Test       |
+| `80002`    | Polygon Testnet Amoy     | `amoy`       | Test       |
 | `50`       | XDC Network              | `xdc`        | Production |
 | `51`       | XDC Apothem Network      | `xdcapothem` | Test       |
 
