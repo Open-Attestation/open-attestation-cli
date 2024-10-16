@@ -1,4 +1,14 @@
 {
+  "branches": [
+    {
+      "name": "main",
+      "release": true
+    },
+    {
+      "name": "v3",
+      "prerelease": "alpha"
+    }
+  ],
   "prepare": [
     "@semantic-release/npm",
     {

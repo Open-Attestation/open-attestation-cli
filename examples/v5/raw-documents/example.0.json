@@ -1,0 +1,56 @@
+{
+  "version": "https://schema.openattestation.com/3.0/schema.json",
+  "network": {
+    "chain": "MATIC",
+    "chainId": "80002"
+  },
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json",
+    "https://schemata.openattestation.com/io/tradetrust/bill-of-lading/1.0/bill-of-lading-context.json"
+  ],
+  "credentialSubject": {
+    "shipper": {
+      "address": {}
+    },
+    "consignee": {},
+    "notifyParty": {},
+    "blNumber": "20240315",
+    "scac": "20240315",
+    "links": {
+      "self": {
+        "href": "https://action.openattestation.com?q=%7B%22type%22%3A%22DOCUMENT%22%2C%22payload%22%3A%7B%22uri%22%3A%22https%3A%2F%2Ftradetrust-functions.netlify.app%2F.netlify%2Ffunctions%2Fstorage%2F430b1a37-510e-4f38-a27c-444b3c464f83%22%2C%22key%22%3A%2254d6b2b34aea27541c3143988e7f1fc26f0f9f58f215d4915fa1da3a13441d00%22%2C%22permittedActions%22%3A%5B%22STORE%22%5D%2C%22redirect%22%3A%22https%3A%2F%2Fdev.tradetrust.io%2F%22%2C%22chainId%22%3A%2280001%22%7D%7D"
+      }
+    }
+  },
+  "openAttestationMetadata": {
+    "template": {
+      "type": "EMBEDDED_RENDERER",
+      "name": "BILL_OF_LADING",
+      "url": "https://generic-templates.tradetrust.io"
+    },
+    "proof": {
+      "type": "OpenAttestationProofMethod",
+      "method": "TOKEN_REGISTRY",
+      "value": "0x96cc41e7007Dee20eB409586E2e8206d5053219B",
+      "revocation": {
+        "type": "NONE"
+      }
+    },
+    "identityProof": {
+      "type": "DNS-TXT",
+      "identifier": "verifier-amoy.dev.nghaninn.com"
+    }
+  },
+  "issuanceDate": "2021-12-03T12:19:52Z",
+  "expirationDate": "2029-12-03T12:19:52Z",
+  "issuer": {
+    "id": "https://example.com",
+    "name": "DEMO TOKEN REGISTRY",
+    "type": "OpenAttestationIssuer"
+  },
+  "type": [
+    "VerifiableCredential",
+    "OpenAttestationCredential"
+  ]
+}

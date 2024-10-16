@@ -21,7 +21,7 @@ export const acceptSurrendered = async ({
   const tokenRegistryInstance = await TradeTrustToken__factory.connect(address, wallet);
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await tokenRegistryInstance.estimateGas.burn(tokenId),
+      estimatedGas: await tokenRegistryInstance.estimateGas.burn(tokenId, "0x"),
       network,
     });
     process.exit(0);
@@ -31,13 +31,13 @@ export const acceptSurrendered = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await tokenRegistryInstance.callStatic.burn(tokenId);
+    await tokenRegistryInstance.callStatic.burn(tokenId, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await tokenRegistryInstance.burn(tokenId, { ...gasFees });
+    transaction = await tokenRegistryInstance.burn(tokenId, "0x", { ...gasFees });
   } else {
-    await tokenRegistryInstance.callStatic.burn(tokenId);
+    await tokenRegistryInstance.callStatic.burn(tokenId, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await tokenRegistryInstance.burn(tokenId);
+    transaction = await tokenRegistryInstance.burn(tokenId, "0x");
   }
 
   trace(`Tx hash: ${transaction.hash}`);

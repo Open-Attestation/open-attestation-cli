@@ -24,7 +24,7 @@ export const nominateBeneficiary = async ({
   if (dryRun) {
     await validateNominateBeneficiary({ beneficiaryNominee: newBeneficiary, titleEscrow });
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.nominate(newBeneficiary),
+      estimatedGas: await titleEscrow.estimateGas.nominate(newBeneficiary, "0x"),
       network,
     });
     process.exit(0);
@@ -34,13 +34,13 @@ export const nominateBeneficiary = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.nominate(newBeneficiary);
+    await titleEscrow.callStatic.nominate(newBeneficiary, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.nominate(newBeneficiary, { ...gasFees });
+    transaction = await titleEscrow.nominate(newBeneficiary, "0x", { ...gasFees });
   } else {
-    await titleEscrow.callStatic.nominate(newBeneficiary);
+    await titleEscrow.callStatic.nominate(newBeneficiary, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.nominate(newBeneficiary);
+    transaction = await titleEscrow.nominate(newBeneficiary, "0x");
   }
 
   trace(`Tx hash: ${transaction.hash}`);

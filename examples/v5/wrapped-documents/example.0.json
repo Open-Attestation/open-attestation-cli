@@ -1,0 +1,67 @@
+{
+  "version": "https://schema.openattestation.com/3.0/schema.json",
+  "network": {
+    "chain": "MATIC",
+    "chainId": "80002"
+  },
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://schemata.openattestation.com/com/openattestation/1.0/OpenAttestation.v3.json",
+    "https://schemata.openattestation.com/io/tradetrust/bill-of-lading/1.0/bill-of-lading-context.json"
+  ],
+  "credentialSubject": {
+    "shipper": {
+      "address": {}
+    },
+    "consignee": {},
+    "notifyParty": {},
+    "blNumber": "20240315",
+    "scac": "20240315",
+    "links": {
+      "self": {
+        "href": "https://action.openattestation.com?q=%7B%22type%22%3A%22DOCUMENT%22%2C%22payload%22%3A%7B%22uri%22%3A%22https%3A%2F%2Ftradetrust-functions.netlify.app%2F.netlify%2Ffunctions%2Fstorage%2F430b1a37-510e-4f38-a27c-444b3c464f83%22%2C%22key%22%3A%2254d6b2b34aea27541c3143988e7f1fc26f0f9f58f215d4915fa1da3a13441d00%22%2C%22permittedActions%22%3A%5B%22STORE%22%5D%2C%22redirect%22%3A%22https%3A%2F%2Fdev.tradetrust.io%2F%22%2C%22chainId%22%3A%2280001%22%7D%7D"
+      }
+    }
+  },
+  "openAttestationMetadata": {
+    "template": {
+      "type": "EMBEDDED_RENDERER",
+      "name": "BILL_OF_LADING",
+      "url": "https://generic-templates.tradetrust.io"
+    },
+    "proof": {
+      "type": "OpenAttestationProofMethod",
+      "method": "TOKEN_REGISTRY",
+      "value": "0x96cc41e7007Dee20eB409586E2e8206d5053219B",
+      "revocation": {
+        "type": "NONE"
+      }
+    },
+    "identityProof": {
+      "type": "DNS-TXT",
+      "identifier": "verifier-amoy.dev.nghaninn.com"
+    }
+  },
+  "issuanceDate": "2021-12-03T12:19:52Z",
+  "expirationDate": "2029-12-03T12:19:52Z",
+  "issuer": {
+    "id": "https://example.com",
+    "name": "DEMO TOKEN REGISTRY",
+    "type": "OpenAttestationIssuer"
+  },
+  "type": [
+    "VerifiableCredential",
+    "OpenAttestationCredential"
+  ],
+  "proof": {
+    "type": "OpenAttestationMerkleProofSignature2018",
+    "proofPurpose": "assertionMethod",
+    "targetHash": "042ff9d3c76b60ff4cb5cea2a21306da1be1989e31f0879b1d8c3c82848b1e10",
+    "proofs": [],
+    "merkleRoot": "042ff9d3c76b60ff4cb5cea2a21306da1be1989e31f0879b1d8c3c82848b1e10",
+    "salts": "W3sidmFsdWUiOiIzMGQ2NTVkN2ZjZTQ3NWIwZjNkMzk1NzAyOGE1NzBjMDY4MDA5M2Q2YWI4ZjliNTFiODU5M2UyYTcxNjEwNmZiIiwicGF0aCI6InZlcnNpb24ifSx7InZhbHVlIjoiOTIwOTYyNGYxNTIzNWQ3NDc3YjEwOWMyMGZmNTMwYjcxYjRiYjA2ZTk1NzY5ZjE3OWMxMTA5YTlkNzhmZmNlNiIsInBhdGgiOiJuZXR3b3JrLmNoYWluIn0seyJ2YWx1ZSI6ImJiNmI1ZjJhYmFmMzRlYWQ1NzZhNDM2ODA2YzhmZDJkOThmOGRhM2QyZTY3NDJhYjFiMjQ1NTQyNjc0MTJlYTkiLCJwYXRoIjoibmV0d29yay5jaGFpbklkIn0seyJ2YWx1ZSI6ImU0NWIxMTM1YjNhMWMxZWEyZDcwYmUxMmRiYzc2M2Y0OGQ4YmQ5MmY5MDhiNWU3OTc3NTQ2ZDQ4ZDlkNTU0NWEiLCJwYXRoIjoiQGNvbnRleHRbMF0ifSx7InZhbHVlIjoiOTA5YmY3ZDI1NzAxNDhiZTdiMTcyNzUzM2JlMzdiMjNjN2Y4MmM2Njk5YzE1ODE3MjFhZjMzY2UwYWY1MzhiNCIsInBhdGgiOiJAY29udGV4dFsxXSJ9LHsidmFsdWUiOiI5NTE2OGEyNDhkNDA1MjFjOWRmYmYzZTNjMjlmZjczMzNkMDA5MjE4OTc5MDBjODY1MzI1ZWY2MzEyODVlZDE3IiwicGF0aCI6IkBjb250ZXh0WzJdIn0seyJ2YWx1ZSI6ImQ2ZDkzYWNmYjI4MjJiMDYxNzY5MjAzNWE4NjZkMDNmZDY2ZjMzNTZmMmQzYjg0YTNmMTYxZmYzYzU0NGU3ZTQiLCJwYXRoIjoiY3JlZGVudGlhbFN1YmplY3QuYmxOdW1iZXIifSx7InZhbHVlIjoiYzU4ZTU3OWExM2IzYWU3MWVmNTdjNjAzNzEzY2VmMjUyMDQ2NjEzOTcxNTJjNjg1YWNkMDA3ZjA4MTAwYjgzYSIsInBhdGgiOiJjcmVkZW50aWFsU3ViamVjdC5zY2FjIn0seyJ2YWx1ZSI6IjI0YzJiM2VjZDU4ZjU0NGRjMzNjMDEzYjQxNmEzN2UyYWNlY2JmYTg5MTI1M2VhY2VhODA3NTRiMWUyOTQ1YzUiLCJwYXRoIjoiY3JlZGVudGlhbFN1YmplY3QubGlua3Muc2VsZi5ocmVmIn0seyJ2YWx1ZSI6IjZlNzYwZTUxMzBlODIxN2FmN2E1NzE2NmVmNWIyYTA4NzdjYjM3YzM5MzQ5ZGZmZjc5OWQwMDU0YWRiNTAyYzEiLCJwYXRoIjoib3BlbkF0dGVzdGF0aW9uTWV0YWRhdGEudGVtcGxhdGUudHlwZSJ9LHsidmFsdWUiOiI1NjBiYWE1ZDEzMTljMWQ3YzA2NThkYjRhYjJmNTZhOGZkZTEzNGEyMGFmMGY2ZDExZDEyMjViZGMyZDM3MmM1IiwicGF0aCI6Im9wZW5BdHRlc3RhdGlvbk1ldGFkYXRhLnRlbXBsYXRlLm5hbWUifSx7InZhbHVlIjoiNjlmMDAwZDY5NTcxMzEwN2Q1OGM4ZTE0NWJiYzFkOWQwZTVhOTkyYjZiMGQzZDIxOTcwM2ZiZWZiNGMxNTFiMSIsInBhdGgiOiJvcGVuQXR0ZXN0YXRpb25NZXRhZGF0YS50ZW1wbGF0ZS51cmwifSx7InZhbHVlIjoiODM1OGY1ODkzZjRjNjg1NDJmNTYwYzRjMTc1NTFkNGIzMjk1OWMwYzBkODEzMzBmZWRlMDRiYzA3YmI0Y2ZmMyIsInBhdGgiOiJvcGVuQXR0ZXN0YXRpb25NZXRhZGF0YS5wcm9vZi50eXBlIn0seyJ2YWx1ZSI6IjM4ZjRiMTA4MTQ2YjM3Y2M1ZmM2NjQzOWJlMGQ3ZTRjOTk0OWE1YmFjNzEyOWVhNTU1ZTZkZjc5OTJiYWZjZjAiLCJwYXRoIjoib3BlbkF0dGVzdGF0aW9uTWV0YWRhdGEucHJvb2YubWV0aG9kIn0seyJ2YWx1ZSI6IjcxNGVjY2EwODI4ZjAzZWNlN2MxYWE0MmMyZjEzZmFjMTcyNjQ0ZTkxOWE2Y2ZhMmRhODE4OWE5OTM4MzE5NjAiLCJwYXRoIjoib3BlbkF0dGVzdGF0aW9uTWV0YWRhdGEucHJvb2YudmFsdWUifSx7InZhbHVlIjoiMzVjOThhYTQzZjc2YjRlMzU3ZGFkOTAxYTc1ZjZiOThiMDAzMTAyMWM0ODdlZmRjNWFiZjVhZTM1YzkwNGIxYSIsInBhdGgiOiJvcGVuQXR0ZXN0YXRpb25NZXRhZGF0YS5wcm9vZi5yZXZvY2F0aW9uLnR5cGUifSx7InZhbHVlIjoiZTQyZDZmZGEwNzMzZWQzYTFkYzZiOGJhZjI2ZDM4ZDMwODQyMWYwN2E5OGU0MzEwMGEyOTE1Yzk3ZTY3MWUwMyIsInBhdGgiOiJvcGVuQXR0ZXN0YXRpb25NZXRhZGF0YS5pZGVudGl0eVByb29mLnR5cGUifSx7InZhbHVlIjoiYjkwZjZjMzFmMWNjNTQyZDg4YjBhNWMwY2UxZTA3YzAwNTUwMGM1MDRlMzVmYTI4MmQyYzZjNmI5ZDYwOTk0YyIsInBhdGgiOiJvcGVuQXR0ZXN0YXRpb25NZXRhZGF0YS5pZGVudGl0eVByb29mLmlkZW50aWZpZXIifSx7InZhbHVlIjoiODkyN2M0ODZjYmI3MDBkMzA2NDljYmZlZGQzYmI5ZTI5Zjg4MjU2MGQ5NTdmMDUxODJlNTBjYjI3NzEwZjBlYyIsInBhdGgiOiJpc3N1YW5jZURhdGUifSx7InZhbHVlIjoiNjhjMzVlNmNlYTYxN2I3ZTUxMzA5ZTRhNTRkYTdhZGI2MTI1YmM2YTQzNjI3ZDhiYzNkNTMzZTI0Mzk4NWVmNiIsInBhdGgiOiJleHBpcmF0aW9uRGF0ZSJ9LHsidmFsdWUiOiJmYzczNjYwM2EyMjY4MzY1Zjc5ODUyYjFkN2ZkZTA3MjkzYTdiNzI4NTEwMDQ2OGFkMDZhMTE1MzIyZDFjNjEzIiwicGF0aCI6Imlzc3Vlci5pZCJ9LHsidmFsdWUiOiI3YWZiMDJkN2ZiNmE5ODRiOGE0YWEyMDc4ZjM3Nzc0MjkyYWQ5MzMzY2FjOTE1OWVlNDZhYzNiNTJmOTFjZjRmIiwicGF0aCI6Imlzc3Vlci5uYW1lIn0seyJ2YWx1ZSI6ImY3Yzk1MWM4YjczOWEyMzA3MDQ0NjU4NGQ0YTAzY2FlYjI0ZjE0NWZkZjZlMWQ4MGYwZDVhNWFlYmQzMDg3ZjYiLCJwYXRoIjoiaXNzdWVyLnR5cGUifSx7InZhbHVlIjoiZDE1ZjIwMDlkYzZhMzEzOWFiMjhhMmQ0OTM5YTI3MjI4OWUxYjk4YmVhZWUwMGNjZjZjNWNjZjZlZDg0MzI5MSIsInBhdGgiOiJ0eXBlWzBdIn0seyJ2YWx1ZSI6IjFmMjlhYzUxN2E3MDcwM2ZjNWNiMjU3Y2ZkNWE1ZTJmYWU4YzU5NmJiN2ZjNTAyMDM0YzQ5YWJmNmFiNTA1OGQiLCJwYXRoIjoidHlwZVsxXSJ9XQ==",
+    "privacy": {
+      "obfuscated": []
+    }
+  }
+}

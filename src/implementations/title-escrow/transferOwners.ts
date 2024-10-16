@@ -24,7 +24,7 @@ export const transferOwners = async ({
   await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder),
+      estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder, "0x"),
       network,
     });
     process.exit(0);
@@ -34,13 +34,13 @@ export const transferOwners = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.transferOwners(newOwner, newHolder);
+    await titleEscrow.callStatic.transferOwners(newOwner, newHolder, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferOwners(newOwner, newHolder, { ...gasFees });
+    transaction = await titleEscrow.transferOwners(newOwner, newHolder, "0x", { ...gasFees });
   } else {
-    await titleEscrow.callStatic.transferOwners(newOwner, newHolder);
+    await titleEscrow.callStatic.transferOwners(newOwner, newHolder, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferOwners(newOwner, newHolder);
+    transaction = await titleEscrow.transferOwners(newOwner, newHolder, "0x");
   }
 
   trace(`Tx hash: ${transaction.hash}`);

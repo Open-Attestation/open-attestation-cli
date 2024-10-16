@@ -27,7 +27,7 @@ export const endorseNominatedBeneficiary = async ({
   await validateNominateBeneficiary({ beneficiaryNominee: nominatedBeneficiary, titleEscrow });
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary),
+      estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary, "0x"),
       network,
     });
     process.exit(0);
@@ -37,13 +37,13 @@ export const endorseNominatedBeneficiary = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
+    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, { ...gasFees });
+    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, "0x", { ...gasFees });
   } else {
-    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary);
+    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, "0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary);
+    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, "0x");
   }
 
   trace(`Tx hash: ${transaction.hash}`);
