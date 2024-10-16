@@ -25,7 +25,8 @@
     "benchmark:full": "npm run benchmark:make-certs && npm run benchmark:run && npm run benchmark:clean",
     "prepare": "snyk-protect",
     "benchmark": "ts-node performance-tests/wrap-performance-test.ts",
-    "pkg": "npx pkg ./package.json --out-path dist/@tradetrust-tt"
+    "pkg": "npx pkg ./package.json --out-path dist/@tradetrust-tt",
+    "release:dryrun": "semantic-release --dry-run --no-ci"
   },
   "author": "",
   "devDependencies": {
