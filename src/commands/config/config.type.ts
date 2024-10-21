@@ -13,4 +13,5 @@ export enum TestNetwork {
   Sepolia = "sepolia",
   Amoy = "amoy (polygon)",
   Apothem = "apothem (xdc)",
+  CamdlTestnet = "camdl (testnet)",
 }

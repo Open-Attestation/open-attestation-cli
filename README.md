@@ -38,15 +38,16 @@ Upon installation, a configuration folder will be created at `~/.config/open-att
 
 ## Supported networks
 
-| Network ID | Name                     | Network      | Type       |
-| ---------- | ------------------------ | ------------ | ---------- |
-| `1`        | Ethereum Mainnet         | `mainnet`    | Production |
-| `11155111` | Ethereum Testnet Sepolia | `sepolia`    | Test       |
-| `137`      | Polygon Mainnet          | `polygon`    | Production |
-| `80002`    | Polygon Testnet Amoy     | `Amoy`       | Test       |
-| `50`       | XDC Network              | `xdc`        | Production |
-| `51`       | XDC Apothem Network      | `xdcapothem` | Test       |
-
+| Network ID | Name                     | Network         | Type       |
+| ---------- | ------------------------ | --------------- | ---------- |
+| `1`        | Ethereum Mainnet         | `mainnet`       | Production |
+| `11155111` | Ethereum Testnet Sepolia | `sepolia`       | Test       |
+| `137`      | Polygon Mainnet          | `polygon`       | Production |
+| `80002`    | Polygon Testnet Amoy     | `Amoy`          | Test       |
+| `50`       | XDC Network              | `xdc`           | Production |
+| `51`       | XDC Apothem Network      | `xdcapothem`    | Test       |
+| `95`       | CamDL Network            | `camdl`         | Production |
+| `395`      | CamDL Test Network       | `camdl-testnet` | Test       |
 
 ---
 
