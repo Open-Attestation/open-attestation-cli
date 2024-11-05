@@ -20,7 +20,7 @@ export const surrenderDocument = async ({
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.surrender("0x"),
+      estimatedGas: await titleEscrow.estimateGas.returnToIssuer("0x"),
       network,
     });
     process.exit(0);
@@ -31,13 +31,13 @@ export const surrenderDocument = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.surrender("0x");
+    await titleEscrow.callStatic.returnToIssuer("0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.surrender("0x", { ...gasFees });
+    transaction = await titleEscrow.returnToIssuer("0x", { ...gasFees });
   } else {
-    await titleEscrow.callStatic.surrender("0x");
+    await titleEscrow.callStatic.returnToIssuer("0x");
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.surrender("0x");
+    transaction = await titleEscrow.returnToIssuer("0x");
   }
 
   trace(`Tx hash: ${transaction.hash}`);

@@ -45,9 +45,9 @@ describe("title-escrow", () => {
         ownerOf: mockedOwnerOf,
       });
       mockedConnectTitleEscrowFactory.mockReturnValue({
-        surrender: mockSurrender,
+        returnToIssuer: mockSurrender,
         callStatic: {
-          surrender: mockCallStaticSurrender,
+          returnToIssuer: mockCallStaticSurrender,
         },
       });
 

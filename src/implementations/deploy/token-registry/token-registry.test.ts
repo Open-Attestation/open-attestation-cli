@@ -1,8 +1,9 @@
-import { deployTokenRegistry } from "./token-registry";
-import { encodeInitParams } from "./helpers";
+import { TDocDeployer__factory } from "@tradetrust-tt/token-registry/dist/contracts";
+import { DeploymentEvent } from "@tradetrust-tt/token-registry/dist/contracts/contracts/utils/TDocDeployer";
 import { Contract } from "ethers";
 import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
-import { DeploymentEvent } from "@tradetrust-tt/token-registry/dist/contracts/contracts/utils/TDocDeployer";
+import { encodeInitParams } from "./helpers";
+import { deployTokenRegistry } from "./token-registry";
 
 const deployParams: DeployTokenRegistryCommand = {
   registryName: "Test",
@@ -19,6 +20,19 @@ describe("deploy Token Registry", () => {
   // eslint-disable-next-line jest/prefer-spy-on
   mockedEthersContract.prototype.deploy = jest.fn();
   const mockedDeploy: jest.Mock = mockedEthersContract.prototype.deploy;
+
+  const factoryMock = jest.spyOn(TDocDeployer__factory, "connect");
+  factoryMock.mockImplementation(
+    () =>
+      ({
+        interface: {
+          getEventTopic: jest
+            .fn()
+            .mockReturnValue("0x3588ebb5c75fdf91927f8472318f41513ee567c2612a5ce52ac840dcf6f162f5"),
+        },
+        deploy: mockedDeploy,
+      } as any)
+  );
 
   // increase timeout because ethers is throttling
   jest.setTimeout(30000);
