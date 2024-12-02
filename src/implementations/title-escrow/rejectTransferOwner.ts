@@ -1,31 +1,32 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateAndEncryptRemark } from "./helpers";
-import { TitleEscrowTransferHolderCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { connectToTitleEscrow, validateAndEncryptRemark, validatePreviousBeneficiary } from "./helpers";
+import { BaseTitleEscrowCommand as TitleEscrowRejectTransferCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { canEstimateGasPrice, getGasFees } from "../../utils";
 
-const { trace } = getLogger("title-escrow:transferHolder");
+const { trace } = getLogger("title-escrow:rejectTransferOwner");
 
-export const transferHolder = async ({
-  tokenRegistry: address,
-  newHolder: to,
+export const rejectTransferOwner = async ({
   remark,
   encryptionKey,
+  tokenRegistry: address,
   tokenId,
   network,
   dryRun,
   ...rest
-}: TitleEscrowTransferHolderCommand): Promise<TransactionReceipt> => {
+}: TitleEscrowRejectTransferCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const encryptedRemark = validateAndEncryptRemark(remark, encryptionKey);
+  await validatePreviousBeneficiary(titleEscrow);
   if (dryRun) {
+    await validatePreviousBeneficiary(titleEscrow);
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.transferHolder(to, encryptedRemark),
+      estimatedGas: await titleEscrow.estimateGas.rejectTransferBeneficiary(encryptedRemark),
       network,
     });
     process.exit(0);
@@ -35,14 +36,15 @@ export const transferHolder = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.transferHolder(to, encryptedRemark);
+    await titleEscrow.callStatic.rejectTransferBeneficiary(encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferHolder(to, encryptedRemark, { ...gasFees });
+    transaction = await titleEscrow.rejectTransferBeneficiary(encryptedRemark, { ...gasFees });
   } else {
-    await titleEscrow.callStatic.transferHolder(to, encryptedRemark);
+    await titleEscrow.callStatic.rejectTransferBeneficiary(encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferHolder(to, encryptedRemark);
+    transaction = await titleEscrow.rejectTransferBeneficiary(encryptedRemark);
   }
+
   trace(`Tx hash: ${transaction.hash}`);
   trace(`Block Number: ${transaction.blockNumber}`);
   signale.await(`Waiting for transaction ${transaction.hash} to be mined`);

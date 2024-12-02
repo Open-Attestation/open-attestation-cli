@@ -8,6 +8,8 @@ jest.mock("@tradetrust-tt/token-registry/contracts");
 
 const transferHolderParams: TitleEscrowTransferHolderCommand = {
   newHolder: "0xabcd",
+  remark: "0xabcd",
+  encryptionKey: "1234",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "sepolia",
@@ -30,20 +32,6 @@ describe("title-escrow", () => {
     const mockTransferHolder = jest.fn();
     const mockCallStaticTransferHolder = jest.fn().mockResolvedValue(undefined);
     const mockedTitleEscrowAddress = "0x2133";
-    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockTransferHolder.mockReturnValue({
-      hash: "hash",
-      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
-    });
-    mockedConnectERC721.mockReturnValue({
-      ownerOf: mockedOwnerOf,
-    });
-    mockedConnectTokenFactory.mockReturnValue({
-      transferHolder: mockTransferHolder,
-      callStatic: {
-        transferHolder: mockCallStaticTransferHolder,
-      },
-    });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -54,6 +42,21 @@ describe("title-escrow", () => {
       mockedOwnerOf.mockClear();
       mockTransferHolder.mockClear();
       mockCallStaticTransferHolder.mockClear();
+
+      mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
+      mockTransferHolder.mockReturnValue({
+        hash: "hash",
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
+      });
+      mockedConnectERC721.mockReturnValue({
+        ownerOf: mockedOwnerOf,
+      });
+      mockedConnectTokenFactory.mockReturnValue({
+        transferHolder: mockTransferHolder,
+        callStatic: {
+          transferHolder: mockCallStaticTransferHolder,
+        },
+      });
     });
 
     it("should pass in the correct params and call the following procedures to invoke a change in holder of a transferable record", async () => {

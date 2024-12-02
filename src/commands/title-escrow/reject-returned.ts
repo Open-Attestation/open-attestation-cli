@@ -2,16 +2,16 @@ import { Argv } from "yargs";
 import { error, success, info } from "signale";
 import { getLogger } from "../../logger";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
-import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "./title-escrow-command.type";
-import { surrenderDocument } from "../../implementations/title-escrow/surrenderDocument";
+import { BaseTitleEscrowCommand as TitleEscrowReturnDocumentCommand } from "./title-escrow-command.type";
+import { rejectReturned } from "../../implementations/title-escrow/rejectReturned";
 import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
 import { NetworkCmdName } from "../../common/networks";
 
-const { trace } = getLogger("title-escrow:surrender-document");
+const { trace } = getLogger("title-escrow:reject-returned");
 
-export const command = "surrender [options]";
+export const command = "reject-returned [options]";
 
-export const describe = "Surrenders a document on the blockchain";
+export const describe = "Rejects a returned transferable record on the blockchain";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
@@ -24,22 +24,33 @@ export const builder = (yargs: Argv): Argv =>
           demandOption: true,
         })
         .option("tokenId", {
-          description: "Hash of document to surrender",
+          description: "Hash of document to return",
           type: "string",
           demandOption: true,
+        })
+        .option("remark", {
+          alias: "remark",
+          description: "Remark for the rejection",
+          type: "string",
+        })
+        .option("encryptionKey", {
+          alias: "encryptionKey",
+          description: "Encryption key for the document",
+          type: "string",
         })
     )
   );
 
-export const handler = async (args: TitleEscrowSurrenderDocumentCommand): Promise<void> => {
+export const handler = async (args: TitleEscrowReturnDocumentCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
-    info(`Surrendering document`);
-    const transaction = await surrenderDocument(args);
+    info(`Rejecting returned document`);
+    const transaction = await rejectReturned(args);
     const network = args.network as NetworkCmdName;
     displayTransactionPrice(transaction, network);
+
     const { transactionHash } = transaction;
-    success(`Transferable record with hash ${args.tokenId} has been surrendered.`);
+    success(`Returned transferable record with hash ${args.tokenId} has been rejected.`);
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {
     error(getErrorMessage(e));

@@ -8,6 +8,8 @@ jest.mock("@tradetrust-tt/token-registry/contracts");
 
 const nominateBeneficiaryParams: TitleEscrowNominateBeneficiaryCommand = {
   newBeneficiary: "0fosui",
+  remark: "remark",
+  encryptionKey: "1234",
   tokenId: "0xzyxw",
   tokenRegistry: "0x1234",
   network: "sepolia",
@@ -33,24 +35,6 @@ describe("title-escrow", () => {
     const mockGetBeneficiary = jest.fn();
     const mockGetHolder = jest.fn();
     const mockCallStaticNominateBeneficiary = jest.fn().mockResolvedValue(undefined);
-    mockGetBeneficiary.mockResolvedValue(mockedBeneficiary);
-    mockGetHolder.mockResolvedValue(mockedHolder);
-    mockedConnectERC721.mockReturnValue({
-      ownerOf: mockedOwnerOf,
-    });
-    mockedConnectTokenFactory.mockReturnValue({
-      nominate: mockNominateBeneficiary,
-      beneficiary: mockGetBeneficiary,
-      holder: mockGetHolder,
-      callStatic: {
-        nominate: mockCallStaticNominateBeneficiary,
-      },
-    });
-    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockNominateBeneficiary.mockReturnValue({
-      hash: "hash",
-      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
-    });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -63,6 +47,25 @@ describe("title-escrow", () => {
       mockGetBeneficiary.mockClear();
       mockGetHolder.mockClear();
       mockCallStaticNominateBeneficiary.mockClear();
+
+      mockGetBeneficiary.mockResolvedValue(mockedBeneficiary);
+      mockGetHolder.mockResolvedValue(mockedHolder);
+      mockedConnectERC721.mockReturnValue({
+        ownerOf: mockedOwnerOf,
+      });
+      mockedConnectTokenFactory.mockReturnValue({
+        nominate: mockNominateBeneficiary,
+        beneficiary: mockGetBeneficiary,
+        holder: mockGetHolder,
+        callStatic: {
+          nominate: mockCallStaticNominateBeneficiary,
+        },
+      });
+      mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
+      mockNominateBeneficiary.mockReturnValue({
+        hash: "hash",
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
+      });
     });
 
     it("should pass in the correct params and call the following procedures to invoke an nomination of change of owner of a transferable record", async () => {

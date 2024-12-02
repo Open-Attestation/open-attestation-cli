@@ -1,7 +1,7 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateEndorseChangeOwner } from "./helpers";
+import { connectToTitleEscrow, validateAndEncryptRemark, validateEndorseChangeOwner } from "./helpers";
 import { TitleEscrowEndorseTransferOfOwnersCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
@@ -15,16 +15,19 @@ export const transferOwners = async ({
   tokenId,
   newHolder,
   newOwner,
+  remark,
+  encryptionKey,
   network,
   dryRun,
   ...rest
 }: TitleEscrowEndorseTransferOfOwnersCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  const encryptedRemark = validateAndEncryptRemark(remark, encryptionKey);
   await validateEndorseChangeOwner({ newHolder, newOwner, titleEscrow });
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder, "0x"),
+      estimatedGas: await titleEscrow.estimateGas.transferOwners(newOwner, newHolder, encryptedRemark),
       network,
     });
     process.exit(0);
@@ -34,13 +37,13 @@ export const transferOwners = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.transferOwners(newOwner, newHolder, "0x");
+    await titleEscrow.callStatic.transferOwners(newOwner, newHolder, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferOwners(newOwner, newHolder, "0x", { ...gasFees });
+    transaction = await titleEscrow.transferOwners(newOwner, newHolder, encryptedRemark, { ...gasFees });
   } else {
-    await titleEscrow.callStatic.transferOwners(newOwner, newHolder, "0x");
+    await titleEscrow.callStatic.transferOwners(newOwner, newHolder, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferOwners(newOwner, newHolder, "0x");
+    transaction = await titleEscrow.transferOwners(newOwner, newHolder, encryptedRemark);
   }
 
   trace(`Tx hash: ${transaction.hash}`);

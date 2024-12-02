@@ -42,7 +42,7 @@ describe("unwrap", () => {
         Output.Directory
       );
 
-      expect(unwrappedDocumentCount).toEqual(1);
+      expect(unwrappedDocumentCount).toBe(1);
     });
   });
 
@@ -87,7 +87,7 @@ describe("unwrap", () => {
         Output.Directory
       );
 
-      expect(unwrappedDocumentCount).toEqual(2);
+      expect(unwrappedDocumentCount).toBe(2);
     });
   });
 });

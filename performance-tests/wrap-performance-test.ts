@@ -90,4 +90,6 @@ const monitorWrapFeature = async (): Promise<void> => {
     console.error((e as Error).message);
   }
 };
+
+// eslint-disable-next-line jest/require-hook
 monitorWrapFeature();

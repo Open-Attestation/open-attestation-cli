@@ -58,7 +58,7 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedCallStaticRevokeRole).toHaveBeenCalledTimes(1);
-      expect(mockedRevokeRole.mock.calls[0][0]).toEqual("ISSUER");
+      expect(mockedRevokeRole.mock.calls[0][0]).toBe("ISSUER");
       expect(mockedRevokeRole.mock.calls[0][1]).toEqual(deployParams.account);
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });
     });
@@ -74,7 +74,7 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedCallStaticRevokeRole).toHaveBeenCalledTimes(1);
-      expect(mockedRevokeRole.mock.calls[0][0]).toEqual("ISSUER");
+      expect(mockedRevokeRole.mock.calls[0][0]).toBe("ISSUER");
       expect(mockedRevokeRole.mock.calls[0][1]).toEqual(deployParams.account);
 
       expect(instance).toStrictEqual({ transactionHash: "transactionHash" });

@@ -142,9 +142,12 @@ Please read the information above to understand the table
 | [Nominate change of owner (Title Escrow)](#nominate-change-of-owner)       | ✔           | ✔      | ✔       |
 | [Endorse transfer to owner (Title Escrow)](#endorse-transfer-of-owner)     | ✔           | ✔      | ✔       |
 | [Endorse change of owner (Title Escrow)](#endorse-change-of-owner)         | ✔           | ✔      | ✔       |
-| [Surrender document (Title Escrow)](#surrender-document)                   | ✔           | ✔      | ✔       |
-| [Reject surrendered document (Title Escrow)](#reject-surrendered-document) | ✔           | ✔      | ✔       |
-| [Accept surrendered document (Title Escrow)](#accept-surrendered-document) | ✔           | ✔      | ✔       |
+| [Reject change of owner (Title Escrow)](#reject-change-of-owner)           | ✔           | ✔      | ✔       |
+| [Reject change of holder (Title Escrow)](#reject-change-of-holder)         | ✔           | ✔      | ✔       |
+| [Reject change of owners (Title Escrow)](#reject-change-of-owners)         | ✔           | ✔      | ✔       |
+| [Return document to issuer (Title Escrow)](#return-document-to-issuer)     | ✔           | ✔      | ✔       |
+| [Reject return of document (Title Escrow)](#reject-returned-document)      | ✔           | ✔      | ✔       |
+| [Accept return of document (Title Escrow)](#accept-returned-document)      | ✔           | ✔      | ✔       |
 
 ### Wrapping documents
 
@@ -589,6 +592,22 @@ rm ./examples/sample-key
 tradetrust deploy document-store "My Name" --network sepolia --key 0000000000000000000000000000000000000000000000000000000000000003
 ```
 
+### Providing the Remarks and Encryption Key
+
+Enables users to attach encrypted remarks (up to 120 characters) to blockchain transactions. The encrypted remarks are stored immutably on the blockchain and can be viewed in the endorsement chain. This ensures secure and meaningful metadata is recorded alongside transactions.
+
+1. Using `remark` option where you provide a remark not more than 120 characters.
+1. Using `encryptionKey` option where you provide token registry address as your encryption key.
+
+```bash
+# Using remark
+tradetrust title-escrow reject-transfer-owner-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --remark <Remark>
+
+# Using encryption key
+tradetrust title-escrow reject-transfer-owner-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> --remark <Remark> --encryptionKey <ENCRYPTION_KEY>
+
+```
+
 ### Config (Create configuration file)
 
 This command will generate a config file with sandbox DNS, document store and token registry.
@@ -749,52 +768,103 @@ tradetrust title-escrow endorse-change-owner --token-registry 0x4933e30eF8A083f4
 ✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully endorsed to new owner with address 0x2f60375e8144e16Adf1979936301D8341D58C36C and new holder with address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
 ```
 
-#### Surrender Document
+#### Reject Change of Owner
 
-This command will allow the entity (who is both an owner and holder) to surrender it's transferable record to the token registry.
+This command will allow the owner of the transferable record to reject the change of owner to previous owner.
+**This command will fail if the current owner has made any transactions.**
 
 ```bash
-tradetrust title-escrow surrender --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+tradetrust title-escrow reject-transfer-owner --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-tradetrust title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+tradetrust title-escrow reject-transfer-owner --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990
 
-✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been surrendered.
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's owner has been successfully rejected to previous owner
 ```
 
-#### Reject Surrendered Document
+#### Reject Change of Holder
 
-This command will allow the token registry to reject a surrendered transferable record.
-
-```bash
-tradetrust title-escrow reject-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
-```
-
-Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+This command will allow the holder of the transferable record to reject the change of holder to previous holder.
+**This command will fail if the current holder has made any transactions.**
 
 ```bash
-tradetrust title-escrow reject-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
-
-✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
-```
-
-#### Accept Surrendered Document
-
-This command will allow the token registry to accept a surrendered transferable record.
-
-```bash
-tradetrust title-escrow accept-surrendered --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+tradetrust title-escrow reject-transfer-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
 ```
 
 Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
 
 ```bash
-tradetrust title-escrow accept-surrendered --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+tradetrust title-escrow reject-transfer-holder --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990
 
-✔  success   Surrendered transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's holder has been successfully rejected to previous holder
+```
+
+#### Reject Change of Owners
+
+This command will allow the owner of the transferable record to reject the change of owner and holder to previous owner and holder.
+**This command will fail if the current owner has made any transactions.**
+
+```bash
+tradetrust title-escrow reject-transfer-owner-holder --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+tradetrust title-escrow reject-transfer-owner-holder --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990's owners has been successfully rejected to previous owner and holder
+```
+
+#### Return Document to Issuer
+
+This command will allow the entity (who is both an owner and holder) to return it's transferable record to the token registry.
+
+```bash
+tradetrust title-escrow return-to-issuer --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+tradetrust title-escrow return-to-issuer --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+
+✔  success   Transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been returned to issuer.
+```
+
+#### Reject Returned Document
+
+This command will allow the token registry to reject a returned transferable record.
+
+```bash
+tradetrust title-escrow reject-returned --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+tradetrust title-escrow reject-returned --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+
+✔  success  Returned transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been rejected.
+```
+
+#### Accept Returned Document
+
+This command will allow the token registry to accept a returned transferable record.
+
+```bash
+tradetrust title-escrow accept-returned --token-registry <TOKEN_REGISTRY_ADDRESS> --tokenId <TOKEN_ID> [options]
+```
+
+Example - with private key set in `OA_PRIVATE_KEY` environment variable (recommended). [More options](#providing-the-wallet).
+
+```bash
+tradetrust title-escrow accept-returned --token-registry 0x4933e30eF8A083f49d14759b2eafC94E56F0b3A7 --tokenId 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 --network sepolia
+
+✔  success   Returned transferable record with hash 0x951b39bcaddc0e8882883db48ca258ca35ccb01fee328355f0dfda1ff9be9990 has been accepted.
 
 ```
 

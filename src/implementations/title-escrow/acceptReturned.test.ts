@@ -1,21 +1,23 @@
 import { TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
 import { Wallet } from "ethers";
 
-import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
-import { acceptSurrendered } from "./acceptSurrendered";
+import { BaseTitleEscrowCommand as TitleEscrowReturnDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { acceptReturned } from "./acceptReturned";
 
 jest.mock("@tradetrust-tt/token-registry/contracts");
 
-const acceptSurrenderedDocumentParams: TitleEscrowSurrenderDocumentCommand = {
+const acceptReturnedDocumentParams: TitleEscrowReturnDocumentCommand = {
   tokenRegistry: "0x1122",
   tokenId: "0x12345",
+  remark: "remark",
+  encryptionKey: "encryptionKey",
   network: "sepolia",
   maxPriorityFeePerGasScale: 1,
   dryRun: false,
 };
 
 describe("title-escrow", () => {
-  describe("accepts surrendered transferable record", () => {
+  describe("accepts returned transferable record", () => {
     const mockedTradeTrustTokenFactory: jest.Mock<TradeTrustToken__factory> = TradeTrustToken__factory as any;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock static method
@@ -42,17 +44,17 @@ describe("title-escrow", () => {
       mockBurnToken.mockClear();
       mockCallStaticBurnToken.mockClear();
     });
-    it("should pass in the correct params and successfully accepts a surrendered transferable record", async () => {
+    it("should pass in the correct params and successfully accepts a returned transferable record", async () => {
       const privateKey = "0000000000000000000000000000000000000000000000000000000000000001";
-      await acceptSurrendered({
-        ...acceptSurrenderedDocumentParams,
+      await acceptReturned({
+        ...acceptReturnedDocumentParams,
         key: privateKey,
       });
 
       const passedSigner: Wallet = mockedConnectERC721.mock.calls[0][1];
 
       expect(passedSigner.privateKey).toBe(`0x${privateKey}`);
-      expect(mockedConnectERC721).toHaveBeenCalledWith(acceptSurrenderedDocumentParams.tokenRegistry, passedSigner);
+      expect(mockedConnectERC721).toHaveBeenCalledWith(acceptReturnedDocumentParams.tokenRegistry, passedSigner);
       expect(mockCallStaticBurnToken).toHaveBeenCalledTimes(1);
       expect(mockBurnToken).toHaveBeenCalledTimes(1);
     });

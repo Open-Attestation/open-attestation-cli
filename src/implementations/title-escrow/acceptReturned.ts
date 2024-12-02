@@ -1,43 +1,47 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow } from "./helpers";
-import { BaseTitleEscrowCommand as TitleEscrowSurrenderDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
+import { BaseTitleEscrowCommand as TitleEscrowReturnDocumentCommand } from "../../commands/title-escrow/title-escrow-command.type";
+
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
+import { TradeTrustToken__factory } from "@tradetrust-tt/token-registry/dist/contracts";
 import { canEstimateGasPrice, getGasFees } from "../../utils";
+import { validateAndEncryptRemark } from "./helpers";
 
-const { trace } = getLogger("title-escrow:surrenderDocument");
+const { trace } = getLogger("title-escrow:acceptReturned");
 
-export const surrenderDocument = async ({
+export const acceptReturned = async ({
   tokenRegistry: address,
   tokenId,
+  remark,
+  encryptionKey,
   network,
   dryRun,
   ...rest
-}: TitleEscrowSurrenderDocumentCommand): Promise<TransactionReceipt> => {
+}: TitleEscrowReturnDocumentCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
-  const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
+  const encryptedRemark = validateAndEncryptRemark(remark, encryptionKey);
+  const tokenRegistryInstance = await TradeTrustToken__factory.connect(address, wallet);
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.returnToIssuer("0x"),
+      estimatedGas: await tokenRegistryInstance.estimateGas.burn(tokenId, encryptedRemark),
       network,
     });
     process.exit(0);
   }
   let transaction;
-
   if (canEstimateGasPrice(network)) {
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.returnToIssuer("0x");
+    await tokenRegistryInstance.callStatic.burn(tokenId, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.returnToIssuer("0x", { ...gasFees });
+    transaction = await tokenRegistryInstance.burn(tokenId, encryptedRemark, { ...gasFees });
   } else {
-    await titleEscrow.callStatic.returnToIssuer("0x");
+    await tokenRegistryInstance.callStatic.burn(tokenId, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.returnToIssuer("0x");
+    transaction = await tokenRegistryInstance.burn(tokenId, encryptedRemark);
   }
 
   trace(`Tx hash: ${transaction.hash}`);

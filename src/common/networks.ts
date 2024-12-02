@@ -8,7 +8,7 @@ type SupportedNetwork = {
   explorer: string;
   provider: () => providers.Provider;
   networkId: number;
-  networkName: typeof NetworkCmdName[keyof typeof NetworkCmdName];
+  networkName: (typeof NetworkCmdName)[keyof typeof NetworkCmdName];
   currency: networkCurrency;
   gasStation?: ReturnType<GasStationFunction>;
 };

@@ -72,11 +72,11 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedCallStaticGrantRole).toHaveBeenCalledTimes(1);
-      expect(mockedGrantRole.mock.calls[0][0]).toEqual("ADMIN");
+      expect(mockedGrantRole.mock.calls[0][0]).toBe("ADMIN");
       expect(mockedGrantRole.mock.calls[0][1]).toEqual(deployParams.newOwner);
 
-      expect(await instance.grantTransaction).toStrictEqual({ transactionHash: "transactionHash" });
-      expect(await instance.revokeTransaction).toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.grantTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.revokeTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
     });
 
     it("should accept account without 0x prefix and return deployed instance", async () => {
@@ -90,11 +90,11 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParams.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParams.address);
       expect(mockedCallStaticGrantRole).toHaveBeenCalledTimes(1);
-      expect(mockedGrantRole.mock.calls[0][0]).toEqual("ADMIN");
+      expect(mockedGrantRole.mock.calls[0][0]).toBe("ADMIN");
       expect(mockedGrantRole.mock.calls[0][1]).toEqual(deployParams.newOwner);
 
-      expect(await instance.grantTransaction).toStrictEqual({ transactionHash: "transactionHash" });
-      expect(await instance.revokeTransaction).toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.grantTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.revokeTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
     });
 
     it("should take in the key from environment variable", async () => {
@@ -133,11 +133,11 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParamsHederaTestnet.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParamsHederaTestnet.address);
       expect(mockedCallStaticGrantRole).toHaveBeenCalledTimes(1);
-      expect(mockedGrantRole.mock.calls[0][0]).toEqual("ADMIN");
+      expect(mockedGrantRole.mock.calls[0][0]).toBe("ADMIN");
       expect(mockedGrantRole.mock.calls[0][1]).toEqual(deployParamsHederaTestnet.newOwner);
 
-      expect(await instance.grantTransaction).toStrictEqual({ transactionHash: "transactionHash" });
-      expect(await instance.revokeTransaction).toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.grantTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.revokeTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
     });
 
     it("should accept account without 0x prefix and return deployed instance for hederatestnet", async () => {
@@ -151,11 +151,11 @@ describe("document-store", () => {
       expect(passedSigner.privateKey).toBe(`0x${deployParamsHederaTestnet.key}`);
       expect(mockedConnect.mock.calls[0][0]).toEqual(deployParamsHederaTestnet.address);
       expect(mockedCallStaticGrantRole).toHaveBeenCalledTimes(1);
-      expect(mockedGrantRole.mock.calls[0][0]).toEqual("ADMIN");
+      expect(mockedGrantRole.mock.calls[0][0]).toBe("ADMIN");
       expect(mockedGrantRole.mock.calls[0][1]).toEqual(deployParamsHederaTestnet.newOwner);
 
-      expect(await instance.grantTransaction).toStrictEqual({ transactionHash: "transactionHash" });
-      expect(await instance.revokeTransaction).toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.grantTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
+      await expect(instance.revokeTransaction).resolves.toStrictEqual({ transactionHash: "transactionHash" });
     });
 
     it("should take in the key from environment variable for hederatestnet", async () => {

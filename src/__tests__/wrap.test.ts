@@ -117,7 +117,7 @@ describe("batchIssue", () => {
         digestedDocumentPath: "DIR",
       });
 
-      expect(root).toStrictEqual("e");
+      expect(root).toBe("e");
     });
   });
 

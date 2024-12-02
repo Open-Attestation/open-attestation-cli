@@ -43,14 +43,14 @@ export const isSupportedTitleEscrowFactory = async (
     factoryAddress,
     ["function implementation() view returns (address)"],
     provider ?? ethers.getDefaultProvider()
-  ) as TitleEscrowFactory;
+  ) as unknown as TitleEscrowFactory;
   const implAddr = await titleEscrowFactoryContract.implementation();
 
   const implContract = new ethers.Contract(
     implAddr,
     ["function supportsInterface(bytes4 interfaceId) view returns (bool)"],
     provider ?? ethers.getDefaultProvider()
-  ) as TitleEscrow;
+  ) as unknown as TitleEscrow;
   const { TitleEscrow: titleEscrowInterfaceId } = CONTRACT_INTERFACE_ID;
   return implContract.supportsInterface(titleEscrowInterfaceId);
 };

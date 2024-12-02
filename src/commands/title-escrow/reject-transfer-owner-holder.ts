@@ -1,17 +1,17 @@
 import { Argv } from "yargs";
 import { error, info, success, warn } from "signale";
 import { getLogger } from "../../logger";
-import { transferOwners } from "../../implementations/title-escrow/transferOwners";
-import { TitleEscrowEndorseTransferOfOwnersCommand } from "./title-escrow-command.type";
+import { BaseTitleEscrowCommand as TitleEscrowRejectTransferCommand } from "./title-escrow-command.type";
 import { withGasPriceOption, withNetworkAndWalletSignerOption } from "../shared";
 import { displayTransactionPrice, getErrorMessage, getEtherscanAddress } from "../../utils";
 import { NetworkCmdName } from "../../common/networks";
+import { rejectTransferOwnerHolder } from "../../implementations/title-escrow/rejectTransferOwnerHolder";
 
-const { trace } = getLogger("title-escrow:endorse-change-of-owner");
+const { trace } = getLogger("title-escrow:reject-transfer-of-owner-holder");
 
-export const command = "endorse-change-owner [options]";
+export const command = "reject-transfer-owner-holder [options]";
 
-export const describe = "Endorses the change of owner of transferable record to another address";
+export const describe = "Reject the transfer of the owner and holder of a transferable record";
 
 export const builder = (yargs: Argv): Argv =>
   withGasPriceOption(
@@ -28,20 +28,9 @@ export const builder = (yargs: Argv): Argv =>
           type: "string",
           demandOption: true,
         })
-        .option("newOwner", {
-          alias: "newBeneficiary",
-          description: "Address of the new owner of the transferable record",
-          type: "string",
-          demandOption: true,
-        })
-        .option("newHolder", {
-          description: "Address of the new holder of the transferable record",
-          type: "string",
-          demandOption: true,
-        })
         .option("remark", {
           alias: "remark",
-          description: "Remark for the change of owner",
+          description: "Remark for the rejection",
           type: "string",
         })
         .option("encryptionKey", {
@@ -52,23 +41,21 @@ export const builder = (yargs: Argv): Argv =>
     )
   );
 
-export const handler = async (args: TitleEscrowEndorseTransferOfOwnersCommand): Promise<void> => {
+export const handler = async (args: TitleEscrowRejectTransferCommand): Promise<void> => {
   trace(`Args: ${JSON.stringify(args, null, 2)}`);
   try {
     info(
-      `Connecting to the registry ${args.tokenRegistry} and attempting to endorse the change of owner of the transferable record ${args.tokenId} to new owner at ${args.newOwner} and new holder at ${args.newHolder}`
+      `Connecting to the registry ${args.tokenRegistry} and attempting to reject the change of owner and holder of the transferable record ${args.tokenId} to previous owner and holder`
     );
     warn(
-      `Please note that you have to be both the holder and owner of the transferable record, otherwise this command will fail.`
+      `Please note that if you do not have the correct privileges to the transferable record, then this command will fail.`
     );
-    const transaction = await transferOwners(args);
+    const transaction = await rejectTransferOwnerHolder(args);
     const network = args.network as NetworkCmdName;
-
     displayTransactionPrice(transaction, network);
-
     const { transactionHash } = transaction;
     success(
-      `Transferable record with hash ${args.tokenId}'s holder has been successfully endorsed to new owner with address ${args.newOwner} and new holder with address: ${args.newHolder}`
+      `Transferable record with hash ${args.tokenId}'s owner and holder has been successfully rejected to previous owner and holder`
     );
     info(`Find more details at ${getEtherscanAddress({ network: args.network })}/tx/${transactionHash}`);
   } catch (e) {

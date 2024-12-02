@@ -1,7 +1,7 @@
 import signale from "signale";
 import { getLogger } from "../../logger";
 import { getWalletOrSigner } from "../utils/wallet";
-import { connectToTitleEscrow, validateNominateBeneficiary } from "./helpers";
+import { connectToTitleEscrow, validateAndEncryptRemark, validateNominateBeneficiary } from "./helpers";
 import { TitleEscrowNominateBeneficiaryCommand } from "../../commands/title-escrow/title-escrow-command.type";
 
 import { dryRunMode } from "../utils/dryRun";
@@ -13,6 +13,8 @@ const { trace } = getLogger("title-escrow:endorseTransferOfOwner");
 export const endorseNominatedBeneficiary = async ({
   tokenRegistry: address,
   tokenId,
+  remark,
+  encryptionKey,
   newBeneficiary,
   network,
   dryRun,
@@ -25,9 +27,10 @@ export const endorseNominatedBeneficiary = async ({
   const titleEscrow = await connectToTitleEscrow({ tokenId, address, wallet });
   const nominatedBeneficiary = newBeneficiary;
   await validateNominateBeneficiary({ beneficiaryNominee: nominatedBeneficiary, titleEscrow });
+  const encryptedRemark = validateAndEncryptRemark(remark, encryptionKey);
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary, "0x"),
+      estimatedGas: await titleEscrow.estimateGas.transferBeneficiary(nominatedBeneficiary, encryptedRemark),
       network,
     });
     process.exit(0);
@@ -37,13 +40,13 @@ export const endorseNominatedBeneficiary = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, "0x");
+    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, "0x", { ...gasFees });
+    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, encryptedRemark, { ...gasFees });
   } else {
-    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, "0x");
+    await titleEscrow.callStatic.transferBeneficiary(nominatedBeneficiary, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, "0x");
+    transaction = await titleEscrow.transferBeneficiary(nominatedBeneficiary, encryptedRemark);
   }
 
   trace(`Tx hash: ${transaction.hash}`);

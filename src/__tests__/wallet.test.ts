@@ -2,7 +2,7 @@ import chalk, { Level } from "chalk";
 import { prompt } from "inquirer";
 import path from "path";
 import signale from "signale";
-import { mocked } from "ts-jest/utils";
+import { mocked } from "jest-mock";
 import { handler as decrypt } from "../commands/wallet/decrypt";
 
 jest.mock("inquirer");
@@ -35,7 +35,7 @@ describe("wallet", () => {
         yes: false,
       });
       expect(signaleSuccessSpy.mock.calls[0]).toMatchInlineSnapshot(`
-        Array [
+        [
           "Wallet information:
         - address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
         - public key: 0x041bb90fbd443ca6a4ebced8272b99ea2488aae0520a354218a6184f7eebc8662e935ed19382363541d598cf584c90f08c95d42d69ffdba482a3a111ac80ddce0d
@@ -52,7 +52,7 @@ describe("wallet", () => {
         yes: false,
       });
       expect(signaleErrorSpy.mock.calls[0]).toMatchInlineSnapshot(`
-        Array [
+        [
           "Incorrect acknowledgement of risks.",
         ]
       `);
@@ -65,7 +65,7 @@ describe("wallet", () => {
         yes: true,
       });
       expect(signaleSuccessSpy.mock.calls[0]).toMatchInlineSnapshot(`
-        Array [
+        [
           "Wallet information:
         - address: 0xB26B4941941C51a4885E5B7D3A1B861E54405f90
         - public key: 0x041bb90fbd443ca6a4ebced8272b99ea2488aae0520a354218a6184f7eebc8662e935ed19382363541d598cf584c90f08c95d42d69ffdba482a3a111ac80ddce0d

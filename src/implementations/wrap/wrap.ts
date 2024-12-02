@@ -1,3 +1,4 @@
+/* eslint-disable jest/require-hook */
 import { documentsInDirectory, readOpenAttestationFile, writeOutput, Output } from "../utils/disk";
 import { dirSync } from "tmp";
 import mkdirp from "mkdirp";

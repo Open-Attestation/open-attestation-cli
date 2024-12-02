@@ -21,17 +21,17 @@ describe("wallet", () => {
   it("should return the wallet when providing the key using environment variable", async () => {
     process.env.OA_PRIVATE_KEY = privateKey;
     const wallet = await getWalletOrSigner({ network: "sepolia" });
-    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
+    await expect(wallet.getAddress()).resolves.toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing the key using key option", async () => {
     const wallet = await getWalletOrSigner({ network: "sepolia", key: privateKey });
-    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
+    await expect(wallet.getAddress()).resolves.toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing the key using key-file option", async () => {
     const wallet = await getWalletOrSigner({ network: "sepolia", keyFile: path.resolve(__dirname, "./key.file") });
-    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
+    await expect(wallet.getAddress()).resolves.toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should return the wallet when providing an encrypted wallet", async () => {
@@ -42,7 +42,7 @@ describe("wallet", () => {
       encryptedWalletPath: path.resolve(__dirname, "./wallet.json"),
       progress: () => void 0, // shut up progress bar
     });
-    expect(await wallet.getAddress()).toStrictEqual(walletAddress);
+    await expect(wallet.getAddress()).resolves.toStrictEqual(walletAddress);
     expect(wallet.privateKey).toStrictEqual(privateKey);
   });
   it("should throw an error when the wallet password is invalid", async () => {

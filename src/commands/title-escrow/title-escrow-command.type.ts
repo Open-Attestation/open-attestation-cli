@@ -4,6 +4,8 @@ export type BaseTitleEscrowCommand = NetworkAndWalletSignerOption &
   GasOption & {
     tokenRegistry: string;
     tokenId: string;
+    remark: string;
+    encryptionKey: string;
   };
 export type TitleEscrowTransferHolderCommand = BaseTitleEscrowCommand & {
   newHolder: string;

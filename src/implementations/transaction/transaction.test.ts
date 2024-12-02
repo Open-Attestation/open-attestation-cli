@@ -32,8 +32,8 @@ describe("document-store", () => {
         keyFile: path.resolve(__dirname, "./key.file"),
       });
       expect(signaleInfoSpy).toHaveBeenNthCalledWith(1, "Transaction detail retrieved. Nonce: 10, Gas-price: 3");
-      expect(mockSendTransaction.mock.calls[0][0].nonce.toNumber()).toEqual(10);
-      expect(mockSendTransaction.mock.calls[0][0].gasPrice.toNumber()).toEqual(6);
+      expect(mockSendTransaction.mock.calls[0][0].nonce.toNumber()).toBe(10);
+      expect(mockSendTransaction.mock.calls[0][0].gasPrice.toNumber()).toBe(6);
     });
 
     it("success in retrieving transaction nonce and gas price using --transaction-hash for hederatestnet", async () => {
@@ -57,8 +57,8 @@ describe("document-store", () => {
         keyFile: path.resolve(__dirname, "./key.file"),
       });
       expect(signaleInfoSpy).toHaveBeenNthCalledWith(1, "Transaction detail retrieved. Nonce: 10, Gas-price: 3");
-      expect(mockSendTransaction.mock.calls[0][0].nonce.toNumber()).toEqual(10);
-      expect(mockSendTransaction.mock.calls[0][0].gasPrice.toNumber()).toEqual(6);
+      expect(mockSendTransaction.mock.calls[0][0].nonce.toNumber()).toBe(10);
+      expect(mockSendTransaction.mock.calls[0][0].gasPrice.toNumber()).toBe(6);
     });
   });
 });

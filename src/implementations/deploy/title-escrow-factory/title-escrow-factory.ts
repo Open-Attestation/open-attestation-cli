@@ -18,7 +18,7 @@ export const deployTitleEscrowFactory = async ({
   const titleEscrowFactoryContract = new TitleEscrowFactory__factory(wallet);
   if (dryRun) {
     await dryRunMode({
-      transaction: titleEscrowFactoryContract.getDeployTransaction(),
+      transaction: titleEscrowFactoryContract.getDeployTransaction() as any,
       network,
     });
     process.exit(0);

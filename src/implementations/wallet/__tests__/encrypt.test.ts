@@ -55,7 +55,7 @@ describe("create wallet", () => {
     );
 
     const decryptedWallet = await ethers.Wallet.fromEncryptedJson(walletAsString, password);
-    expect(decryptedWallet.address).toStrictEqual("0xB26B4941941C51a4885E5B7D3A1B861E54405f90");
+    expect(decryptedWallet.address).toBe("0xB26B4941941C51a4885E5B7D3A1B861E54405f90");
     expect(decryptedWallet.privateKey).toStrictEqual(privateKey);
   });
 });

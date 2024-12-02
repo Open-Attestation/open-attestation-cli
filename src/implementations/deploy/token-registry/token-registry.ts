@@ -1,5 +1,11 @@
+import { TransactionReceipt } from "@ethersproject/abstract-provider";
 import { TDocDeployer__factory, TradeTrustToken__factory } from "@tradetrust-tt/token-registry/contracts";
-import { DeploymentEvent } from "@tradetrust-tt/token-registry/dist/contracts/contracts/utils/TDocDeployer";
+import { info } from "signale";
+import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
+import { getLogger } from "../../../logger";
+import { canEstimateGasPrice, getGasFees } from "../../../utils";
+import { dryRunMode } from "../../utils/dryRun";
+import { getWalletOrSigner } from "../../utils/wallet";
 import {
   encodeInitParams,
   getDefaultContractAddress,
@@ -7,13 +13,6 @@ import {
   isSupportedTitleEscrowFactory,
   isValidAddress,
 } from "./helpers";
-import { info } from "signale";
-import { DeployTokenRegistryCommand } from "../../../commands/deploy/deploy.types";
-import { getLogger } from "../../../logger";
-import { getWalletOrSigner } from "../../utils/wallet";
-import { dryRunMode } from "../../utils/dryRun";
-import { TransactionReceipt } from "@ethersproject/abstract-provider";
-import { canEstimateGasPrice, getGasFees } from "../../../utils";
 const { trace } = getLogger("deploy:token-registry");
 
 export const deployTokenRegistry = async ({
@@ -107,9 +106,10 @@ export const deployTokenRegistry = async ({
     }
     trace(`[Transaction] Pending ${tx.hash}`);
     const receipt = await tx.wait();
-    const registryAddress = getEventFromReceipt<DeploymentEvent>(
+    const registryAddress = getEventFromReceipt<any>(
       receipt,
-      deployerContract.interface.getEventTopic("Deployment")
+      (deployerContract.interface as any).getEventTopic("Deployment"),
+      deployerContract.interface
     ).args.deployed;
     return { transaction: receipt, contractAddress: registryAddress };
   } else {
@@ -117,7 +117,7 @@ export const deployTokenRegistry = async ({
     const tokenFactory = new TradeTrustToken__factory(wallet);
     if (dryRun) {
       const transactionRequest = tokenFactory.getDeployTransaction(registryName, registrySymbol, factoryAddress);
-      const estimatedGas = await wallet.estimateGas(transactionRequest);
+      const estimatedGas = await wallet.estimateGas(transactionRequest as any);
       await dryRunMode({
         estimatedGas,
         network,

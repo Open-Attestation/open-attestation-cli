@@ -10,6 +10,8 @@ const endorseChangeOwnersParams: TitleEscrowEndorseTransferOfOwnersCommand = {
   newHolder: "0xabcd",
   newOwner: "0fosui",
   tokenId: "0xzyxw",
+  remark: "0xabcd",
+  encryptionKey: "1234",
   tokenRegistry: "0x1234",
   network: "sepolia",
   maxPriorityFeePerGasScale: 1,
@@ -35,24 +37,6 @@ describe("title-escrow", () => {
     const mockedHolder = "0xdsfls";
     const mockGetBeneficiary = jest.fn();
     const mockGetHolder = jest.fn();
-    mockGetBeneficiary.mockReturnValue(mockedBeneficiary);
-    mockGetHolder.mockReturnValue(mockedHolder);
-    mockedConnectERC721.mockReturnValue({
-      ownerOf: mockedOwnerOf,
-    });
-    mockedConnectTokenFactory.mockReturnValue({
-      transferOwners: mockTransferOwners,
-      beneficiary: mockGetBeneficiary,
-      holder: mockGetHolder,
-      callStatic: {
-        transferOwners: mockCallStaticTransferOwners,
-      },
-    });
-    mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
-    mockTransferOwners.mockReturnValue({
-      hash: "hash",
-      wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
-    });
 
     beforeEach(() => {
       delete process.env.OA_PRIVATE_KEY;
@@ -65,6 +49,25 @@ describe("title-escrow", () => {
       mockGetBeneficiary.mockClear();
       mockGetHolder.mockClear();
       mockCallStaticTransferOwners.mockClear();
+
+      mockGetBeneficiary.mockReturnValue(mockedBeneficiary);
+      mockGetHolder.mockReturnValue(mockedHolder);
+      mockedConnectERC721.mockReturnValue({
+        ownerOf: mockedOwnerOf,
+      });
+      mockedConnectTokenFactory.mockReturnValue({
+        transferOwners: mockTransferOwners,
+        beneficiary: mockGetBeneficiary,
+        holder: mockGetHolder,
+        callStatic: {
+          transferOwners: mockCallStaticTransferOwners,
+        },
+      });
+      mockedOwnerOf.mockReturnValue(mockedTitleEscrowAddress);
+      mockTransferOwners.mockReturnValue({
+        hash: "hash",
+        wait: () => Promise.resolve({ transactionHash: "transactionHash" }),
+      });
     });
 
     it("should pass in the correct params and call the following procedures to invoke an endorsement of change of owner of a transferable record", async () => {

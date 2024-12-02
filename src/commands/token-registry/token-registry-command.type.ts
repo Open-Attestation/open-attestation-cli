@@ -6,4 +6,6 @@ export type TokenRegistryIssueCommand = NetworkAndWalletSignerOption &
     beneficiary: string;
     holder: string;
     tokenId: string;
+    remark: string;
+    encryptionKey: string;
   };

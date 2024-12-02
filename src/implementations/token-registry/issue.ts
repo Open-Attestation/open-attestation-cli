@@ -6,6 +6,7 @@ import { TokenRegistryIssueCommand } from "../../commands/token-registry/token-r
 import { dryRunMode } from "../utils/dryRun";
 import { TransactionReceipt } from "@ethersproject/providers";
 import { canEstimateGasPrice, getGasFees } from "../../utils";
+import { validateAndEncryptRemark } from "../title-escrow/helpers";
 
 const { trace } = getLogger("token-registry:issue");
 
@@ -14,15 +15,18 @@ export const issueToTokenRegistry = async ({
   beneficiary,
   holder,
   tokenId,
+  remark,
+  encryptionKey,
   network,
   dryRun,
   ...rest
 }: TokenRegistryIssueCommand): Promise<TransactionReceipt> => {
   const wallet = await getWalletOrSigner({ network, ...rest });
   const tokenRegistry: TradeTrustToken = await TradeTrustToken__factory.connect(address, wallet);
+  const encryptedRemark = validateAndEncryptRemark(remark, encryptionKey);
   if (dryRun) {
     await dryRunMode({
-      estimatedGas: await tokenRegistry.estimateGas.mint(beneficiary, holder, tokenId, "0x"),
+      estimatedGas: await tokenRegistry.estimateGas.mint(beneficiary, holder, tokenId, encryptedRemark),
       network,
     });
     process.exit(0);
@@ -33,13 +37,13 @@ export const issueToTokenRegistry = async ({
     const gasFees = await getGasFees({ provider: wallet.provider, ...rest });
     trace(`Gas maxFeePerGas: ${gasFees.maxFeePerGas}`);
     trace(`Gas maxPriorityFeePerGas: ${gasFees.maxPriorityFeePerGas}`);
-    await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId, "0x");
+    await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, "0x", { ...gasFees });
+    transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, encryptedRemark, { ...gasFees });
   } else {
-    await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId, "0x");
+    await tokenRegistry.callStatic.mint(beneficiary, holder, tokenId, encryptedRemark);
     signale.await(`Sending transaction to pool`);
-    transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, "0x");
+    transaction = await tokenRegistry.mint(beneficiary, holder, tokenId, encryptedRemark);
   }
 
   trace(`Tx hash: ${transaction.hash}`);
