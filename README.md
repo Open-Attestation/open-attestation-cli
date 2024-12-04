@@ -43,8 +43,6 @@ npx -p @tradetrust-tt/tradetrust-cli tradetrust <arguments>
 | Amoy              | amoy             | 80002    | Polygon     | Testnet      |
 | XDC Network       | xdc              | 50       | XDC Network | Mainnet      |
 | Apothem           | xdcapothem       | 51       | XDC Network | Testnet      |
-| Hedera Mainnet    | hederamainnet    | 295      | Hedera      | Mainnet      |
-| Hedera Testnet    | hederatestnet    | 296      | Hedera      | Testnet      |
 | Stability         | stability        | 101010   | Stability   | Mainnet      |
 | Stability Testnet | stabilitytestnet | 20180427 | Stability   | Testnet      |
 

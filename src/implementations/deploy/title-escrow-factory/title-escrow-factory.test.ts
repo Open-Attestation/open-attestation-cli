@@ -13,13 +13,6 @@ const deployParams: DeployTitleEscrowFactoryCommand = {
   maxPriorityFeePerGasScale: 1.0,
 };
 
-const deployParamsHederaTestnet: DeployTitleEscrowFactoryCommand = {
-  network: "hederatestnet",
-  key: "0000000000000000000000000000000000000000000000000000000000000001",
-  dryRun: false,
-  maxPriorityFeePerGasScale: 1.0,
-};
-
 describe("title escrow factory", () => {
   describe("deployTitleEscrowFactory", () => {
     const mockedTitleEscrowFactory: jest.Mock<TitleEscrowFactory__factory> = TitleEscrowFactory__factory as any;
@@ -82,59 +75,6 @@ describe("title escrow factory", () => {
       await expect(
         deployTitleEscrowFactory({
           network: "sepolia",
-          dryRun: false,
-          maxPriorityFeePerGasScale: 1.0,
-        })
-      ).rejects.toThrow(
-        "No private key found in OA_PRIVATE_KEY, key, key-file, please supply at least one or supply an encrypted wallet path, or provide aws kms signer information"
-      );
-    });
-
-    //Hedera Testnet
-    it("should take in the key from environment variable for hederatestnet", async () => {
-      process.env.OA_PRIVATE_KEY = "0000000000000000000000000000000000000000000000000000000000000002";
-
-      await deployTitleEscrowFactory({
-        network: "hederatestnet",
-        dryRun: false,
-        maxPriorityFeePerGasScale: 1.0,
-      });
-
-      const passedSigner: Wallet = mockedTitleEscrowFactory.mock.calls[0][0];
-      expect(passedSigner.privateKey).toBe(`0x${process.env.OA_PRIVATE_KEY}`);
-    });
-
-    it("should take in the key from key file for hederatestnet", async () => {
-      await deployTitleEscrowFactory({
-        network: "hederatestnet",
-        keyFile: join(__dirname, "..", "..", "..", "..", "examples", "sample-key"),
-        dryRun: false,
-        maxPriorityFeePerGasScale: 1.0,
-      });
-
-      const passedSigner: Wallet = mockedTitleEscrowFactory.mock.calls[0][0];
-      expect(passedSigner.privateKey).toBe(`0x0000000000000000000000000000000000000000000000000000000000000003`);
-    });
-
-    it("should pass in the correct params and return the deployed instance for hederatestnet", async () => {
-      const instance = await deployTitleEscrowFactory(deployParamsHederaTestnet);
-
-      const passedSigner: Wallet = mockedTitleEscrowFactory.mock.calls[0][0];
-
-      expect(passedSigner.privateKey).toBe(`0x${deployParamsHederaTestnet.key}`);
-      // price should be any length string of digits
-      expect(instance.contractAddress).toBe("contractAddress");
-    });
-
-    it("should allow errors to bubble up for hederatestnet", async () => {
-      mockedDeploy.mockRejectedValue(new Error("An Error"));
-      await expect(deployTitleEscrowFactory(deployParamsHederaTestnet)).rejects.toThrow("An Error");
-    });
-
-    it("should throw when keys are not found anywhere for hederatestnet", async () => {
-      await expect(
-        deployTitleEscrowFactory({
-          network: "hederatestnet",
           dryRun: false,
           maxPriorityFeePerGasScale: 1.0,
         })

@@ -2,7 +2,7 @@ import { providers } from "ethers";
 import type { GasStationFunction } from "./gas-station";
 import { gasStation } from "./gas-station";
 
-export type networkCurrency = "ETH" | "MATIC" | "XDC" | "HBAR" | "FREE";
+export type networkCurrency = "ETH" | "MATIC" | "XDC" | "FREE";
 
 type SupportedNetwork = {
   explorer: string;
@@ -21,8 +21,6 @@ export enum NetworkCmdName {
   Amoy = "amoy",
   XDC = "xdc",
   XDCApothem = "xdcapothem",
-  HederaMainnet = "hederamainnet",
-  HederaTestnet = "hederatestnet",
   StabilityTestnet = "stabilitytestnet",
   Stability = "stability",
 }
@@ -90,20 +88,6 @@ export const supportedNetwork: {
     networkId: 51,
     networkName: NetworkCmdName.XDCApothem,
     currency: "XDC",
-  },
-  [NetworkCmdName.HederaMainnet]: {
-    explorer: "https://hashscan.io/mainnet",
-    provider: jsonRpcProvider("https://mainnet.hashio.io/api"),
-    networkId: 295,
-    networkName: NetworkCmdName.HederaMainnet,
-    currency: "HBAR",
-  },
-  [NetworkCmdName.HederaTestnet]: {
-    explorer: "https://hashscan.io/testnet",
-    provider: jsonRpcProvider("https://testnet.hashio.io/api"),
-    networkId: 296,
-    networkName: NetworkCmdName.HederaTestnet,
-    currency: "HBAR",
   },
   [NetworkCmdName.Stability]: {
     explorer: "https://stability.blockscout.com",
