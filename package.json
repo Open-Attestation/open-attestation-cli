@@ -8,9 +8,6 @@
     "tradetrust": "dist/cjs/index.js",
     "tt": "dist/cjs/index.js"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "npm run clean && npm run build:cjs && npm run build:type",
